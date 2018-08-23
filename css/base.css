@@ -88,48 +88,48 @@ span.tt:after {
 }
 
 .div-btn-copy {
-  position: relative;
-  display: block;
+    position: relative;
+    display: block;
 }
 .div-btn-name {
-  position: relative;
-  display: block;
+    position: relative;
+    display: block;
 }
 .div-btn-copy+pre { padding-right: 45px;}
 .btn-copy { vertical-align: top;}
 .div-btn-name+pre { padding-left: 45px;}
 .btn-pre {
-  position: absolute;
-  top: 0;
-  right: 0;
-  display: block;
-  padding: 0 6px;
-  font-size: 12px;
-  color: #767676;
-  cursor: pointer;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 0 4px 0 4px;
-  line-height: 23px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: block;
+    padding: 0 6px;
+    font-size: 12px;
+    color: #767676;
+    cursor: pointer;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 0 4px 0 4px;
+    line-height: 23px;
 }
 .btn-pre:hover {
-  color: #fff;
-  background-color: #563d7c;
-  border-color: #563d7c;
+    color: #fff;
+    background-color: #563d7c;
+    border-color: #563d7c;
 }
 .btn-name {
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: block;
-  padding: 0 6px;
-  font-size: 12px;
-  color: #333;
-  cursor: pointer;
-  background-color: rgba(0,0,0,.07);
-  /* border: 1px solid #ccc; */
-  border-radius: 0 4px 0 4px;
-  line-height: 23px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    padding: 0 6px;
+    font-size: 12px;
+    color: #333;
+    cursor: pointer;
+    background-color: rgba(0,0,0,.07);
+    /* border: 1px solid #ccc; */
+    border-radius: 0 4px 0 4px;
+    line-height: 23px;
 }
 
 .tooltip {

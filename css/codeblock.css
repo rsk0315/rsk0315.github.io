@@ -2,6 +2,7 @@
     border: 1px solid #ccc;
     background-color:#fff;
     border-radius: 4px;
+    cursor: pointer;
 }
 .ps1:after {
     content: '$';
@@ -10,22 +11,14 @@
     content: '#';
 }
 
-/* .ps2 { */
-/*     border: 1px solid transparent; */
-/*     color: rgba(0, 0, 0, 0.3); */
-/* } */
-/* .ps2:after { */
-/*     content: '>'; */
-/* } */
-
 .ps0 {
     border: 1px solid transparent;
 }
 
 .ps1:hover {
-  color: #fff;
-  background-color: #563d7c;
-  border-color: #563d7c;
+    color: #fff;
+    background-color: #563d7c;
+    border-color: #563d7c;
 }
 
 .cmd-cont:before {
