@@ -1,0 +1,97 @@
+.user-red {color:#FF0000;}
+.user-orange {color:#FF8000;}
+.user-yellow {color:#C0C000;}
+.user-blue {color:#0000FF;}
+.user-cyan {color:#00C0C0;}
+.user-green {color:#008000;}
+.user-brown {color:#804000;}
+.user-gray {color:#808080;}
+.user-unrated {color:#000000;}
+.user-admin {color:#C000C0;}
+
+/* ナビゲーションと他の要素が重ならないように padding 情報をいれる
+-> Javascript で動的に対応することにします
+body{padding-top: 70px;} */
+
+/* header (タイトル部分) */
+.page-header {
+    border-bottom: 1px solid #eee;
+}
+
+.description {
+    font-size:1.3em;
+    line-height: 1.4;
+    margin-bottom: 20px;
+}
+
+.header-form {
+    font-size: 1.1em;
+    margin-bottom: 20px;
+}
+
+ .mask_100{background-color:rgba(230, 230, 230, 1); font-weight:bold; text-align:center;}
+
+ .mask_200{background-color:rgba(226, 226, 190, 1); font-weight:bold; text-align:center;}
+
+ .mask_300{background-color:rgba(206, 246, 206, 1); font-weight:bold; text-align:center;}
+
+ .mask_400{background-color:rgba(206, 236, 245, 1); font-weight:bold; text-align:center;}
+
+ .mask_500{background-color:rgba(206, 216, 246, 1); font-weight:bold; text-align:center;}
+ .mask_600{background-color:rgba(206, 216, 246, 1); font-weight:bold; text-align:center;}
+ .mask_700{background-color:rgba(206, 216, 246, 1); font-weight:bold; text-align:center;}
+
+ .mask_800{background-color:rgba(245, 246, 206, 1); font-weight:bold; text-align:center;}
+ .mask_900{background-color:rgba(245, 246, 206, 1); font-weight:bold; text-align:center;}
+.mask_1000{background-color:rgba(245, 246, 206, 1); font-weight:bold; text-align:center;}
+.mask_1100{background-color:rgba(245, 246, 206, 1); font-weight:bold; text-align:center;}
+.mask_1200{background-color:rgba(245, 246, 206, 1); font-weight:bold; text-align:center;}
+
+.mask_1300{background-color:rgba(246, 227, 206, 1); font-weight:bold; text-align:center;}
+.mask_1400{background-color:rgba(246, 227, 206, 1); font-weight:bold; text-align:center;}
+.mask_1500{background-color:rgba(246, 227, 206, 1); font-weight:bold; text-align:center;}
+.mask_1600{background-color:rgba(246, 227, 206, 1); font-weight:bold; text-align:center;}
+.mask_1700{background-color:rgba(246, 227, 206, 1); font-weight:bold; text-align:center;}
+
+.mask_1800{background-color:rgba(246, 206, 206, 1); font-weight:bold; text-align:center;}
+.mask_1900{background-color:rgba(246, 206, 206, 1); font-weight:bold; text-align:center;}
+.mask_2000{background-color:rgba(246, 206, 206, 1); font-weight:bold; text-align:center;}
+.mask_2100{background-color:rgba(246, 206, 206, 1); font-weight:bold; text-align:center;}
+.mask_2200{background-color:rgba(246, 206, 206, 1); font-weight:bold; text-align:center;}
+.mask_2300{background-color:rgba(246, 206, 206, 1); font-weight:bold; text-align:center;}
+.mask_2400{background-color:rgba(246, 206, 206, 1); font-weight:bold; text-align:center;}
+.mask_2500{background-color:rgba(246, 206, 206, 1); font-weight:bold; text-align:center;}
+
+.ac_count_id {
+    font-weight: bold;
+    text-align: center;
+    width: 10%;
+}
+
+.ac_count_ac {
+    font-weight: bold;
+    text-align: center;
+    width: 30%;
+}
+
+.ac_count_not_ac {
+    font-weight: bold;
+    text-align: center;
+    width: 30%;
+}
+
+.ac_count_unsubmitted {
+    font-weight: bold;
+    text-align: center;
+    width: 30%;
+}
+
+#ac_count_user_name{font-weight:bold; text-align:center; vertical-align:middle}
+#num_user_ac{font-weight:bold; text-align:center; font-size:large;}
+#num_user_not_ac{font-weight:bold; text-align:center; font-size:large;}
+#num_user_unsubmitted{font-weight:bold; text-align:center; font-size:large;}
+
+#ac_count_rival_name{font-weight:bold; text-align:center; vertical-align:middle}
+#num_rival_ac{font-weight:bold; text-align:center; font-size:large;}
+#num_rival_not_ac{font-weight:bold; text-align:center; font-size:large;}
+#num_rival_unsubmitted{font-weight:bold; text-align:center; font-size:large;}

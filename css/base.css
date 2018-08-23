@@ -1,0 +1,138 @@
+.collapse-heading { cursor: pointer;}
+.collapse-heading span.pull-right:before { content: "\e113";}
+.collapse-heading.collapsed span.pull-right:before { content: "\e114";}
+
+/* header */
+.page-header {
+    border-bottom: 1px solid #eee;
+}
+
+h1, h2, h3 {
+    border-bottom: 1px solid #eaecef;
+}    
+
+.description {
+    font-size:1.3em;
+    line-height: 1.4;
+    margin-bottom: 20px;
+}
+
+.header-form {
+    font-size: 1.1em;
+    margin-bottom: 20px;
+}
+
+main {
+    padding: 20px 40px 20px;
+    min-height: 80vh;
+}
+
+#main-div.float-container {
+    background: #f5f5f5;
+}
+
+.float-container > main {
+    background: #ffffff;
+    box-shadow: 0px 0px 10px 5px #888888;
+}
+
+code {
+    padding: 3px 3px 1px;
+    margin: 0;
+    border-width: 0;
+    color: #d72b3f;
+    background-color: #f7f7f9;
+    border: 1px solid #e1e1e8;
+}
+code:before {
+    /* content: "'"; */
+    margin-right: 0.15em;
+    color: #666;
+}
+code:after {
+    /* content: "'"; */
+    margin-left: 0.15em;
+    color: #666;
+}
+
+span.tt {
+    color: #d72b3f;
+    margin:0;
+    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+    font-size: 90%;
+}
+span.tt:before {
+    content: "'";
+    margin-right: 0.15em;
+    color: #666;
+}
+span.tt:after {
+    content: "'";
+    margin-left: 0.15em;
+    color: #666;
+}
+
+.tex sub, .tex sup {
+    text-transform: uppercase;
+}
+.tex sub {
+    margin-left: -.1667em;
+    margin-right: -.125em;
+    font-size: 1em;
+}
+.tex sup {
+    font-size: .85em;
+    vertical-align: -.3em;
+    margin-left: -.36em;
+    margin-right: -.15em;
+}
+
+.div-btn-copy {
+  position: relative;
+  display: block;
+}
+.div-btn-name {
+  position: relative;
+  display: block;
+}
+.div-btn-copy+pre { padding-right: 45px;}
+.btn-copy { vertical-align: top;}
+.div-btn-name+pre { padding-left: 45px;}
+.btn-pre {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: block;
+  padding: 0 6px;
+  font-size: 12px;
+  color: #767676;
+  cursor: pointer;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 0 4px 0 4px;
+  line-height: 23px;
+}
+.btn-pre:hover {
+  color: #fff;
+  background-color: #563d7c;
+  border-color: #563d7c;
+}
+.btn-name {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  padding: 0 6px;
+  font-size: 12px;
+  color: #333;
+  cursor: pointer;
+  background-color: rgba(0,0,0,.07);
+  /* border: 1px solid #ccc; */
+  border-radius: 0 4px 0 4px;
+  line-height: 23px;
+}
+
+.tooltip {
+    font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
