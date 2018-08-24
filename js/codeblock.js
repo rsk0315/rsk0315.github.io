@@ -1,6 +1,6 @@
 $(window).on('load', function() {
     $('.cmd-in, .cmd-cont').prepend($('<span class="space">'));
-    $.each($('.cmd-out'), function() {
+    $.each($('.cmd-out>span'), function() {
         var text = $(this).text();
         $(this).attr({'data-content': text});
         $(this).text('');

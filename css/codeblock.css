@@ -30,7 +30,7 @@
     border: 1px solid transparent;
     content: '';
 }
-.cmd-out:after {
+.cmd-out>span:after {
     content: attr(data-content) '';
 }
 .space:before {
