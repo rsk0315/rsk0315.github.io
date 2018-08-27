@@ -32,34 +32,293 @@
   <body>
     <div id="main-div" class="float-container">
       <main class="container">
-<h1>気付きにくいC++未定義動作たち</h1>
-<p>ある程度はC++を書いた経験があるが，詳しい仕様などは知らない人を読者層として想定して書くつもりです．
-多くの競プロerは当てはまると思います．
+<h1>気付きにくい C++ 未定義動作たち</h1>
+<p>ある程度は C++ を書いた経験があるが，詳しい仕様などは知らない人を読者層として想定して書くつもりです．
+多くの競プロ-er は当てはまると思います．
 </p>
 
-<p>ここに根拠とする規格を書く．
+<p><a href="http://github.com/cplusplus/draft/papers">http://github.com/cplusplus/draft/papers</a> で見られるドラフトを参考にして書いていますが，あくまでドラフトなので改訂されたりすることはあります．
+</p>
+
+<p>出典を示す際は，章番号やそれに準ずる番号は版によって前後しうるので，タグ？（[intro.scope] とか [defns.argument.macro] のようなもの．正しい呼び方を知りたい）を利用しようと思っています．
 </p>
 
 <h2>まずは用語から</h2>
-<p>「処理系規定」「未規定」「未定義」などの語の区別を知らず，ひとまとめに「環境依存」などと言っている人をそれなりに見かけるので，その定義から確認します．
+<p>「処理系定義」「未規定」「未定義」などの語の区別を知らず，ひとまとめに「環境依存」などと言っている人をそれなりに見かけるので，その定義から確認します．
 </p>
 
-<p>ここに定義を書く．
+<h3>処理系定義</h3>
+<p>処理系定義の動作（implementation-defined behavior）は，well-formed なプログラム構成および正しいデータによる動作で，処理系に依存するものです．各々の処理系のドキュメントによって．その動作は規定されます（[defns.impl.defined]）.
 </p>
 
+<h3>未規定</h3>
+<p>未規定の動作（unspecified behavior）は，well-formed なプログラム構成および正しいデータによる動作，処理系に依存するものです．どのような動作かをドキュメントで示す必要はありません（[defns.unspecified]）.
+</p>
+
+<h3>未定義</h3>
+<p>未定義動作（undefined behavior）は，規格書が何の要求もしない動作です．
+規格書で明示的に定義が示されていない場合や，プログラム構成やデータが正しくない場合も未定義動作であるとされます．
+</p>
+
+<p>未定義動作として許容される動作は次のようなものです．（これはコンパイラ目線で読むといいかもしれません．）
+</p>
+<ul>
+  <li>そのような状況を完全に無視して予期しない結果を招かせる</li>
+  <li>コンパイル時・実行時に環境に応じて文書化されたように動作する（診断メッセージはなくてよい）</li>
+  <li>コンパイルや実行を終了させる（診断メッセージあり）</li>
+</ul>
+<p>（[defns.undefined]）
+</p>
+
+<p>ざっくり言うと，
+</p>
+<ul>
+  <li>処理系定義・未規定はセーフ</li>
+  <li>未定義はアウト</li>
+  <li>「環境依存」という分類はない</li>
+</ul>
+<p>です．
+</p>
+
+<p>未定義動作を起こしうるコードがたまたま期待どおりに動いた場合でも，それは「コードが正しい」ことを示す理由にはならないことも覚えておきましょう．
+</p>
+
+<h2>例（処理系定義・未規定）</h2>
+<p>例を挙げておくと分かりやすいかもしれないので例を挙げます．
+具体的に何が「処理系定義」で何が「未規定」かは区別して覚えておく必要は無いと思います．
+</p>
+
+<ul>
+  <li><code>sizeof(int)</code> などの値は処理系定義です（[expr.sizeof]）</li>
+  <li><code>E1 &gt;&gt; E2</code> において <code>E1</code> が負の場合の値は処理系定義です（[expr.shift]）</li>
+  <li><code>char</code> が符号つきかどうかは処理系定義です（[dcl.type.simple]）</li>
+  <li><code>&quot;foo&quot; == &quot;foo&quot;</code> が <code>true</code> かどうかは未規定です（[lex.string]）</li>
+  <li>標準ライブラリの関数が <code>inline</code> かどうかは未規定です（[global.functions] および [member.functions]）</li>
+  <li><code>std::complex</code> を <code>float</code>，<code>double</code>，<code>long double</code> 以外で実体化した場合の動作は未規定です（[complex.numbers]）</li>
+</ul>
+
+<h2>例（未定義）</h2>
+<p>未定義動作の例を挙げます．
+</p>
+
+<p>何がどうまずいか考えてもらうため，先にコードと実行例を示してから解説を入れる形式にします．
+<strong>未定義動作</strong>なので，手元で同じコードを実行した場合に必ずしも同じ動作が再現するとは限らないことに注意してください．同じ環境であってもコンパイラのバージョンなどによって動作が変わることもあります．
+</p>
+
+<h3>配列境界外参照</h3>
+<pre class="sourcecode" filename="sample.cpp"><div style="margin:1.2em 0 0 0">#include &lt;cstdio&gt;
+
+int main() {
+  int a[5]={31, 41, 59, 26, 53}, x=58;
+  for (int i=0; i&lt;=5; ++i)
+    if (a[i] == x) return !printf(&quot;Found!\n&quot;);
+}</div></pre>
+<pre><span class="cmd-in">g++ -O2 sample.cpp</span>
+<span class="cmd-in">./a.out</span>
+<span class="cmd-out"><span>Found!</span></span></pre><p>これは比較的有名な例ですね．以下のように説明されます．
+</p>
+<ol>
+  <li><code>a[5]</code> にアクセスすることはないと仮定できる</li>
+  <li><code>i</code> が <code>5</code> に到達する前にループを抜けることになる</li>
+  <li><code>return !printf(&quot;Found!\n&quot;);</code> を実行できる</li>
+</ol>
+<p>配列の境界を超えてアクセスした場合に必ず Segfault が起きると思っている人はいませんか？ それは勘違いであると早めに気付いておきましょう．
+</p>
+
+<h3>識別子</h3>
+<pre class="sourcecode" filename="sample.cpp"><div style="margin:1.2em 0 0 0">#define _STDIO_H
+#include &lt;cstdio&gt;
+
+int main() {
+  printf(&quot;Hello, world.\n&quot;);
+}</div></pre>
+
+<pre><span class="cmd-in">g++ sample.cpp</span>
+<span class="cmd-out"><span>In file included from </span><span style=" font-weight:bold;">sample.cpp:2</span><span style="">:
+</span></span><span class="cmd-out"><span></span><span style=" font-weight:bold;">/usr/include/c++/8.2.0/cstdio:98:11:</span><span style=""> </span><span style=" font-weight:bold; color:#ff5555;">error: </span><span style="">‘</span><span style=" font-weight:bold;">::FILE</span><span style="">’ has not been declared
+</span></span><span class="cmd-out"><span>   using ::</span><span style=" font-weight:bold; color:#ff5555;">FILE</span><span style="">;
+</span></span><span class="cmd-out"><span>           </span><span style=" font-weight:bold; color:#ff5555;">^~~~</span><span style="">
+</span></span><span class="cmd-out"><span></span><span style=" font-weight:bold;">/usr/include/c++/8.2.0/cstdio:99:11:</span><span style=""> </span><span style=" font-weight:bold; color:#ff5555;">error: </span><span style="">‘</span><span style=" font-weight:bold;">::fpos_t</span><span style="">’ has not been declared
+</span></span><span class="cmd-out"><span>   using ::</span><span style=" font-weight:bold; color:#ff5555;">fpos_t</span><span style="">;
+</span></span><span class="cmd-out"><span>           </span><span style=" font-weight:bold; color:#ff5555;">^~~~~~</span><span style="">
+</span></span><span class="cmd-out"><span>...
+</span></span><span class="cmd-out"><span></span><span style=" font-weight:bold;">sample.cpp:</span><span style=""> In function ‘</span><span style=" font-weight:bold;">int main()</span><span style="">’:
+</span></span><span class="cmd-out"><span></span><span style=" font-weight:bold;">sample.cpp:5:3:</span><span style=""> </span><span style=" font-weight:bold; color:#ff5555;">error: </span><span style="">‘</span><span style=" font-weight:bold;">printf</span><span style="">’ was not declared in this scope
+</span></span><span class="cmd-out"><span>   </span><span style=" font-weight:bold; color:#ff5555;">printf</span><span style="">(&quot;Hello, world.\n&quot;);
+</span></span><span class="cmd-out"><span>   </span><span style=" font-weight:bold; color:#ff5555;">^~~~~~</span><span style="">
+</span></span><span class="cmd-out"><span></span><span style=" font-weight:bold;">sample.cpp:5:3:</span><span style=""> </span><span style=" font-weight:bold; color:#55ffff;">note: </span><span style="">‘</span><span style=" font-weight:bold;">printf</span><span style="">’ is defined in header ‘</span><span style=" font-weight:bold;">&lt;cstdio&gt;</span><span style="">’; did you forget to ‘</span><span style=" font-weight:bold;">#include &lt;cstdio&gt;</span><span style="">’?
+</span></span><span class="cmd-out"><span></span><span style=" font-weight:bold;">sample.cpp:3:1:</span><span style="">
+</span></span><span class="cmd-out"><span>+</span><span style=" color:#00aa00;">#include &lt;cstdio&gt;</span><span style="">
+</span></span><span class="cmd-out"><span>
+</span></span><span class="cmd-out"><span></span><span style=" font-weight:bold;">sample.cpp:5:3:</span><span style="">
+</span></span><span class="cmd-out"><span>   </span><span style=" font-weight:bold; color:#55ffff;">printf</span><span style="">(&quot;Hello, world.\n&quot;);
+</span></span><span class="cmd-out"><span>   </span><span style=" font-weight:bold; color:#55ffff;">^~~~~~</span><span style=""></span></span></pre>
+<p>ただの Hello, world ですが，コンパイルが通りません．
+<code>_STDIO_H</code> を <code>#define</code> したことによる影響なのは明白ですが，なぜこれがよくないかを説明できますか？
+</p>
+
+<p>具体的には，以下の識別子は処理系に予約されていて，処理系が自由に使っていい（プログラマが使わないと仮定していい）ことになっています（[lex.name]）．
+</p>
+<ul>
+  <li>アンダースコアで始まる（<code>_.*</code>）</li>
+  <ul>
+    <li>これはグローバル名前空間のみ</li>
+  </ul>
+  <li>連続するアンダースコアを含む（<code>.*__.*</code>）</li>
+  <li>アンダースコアに続く大文字で始まる（<code>_[A-Z].*</code>）</li>
+</ul>
+<p>今回の <code>_STDIO_H</code> はこれの一つめ（および三つめ）に抵触しています．
+</p>
+
+<h3>比較関数</h3>
+<pre class="sourcecode" filename="sample.cpp"><div style="margin:1.2em 0 0 0">#include &lt;cstdio&gt;
+#include &lt;vector&gt;
+
+int main() {
+  int a[512]={};
+  std::sort(a, a+512, [](int, int) { return true; });
+}</div></pre>
+<pre><span class="cmd-in">g++ sample.cpp</span>
+<span class="cmd-in">./a.out</span>
+<span class="cmd-out"><span>Segmentation fault (core dumped)</span></span></pre>
+<p>単純なソートですが，Segfault になってしまったのはなぜでしょう？
+<code>std::sort</code>（など）では比較関数は以下の性質（strict weak ordering）を満たす必要があります（[alg.sorting]）．
+</p>
+<ul>
+  <li>すべての <code>a</code> について <code>!(a &lt; a)</code></li>
+  <li><code>a &lt; b</code> ならば <code>!(b &lt; a)</code></li>
+  <li><code>a &lt; b</code> かつ <code>b &lt; c</code> ならば <code>a &lt; c</code></li>
+</ul>
+<p>今回はこれを満たさなかったため，予期しない結果となりました．
+最適化オプションをつけると，Segfault になってくれずにプログラムが終了しなくなったりします．
+</p>
+
+<h3>オーバーフロー</h3>
+<pre class="sourcecode" filename="sample.cpp"><div style="margin:1.2em 0 0 0">#include &lt;cstdio&gt;
+
+int main() {
+  int x;
+  scanf(&quot;%d&quot;, &amp;x);
+  if (x &lt; 0 &amp;&amp; -x &lt; 0) printf(&quot;-2147483648\n&quot;);
+}</div></pre>
+<pre><span class="cmd-in">g++ sample.cpp</span>
+<span class="cmd-in">./a.out &lt;&lt;&lt; -2147483648  # no output</pre><p>今は <code>int</code> は 32-bit で負数は 2 の補数で表現する処理系を仮定します．
+</p>
+
+<p><code>-(-2147483648)</code> を手順どおりに計算しようとすると，以下のように <code>-2147483648</code> になってしまいます．
+</p>
+<ul>
+  <li><code>0x80000000</code> をビット反転して <code>0x7FFFFFFF</code> を得る</li>
+  <li><code>0x7FFFFFFF</code> に <code>1</code> を足して <code>0x80000000</code> を得る</li>
+</ul>
+<p>そのため，上の状況では <code>x &lt; 0</code> も <code>-x &lt; 0</code> も <code>true</code> となるように思われますね．
+実際は，<strong>符号つき</strong>整数型がオーバーフローしたときの動作は未定義となっています（[expr.pre]）．
+そのため，今回はそうなる状況は無視されて何も出力せずに終了するコードが生成されました（<code>x</code> が他のどの値でも <code>x &lt; 0 &amp;&amp; -x &lt; 0</code> は <code>true</code> になりえないことに注意）．
+</p>
+
+<p>なお， $n$ ビットの<strong>符号なし</strong>整数型は  $2^n$  を法とした演算を行うため，実質的にオーバーフローしない（その型で表せる範囲を超えた値にならない）とされています（[basic.fundamental]）．
+</p>
+
+
+<h2>対策</h2>
+<p>未定義なコードを各プログラマが悪いとはいえ，いくらかは処理系に検知してほしいものですよね．
+</p>
+
+<h3><code>_GLIBCXX_DEBUG</code></h3>
+<p>GCC においては，<code>_GLIBCXX_DEBUG</code> を <code>#define</code> することでデバッグモードでコンパイルしてくれます．
+</p>
+
+<p>この識別子は，前述の通り処理系に予約されたものです．
+C++ の規格で定められた機能ではないので，別のコンパイラでこれを行いたいときは，サポートされているか確認しましょう．
+GCC ではちゃんと <a href="https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_macros.html">文書化</a> されています．
+</p>
+
+<p>たとえば，以下のように教えてくれます．
+</p>
+<pre class="sourcecode" filename="sample.cpp"><div style="margin:1.2em 0 0 0">// #define _GLIBCXX_DEBUG  /* ソース内で #define してもいい */
+#include &lt;cstdio&gt;
+#include &lt;vector&gt;
+
+int main() {
+  std::vector&lt;int&gt; x{1, 2};
+  printf(&quot;%d\n&quot;, x[2]);
+}</div></pre>
+<pre><span class="cmd-in">g++ -D_GLIBCXX_DEBUG sample.cpp  # コンパイル時に #define してもいい</span>
+<span class="cmd-in">./a.out</span>
+<span class="cmd-out"><span>/usr/include/c++/8.2.0/debug/vector:417:
+</span></span><span class="cmd-out"><span>Error: attempt to subscript container with out-of-bounds index 2, but
+</span></span><span class="cmd-out"><span>container only holds 2 elements.
+</span></span><span class="cmd-out"><span>
+</span></span><span class="cmd-out"><span>Objects involved in the operation:
+</span></span><span class="cmd-out"><span>    sequence &quot;this&quot; @ 0x0x7ffc383c92c0 {
+</span></span><span class="cmd-out"><span>      type = std::__debug::vector&lt;int, std::allocator&lt;int&gt; &gt;;
+</span></span><span class="cmd-out"><span>    }
+</span></span><span class="cmd-out"><span>Aborted (core dumped)</span></span></pre><p><code>std::vector</code> の代わりに <code>__gnu_debug::vector</code>（<code>std::__debug::vector</code>？）を使って様々なチェックを行ってくれます．
+少々分かりにくいかもしれませんが，エラーにならないよりはマシですね．
+</p>
+
+<p>上のソートの例のような場合でも活躍してくれます．
+</p>
+<pre><span class="cmd-in">./a.out</span>
+<span class="cmd-out"><span>/usr/include/c++/8.2.0/bits/stl_algo.h:4864:
+</span></span><span class="cmd-out"><span>Error: comparison doesn&#x27;t meet irreflexive requirements, assert(!(a &lt; a)).
+</span></span><span class="cmd-out"><span>
+</span></span><span class="cmd-out"><span>Objects involved in the operation:
+</span></span><span class="cmd-out"><span>    instance &quot;functor&quot; @ 0x0x7ffdd0ed71b0 {
+</span></span><span class="cmd-out"><span>      type = main::{lambda(int, int)#1};
+</span></span><span class="cmd-out"><span>    }
+</span></span><span class="cmd-out"><span>    iterator::value_type &quot;ordered type&quot; {
+</span></span><span class="cmd-out"><span>      type = int;
+</span></span><span class="cmd-out"><span>    }
+</span></span><span class="cmd-out"><span>Aborted (core dumped)</span></span></pre>
+<h3><code>.at(i)</code></h3>
+<p>添字のアクセスに関しては，規格で定められた別の方法が存在します．
+</p>
+<pre class="sourcecode" filename="sample.cpp"><div style="margin:1.2em 0 0 0">#include &lt;cstdio&gt;
+#include &lt;vector&gt;
+
+int main() {
+  std::vector&lt;int&gt; x{1, 2};
+  printf(&quot;%d\n&quot;, x.at(2));
+}</div></pre>
+<pre><span class="cmd-in">g++ sample.cpp</span>
+<span class="cmd-in">./a.out</span>
+<span class="cmd-out"><span>terminate called after throwing an instance of &#x27;std::out_of_range&#x27;
+</span></span><span class="cmd-out"><span>  what():  vector::_M_range_check: __n (which is 2) &gt;= this-&gt;size() (which is 2)
+</span></span><span class="cmd-out"><span>Aborted (core dumped)</span></span></pre><p>これはこれでわかりにくい上，<code>[i]</code> で書かれたコードにはたくさん変更を加える必要があるため，あまり適してはいない気もします．
+ただ，規格で定められているという意味では安心かもしれません．
+</p>
+
+<h3><code>-fsanitize=undefined</code></h3>
+<p>GCC では実行時の検出機能も用意されています（お使いの <code>g++</code> がこれに対応していないならバージョンアップすることをオススメします）．
+オーバーフローや配列境界外参照などを検出してくれます．
+</p>
+
+<pre class="sourcecode" filename="sample.cpp"><div style="margin:1.2em 0 0 0">#include &lt;cstdio&gt;
+
+int main() {
+  int x, a[123456]={};
+  scanf(&quot;%d&quot;, &amp;x);
+  printf(&quot;%d\n&quot;, x*x);
+  printf(&quot;%d\n&quot;, x&lt;&lt;x);
+  printf(&quot;%d\n&quot;, a[x]);
+}</div></pre>
+<pre><span class="cmd-in">./a.out</span>
+<span class="cmd-out"><span></span><span style=" font-weight:bold;">ubsan-overflow.cpp:6:9:</span><span style=" font-weight:bold;"></span><span style=" font-weight:bold; color:#ff5555;"> runtime error: </span><span style=" font-weight:bold; color:#ff5555;"></span><span style=""></span><span style=" font-weight:bold;">signed integer overflow: 123456 * 123456 cannot be represented in type &#x27;int&#x27;</span><span style=" font-weight:bold;"></span><span style="">
+</span></span><span class="cmd-out"><span>-1938485248
+</span></span><span class="cmd-out"><span></span><span style=" font-weight:bold;">ubsan-overflow.cpp:7:19:</span><span style=" font-weight:bold;"></span><span style=" font-weight:bold; color:#ff5555;"> runtime error: </span><span style=" font-weight:bold; color:#ff5555;"></span><span style=""></span><span style=" font-weight:bold;">shift exponent 123456 is too large for 32-bit type &#x27;int&#x27;</span><span style=" font-weight:bold;"></span><span style="">
+</span></span><span class="cmd-out"><span>123456
+</span></span><span class="cmd-out"><span></span><span style=" font-weight:bold;">ubsan-overflow.cpp:8:21:</span><span style=" font-weight:bold;"></span><span style=" font-weight:bold; color:#ff5555;"> runtime error: </span><span style=" font-weight:bold; color:#ff5555;"></span><span style=""></span><span style=" font-weight:bold;">index 123456 out of bounds for type &#x27;int [123456]&#x27;</span><span style=" font-weight:bold;"></span><span style="">
+</span></span><span class="cmd-out"><span></span><span style=" font-weight:bold;">ubsan-overflow.cpp:8:9:</span><span style=" font-weight:bold;"></span><span style=" font-weight:bold; color:#ff5555;"> runtime error: </span><span style=" font-weight:bold; color:#ff5555;"></span><span style=""></span><span style=" font-weight:bold;">load of address 0x7ffc8771b670 with insufficient space for an object of type &#x27;int&#x27;</span><span style=" font-weight:bold;"></span><span style="">
+</span></span><span class="cmd-out"><span></span><span style=" font-weight:bold;">0x7ffc8771b670:</span><span style=" font-weight:bold;"></span><span style=" font-weight:bold; color:#555555;"> note: </span><span style=" font-weight:bold; color:#555555;"></span><span style="">pointer points here</span><span style=" font-weight:bold;"></span><span style="">
+</span></span><span class="cmd-out"><span> 00 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  d3 08 40 00 00 00 00 00  45 c4 14 cd
+</span></span><span class="cmd-out"><span></span><span style=" font-weight:bold;"></span><span style=" font-weight:bold; color:#55ff55;">              ^ </span><span style=" font-weight:bold; color:#55ff55;"></span><span style="">
+</span></span><span class="cmd-out"><span>0</span></span></pre>
 <h2>書きたいこと</h2>
 <ul>
-  <li><code>std::out_of_range</code></li>
-  <li><code>__foo</code></li>
-  <li><code>_GLIBCXX_DEBUG</code></li>
   <li><code>-fsanitize=undefined</code></li>
-  <li>Named requirements</li>
-  <ul>
-    <li><code>Compare</code></li>
-  </ul>
-  <li>overflow</li>
-  <li><code>printf</code>や<code>scanf</code>の指定子</li>
   <li>order of evaluation</li>
+  <li><code>P + J</code> が  $[0, n]$  を超えるだけで UB になるやつ</li>
 </ul>
       </main>
     </div>
