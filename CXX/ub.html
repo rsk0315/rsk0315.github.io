@@ -207,10 +207,10 @@ int main() {
 
 <p><code>-(-2147483648)</code> を手順どおりに計算しようとすると，以下のように <code>-2147483648</code> になってしまいます．
 </p>
-<ul>
+<ol>
   <li><code>0x80000000</code> をビット反転して <code>0x7FFFFFFF</code> を得る</li>
   <li><code>0x7FFFFFFF</code> に <code>1</code> を足して <code>0x80000000</code> を得る</li>
-</ul>
+</ol>
 <p>そのため，上の状況では <code>x &lt; 0</code> も <code>-x &lt; 0</code> も <code>true</code> となるように思われますね．
 実際は，<strong>符号つき</strong>整数型がオーバーフローしたときの動作は未定義となっています（[expr.pre]）．
 そのため，今回はそうなる状況は無視されて何も出力せずに終了するコードが生成されました（<code>x</code> が他のどの値でも <code>x &lt; 0 &amp;&amp; -x &lt; 0</code> は <code>true</code> になりえないことに注意）．
@@ -221,7 +221,7 @@ int main() {
 
 
 <h2>対策</h2>
-<p>未定義なコードを各プログラマが悪いとはいえ，いくらかは処理系に検知してほしいものですよね．
+<p>未定義なコードを書くプログラマが悪いとはいえ，いくらかは処理系に検知してほしいものですよね．
 </p>
 
 <h3><code>_GLIBCXX_DEBUG</code></h3>
@@ -316,9 +316,9 @@ int main() {
 </span></span><span class="cmd-out"><span>0</span></span></pre>
 <h2>書きたいこと</h2>
 <ul>
-  <li><code>-fsanitize=undefined</code></li>
   <li>order of evaluation</li>
   <li><code>P + J</code> が  $[0, n]$  を超えるだけで UB になるやつ</li>
+  <li>何もしない無限ループをコンパイラがいいように利用できるやつ</li>
 </ul>
       </main>
     </div>
