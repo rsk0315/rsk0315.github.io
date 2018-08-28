@@ -201,12 +201,20 @@ export LESS=Fr
 
 また，バックアップファイルなどが補完されると厄介なので，`FIGNORE`によってそれを防ぐ．
 
-#`
+#`[~/.bashrc]
 # Completion configurations
 completion_loader () { return 124; }
 complete -EF completion_loader +o {bashdefault,deafult}
 export FIGNORE=.o:~:#${FIGNORE:+:}$FIGINORE
 #`
+
+### 履歴関連
+#`[~/.bashrc]
+# History configurations
+HISTCONTROL=ignoredups:erasedups
+#`
+
+個人的に`g`→`a`→`fg`の流れを無限に繰り返しがちなので，それで履歴が圧迫されるのは避けたい．
 
 ### キーバインドの補助設定
 `C-s`などが期待通りに動作するようにする．
@@ -605,7 +613,7 @@ latest=$(ls -ltAQ | grep -E "${suffix:+\\.(}$suffix${suffix:+)}\$" \
              | sed -E 's/[^"]*"((\\.|[^\\"])*)".*/\1/; q')
 latest=$(printf "$latest")
 
-[[ -z "$latest" ]] && [[ -f "$latest" ]] && echo "$latest"
+[[ -n "$latest" ]] && [[ -f "$latest" ]] && echo "$latest"
 #`
 シェルインジェクションの心配はなさそう．
 念のため，生成されたファイル名が存在するかのチェックをかませる．

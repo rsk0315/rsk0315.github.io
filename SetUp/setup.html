@@ -202,10 +202,18 @@ export LESS=Fr</div></pre>
 <p>また，バックアップファイルなどが補完されると厄介なので，<code>FIGNORE</code>によってそれを防ぐ．
 </p>
 
-<pre># Completion configurations
+<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Completion configurations
 completion_loader () { return 124; }
 complete -EF completion_loader +o {bashdefault,deafult}
-export FIGNORE=.o:~:#${FIGNORE:+:}$FIGINORE</pre>
+export FIGNORE=.o:~:#${FIGNORE:+:}$FIGINORE</div></pre>
+
+<h3>履歴関連</h3>
+<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># History configurations
+HISTCONTROL=ignoredups:erasedups</div></pre>
+
+<p>個人的に<code>g</code>→<code>a</code>→<code>fg</code>の流れを無限に繰り返しがちなので，それで履歴が圧迫されるのは避けたい．
+</p>
+
 <h3>キーバインドの補助設定</h3>
 <p><code>C-s</code>などが期待通りに動作するようにする．
 </p>
@@ -598,7 +606,7 @@ latest=$(ls -ltAQ | grep -E &quot;${suffix:+\\.(}$suffix${suffix:+)}\$&quot; \
              | sed -E &#x27;s/[^&quot;]*&quot;((\\.|[^\\&quot;])*)&quot;.*/\1/; q&#x27;)
 latest=$(printf &quot;$latest&quot;)
 
-[[ -z &quot;$latest&quot; ]] &amp;&amp; [[ -f &quot;$latest&quot; ]] &amp;&amp; echo &quot;$latest&quot;</div></pre>
+[[ -n &quot;$latest&quot; ]] &amp;&amp; [[ -f &quot;$latest&quot; ]] &amp;&amp; echo &quot;$latest&quot;</div></pre>
 <p>シェルインジェクションの心配はなさそう．
 念のため，生成されたファイル名が存在するかのチェックをかませる．
 </p>
