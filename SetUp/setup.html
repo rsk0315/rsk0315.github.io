@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          processEscapes: true,
+        },
+        CommonHTML: { matchFontHeight: false }
+      });
+    </script>
+    <script type="text/javascript" async src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Cuprum&subset=latin" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet" type="text/css">
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+
+    <link href="/css/base.css" rel="stylesheet">
+    <script src="/js/base.js"></script>
+
+    <link href="/css/codeblock.css" rel="stylesheet">
+    <script src="/js/codeblock.js"></script>
+  </head>
+  <body>
+    <div id="main-div" class="float-container">
+      <main class="container">
+<h1>基本的な環境設定</h1>
+<h2>VMware Toolsのインストール</h2>
+<pre><span class="cmd-in">cd ~/Downloads</span>
+<span class="cmd-in">cp /run/media/rsk0315/VMware\ Tools/VMwareTools-*.tar.gz ./</span>
+<span class="cmd-in">tar xvf VMwareTools-*.tar.gz</span>
+<span class="cmd-in">cd vmware-tools-distrib/</span>
+<span class="cmd-in">sudo ./vmware-install.pl</pre>
+<h2><code>sudo</code>の設定</h2>
+<p>以下のコマンドを用いて<code>/etc/sudoers</code>を編集し，いちいちパスワードを求められないようにする．
+</p>
+<pre><span class="cmd-in">sudo visudo</pre><p>差分は次の通り．
+</p>
+<pre><span class="cmd-in">sudo diff -up ~/tmp/sudoers /etc/sudoers</span>
+<span class="cmd-out"><span>--- /home/rsk0315/tmp/sudoers
+</span></span><span class="cmd-out"><span>+++ /etc/sudoers
+</span></span><span class="cmd-out"><span>@@ -99,7 +99,7 @@ root	ALL=(ALL) 	ALL
+</span></span><span class="cmd-out"><span>%wheel	ALL=(ALL)	ALL
+</span></span><span class="cmd-out"><span>
+</span></span><span class="cmd-out"><span>## Same thing without a password
+</span></span><span class="cmd-out"><span>-# %wheel	ALL=(ALL)	NOPASSWD: ALL
+</span></span><span class="cmd-out"><span>+%wheel	ALL=(ALL)	NOPASSWD: ALL
+</span></span><span class="cmd-out"><span>
+</span></span><span class="cmd-out"><span>## Allows members of the users group to mount and unmount the
+</span></span><span class="cmd-out"><span>## cdrom as root</span></span></pre>
+<h2><code>git</code>のアップグレード</h2>
+<p>ビルドするのに必要なライブラリ群をインストールする．
+</p>
+<pre><span class="cmd-in">sudo yum install openssl-devel curl-devel expat-devel</pre><p><code>gettext-devel</code>，<code>perl-devel</code>，<code>zlib-devel</code>，<code>perl-ExtUtils-MakeMaker</code>も依存している？ 最初から入っているかも？
+</p>
+
+<p>古い<code>git</code>が入っていることを期待し，以下を実行．
+</p>
+<pre><span class="cmd-in">git clone https://github.com/git/git.git</span>
+<span class="cmd-in">cd git</span>
+<span class="cmd-in">make &amp;&amp; make install</pre><p><code>prefix</code>は<code>$(HOME)</code>になっているので，<code>$PATH</code>を見てちゃんと新しいのが実行されるかを確認する．
+</p>
+
+<p><code>GIT_EDITOR</code>などを適宜変更しよう．
+</p>
+<pre><span class="cmd-in">man git-var</pre><p>を参考にするとよい．
+</p>
+
+<h2><code>vim</code>のアップグレード</h2>
+<pre><span class="cmd-in">sudo yum install libX11-devel libXt-devel gtk2-devel ncurses-devel</pre><p><code>atk-devel</code>も依存している？
+</p>
+<pre><span class="cmd-in">git clone https://github.com/vim/vim.git</span>
+<span class="cmd-in">cd vim</span>
+<span class="cmd-in">./configure --prefix=$HOME --build=x86_64-redhat-linux --with-x \
+<span class="cmd-cont"></span>    CFLAGS=-I/usr/include/X11</span>
+<span class="cmd-in">make &amp;&amp; make install</pre>
+<h2><code>emacs</code>のインストール</h2>
+<p><code>http://ftp.jaist.ac.jp/pub/GNU/emacs/</code>などから最新のものをダウンロード．
+</p>
+<pre><span class="cmd-in">sudo yum install gnutls-devel</span>
+<span class="cmd-in">cd ~/Downloads</span>
+<span class="cmd-in">curl http://ftp.jaist.ac.jp/pub/GNU/emacs/emacs-26.1.tar.xz -o emacs-26.1.tar.xz</span>
+<span class="cmd-in">tar xvf emacs-26.1.tar.xz</span>
+<span class="cmd-in">cd emacs-26.1/</span>
+<span class="cmd-in">./configure --prefix=$HOME --build=x86_64-redhat-linux --without-x</span>
+<span class="cmd-in">make &amp;&amp; make install</pre>
+<h2><code>python3</code>のインストール</h2>
+<pre><span class="cmd-in">sudo yum install https://centos7.iuscommunity.org/ius-release.rpm</span>
+<span class="cmd-in">sudo yum install python36u{,-{libs,devel,pip}}</pre>
+<p><code>pip</code>を使って便利モジュールを入れるのも忘れずに．
+</p>
+<pre><span class="cmd-in">curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py</span>
+<span class="cmd-in">python3 get-pip.py --user</span>
+<span class="cmd-in">pip install --user numpy</span>
+<span class="cmd-in">pip install --user scipy</span>
+<span class="cmd-in">pip install --user pandas</span>
+<span class="cmd-in">pip install --user matplotlib</span>
+<span class="cmd-in">pip install --user Image</span>
+<span class="cmd-in">pip install --user mechanicalsoup</pre>
+<h2><code>bash</code>のアップグレード</h2>
+<pre><span class="cmd-in">curl http://ftp.gnu.org/gnu/bash/bash-5.0-alpha.tar.gz -o bash-5.0-alpha.tar.gz</span>
+<span class="cmd-in">tar xvf bash-5.0-alpha.tar.gz</span>
+<span class="cmd-in">cd bash-5.0-alpha/</span>
+<span class="cmd-in">./configure --prefix=$HOME --build=x86_64-redhat-linux</span>
+<span class="cmd-in">make &amp;&amp; make install</span>
+<span class="cmd-in">cp doc/bash.1 ~/usr/share/man/man1/</pre>
+<h2>GCCのアップグレード</h2>
+<pre><span class="cmd-in">curl http://ftp.tsukuba.wide.ad.jp/software/gcc/releases/gcc-8.2.0/gcc-8.2.0.tar.xz -o gcc-8.2.0.tar.xz</span>
+<span class="cmd-in">tar xvf gcc-8.2.0.tar.xz</span>
+<span class="cmd-in">cd gcc-8.2.0/</span>
+<span class="cmd-in">./contrib/download_prerequisites</span>
+<span class="cmd-in">./configure --prefix=$HOME --build=x86_64-redhat-linux --program-suffix=-8.2 --disable-multilib --enable-languages=c,c++ C{,XX}FLAGS=-O3</span>
+<span class="cmd-in">make -j4 BOOT_CFLAGS=&#x27;-march=native -O3&#x27;</span>
+<span class="cmd-in">make install</pre>
+<p><code>-fsanitize=undefined</code>つきでコンパイルしたファイルを正しく実行するためには<code>libubsan.so</code>が必要．
+また，システムにあるライブラリが古くて以下のようなエラーが出ることがある．
+</p>
+<pre><span class="cmd-in">./a.out</span>
+<span class="cmd-out"><span>./a.out: /lib64/libstdc++.so.6: version `CXXABI_1.3.9&#x27; not found (required by ./a.out)</span></span></pre><p>これらを回避するために，<code>$HOME/lib64/</code>を<code>LD_LIBRARY_PATH</code>に追加するとよい．
+</p>
+
+<p>また，一般にパスを追加する際に以下のようにするのは危険に思われる．
+</p>
+<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># PATH=/new/path/to/dir:$PATH  # bad?</div></pre>
+<p><code>$PATH</code>が空のときにカレントディレクトリが含まれてしまうためである（ヒント：<code>::</code>または先頭・末尾の<code>:</code>によって表される空ディレクトリ名は<code>.</code>を意味する）．
+<code>$PATH</code>が空でないときのみ<code>:</code>に展開する記法を用いて以下のようにしたい．
+</p>
+<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0">PATH=/new/path/to/dir${PATH:+:}$PATH</div></pre>
+<p>また，<code>&quot;...&quot;</code>で囲まないことについては，空白除去が行われない感じなので問題ない気がする．
+</p>
+
+<h2>その他有用なものたちのインストール</h2>
+<pre><span class="cmd-in">sudo yum install php</span>
+<span class="cmd-in">sudo yum install mawk</span>
+<span class="cmd-in">sudo yum install ruby ruby-devel</span>
+<span class="cmd-in">sudo yum install xsel</pre><p><span class="tex">L<sup>a</sup>T<sub>e</sub>X</span>も早いうちに入れよう．
+</p>
+
+<h2><span class="tex">L<sup>a</sup>T<sub>e</sub>X</span>のインストール</h2>
+<p><span class="tex">T<sub>e</sub>X</span> Liveを使う．
+</p>
+<pre><span class="cmd-in">sudo yum install perl-Digest-MD5</span>
+<span class="cmd-in">sudo ./install-tl</pre>
+<h1>発展的な環境構築</h1>
+<p>趣味の領域に含まれると思われるもの．
+</p>
+
+<h2><code>bashrc</code>の編集</h2>
+<p>最初の状態では以下の内容しかなく，そっけなさすぎる（インストールの手順にもよるとは思うが）．
+</p>
+<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+# Uncomment the following line if you don&#x27;t like systemctl&#x27;s auto-paging feature:
+# export SYSTEMD_PAGER=
+
+# User specific aliases and functions</div></pre>
+
+<h3>エイリアス</h3>
+<p>ファイルの移動時に上書き確認をするのは基本中の基本．
+</p>
+<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0">alias rm=&#x27;rm -iv&#x27; cp=&#x27;cp -iv&#x27; mv=&#x27;mv -iv&#x27;</div></pre>
+
+<h3>シェルオプション</h3>
+<p>リダイレクトの上書きを防ぐのも基本．
+</p>
+<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Shell options
+set -o noclobber       # same as `set -C&#x27;
+shopt -s histverify autocd</div></pre>
+<p><code>noclobber</code>によって<code>&gt;</code>による上書きを防ぐことができる．強制的に上書きしたいときは<code>&gt;|</code>を使う．
+<code>histverify</code>は履歴展開が起こったときコマンドが即座に実行されないようにする．
+<code>autocd</code>はコマンドとして見つからなかった文字列を<code>cd</code>への引数と解釈させる．<code>~</code>や<code>..</code>などのみでディレクトリを移動できるようになるが，暴発には注意．
+</p>
+
+<h3>ページャのオプション</h3>
+<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Pager configurations
+export LESS=Fr</div></pre>
+<ul>
+  <li><code>less -F</code>：一画面で収まるならそのまま表示</li>
+  <li><code>less -r</code>：エスケープシーケンスを解釈</li>
+</ul>
+<h3>補完の設定</h3>
+<p><code>Tab</code>などによる補完の設定．
+</p>
+
+<p>何かしらの原因で，空行で補完を試みると<code>bash: words: bad array subscript</code>のようなエラーが起きることがある．
+空行での補完を無効化すると抑止できるので，それをする．
+</p>
+
+<p>また，バックアップファイルなどが補完されると厄介なので，<code>FIGNORE</code>によってそれを防ぐ．
+</p>
+
+<pre># Completion configurations
+completion_loader () { return 124; }
+complete -EF completion_loader +o {bashdefault,deafult}
+export FIGNORE=.o:~:#${FIGNORE:+:}$FIGINORE</pre>
+<h3>キーバインドの補助設定</h3>
+<p><code>C-s</code>などが期待通りに動作するようにする．
+</p>
+<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Key bindings
+stty rprnt undef stop undef werase undef kill undef</div></pre>
+<p>デフォルトに戻す場合は以下の通り．
+</p>
+<pre><span class="cmd-in">stty rprnt \^r stop \^s werase \^w kill \^u</pre><p>履歴展開が有効な場合に<code>^</code>が暴発しないように注意．
+また，個別に以下のようにしてもよい．
+</p>
+<pre><span class="cmd-in">stty rprnt \^r</span>
+<span class="cmd-in">stty stop \^s</span>
+<span class="cmd-in">stty werase \^w</span>
+<span class="cmd-in">stty kill \^u</pre>
+<h3><code>inputrc</code>の編集</h3>
+<pre class="sourcecode" filename="~/.inputrc"><div style="margin:1.2em 0 0 0"># emacs-like key bindings
+&quot;\C-u&quot;: universal-argument
+&quot;\ew&quot;: copy-region-as-kill
+&quot;\C-w&quot;: kill-region
+&quot;\e\C-w&quot;: kill-whole-line
+
+# variables
+set enable-bracketed-paste On
+set mark-symlinked-directories On</div></pre>
+<p><code>enable-bracketed-paste</code>が有効のとき，改行文字が<code>accept-line</code>として暴発するのを防ぐ（タブ文字の<code>complete</code>なども同様）．
+<code>mark-symlinked-directories</code>が有効のとき，ディレクトリを指すリンクがTab補完されたときに<code>/</code>が付加される．
+</p>
+
+<h2>エディタの初期化ファイル</h2>
+<h3><code>init.el</code>の編集</h3>
+
+<p>emacsの初期化ファイル．
+</p>
+<pre class="sourcecode" filename="~/.emacs.d/init.el"><div style="margin:1.2em 0 0 0">;; テーマの設定
+(load-theme &#x27;tango-dark t)
+
+;; 行数を表示
+(global-linum-mode t)
+(setq linum-format &quot;%4d &quot;)
+
+;; タブ文字を展開する
+(setq-default indent-tabs-mode nil)
+
+;; 括弧の対応付けを表示
+(show-paren-mode t)
+
+;; モードラインの整形
+(setq
+ mode-line-position
+ &#x27;(&quot;%p &quot;
+   (line-number-mode &quot; L%l&quot;)
+   (column-number-mode
+    (column-number-indicator-zero-based &quot; c%c&quot; &quot; C%C&quot;)))
+ column-number-mode t
+ column-number-indicator-zero-based nil)
+
+;; その他モジュールの読み込み
+(add-to-list &#x27;load-path &quot;~/.emacs.d/elisp&quot;)
+(require &#x27;markdown)</div></pre>
+
+<h3><code>vimrc</code>の編集</h3>
+<pre class="sourcecode" filename="~/.vimrc"><div style="margin:1.2em 0 0 0">&quot; 色の設定
+:colorscheme koehler
+:syntax on
+
+&quot; ステータスバーの設定
+:set showcmd
+:set ruler
+
+&quot; ショートカット
+:nnoremap ZX &lt;Esc&gt;:w&lt;CR&gt;&lt;C-z&gt;
+
+&quot; バックスペースの挙動
+:set backspace=eol,start,indent</div></pre>
+
+<p><code>vimrc</code>が長い方がえらいと思っている人たちは正気ですか？
+</p>
+
+<h2><code>gitconfig</code>の編集</h2>
+<p>パラメータなどについては以下を参照．
+</p>
+<pre><span class="cmd-in">git help config</pre><p><code>color.diff</code>の項目を見るとよい．数値を指定したときに<code>&lt;Esc&gt;38;5;##m</code>の形式になってくれるのはたまたまなのかも？
+</p>
+<pre class="sourcecode" filename="~/.gitconfig"><div style="margin:1.2em 0 0 0">[color.diff]
+        new = green bold
+        old = red bold
+        frag = 43 bold
+        commit = 106</div></pre>
+
+<h2>フォントの設定</h2>
+<p>MigMixはいいぞ．
+<code>/etc/fonts/conf.d/65-nonlatin.conf</code>を編集する．とりあえず一番上にしよう．
+</p>
+<pre><span class="cmd-in">diff -up ~/tmp/65-nonlatin.conf /etc/fonts/conf.d/65-nonlatin.conf</span>
+<span class="cmd-out"><span>--- /home/rsk0315/tmp/65-nonlatin.conf
+</span></span><span class="cmd-out"><span>+++ /etc/fonts/conf.d/65-nonlatin.conf
+</span></span><span class="cmd-out"><span>@@ -4,6 +4,7 @@
+</span></span><span class="cmd-out"><span>	&lt;alias&gt;
+</span></span><span class="cmd-out"><span>		&lt;family&gt;serif&lt;/family&gt;
+</span></span><span class="cmd-out"><span>		&lt;prefer&gt;
+</span></span><span class="cmd-out"><span>+			&lt;family&gt;MigMix 1M&lt;/family&gt;
+</span></span><span class="cmd-out"><span>			&lt;family&gt;Artsounk&lt;/family&gt; &lt;!-- armenian --&gt;
+</span></span><span class="cmd-out"><span>			&lt;family&gt;BPG UTF8 M&lt;/family&gt; &lt;!-- georgian --&gt;
+</span></span><span class="cmd-out"><span>			&lt;family&gt;Kinnari&lt;/family&gt; &lt;!-- thai --&gt;
+</span></span><span class="cmd-out"><span>@@ -69,6 +70,7 @@
+</span></span><span class="cmd-out"><span>	&lt;alias&gt;
+</span></span><span class="cmd-out"><span>		&lt;family&gt;sans-serif&lt;/family&gt;
+</span></span><span class="cmd-out"><span>		&lt;prefer&gt;
+</span></span><span class="cmd-out"><span>+			&lt;family&gt;MigMix 1M&lt;/family&gt;
+</span></span><span class="cmd-out"><span>			&lt;family&gt;Nachlieli&lt;/family&gt; &lt;!-- hebrew --&gt;
+</span></span><span class="cmd-out"><span>			&lt;family&gt;Lucida Sans Unicode&lt;/family&gt;
+</span></span><span class="cmd-out"><span>			&lt;family&gt;Yudit Unicode&lt;/family&gt;
+</span></span><span class="cmd-out"><span>@@ -144,6 +146,7 @@
+</span></span><span class="cmd-out"><span>	&lt;alias&gt;
+</span></span><span class="cmd-out"><span>		&lt;family&gt;monospace&lt;/family&gt;
+</span></span><span class="cmd-out"><span>		&lt;prefer&gt;
+</span></span><span class="cmd-out"><span>+			&lt;family&gt;MigMix 1M&lt;/family&gt;
+</span></span><span class="cmd-out"><span>			&lt;family&gt;Miriam Mono&lt;/family&gt; &lt;!-- hebrew --&gt;
+</span></span><span class="cmd-out"><span>			&lt;family&gt;VL Gothic&lt;/family&gt;
+</span></span><span class="cmd-out"><span>			&lt;family&gt;IPAMonaGothic&lt;/family&gt;</span></span></pre>
+<h1>便利コマンドの定義</h1>
+
+<h2>プロンプト文字列</h2>
+<p><code>\s-\v\$ </code>ではそっけないので変える．<code>~/.bashrc</code>に追記．
+</p>
+<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Prompt strings
+PS0=$&#x27;\x1b[0m&#x27;
+PS1=&quot;\n\$(. ~rsk0315/.bashrc.d/ps1.sh)&quot;
+PS1+=$&#x27;\n\[\x1b[0m\]\$ \[\x1b[1m\]&#x27;</div></pre>
+
+<p><code>ps1.sh</code>は以下の通りで，
+</p>
+<ul>
+  <li>カレントディレクトリ</li>
+  <li>シェルの階層</li>
+  <li>バージョン情報</li>
+</ul>
+<p>を表示する．
+</p>
+
+<pre class="sourcecode" filename="~/.bashrc.d/ps1.sh"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
+
+. ~rsk0315/.bashrc.d/color-seq.sh
+
+print_wd () {
+    wd=&quot;$(pwd)&quot;
+    if [[ &quot;$wd&quot; =~ ^&quot;$HOME&quot; ]]; then
+        wd=&quot;${wd/#$HOME/$&#x27;\176&#x27;}&quot;
+        [[ &quot;$wd&quot; == \~ ]] || wd+=/
+    elif [[ &quot;$wd&quot; == / ]]; then
+        wd=/
+    else
+        wd+=/
+    fi
+    echo -n &quot;$(color_seq 45 nr)$wd$(color_seq &#x27;&#x27; n)&quot;
+}
+
+print_wd
+echo : bash-&quot;$BASH_VERSION&quot; &quot;[$((SHLVL-1))]&quot;</div></pre>
+
+<p><code>color-seq.sh</code>は色のエスケープシーケンスを生成する（関数を定義する）スクリプト．
+別に関数にする必要はなくて，普通にスクリプトとして置いておいてもいい気がする．
+</p>
+
+<pre class="sourcecode" filename="~/.bashrc.d/color-seq.sh"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
+
+color_seq () {
+    color=&quot;$1&quot;
+    attr=&quot;$2&quot;
+
+    res=
+    [[ &quot;$attr&quot; =~ n ]] &amp;&amp; res+=$&#x27;\01&#x27;
+    res+=$&#x27;\x1b[&#x27;
+
+    if [[ -z &quot;$color&quot; ]]; then
+        res+=0
+        [[ &quot;$attr&quot; =~ b ]] &amp;&amp; res+=\;1
+        [[ &quot;$attr&quot; =~ r ]] &amp;&amp; res+=\;0
+        res+=m
+    else
+        [[ &quot;$attr&quot; =~ b ]] &amp;&amp; res+=1\;
+        [[ &quot;$attr&quot; =~ r ]] &amp;&amp; res+=0\;
+        res+=&quot;38;5;${color}m&quot;
+    fi
+    [[ &quot;$attr&quot; =~ n ]] &amp;&amp; res+=$&#x27;\02&#x27;
+    echo &quot;$res&quot;
+}</div></pre>
+
+<h2>終了ステータス</h2>
+<p><code>echo $?</code>を叩かないとわからないのは不便なので，勝手に出してくれるようにする．
+典型的な値についてはコメントつき．
+</p>
+
+<pre class="sourcecode" filename="~/.bashrc.d/exit-status.sh"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
+
+declare -a signals=(
+    [1]=&#x27;Program received signal SIGHUP, Hangup.&#x27;
+    [2]=&#x27;Program received signal SIGINT, Interrupt.&#x27;
+    [3]=&#x27;Program received signal SIGQUIT, Quit.&#x27;
+    [4]=&#x27;Program received signal SIGILL, Illegal instruction.&#x27;
+    [5]=&#x27;Program received signal SIGTRAP, Trace/breakpoint trap.&#x27;
+    [6]=&#x27;Program received signal SIGABRT, Aborted.&#x27;
+    [7]=&#x27;Program received signal SIGBUS, Bus error.&#x27;
+    [8]=&#x27;Program received signal SIGFPE, Arithmetic exception.&#x27;
+    [9]=&#x27;Program terminated with signal SIGKILL, Killed.&#x27;
+    [10]=&#x27;Program received signal SIGUSR1, User defined signal 1.&#x27;
+    [11]=&#x27;Program received signal SIGSEGV, Segmentation fault.&#x27;
+    [12]=&#x27;Program received signal SIGUSR2, User defined signal 2.&#x27;
+    [13]=&#x27;Program received signal SIGPIPE, Broken pipe.&#x27;
+    [14]=&#x27;Program terminated with signal SIGALRM, Alarm clock.&#x27;
+    [15]=&#x27;Program received signal SIGTERM, Terminated.&#x27;
+    [16]=&#x27;Program received signal ?, Unknown signal.&#x27;
+    [17]=&#x27;&#x27;
+    [18]=&#x27;Program received signal SIGCONT, Continued.&#x27;
+    [19]=&#x27;Program received signal SIGSTOP, Stopped (signal).&#x27;
+    [20]=&#x27;Program received signal SIGTSTP, Stopped (user).&#x27;
+    [21]=&#x27;Program received signal SIGTTIN, Stopped (tty input).&#x27;
+    [22]=&#x27;Program received signal SIGTTOU, Stopped (tty output).&#x27;
+    [23]=&#x27;&#x27;
+    [24]=&#x27;Program received signal SIGXCPU, CPU time limit exceeded.&#x27;
+    [25]=&#x27;Program received signal SIGXFSZ, File size limit exceeded.&#x27;
+    [26]=&#x27;Program terminated with signal SIGVTALRM, Virtual timer expired.&#x27;
+    [27]=&#x27;&#x27;
+    [28]=&#x27;&#x27;
+    [29]=&#x27;Program terminated with signal SIGIO, I/O possible.&#x27;
+    [30]=&#x27;Program received signal SIGPWR, Power fail/restart.&#x27;
+    [31]=&#x27;Program received signal SIGSYS, Bad system call.&#x27;
+    #[32]=&#x27;Program received signal SIG32, Real-time event 32.&#x27;
+)
+
+. ~rsk0315/.bashrc.d/color-seq.sh
+
+declare -gi status=0
+on_debug () {
+    status=$1
+    declare -gi executed+=1
+    if (( executed == 0 )); then
+        declare -gi failcount=0
+        return
+    fi
+
+    #if (( status != 0 )); then
+    #    declare -gi failcount+=1
+    #fi
+}
+
+on_err () {
+    declare -gi failcount+=1
+}
+
+on_prompt () {
+    declare -gi status=$1
+
+    if (( failcount &lt;= 0 )); then
+        if (( executed &gt; 1 )); then
+            echo -e &quot;$(color_seq 10 r)(*&#x27;-&#x27;)b &lt; All commands exited successfully$(color_seq &#x27;&#x27;)&quot; &gt;&amp;2
+        elif (( executed == 1 )); then
+            echo -e &quot;$(color_seq 10 r)(*&#x27;-&#x27;)b &lt; Exited successfully$(color_seq &#x27;&#x27;)&quot; &gt;&amp;2
+        fi
+    elif (( status == 0 )); then
+        if (( executed &gt; 1 )); then
+            echo -ne &quot;$(color_seq 10 r)(*&#x27;-&#x27;)b &lt; Last command exited successfully, &quot; &gt;&amp;2
+            echo -ne &quot;$(color_seq 9 r)but $failcount command&quot; &gt;&amp;2
+            if (( failcount &gt; 1 )); then echo -n s &gt;&amp;2; fi
+            echo -e &quot; failed$(color_seq &#x27;&#x27;)&quot; &gt;&amp;2
+        else
+            :;
+        fi
+    elif (( executed &gt; 0 )); then
+        echo -e &quot;$(color_seq 9 r)exited with code $status&quot; &gt;&amp;2
+
+        if (( status &lt; 128 )); then
+            case $status in
+                1)
+                    echo &quot;(*&#x27;~&#x27;)? &lt; Something went wrong?&quot; &gt;&amp;2;;
+                2)
+                    echo &quot;(*&#x27;~&#x27;)? &lt; Incorrect usage or some error occurred?&quot; &gt;&amp;2;;
+                127)
+                    echo &quot;(*&#x27;~&#x27;)? &lt; Command not found? Check \$PATH, \$PWD, permissions, and spelling&quot; &gt;&amp;2;;
+                *)
+                    echo &quot;(*&#x27;~&#x27;)...&quot; &gt;&amp;2;;
+            esac
+        elif (( ${#signals[status-128]} &gt; 0 )); then
+            echo &quot;(*&#x27;~&#x27;)/ &lt; ${signals[status-128]}&quot; &gt;&amp;2
+        else
+            echo &quot;(*&#x27;~&#x27;)...&quot; &gt;&amp;2
+        fi
+
+        echo -ne &quot;$(color_seq &#x27;&#x27;)&quot; &gt;&amp;2
+    fi
+
+    declare -gi failcount=-1
+    declare -gi executed=-1
+
+    declare -gi status=0
+}
+
+trap &#x27;on_debug &quot;$?&quot; &quot;$_&quot;&#x27; DEBUG
+trap &#x27;on_err &quot;$_&quot;&#x27; ERR
+PROMPT_COMMAND=&#x27;on_prompt &quot;$?&quot; &quot;$_&quot;&#x27;</div></pre>
+<p>バックグラウンドで実行したり<code>!</code>で論理反転したりするとこわれるけど仕方ない．
+</p>
+
+<p>以下を<code>~/.bashrc</code>に追記して反映させる．
+</p>
+<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Display previous exit status
+. ~rsk0315/.bashrc.d/exit-status.sh</div></pre>
+
+<h2>最新ファイルの出力</h2>
+<p><code>ls</code>を利用して最新のファイルを選ぶスクリプト．
+GNU拡張の<code>ls</code>は<code> </code>や<code>&#x27;</code>などをエスケープできるオプション<code>-Q</code>があって素敵なんだけど，それを復元するのが厄介なので諦める．そもそもそんなファイル名にする方がどうかしている．
+</p>
+
+<pre class="sourcecode" filename="~/bin/latest"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
+
+while getopts :p:s: foo; do
+    case $foo in
+        p ) perm=&quot;$OPTARG&quot;;;
+        s ) suffix=&quot;$OPTARG&quot;;;
+    esac
+done
+
+latest=$(ls -ltA | grep -E &quot;${suffix:+\\.(}$suffix${suffix:+)}\$&quot; \
+             | grep &quot;^-$perm&quot; | awk &#x27;$0=$9&#x27; | sed q)
+[[ -z &quot;$latest&quot; ]] &amp;&amp; exit 1
+echo $latest</div></pre>
+<p>パーミッションと拡張子を指定可能．見つからなければ<code>1</code>を返す．
+</p>
+
+<p>それを利用して最新のソースを<code>make</code>する．俗にいう<code>g</code>に対応するスクリプト．
+</p>
+<pre class="sourcecode" filename="~/bin/g"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
+
+CC=&quot;${CC:-gcc-8.2}&quot;
+CXX=&quot;${CXX:-g++-8.2}&quot;
+
+cflags=&quot;-Wall -O3 -fsanitize=undefined&quot;
+CFLAGS=&quot;$cflags $CFLAGS $@&quot;
+CXXFLAGS=&quot;$cflags $CXXFLAGS $@&quot;
+
+src=&quot;$(latest -s&#x27;c|cxx|cc|C|cpp&#x27;)&quot; \
+    || { echo no source files found. &gt;&amp;2; exit; }
+make CC=&quot;$CC&quot; CXX=&quot;$CXX&quot; CFLAGS=&quot;$CFLAGS&quot; CXXFLAGS=&quot;$CXXFLAGS&quot; &quot;${src%.*}&quot;</div></pre>
+
+<p>最新の実行ファイルを実行する．俗にいう<code>a</code>に対応するスクリプト．必ずしも<code>./a.out</code>とは限らないファイルを実行できる．
+</p>
+<pre class="sourcecode" filename="~/bin/a"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
+
+src=$(latest -p ..x) || { echo no executables found. &gt;&amp;2; exit; }
+set -x
+&quot;./$src&quot; &quot;$@&quot;</div></pre>
+      </main>
+    </div>
+  </body>
+</html>
