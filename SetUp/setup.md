@@ -275,8 +275,11 @@ emacsの初期化ファイル．
 (load-theme 'tango-dark t)
 
 ;; 行数を表示
-(global-linum-mode t)
-(setq linum-format "%4d ")
+;; (global-linum-mode t)
+;; (setq linum-format "%4d ")
+(if (version<= "26.0.50" emacs-version)
+    (global-display-line-numbers-mode)
+  (and (global-linum-mode t) (setq linum-format "%4d ")))
 
 ;; タブ文字を展開する
 (setq-default indent-tabs-mode nil)
@@ -287,10 +290,11 @@ emacsの初期化ファイル．
 ;; モードラインの整形
 (setq
  mode-line-position
- '("%p "
+ `((-3 "%p ")
    (line-number-mode " L%l")
    (column-number-mode
-    (column-number-indicator-zero-based " c%c" " C%C")))
+    (,(version< emacs-version "26") " c%c"
+     (column-number-indicator-zero-based " c%c" " C%C"))))
  column-number-mode t
  column-number-indicator-zero-based nil)
 
