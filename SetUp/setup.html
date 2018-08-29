@@ -128,20 +128,21 @@
 <span class="cmd-in">make -j4 BOOT_CFLAGS=&#x27;-march=native -O3&#x27;</span>
 <span class="cmd-in">make install</pre>
 <p><code>-fsanitize=undefined</code>つきでコンパイルしたファイルを正しく実行するためには<code>libubsan.so</code>が必要．
-また，システムにあるライブラリが古くて以下のようなエラーが出ることがある．
+</p>
+<pre><span class="cmd-in">./a.out</span>
+<span class="cmd-out"><span>./a.out: error while loading shared libraries: libubsan.so.1: cannot open shared object file: No such file or directory</span></span></pre><p>また，システムにあるライブラリが古くて以下のようなエラーが出ることがある．
 </p>
 <pre><span class="cmd-in">./a.out</span>
 <span class="cmd-out"><span>./a.out: /lib64/libstdc++.so.6: version `CXXABI_1.3.9&#x27; not found (required by ./a.out)</span></span></pre><p>これらを回避するために，<code>$HOME/lib64/</code>を<code>LD_LIBRARY_PATH</code>に追加するとよい．
 </p>
+<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0">LD_LIBRARY_PATH=$HOME/lib64/${LD_LIBRARY_PATH:+:}$LD_LIBRARY_PATH</div></pre>
 
 <p>また，一般にパスを追加する際に以下のようにするのは危険に思われる．
 </p>
-<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># PATH=/new/path/to/dir:$PATH  # bad?</div></pre>
-<p><code>$PATH</code>が空のときにカレントディレクトリが含まれてしまうためである（ヒント：<code>::</code>または先頭・末尾の<code>:</code>によって表される空ディレクトリ名は<code>.</code>を意味する）．
+<pre># PATH=/new/path/to/dir:$PATH  # bad?</pre><p><code>$PATH</code>が空のときにカレントディレクトリが含まれてしまうためである（ヒント：<code>::</code>または先頭・末尾の<code>:</code>によって表される空ディレクトリ名は<code>.</code>を意味する）．
 <code>$PATH</code>が空でないときのみ<code>:</code>に展開する記法を用いて以下のようにしたい．
 </p>
-<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0">PATH=/new/path/to/dir${PATH:+:}$PATH</div></pre>
-<p>また，<code>&quot;...&quot;</code>で囲まないことについては，空白除去が行われない感じなので問題ない気がする．
+<pre># PATH=/new/path/to/dir${PATH:+:}$PATH</pre><p>また，<code>&quot;...&quot;</code>で囲まないことについては，空白除去が行われない感じなので問題ない気がする<span class="glyphicon glyphicon-question-sign" aria-hidden="true" data-html="true" data-toggle="tooltip" title="" data-original-title="嘘かもしれないので注意．"></span>．
 </p>
 
 <h2>その他有用なものたちのインストール</h2>

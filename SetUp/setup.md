@@ -120,23 +120,31 @@ $ make install
 #_
 
 `-fsanitize=undefined`つきでコンパイルしたファイルを正しく実行するためには`libubsan.so`が必要．
+#_
+$ ./a.out
+- ./a.out: error while loading shared libraries: libubsan.so.1: cannot open shared object file: No such file or directory
+#_
 また，システムにあるライブラリが古くて以下のようなエラーが出ることがある．
 #_
 $ ./a.out
 - ./a.out: /lib64/libstdc++.so.6: version `CXXABI_1.3.9' not found (required by ./a.out)
 #_
 これらを回避するために，`$HOME/lib64/`を`LD_LIBRARY_PATH`に追加するとよい．
+#`[~/.bashrc]
+LD_LIBRARY_PATH=$HOME/lib64/${LD_LIBRARY_PATH:+:}$LD_LIBRARY_PATH
+#`
 
 また，一般にパスを追加する際に以下のようにするのは危険に思われる．
-#`[~/.bashrc]
+#`
 # PATH=/new/path/to/dir:$PATH  # bad?
 #`
 `$PATH`が空のときにカレントディレクトリが含まれてしまうためである（ヒント：`::`または先頭・末尾の`:`によって表される空ディレクトリ名は`.`を意味する）．
 `$PATH`が空でないときのみ`:`に展開する記法を用いて以下のようにしたい．
-#`[~/.bashrc]
-PATH=/new/path/to/dir${PATH:+:}$PATH
 #`
-また，`"..."`で囲まないことについては，空白除去が行われない感じなので問題ない気がする．
+# PATH=/new/path/to/dir${PATH:+:}$PATH
+#`
+また，`"..."`で囲まないことについては，空白除去が行われない感じなので問題ない気がする[^assign-split]．
+#[^assign-split]: 嘘かもしれないので注意．
 
 ## その他有用なものたちのインストール
 #_
