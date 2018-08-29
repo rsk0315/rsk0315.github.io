@@ -188,10 +188,13 @@ shopt -s histverify autocd
 ### ページャのオプション
 #`[~/.bashrc]
 # Pager configurations
-export LESS=Fr
+export LESS=FR
 #`
 - `less -F`：一画面で収まるならそのまま表示
 - `less -r`：エスケープシーケンスを解釈
+  - これは表示が乱れることがある？ のでやめた
+  - `man`にもその旨が書いてあった
+- `less -R`：`ESC [ ... m`のシーケンスのみを解釈
 
 ### 補完の設定
 `Tab`などによる補完の設定．

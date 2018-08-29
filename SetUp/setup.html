@@ -186,10 +186,15 @@ shopt -s histverify autocd</div></pre>
 
 <h3>ページャのオプション</h3>
 <pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Pager configurations
-export LESS=Fr</div></pre>
+export LESS=FR</div></pre>
 <ul>
   <li><code>less -F</code>：一画面で収まるならそのまま表示</li>
   <li><code>less -r</code>：エスケープシーケンスを解釈</li>
+  <ul>
+    <li>これは表示が乱れることがある？ のでやめた</li>
+    <li><code>man</code>にもその旨が書いてあった</li>
+  </ul>
+  <li><code>less -R</code>：<code>ESC [ ... m</code>のシーケンスのみを解釈</li>
 </ul>
 <h3>補完の設定</h3>
 <p><code>Tab</code>などによる補完の設定．
