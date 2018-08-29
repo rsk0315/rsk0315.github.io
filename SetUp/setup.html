@@ -579,7 +579,7 @@ echo $latest</div></pre>
     <li>ゴミ文字<code>X</code>をつけて読み手側で処理する？ そんなの狂っている</li>
   </ul>
 </ul>
-<p>以下では，次のような方法でunescapeしている．
+<p>次のような方法でunescapeしようとした．
 </p>
 <ol>
   <li>ファイル名の先頭の<code>&quot;</code>と末尾の<code>&quot;</code>を取り除く</li>
@@ -595,23 +595,6 @@ echo $latest</div></pre>
     <li>シェルインジェクションに対して弱いとこわれる</li>
   </ul>
 </ol>
-<pre class="sourcecode" filename="~/bin/latest-Q"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
-
-while getopts :p:s: foo; do
-    case $foo in
-        p ) perm=&quot;$OPTARG&quot;;;
-        s ) suffix=&quot;$OPTARG&quot;;;
-    esac
-done
-
-latest=$(ls -ltAQ | grep -E &quot;${suffix:+\\.(}$suffix${suffix:+)}\$&quot; \
-             | grep &quot;^[-l]$perm&quot; \
-             | sed -E &#x27;s/[^&quot;]*&quot;((\\.|[^\\&quot;])*)&quot;.*/\1/; q&#x27; \
-             | sed &quot;s/&#x27;/&#x27;\\\\&#x27;$&#x27;/g; s/\$/&#x27;/; s/^/echo \$&#x27;/; e&quot;)
-
-[[ -z &quot;$latest&quot; ]] &amp;&amp; [[ ! -f &quot;$latest&quot; ]] &amp;&amp; exit 1
-echo &quot;$latest&quot;</div></pre>
-
 <p><code>printf</code>を使うと<code>%</code>でこわれると思っていたが，こわれていたのは私の頭だった．
 </p>
 <pre class="sourcecode" filename="~/bin/latest-Q"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
@@ -623,12 +606,13 @@ while getopts :p:s: foo; do
     esac
 done
 
-latest=$(ls -ltAQ | grep -E &quot;${suffix:+\\.(}$suffix${suffix:+)}\$&quot; \
+latest=$(ls -ltAQ | grep -E &quot;${suffix:+\\.(}$suffix${suffix:+)}\&quot;&quot; \
              | grep &quot;^[-l]$perm&quot; | sed s/%/%%/g \
              | sed -E &#x27;s/[^&quot;]*&quot;((\\.|[^\\&quot;])*)&quot;.*/\1/; q&#x27;)
-latest=$(printf &quot;$latest&quot;)
+latest=$(printf &quot;$latest-&quot;)
+latest=&quot;${latest%-}&quot;
 
-[[ -n &quot;$latest&quot; ]] &amp;&amp; [[ -f &quot;$latest&quot; ]] &amp;&amp; echo &quot;$latest&quot;</div></pre>
+[[ -f &quot;$latest&quot; ]] &amp;&amp; echo &quot;$latest&quot;</div></pre>
 <p>シェルインジェクションの心配はなさそう．
 念のため，生成されたファイル名が存在するかのチェックをかませる．
 </p>
@@ -654,12 +638,27 @@ make CC=&quot;$CC&quot; CXX=&quot;$CXX&quot; CFLAGS=&quot;$CFLAGS&quot; CXXFLAGS
 <code>set -k</code>をしていると位置に関係なく環境変数をいじれるらしい．
 </p>
 
+<p><code>g</code>の場合は末尾の文字が<code>\n</code>でないことがわかっているので，<code>latest</code>の部分を<code>latest-Q</code>に変えるか<code>latest</code>自体を差し替えれば堅牢なバージョンになる．
+</p>
+
 <h3>最新の実行ファイルの実行</h3>
 <p>最新の実行ファイルを実行する．俗にいう<code>a</code>に対応するスクリプト．必ずしも<code>./a.out</code>とは限らないファイルを実行できる．
 </p>
 <pre class="sourcecode" filename="~/bin/a"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
 
 src=$(latest -p ..x) || { echo no executables found. &gt;&amp;2; exit; }
+set -x
+&quot;./$src&quot; &quot;$@&quot;</div></pre>
+
+<p><code>a</code>の場合は末尾文字が<code>\n</code>になりうる（ここおふざけポイント）ので，工夫が必要．
+<code>$(...)</code>ではtrailing newlinesが除去されるので，<code>latest-Q</code>が成功した場合は<code>-\n</code>を追加する．（実質的には<code>\n-</code>が追加される．わかる？）
+</p>
+<pre class="sourcecode" filename="~/bin/aa"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
+
+src=$(latest-Q -p ..x &amp;&amp; echo -) \
+    || { echo no executables found. &gt;&amp;2; exit; }
+src=&quot;${src::-2}&quot;
+[[ -f &quot;$src&quot; ]] || exit
 set -x
 &quot;./$src&quot; &quot;$@&quot;</div></pre>
       </main>

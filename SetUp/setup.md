@@ -597,32 +597,13 @@ echo $latest
   - これどうにもならなくないか
   - ゴミ文字`X`をつけて読み手側で処理する？ そんなの狂っている
 
-以下では，次のような方法でunescapeしている．
+次のような方法でunescapeしようとした．
 1. ファイル名の先頭の`"`と末尾の`"`を取り除く
   - このとき，symlinkがあると`"..." -> "..."`のような形式になることに注意
 2. `'`を`'\'$'`に置き換える
   - `'`を`'\''`にするやつ + `$'...'`
 3. 末尾に`'`を，先頭に`$'`を付加したものを`echo`する
   - シェルインジェクションに対して弱いとこわれる
-
-#`[~/bin/latest-Q]
-# -*- mode: sh; sh-shell: bash -*-
-
-while getopts :p:s: foo; do
-    case $foo in
-        p ) perm="$OPTARG";;
-        s ) suffix="$OPTARG";;
-    esac
-done
-
-latest=$(ls -ltAQ | grep -E "${suffix:+\\.(}$suffix${suffix:+)}\$" \
-             | grep "^[-l]$perm" \
-             | sed -E 's/[^"]*"((\\.|[^\\"])*)".*/\1/; q' \
-             | sed "s/'/'\\\\'$'/g; s/\$/'/; s/^/echo \$'/; e")
-
-[[ -z "$latest" ]] && [[ ! -f "$latest" ]] && exit 1
-echo "$latest"
-#`
 
 `printf`を使うと`%`でこわれると思っていたが，こわれていたのは私の頭だった．
 #`[~/bin/latest-Q]
@@ -635,12 +616,13 @@ while getopts :p:s: foo; do
     esac
 done
 
-latest=$(ls -ltAQ | grep -E "${suffix:+\\.(}$suffix${suffix:+)}\$" \
+latest=$(ls -ltAQ | grep -E "${suffix:+\\.(}$suffix${suffix:+)}\"" \
              | grep "^[-l]$perm" | sed s/%/%%/g \
              | sed -E 's/[^"]*"((\\.|[^\\"])*)".*/\1/; q')
-latest=$(printf "$latest")
+latest=$(printf "$latest-")
+latest="${latest%-}"
 
-[[ -n "$latest" ]] && [[ -f "$latest" ]] && echo "$latest"
+[[ -f "$latest" ]] && echo "$latest"
 #`
 シェルインジェクションの心配はなさそう．
 念のため，生成されたファイル名が存在するかのチェックをかませる．
@@ -666,12 +648,27 @@ make CC="$CC" CXX="$CXX" CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" "${src%.*}"
 コンパイラを変えるときも`g CC=gcc`とできたら自然な気がするけど，仕方なく`CC=gcc g`とする．いや，ある種こちらの方が自然なのかも？
 `set -k`をしていると位置に関係なく環境変数をいじれるらしい．
 
+`g`の場合は末尾の文字が`\n`でないことがわかっているので，`latest`の部分を`latest-Q`に変えるか`latest`自体を差し替えれば堅牢なバージョンになる．
+
 ### 最新の実行ファイルの実行
 最新の実行ファイルを実行する．俗にいう`a`に対応するスクリプト．必ずしも`./a.out`とは限らないファイルを実行できる．
 #`[~/bin/a]
 # -*- mode: sh; sh-shell: bash -*-
 
 src=$(latest -p ..x) || { echo no executables found. >&2; exit; }
+set -x
+"./$src" "$@"
+#`
+
+`a`の場合は末尾文字が`\n`になりうる（ここおふざけポイント）ので，工夫が必要．
+`$(...)`ではtrailing newlinesが除去されるので，`latest-Q`が成功した場合は`-\n`を追加する．（実質的には`\n-`が追加される．わかる？）
+#`[~/bin/aa]
+# -*- mode: sh; sh-shell: bash -*-
+
+src=$(latest-Q -p ..x && echo -) \
+    || { echo no executables found. >&2; exit; }
+src="${src::-2}"
+[[ -f "$src" ]] || exit
 set -x
 "./$src" "$@"
 #`
