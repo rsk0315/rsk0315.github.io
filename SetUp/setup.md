@@ -232,6 +232,13 @@ HISTCONTROL=ignoredups:erasedups
 
 個人的に`g`→`a`→`fg`の流れを無限に繰り返しがちなので，それで履歴が圧迫されるのは避けたい．
 
+### その他環境変数の設定
+#`[~/.bashrc]
+# Editor configurations
+export EDITOR=vim
+export EDITOR=emacs  # ... or whatever you like
+#`
+
 ### キーバインドの補助設定
 `C-s`などが期待通りに動作するようにする．
 #`[~/.bashrc]
@@ -321,7 +328,7 @@ emacsの初期化ファイル．
 #`
 
 `vimrc`が長い方がえらいと思っている人たちは正気ですか？
-  
+
 ## `gitconfig`の編集
 パラメータなどについては以下を参照．
 #_
