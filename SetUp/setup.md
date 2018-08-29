@@ -220,7 +220,7 @@ export LESS=FR
 #`[~/.bashrc]
 # Completion configurations
 completion_loader () { return 124; }
-complete -EF completion_loader +o {bashdefault,deafult}
+complete -EFcompletion_loader +o{bashdefault,default}
 export FIGNORE=.o:\~:#${FIGNORE:+:}$FIGINORE
 #`
 
