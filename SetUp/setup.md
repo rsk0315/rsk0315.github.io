@@ -273,6 +273,12 @@ set mark-symlinked-directories On
 `enable-bracketed-paste`が有効のとき，改行文字が`accept-line`として暴発するのを防ぐ（タブ文字の`complete`なども同様）．
 `mark-symlinked-directories`が有効のとき，ディレクトリを指すリンクがTab補完されたときに`/`が付加される．
 
+#`[~/.inputrc]
+"\e%": "\C-a#\C-j%\C-j"
+#`
+`M-%`によって，現在の行を残しつつプロセスを再開（`%`）する．
+`M-C-z`で`C-z`の逆をできたらよかったのだけど，`C-z`でsuspendするのを無効化しないと`"\e\C-z"`に書き込めないようなので断念．
+
 ## エディタの初期化ファイル
 ### `init.el`の編集
 

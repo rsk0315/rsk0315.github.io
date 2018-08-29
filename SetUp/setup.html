@@ -260,6 +260,11 @@ set mark-symlinked-directories On</div></pre>
 <code>mark-symlinked-directories</code>が有効のとき，ディレクトリを指すリンクがTab補完されたときに<code>/</code>が付加される．
 </p>
 
+<pre class="sourcecode" filename="~/.inputrc"><div style="margin:1.2em 0 0 0">&quot;\e%&quot;: &quot;\C-a#\C-j%\C-j&quot;</div></pre>
+<p><code>M-%</code>によって，現在の行を残しつつプロセスを再開（<code>%</code>）する．
+<code>M-C-z</code>で<code>C-z</code>の逆をできたらよかったのだけど，<code>C-z</code>でsuspendするのを無効化しないと<code>&quot;\e\C-z&quot;</code>に書き込めないようなので断念．
+</p>
+
 <h2>エディタの初期化ファイル</h2>
 <h3><code>init.el</code>の編集</h3>
 
