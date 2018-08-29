@@ -221,7 +221,7 @@ export LESS=FR
 # Completion configurations
 completion_loader () { return 124; }
 complete -EF completion_loader +o {bashdefault,deafult}
-export FIGNORE=.o:~:#${FIGNORE:+:}$FIGINORE
+export FIGNORE=.o:\~:#${FIGNORE:+:}$FIGINORE
 #`
 
 ### 履歴関連
@@ -230,7 +230,7 @@ export FIGNORE=.o:~:#${FIGNORE:+:}$FIGINORE
 HISTCONTROL=ignoredups:erasedups
 #`
 
-個人的に`g`→`a`→`fg`の流れを無限に繰り返しがちなので，それで履歴が圧迫されるのは避けたい．
+個人的に`g`→`a`→`%`の流れを無限に繰り返しがちなので，それで履歴が圧迫されるのは避けたい．
 
 ### その他環境変数の設定
 #`[~/.bashrc]

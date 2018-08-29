@@ -218,13 +218,13 @@ export LESS=FR</div></pre>
 <pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Completion configurations
 completion_loader () { return 124; }
 complete -EF completion_loader +o {bashdefault,deafult}
-export FIGNORE=.o:~:#${FIGNORE:+:}$FIGINORE</div></pre>
+export FIGNORE=.o:\~:#${FIGNORE:+:}$FIGINORE</div></pre>
 
 <h3>履歴関連</h3>
 <pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># History configurations
 HISTCONTROL=ignoredups:erasedups</div></pre>
 
-<p>個人的に<code>g</code>→<code>a</code>→<code>fg</code>の流れを無限に繰り返しがちなので，それで履歴が圧迫されるのは避けたい．
+<p>個人的に<code>g</code>→<code>a</code>→<code>%</code>の流れを無限に繰り返しがちなので，それで履歴が圧迫されるのは避けたい．
 </p>
 
 <h3>その他環境変数の設定</h3>
