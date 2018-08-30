@@ -228,7 +228,7 @@ int main() {
   scanf(&quot;%d&quot;, &amp;x);
   if (x &lt; 0 &amp;&amp; -x &lt; 0) printf(&quot;-2147483648\n&quot;);
 }</div></pre>
-<pre><span class="cmd-in">g++ sample.cpp</span>
+<pre><span class="cmd-in">g++ -O3 sample.cpp</span>
 <span class="cmd-in">./a.out &lt;&lt;&lt; -2147483648  # no output</pre><p>今は <code>int</code> は 32-bit で負数は 2 の補数で表現する処理系を仮定します．
 </p>
 
@@ -242,6 +242,36 @@ int main() {
 実際は，<strong>符号つき</strong>整数型がオーバーフローしたときの動作は未定義となっています（[expr.pre]）．
 そのため，今回はそうなる状況は無視されて何も出力せずに終了するコードが生成されました（<code>x</code> が他のどの値でも <code>x &lt; 0 &amp;&amp; -x &lt; 0</code> は <code>true</code> になりえないことに注意）．
 </p>
+
+<p><code>-S</code> で生成されるアセンブラのコードを見てもそうなっていることが確認できます．
+</p>
+<pre><span class="cmd-in">g++ -S -O3 sample.cpp</pre><pre class="sourcecode" filename="sample.s"><div style="margin:1.2em 0 0 0">	.file	&quot;sample.cpp&quot;
+	.text
+	.section	.rodata.str1.1,&quot;aMS&quot;,@progbits,1
+.LC0:
+	.string	&quot;%d&quot;
+	.section	.text.startup,&quot;ax&quot;,@progbits
+	.p2align 4,,15
+	.globl	main
+	.type	main, @function
+main:
+.LFB12:
+	.cfi_startproc
+	subq	$24, %rsp
+	.cfi_def_cfa_offset 32
+	movl	$.LC0, %edi
+	xorl	%eax, %eax
+	leaq	12(%rsp), %rsi
+	call	scanf
+	xorl	%eax, %eax
+	addq	$24, %rsp
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE12:
+	.size	main, .-main
+	.ident	&quot;GCC: (GNU) 8.2.0&quot;
+	.section	.note.GNU-stack,&quot;&quot;,@progbits</div></pre>
 
 <p>なお， $n$ ビットの<strong>符号なし</strong>整数型は  $2^n$  を法とした演算を行うため，実質的にオーバーフローしない（その型で表せる範囲を超えた値にならない）とされています（[basic.fundamental]）．
 </p>

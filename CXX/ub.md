@@ -182,7 +182,7 @@ int main() {
 }
 #`
 #_
-$ g++ sample.cpp
+$ g++ -O3 sample.cpp
 $ ./a.out <<< -2147483648  # no output
 #_
 今は `int` は 32-bit で負数は 2 の補数で表現する処理系を仮定します．
@@ -194,6 +194,40 @@ $ ./a.out <<< -2147483648  # no output
 そのため，上の状況では `x < 0` も `-x < 0` も `true` となるように思われますね．
 実際は，*符号つき*整数型がオーバーフローしたときの動作は未定義となっています（[expr.pre]）．
 そのため，今回はそうなる状況は無視されて何も出力せずに終了するコードが生成されました（`x` が他のどの値でも `x < 0 && -x < 0` は `true` になりえないことに注意）．
+
+`-S` で生成されるアセンブラのコードを見てもそうなっていることが確認できます．
+#_
+$ g++ -S -O3 sample.cpp
+#_
+#`[sample.s]
+	.file	"sample.cpp"
+	.text
+	.section	.rodata.str1.1,"aMS",@progbits,1
+.LC0:
+	.string	"%d"
+	.section	.text.startup,"ax",@progbits
+	.p2align 4,,15
+	.globl	main
+	.type	main, @function
+main:
+.LFB12:
+	.cfi_startproc
+	subq	$24, %rsp
+	.cfi_def_cfa_offset 32
+	movl	$.LC0, %edi
+	xorl	%eax, %eax
+	leaq	12(%rsp), %rsi
+	call	scanf
+	xorl	%eax, %eax
+	addq	$24, %rsp
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE12:
+	.size	main, .-main
+	.ident	"GCC: (GNU) 8.2.0"
+	.section	.note.GNU-stack,"",@progbits
+#`
 
 なお，$n$ビットの*符号なし*整数型は $2^n$ を法とした演算を行うため，実質的にオーバーフローしない（その型で表せる範囲を超えた値にならない）とされています（[basic.fundamental]）．
 
