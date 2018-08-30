@@ -139,10 +139,12 @@
 
 <p>また，一般にパスを追加する際に以下のようにするのは危険に思われる．
 </p>
-<pre># PATH=/new/path/to/dir:$PATH  # bad?</pre><p><code>$PATH</code>が空のときにカレントディレクトリが含まれてしまうためである（ヒント：<code>::</code>または先頭・末尾の<code>:</code>によって表される空ディレクトリ名は<code>.</code>を意味する）．
+<pre># PATH=/new/path/to/dir:$PATH  # bad?</pre>
+<p><code>$PATH</code>が空のときにカレントディレクトリが含まれてしまうためである（ヒント：<code>::</code>または先頭・末尾の<code>:</code>によって表される空ディレクトリ名は<code>.</code>を意味する）．
 <code>$PATH</code>が空でないときのみ<code>:</code>に展開する記法を用いて以下のようにしたい．
 </p>
-<pre># PATH=/new/path/to/dir${PATH:+:}$PATH</pre><p>また，<code>&quot;...&quot;</code>で囲まないことについては，空白除去が行われない感じなので問題ない気がする<span class="glyphicon glyphicon-question-sign" aria-hidden="true" data-html="true" data-toggle="tooltip" title="" data-original-title="嘘かもしれないので注意．"></span>．
+<pre># PATH=/new/path/to/dir${PATH:+:}$PATH</pre>
+<p>また，<code>&quot;...&quot;</code>で囲まないことについては，空白除去が行われない感じなので問題ない気がする<span class="glyphicon glyphicon-question-sign" aria-hidden="true" data-html="true" data-toggle="tooltip" title="" data-original-title="嘘かもしれないので注意．"></span>．
 </p>
 
 <h2>その他有用なものたちのインストール</h2>
