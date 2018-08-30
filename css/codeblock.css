@@ -36,7 +36,3 @@
 .space:before {
     content: ' ';
 }
-
-pre {
-    overflow-x: auto;
-}
