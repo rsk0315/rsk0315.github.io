@@ -122,7 +122,7 @@ int main() {
   <li><code>i</code> が <code>5</code> に到達する前にループを抜けることになる</li>
   <li><code>return !printf(&quot;Found!\n&quot;);</code> を実行できる</li>
 </ol>
-<p>配列の境界を超えてアクセスした場合に必ず Segfault が起きると思っている人はいませんか？ それは勘違いであると早めに気付いておきましょう．
+<p>配列の境界を超えてアクセスするようなコードを実行した場合に必ず Segfault が起きると思っている人はいませんか？ それは勘違いであると早めに気付いておきましょう．
 </p>
 
 <h3>識別子</h3>
@@ -157,6 +157,24 @@ int main() {
 <code>_STDIO_H</code> を <code>#define</code> したことによる影響なのは明白ですが，なぜこれがよくないかを説明できますか？
 </p>
 
+<p>（「インクルードガードとして使われているから」と思った人へ：もし<code>#define STDIO_H_</code>などと書いていた場合でも，処理系によっては同じエラーが起こりうると思いますか？）
+</p>
+
+<p>もう一つ例を出します．
+</p>
+<pre class="sourcecode" filename="sample.cpp"><div style="margin:1.2em 0 0 0">#include &lt;cstdio&gt;
+
+int foo() { return 42; }
+int _Z3foov;
+
+int main() {
+  printf(&quot;%d\n&quot;, foo());
+}</div></pre>
+<pre><span class="cmd-in">g++ sample.cpp</span>
+<span class="cmd-out"><span>/tmp/ccMfblBf.s: Assembler messages:
+</span></span><span class="cmd-out"><span>/tmp/ccMfblBf.s:42: Error: symbol `_Z3foov&#x27; is already defined</span></span></pre><p>一見<code>_Z3foov</code>という名前は再定義されていないように見えますが，なぜこうなるかわかりますか？
+</p>
+
 <p>具体的には，以下の識別子は処理系に予約されていて，処理系が自由に使っていい（プログラマが使わないと仮定していい）ことになっています（[lex.name]）．
 </p>
 <ul>
@@ -167,7 +185,16 @@ int main() {
   <li>連続するアンダースコアを含む（<code>.*__.*</code>）</li>
   <li>アンダースコアに続く大文字で始まる（<code>_[A-Z].*</code>）</li>
 </ul>
-<p>今回の <code>_STDIO_H</code> はこれの一つめ（および三つめ）に抵触しています．
+
+<p>今回の場合は，<code>_STDIO_H</code>は内部的にインクルードガードに使われていて，<code>_Z3foov</code>は関数<code>foo(int)</code>の内部的な名前（mangled name）として使われているため，このようなエラーが起きています．
+</p>
+
+<p>仮にこれらの用途で使われない識別子であったとしても，予約された識別子を敢えて使おうとするのは賢明な判断ではないでしょう．
+</p>
+
+<p>ところで，<code>_USE_MATH_DEFINES</code>のような識別子も同様で，これらを<code>#define</code>した場合の動作は（C++ の規格的な意味で）未定義です．
+コンパイラはそれによって規格に従わない動作をする（プログラマが自由に使えるはずの<code>M_PI</code>などの識別子を<code>#define</code>する）ことができます．
+<a href="https://qnighy.hatenablog.com/entry/2015/05/22/225558">https://qnighy.hatenablog.com/entry/2015/05/22/225558</a> に詳しい記述があります．
 </p>
 
 <h3>比較関数</h3>
@@ -314,6 +341,14 @@ int main() {
 </span></span><span class="cmd-out"><span> 00 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  d3 08 40 00 00 00 00 00  45 c4 14 cd
 </span></span><span class="cmd-out"><span></span><span style=" font-weight:bold;"></span><span style=" font-weight:bold; color:#55ff55;">              ^ </span><span style=" font-weight:bold; color:#55ff55;"></span><span style="">
 </span></span><span class="cmd-out"><span>0</span></span></pre>
+<p>インストールの方法によっては，実行時に以下のようなエラーが出ることがあります．
+</p>
+<pre><span class="cmd-in">./a.out</span>
+<span class="cmd-out"><span>./a.out: error while loading shared libraries: libubsan.so.1: cannot open shared object file: No such file or directory</span></span></pre><p>その場合は <code>sudo find / -name libubsan.so.1 2&gt;/dev/null</code> などをして見つかったディレクトリを <code>LD_LIBRARY_PATH</code> に追加しましょう．
+</p>
+<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># for example
+export LD_LIBRARY_PATH=$HOME/lib64/${LD_LIBRARY_PATH:+:}$LD_LIBRARY_PATH</div></pre>
+
 <h2>書きたいこと</h2>
 <ul>
   <li>order of evaluation</li>

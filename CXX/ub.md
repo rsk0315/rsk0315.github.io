@@ -73,7 +73,7 @@ $ ./a.out
 2. `i` が `5` に到達する前にループを抜けることになる
 3. `return !printf("Found!\n");` を実行できる
 
-配列の境界を超えてアクセスした場合に必ず Segfault が起きると思っている人はいませんか？ それは勘違いであると早めに気付いておきましょう．
+配列の境界を超えてアクセスするようなコードを実行した場合に必ず Segfault が起きると思っている人はいませんか？ それは勘違いであると早めに気付いておきましょう．
 
 ### 識別子
 #`[sample.cpp]
@@ -111,13 +111,40 @@ $ g++ sample.cpp
 ただの Hello, world ですが，コンパイルが通りません．
 `_STDIO_H` を `#define` したことによる影響なのは明白ですが，なぜこれがよくないかを説明できますか？
 
+（「インクルードガードとして使われているから」と思った人へ：もし`#define STDIO_H_`などと書いていた場合でも，処理系によっては同じエラーが起こりうると思いますか？）
+
+もう一つ例を出します．
+#`[sample.cpp]
+#include <cstdio>
+
+int foo() { return 42; }
+int _Z3foov;
+
+int main() {
+  printf("%d\n", foo());
+}
+#`
+#_
+$ g++ sample.cpp
+- /tmp/ccMfblBf.s: Assembler messages:
+- /tmp/ccMfblBf.s:42: Error: symbol `_Z3foov' is already defined
+#_
+一見`_Z3foov`という名前は再定義されていないように見えますが，なぜこうなるかわかりますか？
+
 具体的には，以下の識別子は処理系に予約されていて，処理系が自由に使っていい（プログラマが使わないと仮定していい）ことになっています（[lex.name]）．
 - アンダースコアで始まる（`_.*`）
   - これはグローバル名前空間のみ
 - 連続するアンダースコアを含む（`.*__.*`）
 - アンダースコアに続く大文字で始まる（`_[A-Z].*`）
 
-今回の `_STDIO_H` はこれの一つめ（および三つめ）に抵触しています．
+
+今回の場合は，`_STDIO_H`は内部的にインクルードガードに使われていて，`_Z3foov`は関数`foo(int)`の内部的な名前（mangled name）として使われているため，このようなエラーが起きています．
+
+仮にこれらの用途で使われない識別子であったとしても，予約された識別子を敢えて使おうとするのは賢明な判断ではないでしょう．
+
+ところで，`_USE_MATH_DEFINES`のような識別子も同様で，これらを`#define`した場合の動作は（C++ の規格的な意味で）未定義です．
+コンパイラはそれによって規格に従わない動作をする（プログラマが自由に使えるはずの`M_PI`などの識別子を`#define`する）ことができます．
+@[url:https://qnighy.hatenablog.com/entry/2015/05/22/225558]@ に詳しい記述があります．
 
 ### 比較関数
 #`[sample.cpp]
@@ -273,6 +300,17 @@ $ ./a.out
 - [1m[32m              ^ [1m[0m
 - 0
 #_
+
+インストールの方法によっては，実行時に以下のようなエラーが出ることがあります．
+#_
+$ ./a.out
+- ./a.out: error while loading shared libraries: libubsan.so.1: cannot open shared object file: No such file or directory
+#_
+その場合は `sudo find / -name libubsan.so.1 2>/dev/null` などをして見つかったディレクトリを `LD_LIBRARY_PATH` に追加しましょう．
+#`[~/.bashrc]
+# for example
+export LD_LIBRARY_PATH=$HOME/lib64/${LD_LIBRARY_PATH:+:}$LD_LIBRARY_PATH
+#`
 
 ## 書きたいこと
 - order of evaluation
