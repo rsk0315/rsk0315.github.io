@@ -649,6 +649,9 @@ make CC=&quot;$CC&quot; CXX=&quot;$CXX&quot; CFLAGS=&quot;$CFLAGS&quot; CXXFLAGS
 <p><code>g</code>の場合は末尾の文字が<code>\n</code>でないことがわかっているので，<code>latest</code>の部分を<code>latest-Q</code>に変えるか<code>latest</code>自体を差し替えれば堅牢なバージョンになる．
 </p>
 
+<p>GNU <code>make</code>はスペースに関してガバガバっぽいので，これをする必要があるならコンパイル部分を自分で書いたほうがいいのかも．
+</p>
+
 <h3>最新の実行ファイルの実行</h3>
 <p>最新の実行ファイルを実行する．俗にいう<code>a</code>に対応するスクリプト．必ずしも<code>./a.out</code>とは限らないファイルを実行できる．
 </p>
