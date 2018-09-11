@@ -541,7 +541,7 @@ set -x
 &quot;./$src&quot; &quot;$@&quot;</div></pre>
 
 <p><code>a</code> の場合は末尾文字が <code>\n</code> になりうる（ここおふざけポイント）ので，工夫が必要．
-<code>$(...)</code> ではtrailing newlinesが除去されるので，<code>latest-Q</code> が成功した場合は <code>-\n</code> を追加する．（実質的には <code>\n-</code> が追加される．わかる？）
+<code>$(...)</code> では trailing newlines が除去されるので，<code>latest-Q</code> が成功した場合は <code>-\n</code> を追加する．（実質的には <code>\n-</code> が追加される．わかる？）
 </p>
 <pre class="sourcecode" filename="~/bin/aa"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
 
