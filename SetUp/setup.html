@@ -120,6 +120,17 @@
 <span class="cmd-in">make &amp;&amp; make install</span>
 <span class="cmd-in">cp doc/bash.1 ~/usr/share/man/man1/</pre>
 <h2>GCCのアップグレード</h2>
+<p><code>yum install gcc</code> でインストールできる GCC は古いのでつらい．
+</p>
+<pre><span class="cmd-in">sudo yum install centos-release-scl</span>
+<span class="cmd-in">sudo yum install devtoolset-7-gcc-c++</pre><p>として新しいものをインストールできる．かわりに <code>devtoolset-7\*</code> とすると他にもいろいろ入る．<a href="https://www.softwarecollections.org/en/scls/rhscl/devtoolset-7/">https://www.softwarecollections.org/en/scls/rhscl/devtoolset-7/</a> を参考にしよう．
+</p>
+<pre><span class="cmd-in">scl enable devtoolset-7 bash</pre><p>とすることでそれを有効にした状態でシェルを起動することができる．
+<code>PATH</code> に <code>/opt/rh/devtoolset-7/root/usr/bin/</code> を追加するだけでもよさそう？
+</p>
+
+<p>もちろん，ソースからビルドしてもよい（やや時間がかかる）．
+</p>
 <pre><span class="cmd-in">curl http://ftp.tsukuba.wide.ad.jp/software/gcc/releases/gcc-8.2.0/gcc-8.2.0.tar.xz -o gcc-8.2.0.tar.xz</span>
 <span class="cmd-in">tar xvf gcc-8.2.0.tar.xz</span>
 <span class="cmd-in">cd gcc-8.2.0/</span>

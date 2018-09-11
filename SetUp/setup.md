@@ -109,6 +109,19 @@ $ cp doc/bash.1 ~/usr/share/man/man1/
 #_
 
 ## GCCのアップグレード
+`yum install gcc` でインストールできる GCC は古いのでつらい．
+#_
+$ sudo yum install centos-release-scl
+$ sudo yum install devtoolset-7-gcc-c++
+#_
+として新しいものをインストールできる．かわりに `devtoolset-7\*` とすると他にもいろいろ入る．@[url:https://www.softwarecollections.org/en/scls/rhscl/devtoolset-7/]@ を参考にしよう．
+#_
+$ scl enable devtoolset-7 bash
+#_
+とすることでそれを有効にした状態でシェルを起動することができる．
+`PATH` に `/opt/rh/devtoolset-7/root/usr/bin/` を追加するだけでもよさそう？
+
+もちろん，ソースからビルドしてもよい（やや時間がかかる）．
 #_
 $ curl http://ftp.tsukuba.wide.ad.jp/software/gcc/releases/gcc-8.2.0/gcc-8.2.0.tar.xz -o gcc-8.2.0.tar.xz
 $ tar xvf gcc-8.2.0.tar.xz
