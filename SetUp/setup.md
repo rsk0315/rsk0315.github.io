@@ -326,8 +326,8 @@ emacs の初期化ファイル．
  `((-3 "%p ")
    (line-number-mode " L%l")
    (column-number-mode
-    (,(version< emacs-version "26") " c%c"
-     (column-number-indicator-zero-based " c%c" " C%C"))))
+    (,(version< emacs-version "26") " C%c"
+     (column-number-indicator-zero-based " C%c" " CC%C"))))
  column-number-mode t
  column-number-indicator-zero-based nil)
 
