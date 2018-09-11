@@ -171,12 +171,24 @@ $ sudo yum install xsel
 #_
 @[LaTeX]@も早いうちに入れよう．
 
-## @[LaTeX]@のインストール
+## @[LaTeX]@ のインストール
 @[TeX]@ Liveを使う．
 #_
 $ sudo yum install perl-Digest-MD5
 $ sudo ./install-tl
 #_
+
+## Rust のインストール
+#_
+$ curl -sSf http://sh.rustup.rs | bash
+#_
+
+@[url:https://www.rustup.rs]公式サイト？@には `curl https://sh.rustup.rs -sSf | sh` と書かれているが，shebang が `#!/bin/bash` なんだよね．
+
+それはそれとして，パスを通す．
+```~/.bashrc
+export PATH=$HOME/.cargo/bin/${PATH:+:$PATH}
+```
 
 # 発展的な環境構築
 趣味の領域に含まれると思われるもの．
@@ -202,6 +214,12 @@ fi
 ```[~/.bashrc]
 alias rm='rm -iv' cp='cp -iv' mv='mv -iv'
 ```
+
+ところで，
+```~/.bashrc
+alias rm=rm\ -iv cp=cp\ -iv mv=mv\ -iv
+```
+で十分なんだよね（見づらいんだよなぁ）．
 
 ### シェルオプション
 リダイレクトの上書きを防ぐのも基本．

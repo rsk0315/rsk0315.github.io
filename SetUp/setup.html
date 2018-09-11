@@ -166,11 +166,20 @@
 <span class="cmd-in">sudo yum install xsel</pre><p><span class="tex">L<sup>a</sup>T<sub>e</sub>X</span>も早いうちに入れよう．
 </p>
 
-<h2><span class="tex">L<sup>a</sup>T<sub>e</sub>X</span>のインストール</h2>
+<h2><span class="tex">L<sup>a</sup>T<sub>e</sub>X</span> のインストール</h2>
 <p><span class="tex">T<sub>e</sub>X</span> Liveを使う．
 </p>
 <pre><span class="cmd-in">sudo yum install perl-Digest-MD5</span>
 <span class="cmd-in">sudo ./install-tl</pre>
+<h2>Rust のインストール</h2>
+<pre><span class="cmd-in">curl -sSf http://sh.rustup.rs | bash</pre>
+<p><a href="https://www.rustup.rs">公式サイト？</a>には <code>curl https://sh.rustup.rs -sSf | sh</code> と書かれているが，shebang が <code>#!/bin/bash</code> なんだよね．
+</p>
+
+<p>それはそれとして，パスを通す．
+</p>
+<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0">export PATH=$HOME/.cargo/bin/${PATH:+:$PATH}</div></pre>
+
 <h1>発展的な環境構築</h1>
 <p>趣味の領域に含まれると思われるもの．
 </p>
@@ -194,6 +203,12 @@ fi
 <p>ファイルの移動時に上書き確認をするのは基本中の基本．
 </p>
 <pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0">alias rm=&#x27;rm -iv&#x27; cp=&#x27;cp -iv&#x27; mv=&#x27;mv -iv&#x27;</div></pre>
+
+<p>ところで，
+</p>
+<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0">alias rm=rm\ -iv cp=cp\ -iv mv=mv\ -iv</div></pre>
+<p>で十分なんだよね（見づらいんだよなぁ）．
+</p>
 
 <h3>シェルオプション</h3>
 <p>リダイレクトの上書きを防ぐのも基本．
