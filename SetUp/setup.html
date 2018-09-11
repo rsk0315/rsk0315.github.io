@@ -625,7 +625,8 @@ while getopts :p:s: foo; do
     esac
 done
 
-latest=$(ls -ltAQ | grep -E &quot;${suffix:+\\.(}$suffix${suffix:+)}\&quot;&quot; \
+latest=$(ls -ltAQ | grep -E &quot;${suffix:+\\.($suffix)}\&quot;&quot; \
+             | grep -v &#x27;.#&#x27; $(: to ignore vim backups) \
              | grep &quot;^[-l]$perm&quot; | sed s/%/%%/g \
              | sed -E &#x27;s/[^&quot;]*&quot;((\\.|[^\\&quot;])*)&quot;.*/\1/; q&#x27;)
 latest=$(printf &quot;$latest-&quot;)
