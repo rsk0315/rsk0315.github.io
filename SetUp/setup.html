@@ -427,6 +427,10 @@ PS1+=&#x27;\n\[\e[0m\]\$ &#x27;</div></pre>
     <li>現状は simple command のみ</li>
   </ul>
 </ul>
+<p>スペルチェックやステータス表示は <code>\C-m</code> に新たなコマンド <code>smart-execute-command</code> をバインドしているだけなので，必要に応じて <code>\C-j</code> にもバインドしたり <code>accept-line</code> で上書きするとよい．
+<code>~/.bashrc</code> や <code>~/.inputrc</code> に直接書いてしまうと普通の bash を起動したときにこわれるので，<code>$BASH</code> で場合分けをするなどして対処する．
+</p>
+
 <h2>最新ファイルの出力</h2>
 <p><code>ls</code> を利用して最新のファイルを選ぶスクリプト．
 GNU 拡張の <code>ls</code> は <code> </code> や <code>&#x27;</code> などをエスケープできるオプション <code>-Q</code> があって素敵なんだけど，それを復元するのが厄介なので諦める．そもそもそんなファイル名にする方がどうかしている．
