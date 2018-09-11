@@ -259,6 +259,20 @@ complete -EFcompletion_loader +o{bashdefault,default}
 export FIGNORE=.o:\~:#${FIGNORE:+:$FIGINORE}
 ```
 
+何も補完しないようにさせるのもそっけないので，ヒント的なものを出してもよい．
+
+```~/.bashrc
+completion_loader () {
+    # instead of suppression, list up frequently-used commands
+    COMPREPLY=(
+        % %- awk bg cat cd chmod cp curl declare dirs echo emacs fg git
+        grep head history jobs less ln ls make man mkdir mv paplay php
+        popd printf ps pushd python python3 rm stty sudo tar touch vim
+        which
+    )
+}
+```
+
 ### 履歴関連
 ```[~/.bashrc]
 # History configurations

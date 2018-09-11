@@ -250,6 +250,19 @@ completion_loader () { return 124; }
 complete -EFcompletion_loader +o{bashdefault,default}
 export FIGNORE=.o:\~:#${FIGNORE:+:$FIGINORE}</div></pre>
 
+<p>何も補完しないようにさせるのもそっけないので，ヒント的なものを出してもよい．
+</p>
+
+<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0">completion_loader () {
+    # instead of suppression, list up frequently-used commands
+    COMPREPLY=(
+        % %- awk bg cat cd chmod cp curl declare dirs echo emacs fg git
+        grep head history jobs less ln ls make man mkdir mv paplay php
+        popd printf ps pushd python python3 rm stty sudo tar touch vim
+        which
+    )
+}</div></pre>
+
 <h3>履歴関連</h3>
 <pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># History configurations
 HISTCONTROL=ignoredups</div></pre>
