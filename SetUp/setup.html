@@ -73,9 +73,10 @@
 </p>
 <pre><span class="cmd-in">git clone https://github.com/git/git.git</span>
 <span class="cmd-in">cd git</span>
-<span class="cmd-in">make &amp;&amp; make install</pre><p><code>prefix</code> は <code>$(HOME)</code> になっているので，<code>$PATH</code> を見てちゃんと新しいのが実行されるかを確認する．
+<span class="cmd-in">make &amp;&amp; make install</pre><p><code>prefix</code> は <code>$(HOME)</code> になっているので，<code>$PATH</code> を見てちゃんと新しいのが実行されるかを確認する．必要に応じて以下を実行してみる．
 </p>
-
+<pre><span class="cmd-in">git --version</span>
+<span class="cmd-in">which git</pre>
 <p><code>GIT_EDITOR</code> などを適宜変更しよう．
 </p>
 <pre><span class="cmd-in">man git-var</pre><p>を参考にするとよい．
@@ -236,15 +237,19 @@ export FIGNORE=.o:\~:#${FIGNORE:+:$FIGINORE}</div></pre>
 
 <h3>履歴関連</h3>
 <pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># History configurations
-HISTCONTROL=ignoredups:erasedups</div></pre>
+HISTCONTROL=ignoredups</div></pre>
 
 <p>個人的に <code>g</code> → <code>a</code> → <code>%</code> の流れを無限に繰り返しがちなので，それで履歴が圧迫されるのは避けたい．
+...と思って <code>erasedups</code> を入れていたが，これは <code>C-o</code> による <code>operate-and-get-next</code> をこわすことがわかったのでやめ．
 </p>
 
 <h3>その他環境変数の設定</h3>
 <pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Editor configurations
 export EDITOR=vim
 export EDITOR=emacs  # ... or whatever you like</div></pre>
+
+<p>これ，<code>emacs</code> を最後に書いておくことで，コピペした場合に <code>emacs</code> が設定されるようにする小汚いテクなんだよね．
+</p>
 
 <h3>キーバインドの補助設定</h3>
 <p><code>C-s</code> などが期待通りに動作するようにする．
@@ -271,18 +276,18 @@ stty rprnt undef stop undef werase undef kill undef</div></pre>
 set enable-bracketed-paste On
 set mark-symlinked-directories On</div></pre>
 <p><code>enable-bracketed-paste</code> が有効のとき，改行文字が <code>accept-line</code> として暴発するのを防ぐ（タブ文字の <code>complete</code> なども同様）．
-<code>mark-symlinked-directories</code> が有効のとき，ディレクトリを指すリンクがTab補完されたときに <code>/</code> が付加される．
+<code>mark-symlinked-directories</code> が有効のとき，ディレクトリを指すリンクが Tab 補完されたときに <code>/</code> が付加される．
 </p>
 
 <pre class="sourcecode" filename="~/.inputrc"><div style="margin:1.2em 0 0 0">&quot;\e%&quot;: &quot;\C-a#\C-j%\C-j&quot;</div></pre>
 <p><code>M-%</code> によって，現在の行を残しつつプロセスを再開（<code>%</code>）する．
-<code>M-C-z</code> で <code>C-z</code> の逆をできたらよかったのだけど，<code>C-z</code> でsuspendするのを無効化しないと <code>&quot;\e\C-z&quot;</code> に書き込めないようなので断念．
+C シェルの真似をして <code>M-C-z</code> で <code>C-z</code> の逆をできたらよかったのだけど，<code>C-z</code> で suspend するのを無効化しないと <code>&quot;\e\C-z&quot;</code> に書き込めないようなので断念．
 </p>
 
 <h2>エディタの初期化ファイル</h2>
 <h3><code>init.el</code> の編集</h3>
 
-<p>emacsの初期化ファイル．
+<p>emacs の初期化ファイル．
 </p>
 <pre class="sourcecode" filename="~/.emacs.d/init.el"><div style="margin:1.2em 0 0 0">;; テーマの設定
 (load-theme &#x27;tango-dark t)

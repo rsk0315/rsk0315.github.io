@@ -47,7 +47,11 @@ $ git clone https://github.com/git/git.git
 $ cd git
 $ make && make install
 #_
-`prefix` は `$(HOME)` になっているので，`$PATH` を見てちゃんと新しいのが実行されるかを確認する．
+`prefix` は `$(HOME)` になっているので，`$PATH` を見てちゃんと新しいのが実行されるかを確認する．必要に応じて以下を実行してみる．
+#_
+$ git --version
+$ which git
+#_
 
 `GIT_EDITOR` などを適宜変更しよう．
 #_
@@ -240,10 +244,11 @@ export FIGNORE=.o:\~:#${FIGNORE:+:$FIGINORE}
 ### 履歴関連
 ```[~/.bashrc]
 # History configurations
-HISTCONTROL=ignoredups:erasedups
+HISTCONTROL=ignoredups
 ```
 
 個人的に `g` → `a` → `%` の流れを無限に繰り返しがちなので，それで履歴が圧迫されるのは避けたい．
+...と思って `erasedups` を入れていたが，これは `C-o` による `operate-and-get-next` をこわすことがわかったのでやめ．
 
 ### その他環境変数の設定
 ```[~/.bashrc]
@@ -251,6 +256,8 @@ HISTCONTROL=ignoredups:erasedups
 export EDITOR=vim
 export EDITOR=emacs  # ... or whatever you like
 ```
+
+これ，`emacs` を最後に書いておくことで，コピペした場合に `emacs` が設定されるようにする小汚いテクなんだよね．
 
 ### キーバインドの補助設定
 `C-s` などが期待通りに動作するようにする．
@@ -284,18 +291,18 @@ set enable-bracketed-paste On
 set mark-symlinked-directories On
 ```
 `enable-bracketed-paste` が有効のとき，改行文字が `accept-line` として暴発するのを防ぐ（タブ文字の `complete` なども同様）．
-`mark-symlinked-directories` が有効のとき，ディレクトリを指すリンクがTab補完されたときに `/` が付加される．
+`mark-symlinked-directories` が有効のとき，ディレクトリを指すリンクが Tab 補完されたときに `/` が付加される．
 
 ```[~/.inputrc]
 "\e%": "\C-a#\C-j%\C-j"
 ```
 `M-%` によって，現在の行を残しつつプロセスを再開（`%`）する．
-`M-C-z` で `C-z` の逆をできたらよかったのだけど，`C-z` でsuspendするのを無効化しないと `"\e\C-z"` に書き込めないようなので断念．
+C シェルの真似をして `M-C-z` で `C-z` の逆をできたらよかったのだけど，`C-z` で suspend するのを無効化しないと `"\e\C-z"` に書き込めないようなので断念．
 
 ## エディタの初期化ファイル
 ### `init.el` の編集
 
-emacsの初期化ファイル．
+emacs の初期化ファイル．
 ```[~/.emacs.d/init.el]
 ;; テーマの設定
 (load-theme 'tango-dark t)
