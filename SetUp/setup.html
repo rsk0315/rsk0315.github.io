@@ -37,7 +37,7 @@
 </p>
 
 <p>Ubuntuなどにもある程度は流用可能．
-<code>./configure</code>では<code>--build=x86_64-pc-linux</code>にするとか，<code>apt-get</code>では<code>*-devel</code>ではなく<code>*-dev</code>になりがち，のようなことを覚えておくとよいかも？
+<code>./configure</code> では <code>--build=x86_64-pc-linux</code> にするとか，<code>apt-get</code> では <code>*-devel</code> ではなく <code>*-dev</code>になりがち，のようなことを覚えておくとよいかも？
 </p>
 
 <h2>VMware Toolsのインストール</h2>
@@ -46,8 +46,8 @@
 <span class="cmd-in">tar xvf VMwareTools-*.tar.gz</span>
 <span class="cmd-in">cd vmware-tools-distrib/</span>
 <span class="cmd-in">sudo ./vmware-install.pl</pre>
-<h2><code>sudo</code>の設定</h2>
-<p>以下のコマンドを用いて<code>/etc/sudoers</code>を編集し，いちいちパスワードを求められないようにする．
+<h2><code>sudo</code> の設定</h2>
+<p>以下のコマンドを用いて <code>/etc/sudoers</code> を編集し，いちいちパスワードを求められないようにする．
 </p>
 <pre><span class="cmd-in">sudo visudo</pre><p>差分は次の通り．
 </p>
@@ -63,34 +63,34 @@
 </span></span><span class="cmd-out"><span>
 </span></span><span class="cmd-out"><span>## Allows members of the users group to mount and unmount the
 </span></span><span class="cmd-out"><span>## cdrom as root</span></span></pre>
-<h2><code>git</code>のアップグレード</h2>
+<h2><code>git</code> のアップグレード</h2>
 <p>ビルドするのに必要なライブラリ群をインストールする．
 </p>
 <pre><span class="cmd-in">sudo yum install openssl-devel curl-devel expat-devel</pre><p><code>gettext-devel</code>，<code>perl-devel</code>，<code>zlib-devel</code>，<code>perl-ExtUtils-MakeMaker</code>も依存している？ 最初から入っているかも？
 </p>
 
-<p>古い<code>git</code>が入っていることを期待し，以下を実行．
+<p>古い <code>git</code> が入っていることを期待し，以下を実行．
 </p>
 <pre><span class="cmd-in">git clone https://github.com/git/git.git</span>
 <span class="cmd-in">cd git</span>
-<span class="cmd-in">make &amp;&amp; make install</pre><p><code>prefix</code>は<code>$(HOME)</code>になっているので，<code>$PATH</code>を見てちゃんと新しいのが実行されるかを確認する．
+<span class="cmd-in">make &amp;&amp; make install</pre><p><code>prefix</code> は <code>$(HOME)</code> になっているので，<code>$PATH</code> を見てちゃんと新しいのが実行されるかを確認する．
 </p>
 
-<p><code>GIT_EDITOR</code>などを適宜変更しよう．
+<p><code>GIT_EDITOR</code> などを適宜変更しよう．
 </p>
 <pre><span class="cmd-in">man git-var</pre><p>を参考にするとよい．
 </p>
 
-<h2><code>vim</code>のアップグレード</h2>
-<pre><span class="cmd-in">sudo yum install libX11-devel libXt-devel gtk2-devel ncurses-devel</pre><p><code>atk-devel</code>も依存している？
+<h2><code>vim</code> のアップグレード</h2>
+<pre><span class="cmd-in">sudo yum install libX11-devel libXt-devel gtk2-devel ncurses-devel</pre><p><code>atk-devel</code> も依存している？
 </p>
 <pre><span class="cmd-in">git clone https://github.com/vim/vim.git</span>
 <span class="cmd-in">cd vim</span>
 <span class="cmd-in">./configure --prefix=$HOME --build=x86_64-redhat-linux --with-x \
 <span class="cmd-cont"></span>    CFLAGS=-I/usr/include/X11</span>
 <span class="cmd-in">make &amp;&amp; make install</pre>
-<h2><code>emacs</code>のインストール</h2>
-<p><code>http://ftp.jaist.ac.jp/pub/GNU/emacs/</code>などから最新のものをダウンロード．
+<h2><code>emacs</code> のインストール</h2>
+<p><code>http://ftp.jaist.ac.jp/pub/GNU/emacs/</code> などから最新のものをダウンロード．
 </p>
 <pre><span class="cmd-in">sudo yum install gnutls-devel</span>
 <span class="cmd-in">cd ~/Downloads</span>
@@ -99,10 +99,10 @@
 <span class="cmd-in">cd emacs-26.1/</span>
 <span class="cmd-in">./configure --prefix=$HOME --build=x86_64-redhat-linux --without-x</span>
 <span class="cmd-in">make &amp;&amp; make install</pre>
-<h2><code>python3</code>のインストール</h2>
+<h2><code>python3</code> のインストール</h2>
 <pre><span class="cmd-in">sudo yum install https://centos7.iuscommunity.org/ius-release.rpm</span>
 <span class="cmd-in">sudo yum install python36u{,-{libs,devel,pip}}</pre>
-<p><code>pip</code>を使って便利モジュールを入れるのも忘れずに．
+<p><code>pip</code> を使って便利モジュールを入れるのも忘れずに．
 </p>
 <pre><span class="cmd-in">curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py</span>
 <span class="cmd-in">python3 get-pip.py --user</span>
@@ -112,7 +112,7 @@
 <span class="cmd-in">pip install --user matplotlib</span>
 <span class="cmd-in">pip install --user Image</span>
 <span class="cmd-in">pip install --user mechanicalsoup</pre>
-<h2><code>bash</code>のアップグレード</h2>
+<h2><code>bash</code> のアップグレード</h2>
 <pre><span class="cmd-in">curl http://ftp.gnu.org/gnu/bash/bash-5.0-alpha.tar.gz -o bash-5.0-alpha.tar.gz</span>
 <span class="cmd-in">tar xvf bash-5.0-alpha.tar.gz</span>
 <span class="cmd-in">cd bash-5.0-alpha/</span>
@@ -138,24 +138,24 @@
 <span class="cmd-in">./configure --prefix=$HOME --build=x86_64-redhat-linux --program-suffix=-8.2 --disable-multilib --enable-languages=c,c++ C{,XX}FLAGS=-O3</span>
 <span class="cmd-in">make -j4 BOOT_CFLAGS=&#x27;-march=native -O3&#x27;</span>
 <span class="cmd-in">make install</pre>
-<p><code>-fsanitize=undefined</code>つきでコンパイルしたファイルを正しく実行するためには<code>libubsan.so</code>が必要．
+<p><code>-fsanitize=undefined</code> つきでコンパイルしたファイルを正しく実行するためには <code>libubsan.so</code> が必要．
 </p>
 <pre><span class="cmd-in">./a.out</span>
 <span class="cmd-out"><span>./a.out: error while loading shared libraries: libubsan.so.1: cannot open shared object file: No such file or directory</span></span></pre><p>また，システムにあるライブラリが古くて以下のようなエラーが出ることがある．
 </p>
 <pre><span class="cmd-in">./a.out</span>
-<span class="cmd-out"><span>./a.out: /lib64/libstdc++.so.6: version `CXXABI_1.3.9&#x27; not found (required by ./a.out)</span></span></pre><p>これらを回避するために，<code>$HOME/lib64/</code>を<code>LD_LIBRARY_PATH</code>に追加するとよい．
+<span class="cmd-out"><span>./a.out: /lib64/libstdc++.so.6: version `CXXABI_1.3.9&#x27; not found (required by ./a.out)</span></span></pre><p>これらを回避するために，<code>$HOME/lib64/</code> を <code>LD_LIBRARY_PATH</code> に追加するとよい．
 </p>
 <pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0">LD_LIBRARY_PATH=$HOME/lib64/${LD_LIBRARY_PATH:+:}$LD_LIBRARY_PATH</div></pre>
 
 <p>また，一般にパスを追加する際に以下のようにするのは危険に思われる．
 </p>
 <pre># PATH=/new/path/to/dir:$PATH  # bad?</pre>
-<p><code>$PATH</code>が空のときにカレントディレクトリが含まれてしまうためである（ヒント：<code>::</code>または先頭・末尾の<code>:</code>によって表される空ディレクトリ名は<code>.</code>を意味する）．
-<code>$PATH</code>が空でないときのみ<code>:</code>に展開する記法を用いて以下のようにしたい．
+<p><code>$PATH</code> が空のときにカレントディレクトリが含まれてしまうためである（ヒント：<code>::</code> または先頭・末尾の <code>:</code> によって表される空ディレクトリ名は <code>.</code> を意味する）．
+<code>$PATH</code> が空でないときのみ展開する記法を用いて以下のようにしたい．
 </p>
-<pre># PATH=/new/path/to/dir${PATH:+:}$PATH</pre>
-<p>また，<code>&quot;...&quot;</code>で囲まないことについては，空白除去が行われない感じなので問題ない気がする<span class="glyphicon glyphicon-question-sign" aria-hidden="true" data-html="true" data-toggle="tooltip" title="" data-original-title="嘘かもしれないので注意．"></span>．
+<pre># PATH=/new/path/to/dir${PATH:+:$PATH}</pre>
+<p>また，<code>&quot;...&quot;</code> で囲まないことについては，空白除去が行われない感じなので問題ない気がする（嘘かもしれないので注意）．
 </p>
 
 <h2>その他有用なものたちのインストール</h2>
@@ -174,7 +174,7 @@
 <p>趣味の領域に含まれると思われるもの．
 </p>
 
-<h2><code>bashrc</code>の編集</h2>
+<h2><code>bashrc</code> の編集</h2>
 <p>最初の状態では以下の内容しかなく，そっけなさすぎる（インストールの手順にもよるとは思うが）．
 </p>
 <pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># .bashrc
@@ -200,9 +200,10 @@ fi
 <pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Shell options
 set -o noclobber       # same as `set -C&#x27;
 shopt -s histverify autocd</div></pre>
-<p><code>noclobber</code>によって<code>&gt;</code>による上書きを防ぐことができる．強制的に上書きしたいときは<code>&gt;|</code>を使う．
-<code>histverify</code>は履歴展開が起こったときコマンドが即座に実行されないようにする．
-<code>autocd</code>はコマンドとして見つからなかった文字列を<code>cd</code>への引数と解釈させる．<code>~</code>や<code>..</code>などのみでディレクトリを移動できるようになるが，暴発には注意．
+<p><code>noclobber</code> によって <code>&gt;</code> による上書きを防ぐことができる．強制的に上書きしたいときは <code>&gt;|</code> を使う．
+<code>histverify</code> は履歴展開が起こったときコマンドが即座に実行されないようにする．
+<code>autocd</code> はコマンドとして見つからなかった文字列を <code>cd</code> への引数と解釈させる．
+<code>~</code> や <code>..</code> などのみでディレクトリを移動できるようになるが，暴発には注意．
 </p>
 
 <h3>ページャのオプション</h3>
@@ -213,31 +214,31 @@ export LESS=FR</div></pre>
   <li><code>less -r</code>：エスケープシーケンスを解釈</li>
   <ul>
     <li>これは表示が乱れることがある？ のでやめた</li>
-    <li><code>man</code>にもその旨が書いてあった</li>
+    <li><code>man</code> にもその旨が書いてあった</li>
   </ul>
   <li><code>less -R</code>：<code>ESC [ ... m</code>のシーケンスのみを解釈</li>
 </ul>
 <h3>補完の設定</h3>
-<p><code>Tab</code>などによる補完の設定．
+<p><code>Tab</code> などによる補完の設定．
 </p>
 
-<p>何かしらの原因で，空行で補完を試みると<code>bash: words: bad array subscript</code>のようなエラーが起きることがある．
+<p>何かしらの原因で，空行で補完を試みると <code>bash: words: bad array subscript</code> のようなエラーが起きることがある．
 空行での補完を無効化すると抑止できるので，それをする．
 </p>
 
-<p>また，バックアップファイルなどが補完されると厄介なので，<code>FIGNORE</code>によってそれを防ぐ．
+<p>また，バックアップファイルなどが補完されると厄介なので，<code>FIGNORE</code> によってそれを防ぐ．
 </p>
 
 <pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Completion configurations
 completion_loader () { return 124; }
 complete -EFcompletion_loader +o{bashdefault,default}
-export FIGNORE=.o:\~:#${FIGNORE:+:}$FIGINORE</div></pre>
+export FIGNORE=.o:\~:#${FIGNORE:+:$FIGINORE}</div></pre>
 
 <h3>履歴関連</h3>
 <pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># History configurations
 HISTCONTROL=ignoredups:erasedups</div></pre>
 
-<p>個人的に<code>g</code>→<code>a</code>→<code>%</code>の流れを無限に繰り返しがちなので，それで履歴が圧迫されるのは避けたい．
+<p>個人的に <code>g</code> → <code>a</code> → <code>%</code> の流れを無限に繰り返しがちなので，それで履歴が圧迫されるのは避けたい．
 </p>
 
 <h3>その他環境変数の設定</h3>
@@ -246,13 +247,13 @@ export EDITOR=vim
 export EDITOR=emacs  # ... or whatever you like</div></pre>
 
 <h3>キーバインドの補助設定</h3>
-<p><code>C-s</code>などが期待通りに動作するようにする．
+<p><code>C-s</code> などが期待通りに動作するようにする．
 </p>
 <pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Key bindings
 stty rprnt undef stop undef werase undef kill undef</div></pre>
 <p>デフォルトに戻す場合は以下の通り．
 </p>
-<pre><span class="cmd-in">stty rprnt \^r stop \^s werase \^w kill \^u</pre><p>履歴展開が有効な場合に<code>^</code>が暴発しないように注意．
+<pre><span class="cmd-in">stty rprnt \^r stop \^s werase \^w kill \^u</pre><p>履歴展開が有効な場合に <code>^</code> が暴発しないように注意．
 また，個別に以下のようにしてもよい．
 </p>
 <pre><span class="cmd-in">stty rprnt \^r</span>
@@ -269,17 +270,17 @@ stty rprnt undef stop undef werase undef kill undef</div></pre>
 # variables
 set enable-bracketed-paste On
 set mark-symlinked-directories On</div></pre>
-<p><code>enable-bracketed-paste</code>が有効のとき，改行文字が<code>accept-line</code>として暴発するのを防ぐ（タブ文字の<code>complete</code>なども同様）．
-<code>mark-symlinked-directories</code>が有効のとき，ディレクトリを指すリンクがTab補完されたときに<code>/</code>が付加される．
+<p><code>enable-bracketed-paste</code> が有効のとき，改行文字が <code>accept-line</code> として暴発するのを防ぐ（タブ文字の <code>complete</code> なども同様）．
+<code>mark-symlinked-directories</code> が有効のとき，ディレクトリを指すリンクがTab補完されたときに <code>/</code> が付加される．
 </p>
 
 <pre class="sourcecode" filename="~/.inputrc"><div style="margin:1.2em 0 0 0">&quot;\e%&quot;: &quot;\C-a#\C-j%\C-j&quot;</div></pre>
-<p><code>M-%</code>によって，現在の行を残しつつプロセスを再開（<code>%</code>）する．
-<code>M-C-z</code>で<code>C-z</code>の逆をできたらよかったのだけど，<code>C-z</code>でsuspendするのを無効化しないと<code>&quot;\e\C-z&quot;</code>に書き込めないようなので断念．
+<p><code>M-%</code> によって，現在の行を残しつつプロセスを再開（<code>%</code>）する．
+<code>M-C-z</code> で <code>C-z</code> の逆をできたらよかったのだけど，<code>C-z</code> でsuspendするのを無効化しないと <code>&quot;\e\C-z&quot;</code> に書き込めないようなので断念．
 </p>
 
 <h2>エディタの初期化ファイル</h2>
-<h3><code>init.el</code>の編集</h3>
+<h3><code>init.el</code> の編集</h3>
 
 <p>emacsの初期化ファイル．
 </p>
@@ -314,7 +315,7 @@ set mark-symlinked-directories On</div></pre>
 (add-to-list &#x27;load-path &quot;~/.emacs.d/elisp&quot;)
 (require &#x27;markdown)</div></pre>
 
-<h3><code>vimrc</code>の編集</h3>
+<h3><code>vimrc</code> の編集</h3>
 <pre class="sourcecode" filename="~/.vimrc"><div style="margin:1.2em 0 0 0">&quot; 色の設定
 :colorscheme koehler
 :syntax on
@@ -329,13 +330,13 @@ set mark-symlinked-directories On</div></pre>
 &quot; バックスペースの挙動
 :set backspace=eol,start,indent</div></pre>
 
-<p><code>vimrc</code>が長い方がえらいと思っている人たちは正気ですか？
+<p><code>vimrc</code> が長い方がえらいと思っている人たちは正気ですか？
 </p>
 
-<h2><code>gitconfig</code>の編集</h2>
+<h2><code>gitconfig</code> の編集</h2>
 <p>パラメータなどについては以下を参照．
 </p>
-<pre><span class="cmd-in">git help config</pre><p><code>color.diff</code>の項目を見るとよい．数値を指定したときに<code>&lt;Esc&gt;38;5;##m</code>の形式になってくれるのはたまたまなのかも？
+<pre><span class="cmd-in">git help config</pre><p><code>color.diff</code> の項目を見るとよい．数値を指定したときに <code>&lt;Esc&gt;38;5;##m</code> の形式になってくれるのはたまたまなのかも？
 </p>
 <pre class="sourcecode" filename="~/.gitconfig"><div style="margin:1.2em 0 0 0">[color.diff]
         new = green bold
@@ -345,7 +346,7 @@ set mark-symlinked-directories On</div></pre>
 
 <h2>フォントの設定</h2>
 <p>MigMixはいいぞ．
-<code>/etc/fonts/conf.d/65-nonlatin.conf</code>を編集する．とりあえず一番上にしよう．
+<code>/etc/fonts/conf.d/65-nonlatin.conf</code> を編集する．とりあえず一番上にしよう．
 </p>
 <pre><span class="cmd-in">diff -up ~/tmp/65-nonlatin.conf /etc/fonts/conf.d/65-nonlatin.conf</span>
 <span class="cmd-out"><span>--- /home/rsk0315/tmp/65-nonlatin.conf
@@ -377,14 +378,14 @@ set mark-symlinked-directories On</div></pre>
 <h1>便利コマンドの定義</h1>
 
 <h2>プロンプト文字列</h2>
-<p><code>\s-\v\$ </code>ではそっけないので変える．<code>~/.bashrc</code>に追記．
+<p><code>\s-\v\$ </code> ではそっけないので変える．<code>~/.bashrc</code> に追記．
 </p>
 <pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Prompt strings
 PS0=$&#x27;\x1b[0m&#x27;
 PS1=&quot;\n\$(. ~rsk0315/.bashrc.d/ps1.sh)&quot;
 PS1+=$&#x27;\n\[\x1b[0m\]\$ \[\x1b[1m\]&#x27;</div></pre>
 
-<p><code>ps1.sh</code>は以下の通りで，
+<p><code>ps1.sh</code> は以下の通りで，
 </p>
 <ul>
   <li>カレントディレクトリ</li>
@@ -414,7 +415,7 @@ print_wd () {
 print_wd
 echo : bash-&quot;$BASH_VERSION&quot; &quot;[$((SHLVL-1))]&quot;</div></pre>
 
-<p><code>color-seq.sh</code>は色のエスケープシーケンスを生成する（関数を定義する）スクリプト．
+<p><code>color-seq.sh</code> は色のエスケープシーケンスを生成する（関数を定義する）スクリプト．
 別に関数にする必要はなくて，普通にスクリプトとして置いておいてもいい気がする．
 </p>
 
@@ -443,7 +444,7 @@ color_seq () {
 }</div></pre>
 
 <h2>終了ステータス</h2>
-<p><code>echo $?</code>を叩かないとわからないのは不便なので，勝手に出してくれるようにする．
+<p><code>echo $?</code> を叩かないとわからないのは不便なので，勝手に出してくれるようにする．
 典型的な値についてはコメントつき．
 </p>
 
@@ -554,17 +555,17 @@ on_prompt () {
 trap &#x27;on_debug &quot;$?&quot; &quot;$_&quot;&#x27; DEBUG
 trap &#x27;on_err &quot;$_&quot;&#x27; ERR
 PROMPT_COMMAND=&#x27;on_prompt &quot;$?&quot; &quot;$_&quot;&#x27;</div></pre>
-<p>バックグラウンドで実行したり<code>!</code>で論理反転したりするとこわれるけど仕方ない．
+<p>バックグラウンドで実行したり <code>!</code> で論理反転したりするとこわれるけど仕方ない．
 </p>
 
-<p>以下を<code>~/.bashrc</code>に追記して反映させる．
+<p>以下を <code>~/.bashrc</code> に追記して反映させる．
 </p>
 <pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Display previous exit status
 . ~rsk0315/.bashrc.d/exit-status.sh</div></pre>
 
 <h2>最新ファイルの出力</h2>
-<p><code>ls</code>を利用して最新のファイルを選ぶスクリプト．
-GNU拡張の<code>ls</code>は<code> </code>や<code>&#x27;</code>などをエスケープできるオプション<code>-Q</code>があって素敵なんだけど，それを復元するのが厄介なので諦める．そもそもそんなファイル名にする方がどうかしている．
+<p><code>ls</code> を利用して最新のファイルを選ぶスクリプト．
+GNU拡張の <code>ls</code> は <code> </code> や <code>&#x27;</code> などをエスケープできるオプション <code>-Q</code> があって素敵なんだけど，それを復元するのが厄介なので諦める．そもそもそんなファイル名にする方がどうかしている．
 </p>
 
 <pre class="sourcecode" filename="~/bin/latest"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
@@ -580,40 +581,40 @@ latest=$(ls -ltA | grep -E &quot;${suffix:+\\.(}$suffix${suffix:+)}\$&quot; \
              | grep &quot;^-$perm&quot; | awk &#x27;$0=$9&#x27; | sed q)
 [[ -z &quot;$latest&quot; ]] &amp;&amp; exit 1
 echo $latest</div></pre>
-<p>パーミッションと拡張子を指定可能．見つからなければ<code>1</code>を返す．
+<p>パーミッションと拡張子を指定可能．見つからなければ <code>1</code> を返す．
 </p>
 
 <p>もしもそうしたファイル名に対応する必要があるなら以下のようにする．
 テストするべき項目は少なくとも以下の通り．
 </p>
 <ul>
-  <li><code>\&quot;&#x27; $</code>などを含むファイル名</li>
-  <li>空白文字<code>\t\n\r\v\f</code>や連続するスペースを含むファイル名</li>
-  <li><code>\001</code>や<code>\177</code>などを含むファイル名</li>
-  <li>末尾に<code>\n</code>を含むファイル名</li>
+  <li><code>\&quot;&#x27; $</code> などを含むファイル名</li>
+  <li>空白文字 <code>\t\n\r\v\f</code> や連続するスペースを含むファイル名</li>
+  <li><code>\001</code> や <code>\177</code> などを含むファイル名</li>
+  <li>末尾に <code>\n</code> を含むファイル名</li>
   <ul>
-    <li><code>$(...)</code>は末尾の改行を削除するため</li>
+    <li><code>$(...)</code> は末尾の改行を削除するため</li>
     <li>これどうにもならなくないか</li>
-    <li>ゴミ文字<code>X</code>をつけて読み手側で処理する？ そんなの狂っている</li>
+    <li>ゴミ文字 <code>X</code> をつけて読み手側で処理する？ そんなの狂っている</li>
   </ul>
 </ul>
 <p>次のような方法でunescapeしようとした．
 </p>
 <ol>
-  <li>ファイル名の先頭の<code>&quot;</code>と末尾の<code>&quot;</code>を取り除く</li>
+  <li>ファイル名の先頭の <code>&quot;</code> と末尾の <code>&quot;</code> を取り除く</li>
   <ul>
-    <li>このとき，symlinkがあると<code>&quot;...&quot; -&gt; &quot;...&quot;</code>のような形式になることに注意</li>
+    <li>このとき，symlinkがあると <code>&quot;...&quot; -&gt; &quot;...&quot;</code> のような形式になることに注意</li>
   </ul>
-  <li><code>&#x27;</code>を<code>&#x27;\&#x27;$&#x27;</code>に置き換える</li>
+  <li><code>&#x27;</code> を <code>&#x27;\&#x27;$&#x27;</code> に置き換える</li>
   <ul>
-    <li><code>&#x27;</code>を<code>&#x27;\&#x27;&#x27;</code>にするやつ + <code>$&#x27;...&#x27;</code></li>
+    <li><code>&#x27;</code> を <code>&#x27;\&#x27;&#x27;</code>にするやつ + <code>$&#x27;...&#x27;</code></li>
   </ul>
-  <li>末尾に<code>&#x27;</code>を，先頭に<code>$&#x27;</code>を付加したものを<code>echo</code>する</li>
+  <li>末尾に <code>&#x27;</code> を，先頭に <code>$&#x27;</code> を付加したものを <code>echo</code> する</li>
   <ul>
     <li>シェルインジェクションに対して弱いとこわれる</li>
   </ul>
 </ol>
-<p><code>printf</code>を使うと<code>%</code>でこわれると思っていたが，こわれていたのは私の頭だった．
+<p><code>printf</code> を使うと <code>%</code> でこわれると思っていたが，こわれていたのは私の頭だった．
 </p>
 <pre class="sourcecode" filename="~/bin/latest-Q"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
 
@@ -635,11 +636,11 @@ latest=&quot;${latest%-}&quot;
 念のため，生成されたファイル名が存在するかのチェックをかませる．
 </p>
 
-<p><code>&quot;a&quot; -&gt; &quot;b&quot;</code>のようなsymlinkに対して<code>-&gt; </code>のようなsuffixを指定するとこわれそう．順番変えるだけでなんとかなる？
+<p><code>&quot;a&quot; -&gt; &quot;b&quot;</code> のようなsymlinkに対して <code>-&gt; </code> のようなsuffixを指定するとこわれそう．順番変えるだけでなんとかなる？
 </p>
 
 <h3>最新ソースのコンパイル</h3>
-<p>それを利用して最新のソースを<code>make</code>する．俗にいう<code>g</code>に対応するスクリプト．
+<p>それを利用して最新のソースを <code>make</code> する．俗にいう <code>g</code> に対応するスクリプト．
 </p>
 <pre class="sourcecode" filename="~/bin/g"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
 
@@ -654,19 +655,19 @@ src=&quot;$(latest -s&#x27;c|cxx|cc|C|cpp&#x27;)&quot; \
     || { echo no source files found. &gt;&amp;2; exit; }
 make CC=&quot;$CC&quot; CXX=&quot;$CXX&quot; CFLAGS=&quot;$CFLAGS&quot; CXXFLAGS=&quot;$CXXFLAGS&quot; &quot;${src%.*}&quot;</div></pre>
 
-<p>最新以外のファイルをするために<code>g foo</code>とできるようにしたいけど，オプションの解析が面倒になるんだよね．
-コンパイラを変えるときも<code>g CC=gcc</code>とできたら自然な気がするけど，仕方なく<code>CC=gcc g</code>とする．いや，ある種こちらの方が自然なのかも？
-<code>set -k</code>をしていると位置に関係なく環境変数をいじれるらしい．
+<p>最新以外のファイルをするために <code>g foo</code> とできるようにしたいけど，オプションの解析が面倒になるんだよね．
+コンパイラを変えるときも <code>g CC=gcc</code> とできたら自然な気がするけど，仕方なく <code>CC=gcc g</code> とする．いや，ある種こちらの方が自然なのかも？
+<code>set -k</code> をしていると位置に関係なく環境変数をいじれるらしい．
 </p>
 
-<p><code>g</code>の場合は末尾の文字が<code>\n</code>でないことがわかっているので，<code>latest</code>の部分を<code>latest-Q</code>に変えるか<code>latest</code>自体を差し替えれば堅牢なバージョンになる．
+<p><code>g</code> の場合は末尾の文字が <code>\n</code> でないことがわかっているので，<code>latest</code> の部分を <code>latest-Q</code> に変えるか <code>latest</code> 自体を差し替えれば堅牢なバージョンになる．
 </p>
 
-<p>GNU <code>make</code>はスペースに関してガバガバっぽいので，これをする必要があるならコンパイル部分を自分で書いたほうがいいのかも．
+<p>GNU <code>make</code> はスペースに関してガバガバっぽいので，これをする必要があるならコンパイル部分を自分で書いたほうがいいのかも．
 </p>
 
 <h3>最新の実行ファイルの実行</h3>
-<p>最新の実行ファイルを実行する．俗にいう<code>a</code>に対応するスクリプト．必ずしも<code>./a.out</code>とは限らないファイルを実行できる．
+<p>最新の実行ファイルを実行する．俗にいう <code>a</code> に対応するスクリプト．必ずしも <code>./a.out</code> とは限らないファイルを実行できる．
 </p>
 <pre class="sourcecode" filename="~/bin/a"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
 
@@ -674,8 +675,8 @@ src=$(latest -p ..x) || { echo no executables found. &gt;&amp;2; exit; }
 set -x
 &quot;./$src&quot; &quot;$@&quot;</div></pre>
 
-<p><code>a</code>の場合は末尾文字が<code>\n</code>になりうる（ここおふざけポイント）ので，工夫が必要．
-<code>$(...)</code>ではtrailing newlinesが除去されるので，<code>latest-Q</code>が成功した場合は<code>-\n</code>を追加する．（実質的には<code>\n-</code>が追加される．わかる？）
+<p><code>a</code> の場合は末尾文字が <code>\n</code> になりうる（ここおふざけポイント）ので，工夫が必要．
+<code>$(...)</code> ではtrailing newlinesが除去されるので，<code>latest-Q</code> が成功した場合は <code>-\n</code> を追加する．（実質的には <code>\n-</code> が追加される．わかる？）
 </p>
 <pre class="sourcecode" filename="~/bin/aa"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
 

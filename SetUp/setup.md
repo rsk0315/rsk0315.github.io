@@ -2,7 +2,7 @@
 CentOSを対象とした環境構築ガイド．
 
 Ubuntuなどにもある程度は流用可能．
-`./configure`では`--build=x86_64-pc-linux`にするとか，`apt-get`では`*-devel`ではなく`*-dev`になりがち，のようなことを覚えておくとよいかも？
+`./configure` では `--build=x86_64-pc-linux` にするとか，`apt-get` では `*-devel` ではなく `*-dev`になりがち，のようなことを覚えておくとよいかも？
 
 ## VMware Toolsのインストール
 #_
@@ -13,8 +13,8 @@ $ cd vmware-tools-distrib/
 $ sudo ./vmware-install.pl
 #_
 
-## `sudo`の設定
-以下のコマンドを用いて`/etc/sudoers`を編集し，いちいちパスワードを求められないようにする．
+## `sudo` の設定
+以下のコマンドを用いて `/etc/sudoers` を編集し，いちいちパスワードを求められないようにする．
 #_
 $ sudo visudo
 #_
@@ -34,32 +34,32 @@ $ sudo diff -up ~/tmp/sudoers /etc/sudoers
 - ## cdrom as root
 #_
 
-## `git`のアップグレード
+## `git` のアップグレード
 ビルドするのに必要なライブラリ群をインストールする．
 #_
 $ sudo yum install openssl-devel curl-devel expat-devel
 #_
 `gettext-devel`，`perl-devel`，`zlib-devel`，`perl-ExtUtils-MakeMaker`も依存している？ 最初から入っているかも？
 
-古い`git`が入っていることを期待し，以下を実行．
+古い `git` が入っていることを期待し，以下を実行．
 #_
 $ git clone https://github.com/git/git.git
 $ cd git
 $ make && make install
 #_
-`prefix`は`$(HOME)`になっているので，`$PATH`を見てちゃんと新しいのが実行されるかを確認する．
+`prefix` は `$(HOME)` になっているので，`$PATH` を見てちゃんと新しいのが実行されるかを確認する．
 
-`GIT_EDITOR`などを適宜変更しよう．
+`GIT_EDITOR` などを適宜変更しよう．
 #_
 $ man git-var
 #_
 を参考にするとよい．
 
-## `vim`のアップグレード
+## `vim` のアップグレード
 #_
 $ sudo yum install libX11-devel libXt-devel gtk2-devel ncurses-devel
 #_
-`atk-devel`も依存している？
+`atk-devel` も依存している？
 #_
 $ git clone https://github.com/vim/vim.git
 $ cd vim
@@ -68,8 +68,8 @@ $ ./configure --prefix=$HOME --build=x86_64-redhat-linux --with-x \
 $ make && make install
 #_
 
-## `emacs`のインストール
-`http://ftp.jaist.ac.jp/pub/GNU/emacs/`などから最新のものをダウンロード．
+## `emacs` のインストール
+`http://ftp.jaist.ac.jp/pub/GNU/emacs/` などから最新のものをダウンロード．
 #_
 $ sudo yum install gnutls-devel
 $ cd ~/Downloads
@@ -80,13 +80,13 @@ $ ./configure --prefix=$HOME --build=x86_64-redhat-linux --without-x
 $ make && make install
 #_
 
-## `python3`のインストール
+## `python3` のインストール
 #_
 $ sudo yum install https://centos7.iuscommunity.org/ius-release.rpm
 $ sudo yum install python36u{,-{libs,devel,pip}}
 #_
 
-`pip`を使って便利モジュールを入れるのも忘れずに．
+`pip` を使って便利モジュールを入れるのも忘れずに．
 #_
 $ curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 $ python3 get-pip.py --user
@@ -98,7 +98,7 @@ $ pip install --user Image
 $ pip install --user mechanicalsoup
 #_
 
-## `bash`のアップグレード
+## `bash` のアップグレード
 #_
 $ curl http://ftp.gnu.org/gnu/bash/bash-5.0-alpha.tar.gz -o bash-5.0-alpha.tar.gz
 $ tar xvf bash-5.0-alpha.tar.gz 
@@ -132,7 +132,7 @@ $ make -j4 BOOT_CFLAGS='-march=native -O3'
 $ make install
 #_
 
-`-fsanitize=undefined`つきでコンパイルしたファイルを正しく実行するためには`libubsan.so`が必要．
+`-fsanitize=undefined` つきでコンパイルしたファイルを正しく実行するためには `libubsan.so` が必要．
 #_
 $ ./a.out
 - ./a.out: error while loading shared libraries: libubsan.so.1: cannot open shared object file: No such file or directory
@@ -142,7 +142,7 @@ $ ./a.out
 $ ./a.out
 - ./a.out: /lib64/libstdc++.so.6: version `CXXABI_1.3.9' not found (required by ./a.out)
 #_
-これらを回避するために，`$HOME/lib64/`を`LD_LIBRARY_PATH`に追加するとよい．
+これらを回避するために，`$HOME/lib64/` を `LD_LIBRARY_PATH` に追加するとよい．
 ```[~/.bashrc]
 LD_LIBRARY_PATH=$HOME/lib64/${LD_LIBRARY_PATH:+:}$LD_LIBRARY_PATH
 ```
@@ -151,13 +151,12 @@ LD_LIBRARY_PATH=$HOME/lib64/${LD_LIBRARY_PATH:+:}$LD_LIBRARY_PATH
 ```
 # PATH=/new/path/to/dir:$PATH  # bad?
 ```
-`$PATH`が空のときにカレントディレクトリが含まれてしまうためである（ヒント：`::`または先頭・末尾の`:`によって表される空ディレクトリ名は`.`を意味する）．
-`$PATH`が空でないときのみ`:`に展開する記法を用いて以下のようにしたい．
+`$PATH` が空のときにカレントディレクトリが含まれてしまうためである（ヒント：`::` または先頭・末尾の `:` によって表される空ディレクトリ名は `.` を意味する）．
+`$PATH` が空でないときのみ展開する記法を用いて以下のようにしたい．
 ```
-# PATH=/new/path/to/dir${PATH:+:}$PATH
+# PATH=/new/path/to/dir${PATH:+:$PATH}
 ```
-また，`"..."`で囲まないことについては，空白除去が行われない感じなので問題ない気がする[^assign-split]．
-#[^assign-split]: 嘘かもしれないので注意．
+また，`"..."` で囲まないことについては，空白除去が行われない感じなので問題ない気がする（嘘かもしれないので注意）．
 
 ## その他有用なものたちのインストール
 #_
@@ -178,7 +177,7 @@ $ sudo ./install-tl
 # 発展的な環境構築
 趣味の領域に含まれると思われるもの．
 
-## `bashrc`の編集
+## `bashrc` の編集
 最初の状態では以下の内容しかなく，そっけなさすぎる（インストールの手順にもよるとは思うが）．
 ```[~/.bashrc]
 # .bashrc
@@ -207,9 +206,10 @@ alias rm='rm -iv' cp='cp -iv' mv='mv -iv'
 set -o noclobber       # same as `set -C'
 shopt -s histverify autocd
 ```
-`noclobber`によって`>`による上書きを防ぐことができる．強制的に上書きしたいときは`>|`を使う．
-`histverify`は履歴展開が起こったときコマンドが即座に実行されないようにする．
-`autocd`はコマンドとして見つからなかった文字列を`cd`への引数と解釈させる．`~`や`..`などのみでディレクトリを移動できるようになるが，暴発には注意．
+`noclobber` によって `>` による上書きを防ぐことができる．強制的に上書きしたいときは `>|` を使う．
+`histverify` は履歴展開が起こったときコマンドが即座に実行されないようにする．
+`autocd` はコマンドとして見つからなかった文字列を `cd` への引数と解釈させる．
+`~` や `..` などのみでディレクトリを移動できるようになるが，暴発には注意．
 
 ### ページャのオプション
 ```[~/.bashrc]
@@ -219,22 +219,22 @@ export LESS=FR
 - `less -F`：一画面で収まるならそのまま表示
 - `less -r`：エスケープシーケンスを解釈
   - これは表示が乱れることがある？ のでやめた
-  - `man`にもその旨が書いてあった
+  - `man` にもその旨が書いてあった
 - `less -R`：`ESC [ ... m`のシーケンスのみを解釈
 
 ### 補完の設定
-`Tab`などによる補完の設定．
+`Tab` などによる補完の設定．
 
-何かしらの原因で，空行で補完を試みると`bash: words: bad array subscript`のようなエラーが起きることがある．
+何かしらの原因で，空行で補完を試みると `bash: words: bad array subscript` のようなエラーが起きることがある．
 空行での補完を無効化すると抑止できるので，それをする．
 
-また，バックアップファイルなどが補完されると厄介なので，`FIGNORE`によってそれを防ぐ．
+また，バックアップファイルなどが補完されると厄介なので，`FIGNORE` によってそれを防ぐ．
 
 ```[~/.bashrc]
 # Completion configurations
 completion_loader () { return 124; }
 complete -EFcompletion_loader +o{bashdefault,default}
-export FIGNORE=.o:\~:#${FIGNORE:+:}$FIGINORE
+export FIGNORE=.o:\~:#${FIGNORE:+:$FIGINORE}
 ```
 
 ### 履歴関連
@@ -243,7 +243,7 @@ export FIGNORE=.o:\~:#${FIGNORE:+:}$FIGINORE
 HISTCONTROL=ignoredups:erasedups
 ```
 
-個人的に`g`→`a`→`%`の流れを無限に繰り返しがちなので，それで履歴が圧迫されるのは避けたい．
+個人的に `g` → `a` → `%` の流れを無限に繰り返しがちなので，それで履歴が圧迫されるのは避けたい．
 
 ### その他環境変数の設定
 ```[~/.bashrc]
@@ -253,7 +253,7 @@ export EDITOR=emacs  # ... or whatever you like
 ```
 
 ### キーバインドの補助設定
-`C-s`などが期待通りに動作するようにする．
+`C-s` などが期待通りに動作するようにする．
 ```[~/.bashrc]
 # Key bindings
 stty rprnt undef stop undef werase undef kill undef
@@ -262,7 +262,7 @@ stty rprnt undef stop undef werase undef kill undef
 #_
 $ stty rprnt \^r stop \^s werase \^w kill \^u
 #_
-履歴展開が有効な場合に`^`が暴発しないように注意．
+履歴展開が有効な場合に `^` が暴発しないように注意．
 また，個別に以下のようにしてもよい．
 #_
 $ stty rprnt \^r
@@ -283,17 +283,17 @@ $ stty kill \^u
 set enable-bracketed-paste On
 set mark-symlinked-directories On
 ```
-`enable-bracketed-paste`が有効のとき，改行文字が`accept-line`として暴発するのを防ぐ（タブ文字の`complete`なども同様）．
-`mark-symlinked-directories`が有効のとき，ディレクトリを指すリンクがTab補完されたときに`/`が付加される．
+`enable-bracketed-paste` が有効のとき，改行文字が `accept-line` として暴発するのを防ぐ（タブ文字の `complete` なども同様）．
+`mark-symlinked-directories` が有効のとき，ディレクトリを指すリンクがTab補完されたときに `/` が付加される．
 
 ```[~/.inputrc]
 "\e%": "\C-a#\C-j%\C-j"
 ```
-`M-%`によって，現在の行を残しつつプロセスを再開（`%`）する．
-`M-C-z`で`C-z`の逆をできたらよかったのだけど，`C-z`でsuspendするのを無効化しないと`"\e\C-z"`に書き込めないようなので断念．
+`M-%` によって，現在の行を残しつつプロセスを再開（`%`）する．
+`M-C-z` で `C-z` の逆をできたらよかったのだけど，`C-z` でsuspendするのを無効化しないと `"\e\C-z"` に書き込めないようなので断念．
 
 ## エディタの初期化ファイル
-### `init.el`の編集
+### `init.el` の編集
 
 emacsの初期化ファイル．
 ```[~/.emacs.d/init.el]
@@ -329,7 +329,7 @@ emacsの初期化ファイル．
 (require 'markdown)
 ```
 
-### `vimrc`の編集
+### `vimrc` の編集
 ```[~/.vimrc]
 " 色の設定
 :colorscheme koehler
@@ -346,14 +346,14 @@ emacsの初期化ファイル．
 :set backspace=eol,start,indent
 ```
 
-`vimrc`が長い方がえらいと思っている人たちは正気ですか？
+`vimrc` が長い方がえらいと思っている人たちは正気ですか？
 
-## `gitconfig`の編集
+## `gitconfig` の編集
 パラメータなどについては以下を参照．
 #_
 $ git help config
 #_
-`color.diff`の項目を見るとよい．数値を指定したときに`<Esc>38;5;##m`の形式になってくれるのはたまたまなのかも？
+`color.diff` の項目を見るとよい．数値を指定したときに `<Esc>38;5;##m` の形式になってくれるのはたまたまなのかも？
 ```[~/.gitconfig]
 [color.diff]
         new = green bold
@@ -364,7 +364,7 @@ $ git help config
 
 ## フォントの設定
 MigMixはいいぞ．
-`/etc/fonts/conf.d/65-nonlatin.conf`を編集する．とりあえず一番上にしよう．
+`/etc/fonts/conf.d/65-nonlatin.conf` を編集する．とりあえず一番上にしよう．
 #_
 $ diff -up ~/tmp/65-nonlatin.conf /etc/fonts/conf.d/65-nonlatin.conf
 ---- /home/rsk0315/tmp/65-nonlatin.conf
@@ -398,7 +398,7 @@ $ diff -up ~/tmp/65-nonlatin.conf /etc/fonts/conf.d/65-nonlatin.conf
 # 便利コマンドの定義
 
 ## プロンプト文字列
-`\s-\v\$ `ではそっけないので変える．`~/.bashrc`に追記．
+`\s-\v\$ ` ではそっけないので変える．`~/.bashrc` に追記．
 ```[~/.bashrc]
 # Prompt strings
 PS0=$'\x1b[0m'
@@ -406,7 +406,7 @@ PS1="\n\$(. ~rsk0315/.bashrc.d/ps1.sh)"
 PS1+=$'\n\[\x1b[0m\]\$ \[\x1b[1m\]'
 ```
 
-`ps1.sh`は以下の通りで，
+`ps1.sh` は以下の通りで，
 - カレントディレクトリ
 - シェルの階層
 - バージョン情報
@@ -435,7 +435,7 @@ print_wd
 echo : bash-"$BASH_VERSION" "[$((SHLVL-1))]"
 ```
 
-`color-seq.sh`は色のエスケープシーケンスを生成する（関数を定義する）スクリプト．
+`color-seq.sh` は色のエスケープシーケンスを生成する（関数を定義する）スクリプト．
 別に関数にする必要はなくて，普通にスクリプトとして置いておいてもいい気がする．
 
 ```[~/.bashrc.d/color-seq.sh]
@@ -465,7 +465,7 @@ color_seq () {
 ```
 
 ## 終了ステータス
-`echo $?`を叩かないとわからないのは不便なので，勝手に出してくれるようにする．
+`echo $?` を叩かないとわからないのは不便なので，勝手に出してくれるようにする．
 典型的な値についてはコメントつき．
 
 ```[~/.bashrc.d/exit-status.sh]
@@ -577,17 +577,17 @@ trap 'on_debug "$?" "$_"' DEBUG
 trap 'on_err "$_"' ERR
 PROMPT_COMMAND='on_prompt "$?" "$_"'
 ```
-バックグラウンドで実行したり`!`で論理反転したりするとこわれるけど仕方ない．
+バックグラウンドで実行したり `!` で論理反転したりするとこわれるけど仕方ない．
 
-以下を`~/.bashrc`に追記して反映させる．
+以下を `~/.bashrc` に追記して反映させる．
 ```[~/.bashrc]
 # Display previous exit status
 . ~rsk0315/.bashrc.d/exit-status.sh
 ```
 
 ## 最新ファイルの出力
-`ls`を利用して最新のファイルを選ぶスクリプト．
-GNU拡張の`ls`は` `や`'`などをエスケープできるオプション`-Q`があって素敵なんだけど，それを復元するのが厄介なので諦める．そもそもそんなファイル名にする方がどうかしている．
+`ls` を利用して最新のファイルを選ぶスクリプト．
+GNU拡張の `ls` は ` ` や `'` などをエスケープできるオプション `-Q` があって素敵なんだけど，それを復元するのが厄介なので諦める．そもそもそんなファイル名にする方がどうかしている．
 
 ```[~/bin/latest]
 # -*- mode: sh; sh-shell: bash -*-
@@ -604,27 +604,27 @@ latest=$(ls -ltA | grep -E "${suffix:+\\.(}$suffix${suffix:+)}\$" \
 [[ -z "$latest" ]] && exit 1
 echo $latest
 ```
-パーミッションと拡張子を指定可能．見つからなければ`1`を返す．
+パーミッションと拡張子を指定可能．見つからなければ `1` を返す．
 
 もしもそうしたファイル名に対応する必要があるなら以下のようにする．
 テストするべき項目は少なくとも以下の通り．
-- ``\"' $``などを含むファイル名
-- 空白文字`\t\n\r\v\f`や連続するスペースを含むファイル名
-- `\001`や`\177`などを含むファイル名
-- 末尾に`\n`を含むファイル名
-  - `$(...)`は末尾の改行を削除するため
+- ``\"' $`` などを含むファイル名
+- 空白文字 `\t\n\r\v\f` や連続するスペースを含むファイル名
+- `\001` や `\177` などを含むファイル名
+- 末尾に `\n` を含むファイル名
+  - `$(...)` は末尾の改行を削除するため
   - これどうにもならなくないか
-  - ゴミ文字`X`をつけて読み手側で処理する？ そんなの狂っている
+  - ゴミ文字 `X` をつけて読み手側で処理する？ そんなの狂っている
 
 次のような方法でunescapeしようとした．
-1. ファイル名の先頭の`"`と末尾の`"`を取り除く
-  - このとき，symlinkがあると`"..." -> "..."`のような形式になることに注意
-2. `'`を`'\'$'`に置き換える
-  - `'`を`'\''`にするやつ + `$'...'`
-3. 末尾に`'`を，先頭に`$'`を付加したものを`echo`する
+1. ファイル名の先頭の `"` と末尾の `"` を取り除く
+  - このとき，symlinkがあると `"..." -> "..."` のような形式になることに注意
+2. `'` を `'\'$'` に置き換える
+  - `'` を `'\''`にするやつ + `$'...'`
+3. 末尾に `'` を，先頭に `$'` を付加したものを `echo` する
   - シェルインジェクションに対して弱いとこわれる
 
-`printf`を使うと`%`でこわれると思っていたが，こわれていたのは私の頭だった．
+`printf` を使うと `%` でこわれると思っていたが，こわれていたのは私の頭だった．
 ```[~/bin/latest-Q]
 # -*- mode: sh; sh-shell: bash -*-
 
@@ -646,10 +646,10 @@ latest="${latest%-}"
 シェルインジェクションの心配はなさそう．
 念のため，生成されたファイル名が存在するかのチェックをかませる．
 
-`"a" -> "b"`のようなsymlinkに対して`-> `のようなsuffixを指定するとこわれそう．順番変えるだけでなんとかなる？
+`"a" -> "b"` のようなsymlinkに対して `-> ` のようなsuffixを指定するとこわれそう．順番変えるだけでなんとかなる？
 
 ### 最新ソースのコンパイル
-それを利用して最新のソースを`make`する．俗にいう`g`に対応するスクリプト．
+それを利用して最新のソースを `make` する．俗にいう `g` に対応するスクリプト．
 ```[~/bin/g]
 # -*- mode: sh; sh-shell: bash -*-
 
@@ -665,16 +665,16 @@ src="$(latest -s'c|cxx|cc|C|cpp')" \
 make CC="$CC" CXX="$CXX" CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" "${src%.*}"
 ```
 
-最新以外のファイルをするために`g foo`とできるようにしたいけど，オプションの解析が面倒になるんだよね．
-コンパイラを変えるときも`g CC=gcc`とできたら自然な気がするけど，仕方なく`CC=gcc g`とする．いや，ある種こちらの方が自然なのかも？
-`set -k`をしていると位置に関係なく環境変数をいじれるらしい．
+最新以外のファイルをするために `g foo` とできるようにしたいけど，オプションの解析が面倒になるんだよね．
+コンパイラを変えるときも `g CC=gcc` とできたら自然な気がするけど，仕方なく `CC=gcc g` とする．いや，ある種こちらの方が自然なのかも？
+`set -k` をしていると位置に関係なく環境変数をいじれるらしい．
 
-`g`の場合は末尾の文字が`\n`でないことがわかっているので，`latest`の部分を`latest-Q`に変えるか`latest`自体を差し替えれば堅牢なバージョンになる．
+`g` の場合は末尾の文字が `\n` でないことがわかっているので，`latest` の部分を `latest-Q` に変えるか `latest` 自体を差し替えれば堅牢なバージョンになる．
 
-GNU `make`はスペースに関してガバガバっぽいので，これをする必要があるならコンパイル部分を自分で書いたほうがいいのかも．
+GNU `make` はスペースに関してガバガバっぽいので，これをする必要があるならコンパイル部分を自分で書いたほうがいいのかも．
 
 ### 最新の実行ファイルの実行
-最新の実行ファイルを実行する．俗にいう`a`に対応するスクリプト．必ずしも`./a.out`とは限らないファイルを実行できる．
+最新の実行ファイルを実行する．俗にいう `a` に対応するスクリプト．必ずしも `./a.out` とは限らないファイルを実行できる．
 ```[~/bin/a]
 # -*- mode: sh; sh-shell: bash -*-
 
@@ -683,8 +683,8 @@ set -x
 "./$src" "$@"
 ```
 
-`a`の場合は末尾文字が`\n`になりうる（ここおふざけポイント）ので，工夫が必要．
-`$(...)`ではtrailing newlinesが除去されるので，`latest-Q`が成功した場合は`-\n`を追加する．（実質的には`\n-`が追加される．わかる？）
+`a` の場合は末尾文字が `\n` になりうる（ここおふざけポイント）ので，工夫が必要．
+`$(...)` ではtrailing newlinesが除去されるので，`latest-Q` が成功した場合は `-\n` を追加する．（実質的には `\n-` が追加される．わかる？）
 ```[~/bin/aa]
 # -*- mode: sh; sh-shell: bash -*-
 
