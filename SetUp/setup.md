@@ -2,7 +2,7 @@
 CentOS を対象とした環境構築ガイド．
 
 Ubuntu などにもある程度は流用可能．
-`./configure` では `--build=x86_64-pc-linux` にするとか，`apt-get` では `*-devel` ではなく `*-dev`になりがち，のようなことを覚えておくとよいかも？
+`./configure` では `--build=x86_64-pc-linux` にするとか，`apt-get` では `*-devel` ではなく `*-dev` になりがち，のようなことを覚えておくとよいかも？
 
 ## VMware Toolsのインストール
 #_
