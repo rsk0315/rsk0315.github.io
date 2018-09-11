@@ -1,7 +1,7 @@
 # 基本的な環境構築
-CentOSを対象とした環境構築ガイド．
+CentOS を対象とした環境構築ガイド．
 
-Ubuntuなどにもある程度は流用可能．
+Ubuntu などにもある程度は流用可能．
 `./configure` では `--build=x86_64-pc-linux` にするとか，`apt-get` では `*-devel` ではなく `*-dev`になりがち，のようなことを覚えておくとよいかも？
 
 ## VMware Toolsのインストール
