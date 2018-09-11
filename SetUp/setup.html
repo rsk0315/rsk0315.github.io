@@ -329,13 +329,32 @@ C シェルの真似をして <code>M-C-z</code> で <code>C-z</code> の逆を�
 :set showcmd
 :set ruler
 
+&quot; 行番号
+:set number
+
 &quot; ショートカット
 :nnoremap ZX &lt;Esc&gt;:w&lt;CR&gt;&lt;C-z&gt;
 
 &quot; バックスペースの挙動
-:set backspace=eol,start,indent</div></pre>
+:set backspace=eol,start,indent
+&quot; インデントの設定 cf: &#x27;:h cinoption-values&#x27;
+:set expandtab
+:set tabstop=4
+:set softtabstop=4
+:set shiftwidth=4
+:set autoindent
+:set smartindent  &quot; ここよくわかってません
+
+&quot; 言語特有の設定
+augroup langc
+    au BufNewFile,BufRead *.c,*.cpp,*.cc,*.cxx,*.C,*.h,*.hpp
+        \ setlocal tabstop=2 softtabstop=2 shiftwidth=2 cindent
+    au BufNewFile *.rs
+        \ 0r ~/codefolio/Rust/scanner.rs
+augroup END</div></pre>
 
 <p><code>vimrc</code> が長い方がえらいと思っている人たちは正気ですか？
+...とか書いてたくせに（そらで完全に書けるほど）短いとは言えなくなってきましたね．
 </p>
 
 <h2><code>gitconfig</code> の編集</h2>

@@ -346,14 +346,33 @@ emacs の初期化ファイル．
 :set showcmd
 :set ruler
 
+" 行番号
+:set number
+
 " ショートカット
 :nnoremap ZX <Esc>:w<CR><C-z>
 
 " バックスペースの挙動
 :set backspace=eol,start,indent
+" インデントの設定 cf: ':h cinoption-values'
+:set expandtab
+:set tabstop=4
+:set softtabstop=4
+:set shiftwidth=4
+:set autoindent
+:set smartindent  " ここよくわかってません
+
+" 言語特有の設定
+augroup langc
+    au BufNewFile,BufRead *.c,*.cpp,*.cc,*.cxx,*.C,*.h,*.hpp
+        \ setlocal tabstop=2 softtabstop=2 shiftwidth=2 cindent
+    au BufNewFile *.rs
+        \ 0r ~/codefolio/Rust/scanner.rs
+augroup END
 ```
 
 `vimrc` が長い方がえらいと思っている人たちは正気ですか？
+...とか書いてたくせに（そらで完全に書けるほど）短いとは言えなくなってきましたね．
 
 ## `gitconfig` の編集
 パラメータなどについては以下を参照．
