@@ -180,6 +180,25 @@
 </p>
 <pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0">export PATH=$HOME/.cargo/bin/${PATH:+:$PATH}</div></pre>
 
+<h2>PHP のアップデート</h2>
+<p><code>yum</code> は古い定期．<a href="http://php.net/get/php-7.2.10.tar.xz/from/a/mirror">http://php.net/get/php-7.2.10.tar.xz/from/a/mirror</a> などからダウンロード．
+</p>
+<pre><span class="cmd-in">cd ~/Downloads/</span>
+<span class="cmd-in">tar xvf php-7.2.10.tar.xz</span>
+<span class="cmd-in">cd php-7.2.10/</span>
+<span class="cmd-in">./configure --build=prefix=$HOME --x86_64-redhat-linux --enable-mbstring --with-openssl</span>
+<span class="cmd-in">make</span>
+<span class="cmd-in">make test  # may fail ???</span>
+<span class="cmd-in">make install</pre>
+<pre><span class="cmd-out"><span>Fatal error: Call to undefined function Symfony\Component\Console\mb_detect_encoding() in /usr/share/php/Symphony/Component/Console/Application.php on line 1096</span></span></pre><p>これきらい．
+</p>
+
+<pre style="color:#aaaaaa; background-color:#aa0000"><span class="cmd-out"><span>[Composer\Exception\NoSslException]
+</span></span><span class="cmd-out"><span>The openssl extension is required for SSL/TLS protection but is not available.
+</span></span><span class="cmd-out"><span> If you can not enable the openssl extension, you can disable this error, at y
+</span></span><span class="cmd-out"><span>our own risk, by setting the &#x27;disable-tls&#x27; option to true.</span></span></pre><p>これもきらい．
+</p>
+
 <h1>発展的な環境構築</h1>
 <p>趣味の領域に含まれると思われるもの．
 </p>

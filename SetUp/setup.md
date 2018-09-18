@@ -190,6 +190,31 @@ $ curl -sSf http://sh.rustup.rs | bash
 export PATH=$HOME/.cargo/bin/${PATH:+:$PATH}
 ```
 
+## PHP のアップデート
+`yum` は古い定期．@[url:http://php.net/get/php-7.2.10.tar.xz/from/a/mirror]@ などからダウンロード．
+#_
+$ cd ~/Downloads/
+$ tar xvf php-7.2.10.tar.xz
+$ cd php-7.2.10/
+$ ./configure --build=prefix=$HOME --x86_64-redhat-linux --enable-mbstring --with-openssl
+$ make
+$ make test  # may fail ???
+$ make install
+#_
+
+#_
+- Fatal error: Call to undefined function Symfony\Component\Console\mb_detect_encoding() in /usr/share/php/Symphony/Component/Console/Application.php on line 1096
+#_
+これきらい．
+
+#_:#aaaaaa:#aa0000
+- [Composer\Exception\NoSslException]
+- The openssl extension is required for SSL/TLS protection but is not available.
+-  If you can not enable the openssl extension, you can disable this error, at y
+- our own risk, by setting the 'disable-tls' option to true.
+#_
+これもきらい．
+
 # 発展的な環境構築
 趣味の領域に含まれると思われるもの．
 
