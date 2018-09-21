@@ -128,7 +128,7 @@ span.tt:after {
     cursor: pointer;
     background-color: rgba(0,0,0,.07);
     /* border: 1px solid #ccc; */
-    border-radius: 0 4px 4px 4px;
+    border-radius: 4px 4px 0 4px;
     line-height: 23px;
 }
 
