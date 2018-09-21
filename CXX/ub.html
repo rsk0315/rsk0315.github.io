@@ -233,7 +233,7 @@ int main() {
   if (x &lt; 0 &amp;&amp; -x &lt; 0) printf(&quot;-2147483648\n&quot;);
 }</div></pre></div>
 <div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">g++ -O3 sample.cpp</span>
-<span class="cmd-in">./a.out &lt;&lt;&lt; -2147483648  # no output</pre></div>
+<span class="cmd-in">./a.out &lt;&lt;&lt; -2147483648  # no output</span></pre></div>
 <p>今は <code>int</code> は 32-bit で負数は 2 の補数で表現する処理系を仮定します．
 </p>
 
@@ -250,7 +250,7 @@ int main() {
 
 <p><code>-S</code> で生成されるアセンブラのコードを見てもそうなっていることが確認できます．
 </p>
-<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">g++ -S -O3 sample.cpp</pre></div>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">g++ -S -O3 sample.cpp</span></pre></div>
 <div><pre class="sourcecode" filename="sample.s"><div style="margin:1.2em 0 0 0">	.file	&quot;sample.cpp&quot;
 	.text
 	.section	.rodata.str1.1,&quot;aMS&quot;,@progbits,1
