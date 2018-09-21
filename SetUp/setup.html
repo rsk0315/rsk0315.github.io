@@ -60,12 +60,12 @@ echo コピペの動作確認用</div></pre></div>
 <span class="cmd-in">cp /run/media/rsk0315/VMware\ Tools/VMwareTools-*.tar.gz ./</span>
 <span class="cmd-in">tar xvf VMwareTools-*.tar.gz</span>
 <span class="cmd-in">cd vmware-tools-distrib/</span>
-<span class="cmd-in">sudo ./vmware-install.pl</pre></div>
+<span class="cmd-in">sudo ./vmware-install.pl</span></pre></div>
 
 <h2><code>sudo</code> の設定</h2>
 <p>以下のコマンドを用いて <code>/etc/sudoers</code> を編集し，いちいちパスワードを求められないようにする．
 </p>
-<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">sudo visudo</pre></div>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">sudo visudo</span></pre></div>
 <p>差分は次の通り．
 </p>
 <div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">sudo diff -up ~/tmp/sudoers /etc/sudoers</span>
@@ -84,7 +84,7 @@ echo コピペの動作確認用</div></pre></div>
 <h2><code>git</code> のアップグレード</h2>
 <p>ビルドするのに必要なライブラリ群をインストールする．
 </p>
-<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">sudo yum install openssl-devel curl-devel expat-devel</pre></div>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">sudo yum install openssl-devel curl-devel expat-devel</span></pre></div>
 <p><code>gettext-devel</code>，<code>perl-devel</code>，<code>zlib-devel</code>，<code>perl-ExtUtils-MakeMaker</code>も依存している？ 最初から入っているかも？
 </p>
 
@@ -92,27 +92,27 @@ echo コピペの動作確認用</div></pre></div>
 </p>
 <div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">git clone https://github.com/git/git.git</span>
 <span class="cmd-in">cd git</span>
-<span class="cmd-in">make &amp;&amp; make install</pre></div>
+<span class="cmd-in">make &amp;&amp; make install</span></pre></div>
 <p><code>prefix</code> は <code>$(HOME)</code> になっているので，<code>$PATH</code> を見てちゃんと新しいのが実行されるかを確認する．必要に応じて以下を実行してみる．
 </p>
 <div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">git --version</span>
-<span class="cmd-in">which git</pre></div>
+<span class="cmd-in">which git</span></pre></div>
 
 <p><code>GIT_EDITOR</code> などを適宜変更しよう．
 </p>
-<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">man git-var</pre></div>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">man git-var</span></pre></div>
 <p>を参考にするとよい．
 </p>
 
 <h2><code>vim</code> のアップグレード</h2>
-<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">sudo yum install libX11-devel libXt-devel gtk2-devel ncurses-devel</pre></div>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">sudo yum install libX11-devel libXt-devel gtk2-devel ncurses-devel</span></pre></div>
 <p><code>atk-devel</code> も依存している？
 </p>
 <div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">git clone https://github.com/vim/vim.git</span>
 <span class="cmd-in">cd vim</span>
 <span class="cmd-in">./configure --prefix=$HOME --build=x86_64-redhat-linux --with-x \
 <span class="cmd-cont"></span>    CFLAGS=-I/usr/include/X11</span>
-<span class="cmd-in">make &amp;&amp; make install</pre></div>
+<span class="cmd-in">make &amp;&amp; make install</span></pre></div>
 
 <h2><code>emacs</code> のインストール</h2>
 <p><code>http://ftp.jaist.ac.jp/pub/GNU/emacs/</code> などから最新のものをダウンロード．
@@ -123,11 +123,11 @@ echo コピペの動作確認用</div></pre></div>
 <span class="cmd-in">tar xvf emacs-26.1.tar.xz</span>
 <span class="cmd-in">cd emacs-26.1/</span>
 <span class="cmd-in">./configure --prefix=$HOME --build=x86_64-redhat-linux --without-x</span>
-<span class="cmd-in">make &amp;&amp; make install</pre></div>
+<span class="cmd-in">make &amp;&amp; make install</span></pre></div>
 
 <h2><code>python3</code> のインストール</h2>
 <div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">sudo yum install https://centos7.iuscommunity.org/ius-release.rpm</span>
-<span class="cmd-in">sudo yum install python36u{,-{libs,devel,pip}}</pre></div>
+<span class="cmd-in">sudo yum install python36u{,-{libs,devel,pip}}</span></pre></div>
 
 <p><code>pip</code> を使って便利モジュールを入れるのも忘れずに．
 </p>
@@ -138,7 +138,7 @@ echo コピペの動作確認用</div></pre></div>
 <span class="cmd-in">pip install --user pandas</span>
 <span class="cmd-in">pip install --user matplotlib</span>
 <span class="cmd-in">pip install --user Image</span>
-<span class="cmd-in">pip install --user mechanicalsoup</pre></div>
+<span class="cmd-in">pip install --user mechanicalsoup</span></pre></div>
 
 <h2><code>bash</code> のアップグレード</h2>
 <div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">curl http://ftp.gnu.org/gnu/bash/bash-5.0-alpha.tar.gz -o bash-5.0-alpha.tar.gz</span>
@@ -146,16 +146,16 @@ echo コピペの動作確認用</div></pre></div>
 <span class="cmd-in">cd bash-5.0-alpha/</span>
 <span class="cmd-in">./configure --prefix=$HOME --build=x86_64-redhat-linux</span>
 <span class="cmd-in">make &amp;&amp; make install</span>
-<span class="cmd-in">cp doc/bash.1 ~/usr/share/man/man1/</pre></div>
+<span class="cmd-in">cp doc/bash.1 ~/usr/share/man/man1/</span></pre></div>
 
 <h2>GCCのアップグレード</h2>
 <p><code>yum install gcc</code> でインストールできる GCC は古いのでつらい．
 </p>
 <div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">sudo yum install centos-release-scl</span>
-<span class="cmd-in">sudo yum install devtoolset-7-gcc-c++</pre></div>
+<span class="cmd-in">sudo yum install devtoolset-7-gcc-c++</span></pre></div>
 <p>として新しいものをインストールできる．かわりに <code>devtoolset-7\*</code> とすると他にもいろいろ入る．<a href="https://www.softwarecollections.org/en/scls/rhscl/devtoolset-7/">https://www.softwarecollections.org/en/scls/rhscl/devtoolset-7/</a> を参考にしよう．
 </p>
-<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">scl enable devtoolset-7 bash</pre></div>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">scl enable devtoolset-7 bash</span></pre></div>
 <p>とすることでそれを有効にした状態でシェルを起動することができる．
 <code>PATH</code> に <code>/opt/rh/devtoolset-7/root/usr/bin/</code> を追加するだけでもよさそう？
 </p>
@@ -168,7 +168,7 @@ echo コピペの動作確認用</div></pre></div>
 <span class="cmd-in">./contrib/download_prerequisites</span>
 <span class="cmd-in">./configure --prefix=$HOME --build=x86_64-redhat-linux --program-suffix=-8.2 --disable-multilib --enable-languages=c,c++ C{,XX}FLAGS=-O3</span>
 <span class="cmd-in">make -j4 BOOT_CFLAGS=&#x27;-march=native -O3&#x27;</span>
-<span class="cmd-in">make install</pre></div>
+<span class="cmd-in">make install</span></pre></div>
 
 <p><code>-fsanitize=undefined</code> つきでコンパイルしたファイルを正しく実行するためには <code>libubsan.so</code> が必要．
 </p>
@@ -196,7 +196,7 @@ echo コピペの動作確認用</div></pre></div>
 <div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">sudo yum install php</span>
 <span class="cmd-in">sudo yum install mawk</span>
 <span class="cmd-in">sudo yum install ruby ruby-devel</span>
-<span class="cmd-in">sudo yum install xsel</pre></div>
+<span class="cmd-in">sudo yum install xsel</span></pre></div>
 <p><span class="tex">L<sup>a</sup>T<sub>e</sub>X</span>も早いうちに入れよう．
 </p>
 
@@ -204,10 +204,10 @@ echo コピペの動作確認用</div></pre></div>
 <p><span class="tex">T<sub>e</sub>X</span> Liveを使う．
 </p>
 <div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">sudo yum install perl-Digest-MD5</span>
-<span class="cmd-in">sudo ./install-tl</pre></div>
+<span class="cmd-in">sudo ./install-tl</span></pre></div>
 
 <h2>Rust のインストール</h2>
-<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">curl -sSf http://sh.rustup.rs | bash</pre></div>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">curl -sSf http://sh.rustup.rs | bash</span></pre></div>
 
 <p><a href="https://www.rustup.rs">公式サイト？</a>には <code>curl https://sh.rustup.rs -sSf | sh</code> と書かれているが，shebang が <code>#!/bin/bash</code> なんだよね．
 </p>
@@ -225,7 +225,7 @@ echo コピペの動作確認用</div></pre></div>
 <span class="cmd-in">./configure --build=prefix=$HOME --x86_64-redhat-linux --enable-mbstring --with-openssl</span>
 <span class="cmd-in">make</span>
 <span class="cmd-in">make test  # may fail ???</span>
-<span class="cmd-in">make install</pre></div>
+<span class="cmd-in">make install</span></pre></div>
 
 <div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-out"><span>Fatal error: Call to undefined function Symfony\Component\Console\mb_detect_encoding() in /usr/share/php/Symphony/Component/Console/Application.php on line 1096</span></span></pre></div>
 <p>これきらい．
@@ -344,14 +344,14 @@ export EDITOR=emacs  # ... or whatever you like</div></pre></div>
 stty rprnt undef stop undef werase undef kill undef</div></pre></div>
 <p>デフォルトに戻す場合は以下の通り．
 </p>
-<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">stty rprnt \^r stop \^s werase \^w kill \^u</pre></div>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">stty rprnt \^r stop \^s werase \^w kill \^u</span></pre></div>
 <p>履歴展開が有効な場合に <code>^</code> が暴発しないように注意．
 また，個別に以下のようにしてもよい．
 </p>
 <div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">stty rprnt \^r</span>
 <span class="cmd-in">stty stop \^s</span>
 <span class="cmd-in">stty werase \^w</span>
-<span class="cmd-in">stty kill \^u</pre></div>
+<span class="cmd-in">stty kill \^u</span></pre></div>
 
 <h3><code>inputrc</code>の編集</h3>
 <div><pre class="sourcecode" filename="~/.inputrc"><div style="margin:1.2em 0 0 0"># emacs-like key bindings
@@ -448,7 +448,7 @@ augroup END</div></pre></div>
 <h2><code>gitconfig</code> の編集</h2>
 <p>パラメータなどについては以下を参照．
 </p>
-<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">git help config</pre></div>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">git help config</span></pre></div>
 <p><code>color.diff</code> の項目を見るとよい．数値を指定したときに <code>&lt;Esc&gt;38;5;##m</code> の形式になってくれるのはたまたまなのかも？
 </p>
 <div><pre class="sourcecode" filename="~/.gitconfig"><div style="margin:1.2em 0 0 0">[color.diff]
