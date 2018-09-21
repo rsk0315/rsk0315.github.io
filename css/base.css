@@ -146,6 +146,17 @@ span.tt:after {
 /*     overflow-x: auto; */
 /*     -webkit-overflow-scrolling: touch; */
 /* } */
-div pre {
+pre {
+    display: block;
     overflow-x: auto;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    word-wrap: normal;
+    word-break: normal;
+    word-spacing: normal;
+    white-space: pre;
+    hyphens: none;
+    
+    -webkit-overflow-scrolling: auto;
 }
