@@ -5,6 +5,7 @@
     cursor: pointer;
 }
 .ps1:after {
+    color: #2e3436;
     content: '$';
 }
 .ps1-root:after {
