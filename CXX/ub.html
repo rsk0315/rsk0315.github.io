@@ -106,13 +106,13 @@
 </p>
 
 <h3>配列境界外参照</h3>
-<pre class="sourcecode" filename="sample.cpp"><div style="margin:1.2em 0 0 0">#include &lt;cstdio&gt;
+<div><pre class="sourcecode" filename="sample.cpp"><div style="margin:1.2em 0 0 0">#include &lt;cstdio&gt;
 
 int main() {
   int a[5]={31, 41, 59, 26, 53}, x=58;
   for (int i=0; i&lt;=5; ++i)
     if (a[i] == x) return !printf(&quot;Found!\n&quot;);
-}</div></pre>
+}</div></pre></div>
 <pre style="color:#f3f3f3; background-color:#2e3436"><div><span class="cmd-in">g++ -O2 sample.cpp</span>
 <span class="cmd-in">./a.out</span>
 <span class="cmd-out"><span>Found!</span></span></div></pre><p>これは比較的有名な例ですね．以下のように説明されます．
@@ -126,12 +126,12 @@ int main() {
 </p>
 
 <h3>識別子</h3>
-<pre class="sourcecode" filename="sample.cpp"><div style="margin:1.2em 0 0 0">#define _STDIO_H
+<div><pre class="sourcecode" filename="sample.cpp"><div style="margin:1.2em 0 0 0">#define _STDIO_H
 #include &lt;cstdio&gt;
 
 int main() {
   printf(&quot;Hello, world.\n&quot;);
-}</div></pre>
+}</div></pre></div>
 
 <pre style="color:#f3f3f3; background-color:#2e3436"><div><span class="cmd-in">g++ sample.cpp</span>
 <span class="cmd-out"><span>In file included from </span><span style=" font-weight:bold;">sample.cpp:2</span><span style="">:
@@ -162,14 +162,14 @@ int main() {
 
 <p>もう一つ例を出します．
 </p>
-<pre class="sourcecode" filename="sample.cpp"><div style="margin:1.2em 0 0 0">#include &lt;cstdio&gt;
+<div><pre class="sourcecode" filename="sample.cpp"><div style="margin:1.2em 0 0 0">#include &lt;cstdio&gt;
 
 int foo() { return 42; }
 int _Z3foov;
 
 int main() {
   printf(&quot;%d\n&quot;, foo());
-}</div></pre>
+}</div></pre></div>
 <pre style="color:#f3f3f3; background-color:#2e3436"><div><span class="cmd-in">g++ sample.cpp</span>
 <span class="cmd-out"><span>/tmp/ccMfblBf.s: Assembler messages:
 </span></span><span class="cmd-out"><span>/tmp/ccMfblBf.s:42: Error: symbol `_Z3foov&#x27; is already defined</span></span></div></pre><p>一見 <code>_Z3foov</code> という名前は再定義されていないように見えますが，なぜこうなるかわかりますか？
@@ -198,13 +198,13 @@ int main() {
 </p>
 
 <h3>比較関数</h3>
-<pre class="sourcecode" filename="sample.cpp"><div style="margin:1.2em 0 0 0">#include &lt;cstdio&gt;
+<div><pre class="sourcecode" filename="sample.cpp"><div style="margin:1.2em 0 0 0">#include &lt;cstdio&gt;
 #include &lt;vector&gt;
 
 int main() {
   int a[512]={};
   std::sort(a, a+512, [](int, int) { return true; });
-}</div></pre>
+}</div></pre></div>
 <pre style="color:#f3f3f3; background-color:#2e3436"><div><span class="cmd-in">g++ sample.cpp</span>
 <span class="cmd-in">./a.out</span>
 <span class="cmd-out"><span>Segmentation fault (core dumped)</span></span></div></pre>
@@ -221,13 +221,13 @@ int main() {
 </p>
 
 <h3>オーバーフロー</h3>
-<pre class="sourcecode" filename="sample.cpp"><div style="margin:1.2em 0 0 0">#include &lt;cstdio&gt;
+<div><pre class="sourcecode" filename="sample.cpp"><div style="margin:1.2em 0 0 0">#include &lt;cstdio&gt;
 
 int main() {
   int x;
   scanf(&quot;%d&quot;, &amp;x);
   if (x &lt; 0 &amp;&amp; -x &lt; 0) printf(&quot;-2147483648\n&quot;);
-}</div></pre>
+}</div></pre></div>
 <pre style="color:#f3f3f3; background-color:#2e3436"><div><span class="cmd-in">g++ -O3 sample.cpp</span>
 <span class="cmd-in">./a.out &lt;&lt;&lt; -2147483648  # no output</div></pre><p>今は <code>int</code> は 32-bit で負数は 2 の補数で表現する処理系を仮定します．
 </p>
@@ -245,7 +245,7 @@ int main() {
 
 <p><code>-S</code> で生成されるアセンブラのコードを見てもそうなっていることが確認できます．
 </p>
-<pre style="color:#f3f3f3; background-color:#2e3436"><div><span class="cmd-in">g++ -S -O3 sample.cpp</div></pre><pre class="sourcecode" filename="sample.s"><div style="margin:1.2em 0 0 0">	.file	&quot;sample.cpp&quot;
+<pre style="color:#f3f3f3; background-color:#2e3436"><div><span class="cmd-in">g++ -S -O3 sample.cpp</div></pre><div><pre class="sourcecode" filename="sample.s"><div style="margin:1.2em 0 0 0">	.file	&quot;sample.cpp&quot;
 	.text
 	.section	.rodata.str1.1,&quot;aMS&quot;,@progbits,1
 .LC0:
@@ -271,7 +271,7 @@ main:
 .LFE12:
 	.size	main, .-main
 	.ident	&quot;GCC: (GNU) 8.2.0&quot;
-	.section	.note.GNU-stack,&quot;&quot;,@progbits</div></pre>
+	.section	.note.GNU-stack,&quot;&quot;,@progbits</div></pre></div>
 
 <p>なお， $n$ ビットの<strong>符号なし</strong>整数型は  $2^n$  を法とした演算を行うため，実質的にオーバーフローしない（その型で表せる範囲を超えた値にならない）とされています（[basic.fundamental]）．
 </p>
@@ -292,14 +292,14 @@ GCC ではちゃんと <a href="https://gcc.gnu.org/onlinedocs/libstdc++/manual/
 
 <p>たとえば，以下のように教えてくれます．
 </p>
-<pre class="sourcecode" filename="sample.cpp"><div style="margin:1.2em 0 0 0">// #define _GLIBCXX_DEBUG  /* ソース内で #define してもいい */
+<div><pre class="sourcecode" filename="sample.cpp"><div style="margin:1.2em 0 0 0">// #define _GLIBCXX_DEBUG  /* ソース内で #define してもいい */
 #include &lt;cstdio&gt;
 #include &lt;vector&gt;
 
 int main() {
   std::vector&lt;int&gt; x{1, 2};
   printf(&quot;%d\n&quot;, x[2]);
-}</div></pre>
+}</div></pre></div>
 <pre style="color:#f3f3f3; background-color:#2e3436"><div><span class="cmd-in">g++ -D_GLIBCXX_DEBUG sample.cpp  # コンパイル時に #define してもいい</span>
 <span class="cmd-in">./a.out</span>
 <span class="cmd-out"><span>/usr/include/c++/8.2.0/debug/vector:417:
@@ -331,13 +331,13 @@ int main() {
 <h3><code>.at(i)</code></h3>
 <p>添字のアクセスに関しては，規格で定められた別の方法が存在します．
 </p>
-<pre class="sourcecode" filename="sample.cpp"><div style="margin:1.2em 0 0 0">#include &lt;cstdio&gt;
+<div><pre class="sourcecode" filename="sample.cpp"><div style="margin:1.2em 0 0 0">#include &lt;cstdio&gt;
 #include &lt;vector&gt;
 
 int main() {
   std::vector&lt;int&gt; x{1, 2};
   printf(&quot;%d\n&quot;, x.at(2));
-}</div></pre>
+}</div></pre></div>
 <pre style="color:#f3f3f3; background-color:#2e3436"><div><span class="cmd-in">g++ sample.cpp</span>
 <span class="cmd-in">./a.out</span>
 <span class="cmd-out"><span>terminate called after throwing an instance of &#x27;std::out_of_range&#x27;
@@ -351,7 +351,7 @@ int main() {
 オーバーフローや配列境界外参照などを検出してくれます．
 </p>
 
-<pre class="sourcecode" filename="sample.cpp"><div style="margin:1.2em 0 0 0">#include &lt;cstdio&gt;
+<div><pre class="sourcecode" filename="sample.cpp"><div style="margin:1.2em 0 0 0">#include &lt;cstdio&gt;
 
 int main() {
   int x, a[123456]={};
@@ -359,7 +359,7 @@ int main() {
   printf(&quot;%d\n&quot;, x*x);
   printf(&quot;%d\n&quot;, x&lt;&lt;x);
   printf(&quot;%d\n&quot;, a[x]);
-}</div></pre>
+}</div></pre></div>
 <pre style="color:#f3f3f3; background-color:#2e3436"><div><span class="cmd-in">./a.out</span>
 <span class="cmd-out"><span></span><span style=" font-weight:bold;">ubsan-overflow.cpp:6:9:</span><span style=" font-weight:bold;"></span><span style=" font-weight:bold; color:#ff5555;"> runtime error: </span><span style=" font-weight:bold; color:#ff5555;"></span><span style=""></span><span style=" font-weight:bold;">signed integer overflow: 123456 * 123456 cannot be represented in type &#x27;int&#x27;</span><span style=" font-weight:bold;"></span><span style="">
 </span></span><span class="cmd-out"><span>-1938485248
@@ -376,8 +376,8 @@ int main() {
 <pre style="color:#f3f3f3; background-color:#2e3436"><div><span class="cmd-in">./a.out</span>
 <span class="cmd-out"><span>./a.out: error while loading shared libraries: libubsan.so.1: cannot open shared object file: No such file or directory</span></span></div></pre><p>その場合は <code>sudo find / -name libubsan.so.1 2&gt;/dev/null</code> などをして見つかったディレクトリを <code>LD_LIBRARY_PATH</code> に追加しましょう．
 </p>
-<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># for example
-export LD_LIBRARY_PATH=$HOME/lib64/${LD_LIBRARY_PATH:+:}$LD_LIBRARY_PATH</div></pre>
+<div><pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># for example
+export LD_LIBRARY_PATH=$HOME/lib64/${LD_LIBRARY_PATH:+:}$LD_LIBRARY_PATH</div></pre></div>
 
 <h2>書きたいこと</h2>
 <ul>

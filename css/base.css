@@ -146,3 +146,6 @@ span.tt:after {
 /*     overflow-x: auto; */
 /*     -webkit-overflow-scrolling: touch; */
 /* } */
+div pre {
+    overflow-x: auto;
+}
