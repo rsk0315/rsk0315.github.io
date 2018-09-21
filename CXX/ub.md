@@ -322,7 +322,7 @@ int main() {
 }
 #`
 #_
-$ ./a.out
+$ ./a.out <<< 123456
 - [1mubsan-overflow.cpp:6:9:[1m[31m runtime error: [1m[0m[1msigned integer overflow: 123456 * 123456 cannot be represented in type 'int'[1m[0m
 - -1938485248
 - [1mubsan-overflow.cpp:7:19:[1m[31m runtime error: [1m[0m[1mshift exponent 123456 is too large for 32-bit type 'int'[1m[0m
@@ -343,7 +343,7 @@ $ ./a.out
 その場合は `sudo find / -name libubsan.so.1 2>/dev/null` などをして見つかったディレクトリを `LD_LIBRARY_PATH` に追加しましょう．
 #`[~/.bashrc]
 # for example
-export LD_LIBRARY_PATH=$HOME/lib64/${LD_LIBRARY_PATH:+:}$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$HOME/lib64/${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 #`
 
 ## 書きたいこと

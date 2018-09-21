@@ -360,7 +360,7 @@ int main() {
   printf(&quot;%d\n&quot;, x&lt;&lt;x);
   printf(&quot;%d\n&quot;, a[x]);
 }</div></pre></div>
-<pre style="color:#f3f3f3; background-color:#2e3436"><div><span class="cmd-in">./a.out</span>
+<pre style="color:#f3f3f3; background-color:#2e3436"><div><span class="cmd-in">./a.out &lt;&lt;&lt; 123456</span>
 <span class="cmd-out"><span></span><span style=" font-weight:bold;">ubsan-overflow.cpp:6:9:</span><span style=" font-weight:bold;"></span><span style=" font-weight:bold; color:#ff5555;"> runtime error: </span><span style=" font-weight:bold; color:#ff5555;"></span><span style=""></span><span style=" font-weight:bold;">signed integer overflow: 123456 * 123456 cannot be represented in type &#x27;int&#x27;</span><span style=" font-weight:bold;"></span><span style="">
 </span></span><span class="cmd-out"><span>-1938485248
 </span></span><span class="cmd-out"><span></span><span style=" font-weight:bold;">ubsan-overflow.cpp:7:19:</span><span style=" font-weight:bold;"></span><span style=" font-weight:bold; color:#ff5555;"> runtime error: </span><span style=" font-weight:bold; color:#ff5555;"></span><span style=""></span><span style=" font-weight:bold;">shift exponent 123456 is too large for 32-bit type &#x27;int&#x27;</span><span style=" font-weight:bold;"></span><span style="">
@@ -377,7 +377,7 @@ int main() {
 <span class="cmd-out"><span>./a.out: error while loading shared libraries: libubsan.so.1: cannot open shared object file: No such file or directory</span></span></div></pre><p>その場合は <code>sudo find / -name libubsan.so.1 2&gt;/dev/null</code> などをして見つかったディレクトリを <code>LD_LIBRARY_PATH</code> に追加しましょう．
 </p>
 <div><pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># for example
-export LD_LIBRARY_PATH=$HOME/lib64/${LD_LIBRARY_PATH:+:}$LD_LIBRARY_PATH</div></pre></div>
+export LD_LIBRARY_PATH=$HOME/lib64/${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}</div></pre></div>
 
 <h2>書きたいこと</h2>
 <ul>
