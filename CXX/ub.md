@@ -266,7 +266,7 @@ $ ./a.out
 -     }
 - Aborted (core dumped)
 #_
-`std::vector` の代わりに `__gnu_debug::vector`（`std::__debug::vector`？）を使って様々なチェックを行ってくれます．
+`std::vector` の代わりに `__gnu_debug::vector`？ `std::__debug::vector`？ を使って様々なチェックを行ってくれます．
 少々分かりにくいかもしれませんが，エラーにならないよりはマシですね．
 
 上のソートの例のような場合でも活躍してくれます．
