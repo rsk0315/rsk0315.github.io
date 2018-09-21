@@ -144,7 +144,7 @@ $ g++ sample.cpp
 
 ところで，`_USE_MATH_DEFINES` のような識別子も同様で，これらを `#define` した場合の動作は（C++ の規格的な意味で）未定義です．
 コンパイラはそれによって規格に従わない動作をする（プログラマが自由に使えるはずの `M_PI` などの識別子を `#define` する）ことができます．
-@[url:https://qnighy.hatenablog.com/entry/2015/05/22/225558]@ に詳しい記述があります．
+@[url:https://qnighy.hatenablog.com/entry/2015/05/22/225558]ここ@ に詳しい記述があります．
 
 ### 比較関数
 #`[sample.cpp]
