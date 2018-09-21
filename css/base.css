@@ -137,10 +137,11 @@ span.tt:after {
 }
 
 pre {
+    display: block;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
 }
-pre div {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
+/* pre div { */
+/*     overflow-x: auto; */
+/*     -webkit-overflow-scrolling: touch; */
+/* } */
