@@ -141,7 +141,8 @@ pre {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
 }
-/* pre div { */
-/*     overflow-x: auto; */
-/*     -webkit-overflow-scrolling: touch; */
-/* } */
+pre div {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
