@@ -136,6 +136,6 @@ span.tt:after {
     font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-pre div {
-    overflow-x: scroll;
+pre {
+    overflow-x: auto;
 }
