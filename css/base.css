@@ -136,13 +136,13 @@ span.tt:after {
     font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-pre {
-    display: block;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
-pre div {
-    display: block;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
+/* pre { */
+/*     display: block; */
+/*     overflow-x: auto; */
+/*     -webkit-overflow-scrolling: touch; */
+/* } */
+/* pre div { */
+/*     display: block; */
+/*     overflow-x: auto; */
+/*     -webkit-overflow-scrolling: touch; */
+/* } */
