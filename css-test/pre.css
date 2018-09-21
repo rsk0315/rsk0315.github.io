@@ -1,0 +1,18 @@
+pre {
+    display: block;
+    overflow-x: auto;
+}
+
+div pre {
+    display: block;
+    overflow-x: auto;
+}
+
+pre div {
+    display: block;
+    overflow-x: auto;
+}
+
+#time:before {
+    content: "Fri Sep 21 17:06:17 JST 2018"
+}
