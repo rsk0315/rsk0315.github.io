@@ -135,7 +135,7 @@ $ cp doc/bash.1 ~/usr/share/man/man1/
 $ sudo yum install centos-release-scl
 $ sudo yum install devtoolset-7-gcc-c++
 #_
-として新しいものをインストールできる．かわりに `devtoolset-7\*` とすると他にもいろいろ入る．@[url:https://www.softwarecollections.org/en/scls/rhscl/devtoolset-7/]@ を参考にしよう．
+として新しいものをインストールできる．かわりに `devtoolset-7\*` とすると他にもいろいろ入る．@[url:https://www.softwarecollections.org/en/scls/rhscl/devtoolset-7/]このへん@ を参考にしよう．
 #_
 $ scl enable devtoolset-7 bash
 #_
@@ -208,7 +208,7 @@ export PATH=$HOME/.cargo/bin/${PATH:+:$PATH}
 ```
 
 ## PHP のアップデート
-`yum` は古い定期．@[url:http://php.net/get/php-7.2.10.tar.xz/from/a/mirror]@ などからダウンロード．
+`yum` は古い定期．@[url:http://php.net/get/php-7.2.10.tar.xz/from/a/mirror]php.net@ などからダウンロード．
 #_
 $ cd ~/Downloads/
 $ tar xvf php-7.2.10.tar.xz
@@ -510,7 +510,7 @@ PS1+='\n\[\e[0m\]\$ '
 
 を表示する．
 
-また，上で `bash` のアップデートを紹介したものの，各種機能の追加を勝手にしたバージョンを入れると捗る．@[url:https://github.com/rsk0315/bashx/tree/bashx]@．
+また，上で `bash` のアップデートを紹介したものの，各種機能の追加を勝手にしたバージョンを入れると捗る．@[url:https://github.com/rsk0315/bashx/tree/bashx]ここ@．
 - 直前のコマンドのステータス `$?` を自動で表示（ヒントつき）
 - コマンド入力部分の強調表示
 - `(arg: %d)` や ``(i-search)`%s': ...`` の強調表示
