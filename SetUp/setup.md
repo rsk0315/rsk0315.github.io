@@ -148,7 +148,7 @@ $ ./a.out
 #_
 これらを回避するために，`$HOME/lib64/` を `LD_LIBRARY_PATH` に追加するとよい．
 ```[~/.bashrc]
-LD_LIBRARY_PATH=$HOME/lib64/${LD_LIBRARY_PATH:+:}$LD_LIBRARY_PATH
+LD_LIBRARY_PATH=$HOME/lib64/${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 ```
 
 また，一般にパスを追加する際に以下のようにするのは危険に思われる．

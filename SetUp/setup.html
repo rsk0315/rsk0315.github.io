@@ -41,17 +41,19 @@
 </p>
 
 <h2>VMware Toolsのインストール</h2>
-<pre><span class="cmd-in">cd ~/Downloads</span>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">cd ~/Downloads</span>
 <span class="cmd-in">cp /run/media/rsk0315/VMware\ Tools/VMwareTools-*.tar.gz ./</span>
 <span class="cmd-in">tar xvf VMwareTools-*.tar.gz</span>
 <span class="cmd-in">cd vmware-tools-distrib/</span>
-<span class="cmd-in">sudo ./vmware-install.pl</pre>
+<span class="cmd-in">sudo ./vmware-install.pl</pre></div>
+
 <h2><code>sudo</code> の設定</h2>
 <p>以下のコマンドを用いて <code>/etc/sudoers</code> を編集し，いちいちパスワードを求められないようにする．
 </p>
-<pre><span class="cmd-in">sudo visudo</pre><p>差分は次の通り．
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">sudo visudo</pre></div>
+<p>差分は次の通り．
 </p>
-<pre><span class="cmd-in">sudo diff -up ~/tmp/sudoers /etc/sudoers</span>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">sudo diff -up ~/tmp/sudoers /etc/sudoers</span>
 <span class="cmd-out"><span>--- /home/rsk0315/tmp/sudoers
 </span></span><span class="cmd-out"><span>+++ /etc/sudoers
 </span></span><span class="cmd-out"><span>@@ -99,7 +99,7 @@ root	ALL=(ALL) 	ALL
@@ -62,141 +64,163 @@
 </span></span><span class="cmd-out"><span>+%wheel	ALL=(ALL)	NOPASSWD: ALL
 </span></span><span class="cmd-out"><span>
 </span></span><span class="cmd-out"><span>## Allows members of the users group to mount and unmount the
-</span></span><span class="cmd-out"><span>## cdrom as root</span></span></pre>
+</span></span><span class="cmd-out"><span>## cdrom as root</span></span></pre></div>
+
 <h2><code>git</code> のアップグレード</h2>
 <p>ビルドするのに必要なライブラリ群をインストールする．
 </p>
-<pre><span class="cmd-in">sudo yum install openssl-devel curl-devel expat-devel</pre><p><code>gettext-devel</code>，<code>perl-devel</code>，<code>zlib-devel</code>，<code>perl-ExtUtils-MakeMaker</code>も依存している？ 最初から入っているかも？
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">sudo yum install openssl-devel curl-devel expat-devel</pre></div>
+<p><code>gettext-devel</code>，<code>perl-devel</code>，<code>zlib-devel</code>，<code>perl-ExtUtils-MakeMaker</code>も依存している？ 最初から入っているかも？
 </p>
 
 <p>古い <code>git</code> が入っていることを期待し，以下を実行．
 </p>
-<pre><span class="cmd-in">git clone https://github.com/git/git.git</span>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">git clone https://github.com/git/git.git</span>
 <span class="cmd-in">cd git</span>
-<span class="cmd-in">make &amp;&amp; make install</pre><p><code>prefix</code> は <code>$(HOME)</code> になっているので，<code>$PATH</code> を見てちゃんと新しいのが実行されるかを確認する．必要に応じて以下を実行してみる．
+<span class="cmd-in">make &amp;&amp; make install</pre></div>
+<p><code>prefix</code> は <code>$(HOME)</code> になっているので，<code>$PATH</code> を見てちゃんと新しいのが実行されるかを確認する．必要に応じて以下を実行してみる．
 </p>
-<pre><span class="cmd-in">git --version</span>
-<span class="cmd-in">which git</pre>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">git --version</span>
+<span class="cmd-in">which git</pre></div>
+
 <p><code>GIT_EDITOR</code> などを適宜変更しよう．
 </p>
-<pre><span class="cmd-in">man git-var</pre><p>を参考にするとよい．
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">man git-var</pre></div>
+<p>を参考にするとよい．
 </p>
 
 <h2><code>vim</code> のアップグレード</h2>
-<pre><span class="cmd-in">sudo yum install libX11-devel libXt-devel gtk2-devel ncurses-devel</pre><p><code>atk-devel</code> も依存している？
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">sudo yum install libX11-devel libXt-devel gtk2-devel ncurses-devel</pre></div>
+<p><code>atk-devel</code> も依存している？
 </p>
-<pre><span class="cmd-in">git clone https://github.com/vim/vim.git</span>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">git clone https://github.com/vim/vim.git</span>
 <span class="cmd-in">cd vim</span>
 <span class="cmd-in">./configure --prefix=$HOME --build=x86_64-redhat-linux --with-x \
 <span class="cmd-cont"></span>    CFLAGS=-I/usr/include/X11</span>
-<span class="cmd-in">make &amp;&amp; make install</pre>
+<span class="cmd-in">make &amp;&amp; make install</pre></div>
+
 <h2><code>emacs</code> のインストール</h2>
 <p><code>http://ftp.jaist.ac.jp/pub/GNU/emacs/</code> などから最新のものをダウンロード．
 </p>
-<pre><span class="cmd-in">sudo yum install gnutls-devel</span>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">sudo yum install gnutls-devel</span>
 <span class="cmd-in">cd ~/Downloads</span>
 <span class="cmd-in">curl http://ftp.jaist.ac.jp/pub/GNU/emacs/emacs-26.1.tar.xz -o emacs-26.1.tar.xz</span>
 <span class="cmd-in">tar xvf emacs-26.1.tar.xz</span>
 <span class="cmd-in">cd emacs-26.1/</span>
 <span class="cmd-in">./configure --prefix=$HOME --build=x86_64-redhat-linux --without-x</span>
-<span class="cmd-in">make &amp;&amp; make install</pre>
+<span class="cmd-in">make &amp;&amp; make install</pre></div>
+
 <h2><code>python3</code> のインストール</h2>
-<pre><span class="cmd-in">sudo yum install https://centos7.iuscommunity.org/ius-release.rpm</span>
-<span class="cmd-in">sudo yum install python36u{,-{libs,devel,pip}}</pre>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">sudo yum install https://centos7.iuscommunity.org/ius-release.rpm</span>
+<span class="cmd-in">sudo yum install python36u{,-{libs,devel,pip}}</pre></div>
+
 <p><code>pip</code> を使って便利モジュールを入れるのも忘れずに．
 </p>
-<pre><span class="cmd-in">curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py</span>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py</span>
 <span class="cmd-in">python3 get-pip.py --user</span>
 <span class="cmd-in">pip install --user numpy</span>
 <span class="cmd-in">pip install --user scipy</span>
 <span class="cmd-in">pip install --user pandas</span>
 <span class="cmd-in">pip install --user matplotlib</span>
 <span class="cmd-in">pip install --user Image</span>
-<span class="cmd-in">pip install --user mechanicalsoup</pre>
+<span class="cmd-in">pip install --user mechanicalsoup</pre></div>
+
 <h2><code>bash</code> のアップグレード</h2>
-<pre><span class="cmd-in">curl http://ftp.gnu.org/gnu/bash/bash-5.0-alpha.tar.gz -o bash-5.0-alpha.tar.gz</span>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">curl http://ftp.gnu.org/gnu/bash/bash-5.0-alpha.tar.gz -o bash-5.0-alpha.tar.gz</span>
 <span class="cmd-in">tar xvf bash-5.0-alpha.tar.gz</span>
 <span class="cmd-in">cd bash-5.0-alpha/</span>
 <span class="cmd-in">./configure --prefix=$HOME --build=x86_64-redhat-linux</span>
 <span class="cmd-in">make &amp;&amp; make install</span>
-<span class="cmd-in">cp doc/bash.1 ~/usr/share/man/man1/</pre>
+<span class="cmd-in">cp doc/bash.1 ~/usr/share/man/man1/</pre></div>
+
 <h2>GCCのアップグレード</h2>
 <p><code>yum install gcc</code> でインストールできる GCC は古いのでつらい．
 </p>
-<pre><span class="cmd-in">sudo yum install centos-release-scl</span>
-<span class="cmd-in">sudo yum install devtoolset-7-gcc-c++</pre><p>として新しいものをインストールできる．かわりに <code>devtoolset-7\*</code> とすると他にもいろいろ入る．<a href="https://www.softwarecollections.org/en/scls/rhscl/devtoolset-7/">https://www.softwarecollections.org/en/scls/rhscl/devtoolset-7/</a> を参考にしよう．
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">sudo yum install centos-release-scl</span>
+<span class="cmd-in">sudo yum install devtoolset-7-gcc-c++</pre></div>
+<p>として新しいものをインストールできる．かわりに <code>devtoolset-7\*</code> とすると他にもいろいろ入る．<a href="https://www.softwarecollections.org/en/scls/rhscl/devtoolset-7/">https://www.softwarecollections.org/en/scls/rhscl/devtoolset-7/</a> を参考にしよう．
 </p>
-<pre><span class="cmd-in">scl enable devtoolset-7 bash</pre><p>とすることでそれを有効にした状態でシェルを起動することができる．
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">scl enable devtoolset-7 bash</pre></div>
+<p>とすることでそれを有効にした状態でシェルを起動することができる．
 <code>PATH</code> に <code>/opt/rh/devtoolset-7/root/usr/bin/</code> を追加するだけでもよさそう？
 </p>
 
 <p>もちろん，ソースからビルドしてもよい（やや時間がかかる）．
 </p>
-<pre><span class="cmd-in">curl http://ftp.tsukuba.wide.ad.jp/software/gcc/releases/gcc-8.2.0/gcc-8.2.0.tar.xz -o gcc-8.2.0.tar.xz</span>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">curl http://ftp.tsukuba.wide.ad.jp/software/gcc/releases/gcc-8.2.0/gcc-8.2.0.tar.xz -o gcc-8.2.0.tar.xz</span>
 <span class="cmd-in">tar xvf gcc-8.2.0.tar.xz</span>
 <span class="cmd-in">cd gcc-8.2.0/</span>
 <span class="cmd-in">./contrib/download_prerequisites</span>
 <span class="cmd-in">./configure --prefix=$HOME --build=x86_64-redhat-linux --program-suffix=-8.2 --disable-multilib --enable-languages=c,c++ C{,XX}FLAGS=-O3</span>
 <span class="cmd-in">make -j4 BOOT_CFLAGS=&#x27;-march=native -O3&#x27;</span>
-<span class="cmd-in">make install</pre>
+<span class="cmd-in">make install</pre></div>
+
 <p><code>-fsanitize=undefined</code> つきでコンパイルしたファイルを正しく実行するためには <code>libubsan.so</code> が必要．
 </p>
-<pre><span class="cmd-in">./a.out</span>
-<span class="cmd-out"><span>./a.out: error while loading shared libraries: libubsan.so.1: cannot open shared object file: No such file or directory</span></span></pre><p>また，システムにあるライブラリが古くて以下のようなエラーが出ることがある．
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">./a.out</span>
+<span class="cmd-out"><span>./a.out: error while loading shared libraries: libubsan.so.1: cannot open shared object file: No such file or directory</span></span></pre></div>
+<p>また，システムにあるライブラリが古くて以下のようなエラーが出ることがある．
 </p>
-<pre><span class="cmd-in">./a.out</span>
-<span class="cmd-out"><span>./a.out: /lib64/libstdc++.so.6: version `CXXABI_1.3.9&#x27; not found (required by ./a.out)</span></span></pre><p>これらを回避するために，<code>$HOME/lib64/</code> を <code>LD_LIBRARY_PATH</code> に追加するとよい．
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">./a.out</span>
+<span class="cmd-out"><span>./a.out: /lib64/libstdc++.so.6: version `CXXABI_1.3.9&#x27; not found (required by ./a.out)</span></span></pre></div>
+<p>これらを回避するために，<code>$HOME/lib64/</code> を <code>LD_LIBRARY_PATH</code> に追加するとよい．
 </p>
-<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0">LD_LIBRARY_PATH=$HOME/lib64/${LD_LIBRARY_PATH:+:}$LD_LIBRARY_PATH</div></pre>
+<div><pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0">LD_LIBRARY_PATH=$HOME/lib64/${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}</div></pre></div>
 
 <p>また，一般にパスを追加する際に以下のようにするのは危険に思われる．
 </p>
-<pre># PATH=/new/path/to/dir:$PATH  # bad?</pre>
+<div><pre># PATH=/new/path/to/dir:$PATH  # bad?</pre></div>
 <p><code>$PATH</code> が空のときにカレントディレクトリが含まれてしまうためである（ヒント：<code>::</code> または先頭・末尾の <code>:</code> によって表される空ディレクトリ名は <code>.</code> を意味する）．
 <code>$PATH</code> が空でないときのみ展開する記法を用いて以下のようにしたい．
 </p>
-<pre># PATH=/new/path/to/dir${PATH:+:$PATH}</pre>
+<div><pre># PATH=/new/path/to/dir${PATH:+:$PATH}</pre></div>
 <p>また，<code>&quot;...&quot;</code> で囲まないことについては，空白除去が行われない感じなので問題ない気がする（嘘かもしれないので注意）．
 </p>
 
 <h2>その他有用なものたちのインストール</h2>
-<pre><span class="cmd-in">sudo yum install php</span>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">sudo yum install php</span>
 <span class="cmd-in">sudo yum install mawk</span>
 <span class="cmd-in">sudo yum install ruby ruby-devel</span>
-<span class="cmd-in">sudo yum install xsel</pre><p><span class="tex">L<sup>a</sup>T<sub>e</sub>X</span>も早いうちに入れよう．
+<span class="cmd-in">sudo yum install xsel</pre></div>
+<p><span class="tex">L<sup>a</sup>T<sub>e</sub>X</span>も早いうちに入れよう．
 </p>
 
 <h2><span class="tex">L<sup>a</sup>T<sub>e</sub>X</span> のインストール</h2>
 <p><span class="tex">T<sub>e</sub>X</span> Liveを使う．
 </p>
-<pre><span class="cmd-in">sudo yum install perl-Digest-MD5</span>
-<span class="cmd-in">sudo ./install-tl</pre>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">sudo yum install perl-Digest-MD5</span>
+<span class="cmd-in">sudo ./install-tl</pre></div>
+
 <h2>Rust のインストール</h2>
-<pre><span class="cmd-in">curl -sSf http://sh.rustup.rs | bash</pre>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">curl -sSf http://sh.rustup.rs | bash</pre></div>
+
 <p><a href="https://www.rustup.rs">公式サイト？</a>には <code>curl https://sh.rustup.rs -sSf | sh</code> と書かれているが，shebang が <code>#!/bin/bash</code> なんだよね．
 </p>
 
 <p>それはそれとして，パスを通す．
 </p>
-<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0">export PATH=$HOME/.cargo/bin/${PATH:+:$PATH}</div></pre>
+<div><pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0">export PATH=$HOME/.cargo/bin/${PATH:+:$PATH}</div></pre></div>
 
 <h2>PHP のアップデート</h2>
 <p><code>yum</code> は古い定期．<a href="http://php.net/get/php-7.2.10.tar.xz/from/a/mirror">http://php.net/get/php-7.2.10.tar.xz/from/a/mirror</a> などからダウンロード．
 </p>
-<pre><span class="cmd-in">cd ~/Downloads/</span>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">cd ~/Downloads/</span>
 <span class="cmd-in">tar xvf php-7.2.10.tar.xz</span>
 <span class="cmd-in">cd php-7.2.10/</span>
 <span class="cmd-in">./configure --build=prefix=$HOME --x86_64-redhat-linux --enable-mbstring --with-openssl</span>
 <span class="cmd-in">make</span>
 <span class="cmd-in">make test  # may fail ???</span>
-<span class="cmd-in">make install</pre>
-<pre><span class="cmd-out"><span>Fatal error: Call to undefined function Symfony\Component\Console\mb_detect_encoding() in /usr/share/php/Symphony/Component/Console/Application.php on line 1096</span></span></pre><p>これきらい．
+<span class="cmd-in">make install</pre></div>
+
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-out"><span>Fatal error: Call to undefined function Symfony\Component\Console\mb_detect_encoding() in /usr/share/php/Symphony/Component/Console/Application.php on line 1096</span></span></pre></div>
+<p>これきらい．
 </p>
 
-<pre style="color:#aaaaaa; background-color:#aa0000"><span class="cmd-out"><span>[Composer\Exception\NoSslException]
+<div><pre style="color:#aaaaaa; background-color:#aa0000"><span class="cmd-out"><span>[Composer\Exception\NoSslException]
 </span></span><span class="cmd-out"><span>The openssl extension is required for SSL/TLS protection but is not available.
 </span></span><span class="cmd-out"><span> If you can not enable the openssl extension, you can disable this error, at y
-</span></span><span class="cmd-out"><span>our own risk, by setting the &#x27;disable-tls&#x27; option to true.</span></span></pre><p>これもきらい．
+</span></span><span class="cmd-out"><span>our own risk, by setting the &#x27;disable-tls&#x27; option to true.</span></span></pre></div>
+<p>これもきらい．
 </p>
 
 <h1>発展的な環境構築</h1>
@@ -206,7 +230,7 @@
 <h2><code>bashrc</code> の編集</h2>
 <p>最初の状態では以下の内容しかなく，そっけなさすぎる（インストールの手順にもよるとは思うが）．
 </p>
-<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># .bashrc
+<div><pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># .bashrc
 
 # Source global definitions
 if [ -f /etc/bashrc ]; then
@@ -216,25 +240,25 @@ fi
 # Uncomment the following line if you don&#x27;t like systemctl&#x27;s auto-paging feature:
 # export SYSTEMD_PAGER=
 
-# User specific aliases and functions</div></pre>
+# User specific aliases and functions</div></pre></div>
 
 <h3>エイリアス</h3>
 <p>ファイルの移動時に上書き確認をするのは基本中の基本．
 </p>
-<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0">alias rm=&#x27;rm -iv&#x27; cp=&#x27;cp -iv&#x27; mv=&#x27;mv -iv&#x27;</div></pre>
+<div><pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0">alias rm=&#x27;rm -iv&#x27; cp=&#x27;cp -iv&#x27; mv=&#x27;mv -iv&#x27;</div></pre></div>
 
 <p>ところで，
 </p>
-<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0">alias rm=rm\ -iv cp=cp\ -iv mv=mv\ -iv</div></pre>
+<div><pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0">alias rm=rm\ -iv cp=cp\ -iv mv=mv\ -iv</div></pre></div>
 <p>で十分なんだよね（見づらいんだよなぁ）．
 </p>
 
 <h3>シェルオプション</h3>
 <p>リダイレクトの上書きを防ぐのも基本．
 </p>
-<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Shell options
+<div><pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Shell options
 set -o noclobber       # same as `set -C&#x27;
-shopt -s histverify autocd</div></pre>
+shopt -s histverify autocd</div></pre></div>
 <p><code>noclobber</code> によって <code>&gt;</code> による上書きを防ぐことができる．強制的に上書きしたいときは <code>&gt;|</code> を使う．
 <code>histverify</code> は履歴展開が起こったときコマンドが即座に実行されないようにする．
 <code>autocd</code> はコマンドとして見つからなかった文字列を <code>cd</code> への引数と解釈させる．
@@ -242,8 +266,8 @@ shopt -s histverify autocd</div></pre>
 </p>
 
 <h3>ページャのオプション</h3>
-<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Pager configurations
-export LESS=FR</div></pre>
+<div><pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Pager configurations
+export LESS=FR</div></pre></div>
 <ul>
   <li><code>less -F</code>：一画面で収まるならそのまま表示</li>
   <li><code>less -r</code>：エスケープシーケンスを解釈</li>
@@ -264,15 +288,15 @@ export LESS=FR</div></pre>
 <p>また，バックアップファイルなどが補完されると厄介なので，<code>FIGNORE</code> によってそれを防ぐ．
 </p>
 
-<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Completion configurations
+<div><pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Completion configurations
 completion_loader () { return 124; }
 complete -EFcompletion_loader +o{bashdefault,default}
-export FIGNORE=.o:\~:#${FIGNORE:+:$FIGINORE}</div></pre>
+export FIGNORE=.o:\~:#${FIGNORE:+:$FIGINORE}</div></pre></div>
 
 <p>何も補完しないようにさせるのもそっけないので，ヒント的なものを出してもよい．
 </p>
 
-<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0">completion_loader () {
+<div><pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0">completion_loader () {
     # instead of suppression, list up frequently-used commands
     COMPREPLY=(
         % %- awk bg cat cd chmod cp curl declare dirs echo emacs fg git
@@ -280,20 +304,20 @@ export FIGNORE=.o:\~:#${FIGNORE:+:$FIGINORE}</div></pre>
         popd printf ps pushd python python3 rm stty sudo tar touch vim
         which
     )
-}</div></pre>
+}</div></pre></div>
 
 <h3>履歴関連</h3>
-<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># History configurations
-HISTCONTROL=ignoredups</div></pre>
+<div><pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># History configurations
+HISTCONTROL=ignoredups</div></pre></div>
 
 <p>個人的に <code>g</code> → <code>a</code> → <code>%</code> の流れを無限に繰り返しがちなので，それで履歴が圧迫されるのは避けたい．
 ...と思って <code>erasedups</code> を入れていたが，これは <code>C-o</code> による <code>operate-and-get-next</code> をこわすことがわかったのでやめ．
 </p>
 
 <h3>その他環境変数の設定</h3>
-<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Editor configurations
+<div><pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Editor configurations
 export EDITOR=vim
-export EDITOR=emacs  # ... or whatever you like</div></pre>
+export EDITOR=emacs  # ... or whatever you like</div></pre></div>
 
 <p>これ，<code>emacs</code> を最後に書いておくことで，コピペした場合に <code>emacs</code> が設定されるようにする小汚いテクなんだよね．
 </p>
@@ -301,19 +325,21 @@ export EDITOR=emacs  # ... or whatever you like</div></pre>
 <h3>キーバインドの補助設定</h3>
 <p><code>C-s</code> などが期待通りに動作するようにする．
 </p>
-<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Key bindings
-stty rprnt undef stop undef werase undef kill undef</div></pre>
+<div><pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Key bindings
+stty rprnt undef stop undef werase undef kill undef</div></pre></div>
 <p>デフォルトに戻す場合は以下の通り．
 </p>
-<pre><span class="cmd-in">stty rprnt \^r stop \^s werase \^w kill \^u</pre><p>履歴展開が有効な場合に <code>^</code> が暴発しないように注意．
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">stty rprnt \^r stop \^s werase \^w kill \^u</pre></div>
+<p>履歴展開が有効な場合に <code>^</code> が暴発しないように注意．
 また，個別に以下のようにしてもよい．
 </p>
-<pre><span class="cmd-in">stty rprnt \^r</span>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">stty rprnt \^r</span>
 <span class="cmd-in">stty stop \^s</span>
 <span class="cmd-in">stty werase \^w</span>
-<span class="cmd-in">stty kill \^u</pre>
+<span class="cmd-in">stty kill \^u</pre></div>
+
 <h3><code>inputrc</code>の編集</h3>
-<pre class="sourcecode" filename="~/.inputrc"><div style="margin:1.2em 0 0 0"># emacs-like key bindings
+<div><pre class="sourcecode" filename="~/.inputrc"><div style="margin:1.2em 0 0 0"># emacs-like key bindings
 &quot;\C-u&quot;: universal-argument
 &quot;\ew&quot;: copy-region-as-kill
 &quot;\C-w&quot;: kill-region
@@ -321,12 +347,12 @@ stty rprnt undef stop undef werase undef kill undef</div></pre>
 
 # variables
 set enable-bracketed-paste On
-set mark-symlinked-directories On</div></pre>
+set mark-symlinked-directories On</div></pre></div>
 <p><code>enable-bracketed-paste</code> が有効のとき，改行文字が <code>accept-line</code> として暴発するのを防ぐ（タブ文字の <code>complete</code> なども同様）．
 <code>mark-symlinked-directories</code> が有効のとき，ディレクトリを指すリンクが Tab 補完されたときに <code>/</code> が付加される．
 </p>
 
-<pre class="sourcecode" filename="~/.inputrc"><div style="margin:1.2em 0 0 0">&quot;\e%&quot;: &quot;\C-a#\C-j%\C-j&quot;</div></pre>
+<div><pre class="sourcecode" filename="~/.inputrc"><div style="margin:1.2em 0 0 0">&quot;\e%&quot;: &quot;\C-a#\C-j%\C-j&quot;</div></pre></div>
 <p><code>M-%</code> によって，現在の行を残しつつプロセスを再開（<code>%</code>）する．
 C シェルの真似をして <code>M-C-z</code> で <code>C-z</code> の逆をできたらよかったのだけど，<code>C-z</code> で suspend するのを無効化しないと <code>&quot;\e\C-z&quot;</code> に書き込めないようなので断念．
 </p>
@@ -336,7 +362,7 @@ C シェルの真似をして <code>M-C-z</code> で <code>C-z</code> の逆を�
 
 <p>emacs の初期化ファイル．
 </p>
-<pre class="sourcecode" filename="~/.emacs.d/init.el"><div style="margin:1.2em 0 0 0">;; テーマの設定
+<div><pre class="sourcecode" filename="~/.emacs.d/init.el"><div style="margin:1.2em 0 0 0">;; テーマの設定
 (load-theme &#x27;tango-dark t)
 
 ;; 行数を表示
@@ -365,10 +391,10 @@ C シェルの真似をして <code>M-C-z</code> で <code>C-z</code> の逆を�
 
 ;; その他モジュールの読み込み
 (add-to-list &#x27;load-path &quot;~/.emacs.d/elisp&quot;)
-(require &#x27;markdown)</div></pre>
+(require &#x27;markdown)</div></pre></div>
 
 <h3><code>vimrc</code> の編集</h3>
-<pre class="sourcecode" filename="~/.vimrc"><div style="margin:1.2em 0 0 0">&quot; 色の設定
+<div><pre class="sourcecode" filename="~/.vimrc"><div style="margin:1.2em 0 0 0">&quot; 色の設定
 :colorscheme koehler
 :syntax on
 
@@ -398,7 +424,7 @@ augroup langc
         \ setlocal tabstop=2 softtabstop=2 shiftwidth=2 cindent
     au BufNewFile *.rs
         \ 0r ~/codefolio/Rust/scanner.rs
-augroup END</div></pre>
+augroup END</div></pre></div>
 
 <p><code>vimrc</code> が長い方がえらいと思っている人たちは正気ですか？
 ...とか書いてたくせに（そらで完全に書けるほど）短いとは言えなくなってきましたね．
@@ -407,19 +433,20 @@ augroup END</div></pre>
 <h2><code>gitconfig</code> の編集</h2>
 <p>パラメータなどについては以下を参照．
 </p>
-<pre><span class="cmd-in">git help config</pre><p><code>color.diff</code> の項目を見るとよい．数値を指定したときに <code>&lt;Esc&gt;38;5;##m</code> の形式になってくれるのはたまたまなのかも？
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">git help config</pre></div>
+<p><code>color.diff</code> の項目を見るとよい．数値を指定したときに <code>&lt;Esc&gt;38;5;##m</code> の形式になってくれるのはたまたまなのかも？
 </p>
-<pre class="sourcecode" filename="~/.gitconfig"><div style="margin:1.2em 0 0 0">[color.diff]
+<div><pre class="sourcecode" filename="~/.gitconfig"><div style="margin:1.2em 0 0 0">[color.diff]
         new = green bold
         old = red bold
         frag = 43 bold
-        commit = 106</div></pre>
+        commit = 106</div></pre></div>
 
 <h2>フォントの設定</h2>
 <p>MigMix はいいぞ．
 <code>/etc/fonts/conf.d/65-nonlatin.conf</code> を編集する．とりあえず一番上にしよう．
 </p>
-<pre><span class="cmd-in">diff -up ~/tmp/65-nonlatin.conf /etc/fonts/conf.d/65-nonlatin.conf</span>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">diff -up ~/tmp/65-nonlatin.conf /etc/fonts/conf.d/65-nonlatin.conf</span>
 <span class="cmd-out"><span>--- /home/rsk0315/tmp/65-nonlatin.conf
 </span></span><span class="cmd-out"><span>+++ /etc/fonts/conf.d/65-nonlatin.conf
 </span></span><span class="cmd-out"><span>@@ -4,6 +4,7 @@
@@ -445,15 +472,16 @@ augroup END</div></pre>
 </span></span><span class="cmd-out"><span>+			&lt;family&gt;MigMix 1M&lt;/family&gt;
 </span></span><span class="cmd-out"><span>			&lt;family&gt;Miriam Mono&lt;/family&gt; &lt;!-- hebrew --&gt;
 </span></span><span class="cmd-out"><span>			&lt;family&gt;VL Gothic&lt;/family&gt;
-</span></span><span class="cmd-out"><span>			&lt;family&gt;IPAMonaGothic&lt;/family&gt;</span></span></pre>
+</span></span><span class="cmd-out"><span>			&lt;family&gt;IPAMonaGothic&lt;/family&gt;</span></span></pre></div>
+
 <h1>便利コマンドの定義</h1>
 
 <h2>プロンプト文字列</h2>
 <p><code>\s-\v\$ </code> ではそっけないので変える．<code>~/.bashrc</code> に追記．
 </p>
-<pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Prompt strings
+<div><pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Prompt strings
 PS1=&#x27;\n\[\e[;38;5;45m\]\w\[\e[0m\]: bash-&#x27;&quot;$BASH_VERSION [$((SHLVL-1))]&quot;
-PS1+=&#x27;\n\[\e[0m\]\$ &#x27;</div></pre>
+PS1+=&#x27;\n\[\e[0m\]\$ &#x27;</div></pre></div>
 <ul>
   <li>カレントディレクトリ</li>
   <li>シェルの階層</li>
@@ -483,7 +511,7 @@ PS1+=&#x27;\n\[\e[0m\]\$ &#x27;</div></pre>
 GNU 拡張の <code>ls</code> は <code> </code> や <code>&#x27;</code> などをエスケープできるオプション <code>-Q</code> があって素敵なんだけど，それを復元するのが厄介なので諦める．そもそもそんなファイル名にする方がどうかしている．
 </p>
 
-<pre class="sourcecode" filename="~/bin/latest"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
+<div><pre class="sourcecode" filename="~/bin/latest"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
 
 while getopts :p:s: foo; do
     case $foo in
@@ -495,7 +523,7 @@ done
 latest=$(ls -ltA | grep -E &quot;${suffix:+\\.(}$suffix${suffix:+)}\$&quot; \
              | grep &quot;^-$perm&quot; | awk &#x27;$0=$9&#x27; | sed q)
 [[ -z &quot;$latest&quot; ]] &amp;&amp; exit 1
-echo $latest</div></pre>
+echo $latest</div></pre></div>
 <p>パーミッションと拡張子を指定可能．見つからなければ <code>1</code> を返す．
 </p>
 
@@ -531,7 +559,7 @@ echo $latest</div></pre>
 </ol>
 <p><code>printf</code> を使うと <code>%</code> でこわれると思っていたが，こわれていたのは私の頭だった．
 </p>
-<pre class="sourcecode" filename="~/bin/latest-Q"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
+<div><pre class="sourcecode" filename="~/bin/latest-Q"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
 
 while getopts :p:s: foo; do
     case $foo in
@@ -547,7 +575,7 @@ latest=$(ls -ltAQ | grep -E &quot;${suffix:+\\.($suffix)}\&quot;&quot; \
 latest=$(printf &quot;$latest-&quot;)
 latest=&quot;${latest%-}&quot;
 
-[[ -f &quot;$latest&quot; ]] &amp;&amp; echo &quot;$latest&quot;</div></pre>
+[[ -f &quot;$latest&quot; ]] &amp;&amp; echo &quot;$latest&quot;</div></pre></div>
 <p>シェルインジェクションの心配はなさそう．
 念のため，生成されたファイル名が存在するかのチェックをかませる．
 </p>
@@ -558,7 +586,7 @@ latest=&quot;${latest%-}&quot;
 <h3>最新ソースのコンパイル</h3>
 <p>それを利用して最新のソースを <code>make</code> する．俗にいう <code>g</code> に対応するスクリプト．
 </p>
-<pre class="sourcecode" filename="~/bin/g"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
+<div><pre class="sourcecode" filename="~/bin/g"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
 
 CC=&quot;${CC:-gcc-8.2}&quot;
 CXX=&quot;${CXX:-g++-8.2}&quot;
@@ -569,7 +597,7 @@ CXXFLAGS=&quot;$cflags $CXXFLAGS $@&quot;
 
 src=&quot;$(latest -s&#x27;c|cxx|cc|C|cpp&#x27;)&quot; \
     || { echo no source files found. &gt;&amp;2; exit; }
-make CC=&quot;$CC&quot; CXX=&quot;$CXX&quot; CFLAGS=&quot;$CFLAGS&quot; CXXFLAGS=&quot;$CXXFLAGS&quot; &quot;${src%.*}&quot;</div></pre>
+make CC=&quot;$CC&quot; CXX=&quot;$CXX&quot; CFLAGS=&quot;$CFLAGS&quot; CXXFLAGS=&quot;$CXXFLAGS&quot; &quot;${src%.*}&quot;</div></pre></div>
 
 <p>最新以外のファイルをするために <code>g foo</code> とできるようにしたいけど，オプションの解析が面倒になるんだよね．
 コンパイラを変えるときも <code>g CC=gcc</code> とできたら自然な気がするけど，仕方なく <code>CC=gcc g</code> とする．いや，ある種こちらの方が自然なのかも？
@@ -585,23 +613,23 @@ make CC=&quot;$CC&quot; CXX=&quot;$CXX&quot; CFLAGS=&quot;$CFLAGS&quot; CXXFLAGS
 <h3>最新の実行ファイルの実行</h3>
 <p>最新の実行ファイルを実行する．俗にいう <code>a</code> に対応するスクリプト．必ずしも <code>./a.out</code> とは限らないファイルを実行できる．
 </p>
-<pre class="sourcecode" filename="~/bin/a"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
+<div><pre class="sourcecode" filename="~/bin/a"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
 
 src=$(latest -p ..x) || { echo no executables found. &gt;&amp;2; exit; }
 set -x
-&quot;./$src&quot; &quot;$@&quot;</div></pre>
+&quot;./$src&quot; &quot;$@&quot;</div></pre></div>
 
 <p><code>a</code> の場合は末尾文字が <code>\n</code> になりうる（ここおふざけポイント）ので，工夫が必要．
 <code>$(...)</code> では trailing newlines が除去されるので，<code>latest-Q</code> が成功した場合は <code>-\n</code> を追加する．（実質的には <code>\n-</code> が追加される．わかる？）
 </p>
-<pre class="sourcecode" filename="~/bin/aa"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
+<div><pre class="sourcecode" filename="~/bin/aa"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
 
 src=$(latest-Q -p ..x &amp;&amp; echo -) \
     || { echo no executables found. &gt;&amp;2; exit; }
 src=&quot;${src::-2}&quot;
 [[ -f &quot;$src&quot; ]] || exit
 set -x
-&quot;./$src&quot; &quot;$@&quot;</div></pre>
+&quot;./$src&quot; &quot;$@&quot;</div></pre></div>
       </main>
     </div>
   </body>
