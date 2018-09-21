@@ -23,6 +23,13 @@ $(window).on('load', function() {
             // 連続で Copy すると Copied! がコピーされる不具合（仕様）
             // セレクタをよしなにやったらいいはずです
             var selected = $(this).next()[0];
+            // console.log($(this));
+            if (selected.id.startsWith('tooltip')) {
+                // あきらめます（は？）
+                // 選択範囲がアになるんですが
+                return;
+            }
+
             // console.log(selected);
             range.selectNode(selected);
             window.getSelection().addRange(range);

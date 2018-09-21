@@ -40,6 +40,21 @@
 <code>./configure</code> では <code>--build=x86_64-pc-linux</code> にするとか，<code>apt-get</code> では <code>*-devel</code> ではなく <code>*-dev</code> になりがち，のようなことを覚えておくとよいかも？
 </p>
 
+<p>以下の preformatted な部分について，白背景のものはファイルに書く内容で，黒背景のものはシェルで実行する内容のつもり．
+右上の Copy ボタンで一括コピーできるほか，シェルのものはプロンプト（<code>$</code> など）をクリックするとその行のみをコピーできる．
+</p>
+
+<p>また，出力された文字列はコピーされないようになっているはずなので，スクリプトファイルに貼り付けたりするのが楽だと思われる．
+diff の出力などの状況においては余計な配慮だったかもしれないけど許して．
+</p>
+
+<div><pre class="sourcecode" filename="echo.sh"><div style="margin:1.2em 0 0 0">#! /bin/sh
+echo コピペの動作確認用</div></pre></div>
+
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">chmod u+x echo.sh</span>
+<span class="cmd-in">./echo.sh</span>
+<span class="cmd-out"><span>コピペの動作確認用</span></span></pre></div>
+
 <h2>VMware Toolsのインストール</h2>
 <div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">cd ~/Downloads</span>
 <span class="cmd-in">cp /run/media/rsk0315/VMware\ Tools/VMwareTools-*.tar.gz ./</span>
