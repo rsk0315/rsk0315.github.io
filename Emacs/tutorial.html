@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          processEscapes: true,
+        },
+        CommonHTML: { matchFontHeight: false }
+      });
+    </script>
+    <script type="text/javascript" async src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Cuprum&subset=latin" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet" type="text/css">
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+
+    <link href="/css/base.css" rel="stylesheet">
+    <script src="/js/base.js"></script>
+
+    <link href="/css/codeblock.css" rel="stylesheet">
+    <script src="/js/codeblock.js"></script>
+  </head>
+  <body>
+    <div id="main-div" class="float-container">
+      <main class="container">
+<h1>emacs 覚え書き</h1>
+
+<h2>困ったときは</h2>
+<p>こういうのは最初に書いておくべきだと思うので最初に書きます．
+</p>
+
+<h3>表記について</h3>
+<ul>
+  <li><code>RET</code></li>
+  <ul>
+    <li>Enter キー</li>
+  </ul>
+  <li><code>SPC</code></li>
+  <ul>
+    <li>スペースキー</li>
+  </ul>
+  <li><code>DEL</code></li>
+  <ul>
+    <li><strong>Backspace</strong> キー</li>
+  </ul>
+  <li><code>C-x</code></li>
+  <ul>
+    <li>Ctrl を押しながら <code>x</code></li>
+  </ul>
+  <li><code>M-x</code></li>
+  <ul>
+    <li>Meta（Alt）を押しながら <code>x</code></li>
+    <li><code>ESC</code> を押してから <code>x</code></li>
+  </ul>
+  <li><code>C-M-x</code></li>
+  <ul>
+    <li>Ctrl と Meta を押しながら <code>x</code></li>
+    <li><code>ESC</code> を押してから <code>C-x</code></li>
+  </ul>
+</ul>
+<h3>やめるとき</h3>
+<p><code>C-x C-c</code> をします．
+</p>
+
+<p>後ですぐ戻ってくるときは <code>C-z</code>（または <code>C-x C-z</code>）を押して中断することもできます．戻ってくるときはシェルで <code>fg</code> などを叩きましょう．別のプロセスを起動した場合などは，<code>jobs</code> を叩いてみます．
+</p>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">jobs</span>
+<span class="cmd-out"><span>[1]+  Stopped                 emacs tutorial.md</span></span></pre></div>
+<p><code>[1]</code> と表示されているものを再開したければ <code>%1</code> などと入力するとよいです．<code>%emacs</code> などでもいいでしょう．
+</p>
+
+<p><code>C-z</code> による中断ではバッファやカーソル位置などが保たれるので，効率的です．
+再開の際も，ファイル名を指定する手間を省けるのでよいです．
+</p>
+
+<h3>保存したいとき</h3>
+<p><code>C-x C-s</code> や <code>C-x s</code> を押します．
+前者は強制，後者は確認つきです．
+</p>
+
+<h3>変なコマンドを入力してしまったとき</h3>
+<p>まだ実行していないのなら，画面下部に <code>Quit</code> と表示されるまで <code>C-g</code> を叩きます．
+<strong>G</strong>et rid of とか <strong>G</strong>et out of などからきているようなこじつけなような．
+</p>
+
+<p><code>ESC ESC ESC</code> とするのもよいかもしれません．
+</p>
+
+<p>実行してしまったときは undo コマンド（<code>C-_</code> や <code>C-/</code>，または <code>C-x u</code>）を叩きましょう．<code>C-x l</code> を押すと実行したコマンドがわかるので，確認してその後の参考にしましょう．タイプミスから新たなコマンドを覚えられたらおいしいものです．
+</p>
+
+<h2>移動コマンド</h2>
+<p>移動のコマンドは <code>f</code>（進行方向へ），<code>b</code>（後退方向へ），<code>a</code>（開始位置へ），<code>e</code>（終了位置へ）に修飾子の <code>C-</code> や <code>M-</code> がついたものが多いです．
+うまく対比しながら覚えていきましょう．
+<code>f</code> は forward，<code>b</code> は backward，<code>a</code> は謎（a は最初の文字なので？），<code>e</code> は end です．
+</p>
+
+<p>いま，以下のソースを編集していて，最後の <code>for</code> 文の <code>:</code> の位置にカーソルがあるとします．
+</p>
+<div><pre class="sourcecode" filename="sample.cpp"><div style="margin:1.2em 0 0 0">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+int main() {
+  size_t n;
+  std::cin &gt;&gt; n;
+
+  std::vector&lt;int&gt; a(n);
+  for (int &amp;ai: a)
+    std::cin &gt;&gt; ai;
+
+  std::sort(a.begin(), a.end());
+
+  for (int ai: a)
+    std::cout &lt;&lt; ai &lt;&lt; std::endl;
+}</div></pre></div>
+
+<h3>文字レベルの移動</h3>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-out"><span>                </span><span style=" color:#ff5555;">v </span><span style=" font-weight:bold; color:#ff5555;">C-b</span><span style="">
+</span></span><span class="cmd-out"><span> 15   for (int a</span><span style=" color:#2e3436; background-color:#f3f3f3;">i</span><span style=""></span><span style=" color:#f3f3f3; background-color:#ff5555;">:</span><span style=""></span><span style=" color:#2e3436; background-color:#f3f3f3;"> </span><span style="">a)
+</span></span><span class="cmd-out"><span>                  </span><span style=" color:#ff5555;">^ </span><span style=" font-weight:bold; color:#ff5555;">C-f</span><span style=""></span></span></pre></div>
+<p><code>C-b</code> で一文字戻り，<code>C-f</code> で一文字進みます．
+この程度なら矢印キーに頼っても問題ないと思っています．
+</p>
+
+<h3>単語レベルの移動</h3>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-out"><span>               </span><span style=" color:#ff5555;">v </span><span style=" font-weight:bold; color:#ff5555;">M-b</span><span style="">
+</span></span><span class="cmd-out"><span> 15   for (int </span><span style=" color:#2e3436; background-color:#f3f3f3;">a</span><span style="">i</span><span style=" color:#f3f3f3; background-color:#ff5555;">:</span><span style=""> a</span><span style=" color:#2e3436; background-color:#f3f3f3;">)</span><span style="">
+</span></span><span class="cmd-out"><span>                    </span><span style=" color:#ff5555;">^ </span><span style=" font-weight:bold; color:#ff5555;">M-f</span><span style=""></span></span></pre></div>
+<p><code>M-b</code> で一つ前の語頭へ，<code>M-f</code> で一つ後の語末へ移動します．
+単語の区切りは C++ の識別子の区切り方とは必ずしも同じではないことには注意です（<code>std::partial_sum</code> などについて自分で試してみましょう）．
+</p>
+
+<h3>行内の移動</h3>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-out"><span>    </span><span style=" color:#ff5555;">v </span><span style=" font-weight:bold; color:#ff5555;">C-a</span><span style="">
+</span></span><span class="cmd-out"><span> 15 </span><span style=" color:#2e3436; background-color:#f3f3f3;"> </span><span style=""> for (int ai</span><span style=" color:#f3f3f3; background-color:#ff5555;">:</span><span style=""> a)</span><span style=" color:#2e3436; background-color:#f3f3f3;"> </span><span style="">
+</span></span><span class="cmd-out"><span>                     </span><span style=" color:#ff5555;">^ </span><span style=" font-weight:bold; color:#ff5555;">C-e</span><span style=""></span></span></pre></div>
+<p><code>C-a</code> で行頭まで戻り，<code>C-e</code> で行末まで進みます．
+</p>
+
+<h3>文単位の移動</h3>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-out"><span>      </span><span style=" color:#ff5555;">v </span><span style=" font-weight:bold; color:#ff5555;">M-a</span><span style="">
+</span></span><span class="cmd-out"><span> 15   </span><span style=" color:#2e3436; background-color:#f3f3f3;">f</span><span style="">or (int ai</span><span style=" color:#f3f3f3; background-color:#ff5555;">:</span><span style=""> a)
+</span></span><span class="cmd-out"><span> 16     std::cout &lt;&lt; ai &lt;&lt; std::endl;</span><span style=" color:#2e3436; background-color:#f3f3f3;"> </span><span style="">
+</span></span><span class="cmd-out"><span>                                     </span><span style=" color:#ff5555;">^ </span><span style=" font-weight:bold; color:#ff5555;">M-e</span><span style=""></span></span></pre></div>
+<p><code>M-a</code> で文頭へ，<code>M-e</code> で文末へ移動します．
+<code>for (...) ...;</code> と <code>for (...) {...}</code> の場合などで若干違いがあります．
+</p>
+
+<h3>関数単位の移動</h3>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-out"><span>    </span><span style=" color:#ff5555;">v </span><span style=" font-weight:bold; color:#ff5555;">C-M-a</span><span style="">
+</span></span><span class="cmd-out"><span>  5 </span><span style=" color:#2e3436; background-color:#f3f3f3;">i</span><span style="">nt main() {
+</span></span><span class="cmd-out"><span>  6   size_t n;
+</span></span><span class="cmd-out"><span>  7   std::cin &gt;&gt; n;
+</span></span><span class="cmd-out"><span>  8
+</span></span><span class="cmd-out"><span>  9   std::vector&lt;int&gt; a(n);
+</span></span><span class="cmd-out"><span> 10   for (int &amp;ai: a)
+</span></span><span class="cmd-out"><span> 11     std::cin &gt;&gt; ai;
+</span></span><span class="cmd-out"><span> 12
+</span></span><span class="cmd-out"><span> 13   std::sort(a.begin(), a.end());
+</span></span><span class="cmd-out"><span> 14
+</span></span><span class="cmd-out"><span> 15   for (int ai</span><span style=" color:#f3f3f3; background-color:#ff5555;">:</span><span style=""> a)
+</span></span><span class="cmd-out"><span> 16     std::cout &lt;&lt; ai &lt;&lt; std::endl;
+</span></span><span class="cmd-out"><span> 17 }
+</span></span><span class="cmd-out"><span>    </span><span style=" color:#2e3436; background-color:#f3f3f3;"> </span><span style="">
+</span></span><span class="cmd-out"><span>    </span><span style=" color:#ff5555;">^ </span><span style=" font-weight:bold; color:#ff5555;">C-M-e</span><span style=""></span></span></pre></div>
+
+<p><code>C-M-a</code> で関数定義の開始位置へ，<code>C-M-e</code> で関数定義の終了位置へ移動します．
+</p>
+
+<h3>ここまでのまとめ</h3>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-out"><span>    </span><span style=" color:#ff5555;">v </span><span style=" font-weight:bold; color:#ff5555;">C-M-a</span><span style="">
+</span></span><span class="cmd-out"><span>  5 </span><span style=" color:#2e3436; background-color:#f3f3f3;">i</span><span style="">nt main() {
+</span></span><span class="cmd-out"><span>  6   size_t n;
+</span></span><span class="cmd-out"><span>  7   std::cin &gt;&gt; n;
+</span></span><span class="cmd-out"><span>  8
+</span></span><span class="cmd-out"><span>  9   std::vector&lt;int&gt; a(n);
+</span></span><span class="cmd-out"><span> 10   for (int &amp;ai: a)
+</span></span><span class="cmd-out"><span> 11     std::cin &gt;&gt; ai;
+</span></span><span class="cmd-out"><span> 12
+</span></span><span class="cmd-out"><span> 13   std::sort(a.begin(), a.end());
+</span></span><span class="cmd-out"><span> 14
+</span></span><span class="cmd-out"><span>               </span><span style=" font-weight:bold; color:#ff5555;">C-b</span><span style="">
+</span></span><span class="cmd-out"><span>      </span><span style=" color:#ff5555;">v </span><span style=" font-weight:bold; color:#ff5555;">M-a</span><span style="">     </span><span style=" color:#ff5555;">v</span><span style="">   </span><span style=" color:#ff5555;">v </span><span style=" font-weight:bold; color:#ff5555;">M-f</span><span style="">
+</span></span><span class="cmd-out"><span>      </span><span style=" color:#2e3436; background-color:#f3f3f3;">f</span><span style="">or (int </span><span style=" color:#2e3436; background-color:#f3f3f3;">a</span><span style=""></span><span style=" color:#2e3436; background-color:#f3f3f3;">i</span><span style=""></span><span style=" color:#f3f3f3; background-color:#ff5555;">:</span><span style=""></span><span style=" color:#2e3436; background-color:#f3f3f3;"> </span><span style="">a</span><span style=" color:#2e3436; background-color:#f3f3f3;">)</span><span style="">
+</span></span><span class="cmd-out"><span>           </span><span style=" font-weight:bold; color:#ff5555;">M-b</span><span style=""> </span><span style=" color:#ff5555;">^</span><span style="">  </span><span style=" color:#ff5555;">^</span><span style="">
+</span></span><span class="cmd-out"><span>                 </span><span style=" font-weight:bold; color:#ff5555;">C-f</span><span style="">
+</span></span><span class="cmd-out"><span> 15     std::cout &lt;&lt; ai &lt;&lt; std::endl;</span><span style=" color:#2e3436; background-color:#f3f3f3;"> </span><span style="">
+</span></span><span class="cmd-out"><span>                                     </span><span style=" color:#ff5555;">^ </span><span style=" font-weight:bold; color:#ff5555;">M-e</span><span style="">
+</span></span><span class="cmd-out"><span> 16
+</span></span><span class="cmd-out"><span> 17 }
+</span></span><span class="cmd-out"><span>    </span><span style=" color:#2e3436; background-color:#f3f3f3;"> </span><span style="">
+</span></span><span class="cmd-out"><span>    </span><span style=" color:#ff5555;">^ </span><span style=" font-weight:bold; color:#ff5555;">C-M-e</span><span style=""></span></span></pre></div>
+<p>ちょっとごちゃっとしていますが仕方ないでしょう．
+</p>
+
+<h3>画面単位の移動</h3>
+<p><code>C-v</code> で一画面分進み，<code>M-v</code> で一画面分戻ります．
+<code>v</code> は view からきているっぽい．
+</p>
+
+<h3>大きな移動</h3>
+<p><code>M-&lt;</code> でバッファの先頭へ，<code>M-&gt;</code> でバッファの末尾へ移動します．
+</p>
+
+<h3>行番号を指定して移動</h3>
+<p><code>M-g M-g</code> または <code>M-g g</code> で行番号を指定して移動できます．
+画面下に <code>Goto line:</code> とのプロンプトが表示されるので，整数値を入力します．
+</p>
+
+<h3>カーソル位置の調整</h3>
+<p><code>C-l</code> でカーソル位置を基準として画面を再描画します．
+連続して <code>C-l</code> を押すと一度目は中央，二度目は上端，三度目は下端をカーソルに合わせます．
+</p>
+
+<h2>選択・コピペなど</h2>
+<h3>選択</h3>
+<p><code>C-SPC</code> と押すと <code>Mark set</code> と表示され，そこから移動することで選択されます．矩形選択については後述します．
+</p>
+
+<p>選択範囲に対して <code>M-%</code> で置換（後述）したり，<code>M-;</code> でコメントアウトしたりすることが可能ですので，頭の片隅に入れておきましょう．
+</p>
+
+<h3>切り取り</h3>
+<p><code>C-w</code> を押すと選択された領域（カーソル位置からマーク位置）を切り取ります．
+切り取られた文字列はキルリングと呼ばれるところに追加されていきます（キルと呼ばれる操作）．
+</p>
+
+<h3>単語の消去</h3>
+<p><code>DEL</code> で後退方向へ，<code>C-d</code> で進行方向へ一文字消去します（キルではない）．
+</p>
+
+<p><code>M-DEL</code> で後退方向へ，<code>M-d</code> で進行方向へ一単語キルします．
+</p>
+
+<p><code>C-k</code> でカーソル位置から行末までをキルします．
+</p>
+
+<h3>コピー</h3>
+<p><code>M-w</code> を押すと選択された領域をコピーします．
+</p>
+
+<h3>貼りつけ（ヤンク）</h3>
+<p><code>C-y</code> を押すとキルリングから文字列を貼り付けます．続けて <code>M-y</code> を押すと別の候補をリングから持ってきます．
+</p>
+
+<p><code>ESC ` o u</code> で CUA モードを有効にすると <code>C-x</code> で切り取り，<code>C-c</code> でコピー，<code>C-v</code> で貼りつけができるようになりますが，emacs らしさがないですね．
+</p>
+
+<h3>矩形選択</h3>
+<p><code>C-x SPC</code> と押すと <code>Mark set (rectangle mode)</code> と表示されて矩形選択できます．
+</p>
+
+<p><code>C-x r t</code> <em>string</em> <code>RET</code> とすると矩形領域に一気に <em>string</em> を挿入したりできます．
+</p>
+
+<h2>検索・置換</h2>
+
+<h3>通常の検索</h3>
+<p><code>C-s</code> や <code>C-r</code> を押すと画面下部に <code>I-search:</code> や <code>I-search backward:</code> とのプロンプトが表示され，検索ができます．<code>RET</code> や移動コマンドなどで終了します．
+</p>
+
+<h3>正規表現による検索</h3>
+<p><code>M-C-</code>[<code>sr</code>] を押すと <code>Regexp I-search</code>&#92;(?:<code> backward</code>&#92;)?<code>:</code> とのプロンプトが表示され，検索ができます．
+</p>
+
+<h3>通常の置換</h3>
+<p><code>M-%</code> を押すとよいです．画面下部のプロンプト（<code>Query replace:</code> など）に従って入力しましょう．
+</p>
+
+<h3>正規表現による置換</h3>
+<p><code>C-M-%</code> に割り当てられていますが，効かないかもしれません．
+かわりに <code>ESC ` e r R</code> などをしてみましょう．
+成功すれば <code>Query replace regexp:</code> などのプロンプトが出てきます．
+</p>
+
+<h2>コマンドへの引数</h2>
+<p>emacs のコマンドに対して整数を引数として渡すことができます．
+多くの場合はそのコマンドの繰り返し回数を意味します．
+</p>
+
+<p>渡し方は<code>C-u</code> <em>arg</em> [<code>C-u</code>] <em>command</em> です．
+<em>arg</em> の部分は与えたい引数（<code>1 2 3</code> など）に，<em>command</em> はそれを渡されるコマンドに適宜置き換えられるとします．
+<em>arg</em> の次の <code>C-u</code> は <em>command</em> が数字でなければ省略可能です．
+</p>
+
+<p>たとえば，<code>C-u 10 a</code> と叩くと <code>aaaaaaaaaa</code> と入力されます．
+これは <code>M-1 0 a</code> と叩いても同じ結果が得られます．
+</p>
+
+<h2>シェルコマンドの実行</h2>
+<p><code>M-!</code> と叩くと <code>Shell command:</code> とのプロンプトが表示されます．
+引数を与えた場合（つまり <code>M-1 M-!</code> などとした場合）は，その出力がバッファに書き込まれます．
+</p>
+
+<h2>複数ファイルの編集・画面の分割</h2>
+<h3>ファイルの開閉</h3>
+<p><code>C-x C-f</code> でファイルを開きます．
+<code>C-x C-r</code> とすると読み取り専用で開けます．
+</p>
+
+<p><code>C-x k</code> でバッファを消すことができます．
+</p>
+
+<h3>バッファの移動</h3>
+<p><code>C-x &lt;left&gt;</code> や <code>C-x &lt;right&gt;</code> などで前後のバッファに移動します．
+<code>ESC ` b</code> で開かれたメニューから選択することもできます．
+</p>
+
+<h3>分割</h3>
+<p><code>C-x 2</code> や <code>C-x 3</code> によって分割できます．
+</p>
+
+<h3>移動</h3>
+<p><code>C-x o</code> によって別の窓に移動できます．
+</p>
+
+<h3>終了</h3>
+<p><code>C-x 1</code> によってアクティブでない窓を閉じます．
+<code>C-x 0</code> によってアクティブな窓を閉じます．
+</p>
+
+<h3>スクロール</h3>
+<p><code>C-M-v</code> によって次の（<code>C-o</code> で移動する）窓で <code>C-v</code> をするのと同じことができます．
+</p>
+
+<h2>コマンドを忘れたら？</h2>
+<p><code>C-h k</code> に続けてキー列を入力すると，そのキー列に割り当てられたコマンドの説明を見ることができます．
+</p>
+
+<p>ヘルプの窓を閉じるときは <code>C-x 1</code> などを使いましょう．
+</p>
+      </main>
+    </div>
+  </body>
+</html>
