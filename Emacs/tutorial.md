@@ -110,17 +110,17 @@ int main() {
 #_
 -     [91mv [1mC-M-a[0m
 -   5 [7mi[0mnt main() {
--   6   size_t n;                       
--   7   std::cin >> n;                  
--   8                                   
--   9   std::vector<int> a(n);          
--  10   for (int &ai: a)                
--  11     std::cin >> ai;               
--  12                                   
--  13   std::sort(a.begin(), a.end());  
--  14                                   
--  15   for (int ai[7;91;7m:[0m a)  
--  16     std::cout << ai << std::endl; 
+-   6   size_t n;
+-   7   std::cin >> n;
+-   8
+-   9   std::vector<int> a(n);
+-  10   for (int &ai: a)
+-  11     std::cin >> ai;
+-  12
+-  13   std::sort(a.begin(), a.end());
+-  14
+-  15   for (int ai[7;91;7m:[0m a)
+-  16     std::cout << ai << std::endl;
 -  17 }
 -     [7m [0m
 -     [91m^ [1mC-M-e[0m
