@@ -440,9 +440,10 @@ emacs の初期化ファイル．
 
 " 行番号
 :set number
+:highlight LineNr ctermfg=254
 
 " ショートカット
-:nnoremap ZX <Esc>:w<CR><C-z>
+:nnoremap ZX :w<CR><C-z>
 
 " バックスペースの挙動
 :set backspace=eol,start,indent
@@ -458,6 +459,8 @@ emacs の初期化ファイル．
 augroup langc
     au BufNewFile,BufRead *.c,*.cpp,*.cc,*.cxx,*.C,*.h,*.hpp
         \ setlocal tabstop=2 softtabstop=2 shiftwidth=2 cindent
+augroup END
+augroup langrs
     au BufNewFile *.rs
         \ 0r ~/codefolio/Rust/scanner.rs
 augroup END

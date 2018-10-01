@@ -436,9 +436,10 @@ C シェルの真似をして <code>M-C-z</code> で <code>C-z</code> の逆を�
 
 &quot; 行番号
 :set number
+:highlight LineNr ctermfg=254
 
 &quot; ショートカット
-:nnoremap ZX &lt;Esc&gt;:w&lt;CR&gt;&lt;C-z&gt;
+:nnoremap ZX :w&lt;CR&gt;&lt;C-z&gt;
 
 &quot; バックスペースの挙動
 :set backspace=eol,start,indent
@@ -454,6 +455,8 @@ C シェルの真似をして <code>M-C-z</code> で <code>C-z</code> の逆を�
 augroup langc
     au BufNewFile,BufRead *.c,*.cpp,*.cc,*.cxx,*.C,*.h,*.hpp
         \ setlocal tabstop=2 softtabstop=2 shiftwidth=2 cindent
+augroup END
+augroup langrs
     au BufNewFile *.rs
         \ 0r ~/codefolio/Rust/scanner.rs
 augroup END</div></pre></div>
