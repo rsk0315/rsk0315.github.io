@@ -218,7 +218,7 @@ export PATH=$HOME/.cargo/bin/${PATH:+:$PATH}
 $ cd ~/Downloads/
 $ tar xvf php-7.2.10.tar.xz
 $ cd php-7.2.10/
-$ ./configure --build=prefix=$HOME --x86_64-redhat-linux --enable-mbstring --with-openssl
+$ ./configure --prefix=$HOME --build=x86_64-redhat-linux --enable-mbstring --with-openssl
 $ make
 $ make test  # may fail ???
 $ make install
