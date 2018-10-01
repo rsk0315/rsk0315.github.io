@@ -223,7 +223,8 @@ echo コピペの動作確認用</div></pre></div>
 <h2>PHP のアップデート</h2>
 <p><code>yum</code> は古い定期．<a href="http://php.net/get/php-7.2.10.tar.xz/from/a/mirror">php.net</a> などからダウンロード．
 </p>
-<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">cd ~/Downloads/</span>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">sudo yum install libxml2-devel</span>
+<span class="cmd-in">cd ~/Downloads/</span>
 <span class="cmd-in">tar xvf php-7.2.10.tar.xz</span>
 <span class="cmd-in">cd php-7.2.10/</span>
 <span class="cmd-in">./configure --prefix=$HOME --build=x86_64-redhat-linux --enable-mbstring --with-openssl</span>

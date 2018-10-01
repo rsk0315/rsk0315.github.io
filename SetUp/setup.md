@@ -215,6 +215,7 @@ export PATH=$HOME/.cargo/bin/${PATH:+:$PATH}
 ## PHP のアップデート
 `yum` は古い定期．@[url:http://php.net/get/php-7.2.10.tar.xz/from/a/mirror]php.net@ などからダウンロード．
 #_
+$ sudo yum install libxml2-devel
 $ cd ~/Downloads/
 $ tar xvf php-7.2.10.tar.xz
 $ cd php-7.2.10/
