@@ -639,7 +639,7 @@ CFLAGS=&quot;$cflags $CFLAGS $@&quot;
 CXXFLAGS=&quot;$cflags $CXXFLAGS $@&quot;
 
 src=&quot;$(latest -s&#x27;c|cxx|cc|C|cpp&#x27;)&quot; \
-    || { echo no source files found. &gt;&amp;2; exit; }
+    || { echo no source files found. &gt;&amp;2; exit 1; }
 make CC=&quot;$CC&quot; CXX=&quot;$CXX&quot; CFLAGS=&quot;$CFLAGS&quot; CXXFLAGS=&quot;$CXXFLAGS&quot; &quot;${src%.*}&quot;</div></pre></div>
 
 <p>最新以外のファイルをするために <code>g foo</code> とできるようにしたいけど，オプションの解析が面倒になるんだよね．
@@ -658,7 +658,7 @@ make CC=&quot;$CC&quot; CXX=&quot;$CXX&quot; CFLAGS=&quot;$CFLAGS&quot; CXXFLAGS
 </p>
 <div><pre class="sourcecode" filename="~/bin/a"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
 
-src=$(latest -p ..x) || { echo no executables found. &gt;&amp;2; exit; }
+src=$(latest -p ..x) || { echo no executables found. &gt;&amp;2; exit 1; }
 set -x
 &quot;./$src&quot; &quot;$@&quot;</div></pre></div>
 
@@ -668,7 +668,7 @@ set -x
 <div><pre class="sourcecode" filename="~/bin/aa"><div style="margin:1.2em 0 0 0"># -*- mode: sh; sh-shell: bash -*-
 
 src=$(latest-Q -p ..x &amp;&amp; echo -) \
-    || { echo no executables found. &gt;&amp;2; exit; }
+    || { echo no executables found. &gt;&amp;2; exit 1; }
 src=&quot;${src::-2}&quot;
 [[ -f &quot;$src&quot; ]] || exit
 set -x

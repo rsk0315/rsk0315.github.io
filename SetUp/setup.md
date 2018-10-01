@@ -629,7 +629,7 @@ CFLAGS="$cflags $CFLAGS $@"
 CXXFLAGS="$cflags $CXXFLAGS $@"
 
 src="$(latest -s'c|cxx|cc|C|cpp')" \
-    || { echo no source files found. >&2; exit; }
+    || { echo no source files found. >&2; exit 1; }
 make CC="$CC" CXX="$CXX" CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" "${src%.*}"
 ```
 
@@ -646,7 +646,7 @@ GNU `make` はスペースに関してガバガバっぽいので，これをす
 ```[~/bin/a]
 # -*- mode: sh; sh-shell: bash -*-
 
-src=$(latest -p ..x) || { echo no executables found. >&2; exit; }
+src=$(latest -p ..x) || { echo no executables found. >&2; exit 1; }
 set -x
 "./$src" "$@"
 ```
@@ -657,7 +657,7 @@ set -x
 # -*- mode: sh; sh-shell: bash -*-
 
 src=$(latest-Q -p ..x && echo -) \
-    || { echo no executables found. >&2; exit; }
+    || { echo no executables found. >&2; exit 1; }
 src="${src::-2}"
 [[ -f "$src" ]] || exit
 set -x
