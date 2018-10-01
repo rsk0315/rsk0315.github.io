@@ -207,7 +207,11 @@ echo コピペの動作確認用</div></pre></div>
 <span class="cmd-in">sudo ./install-tl</span></pre></div>
 
 <h2>Rust のインストール</h2>
-<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">curl -sSf http://sh.rustup.rs | bash</span></pre></div>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">curl -sSf https://sh.rustup.rs | bash</span></pre></div>
+<p>ファイルを保存しておきたければ以下．
+</p>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">curl -sSf https://sh.rustup.rs -o rustup-init.sh</span>
+<span class="cmd-in">bash rustup-init.sh</span></pre></div>
 
 <p><a href="https://www.rustup.rs">公式サイト？</a>には <code>curl https://sh.rustup.rs -sSf | sh</code> と書かれているが，shebang が <code>#!/bin/bash</code> なんだよね．
 </p>

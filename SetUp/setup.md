@@ -197,7 +197,12 @@ $ sudo ./install-tl
 
 ## Rust のインストール
 #_
-$ curl -sSf http://sh.rustup.rs | bash
+$ curl -sSf https://sh.rustup.rs | bash
+#_
+ファイルを保存しておきたければ以下．
+#_
+$ curl -sSf https://sh.rustup.rs -o rustup-init.sh
+$ bash rustup-init.sh
 #_
 
 @[url:https://www.rustup.rs]公式サイト？@には `curl https://sh.rustup.rs -sSf | sh` と書かれているが，shebang が `#!/bin/bash` なんだよね．
