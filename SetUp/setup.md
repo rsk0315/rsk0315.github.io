@@ -129,7 +129,7 @@ $ make && make install
 $ cp doc/bash.1 ~/usr/share/man/man1/
 #_
 
-## GCCのアップグレード
+## GCC のアップグレード
 `yum install gcc` でインストールできる GCC は古いのでつらい．
 #_
 $ sudo yum install centos-release-scl
