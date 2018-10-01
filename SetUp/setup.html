@@ -365,8 +365,12 @@ stty rprnt undef stop undef werase undef kill undef</div></pre></div>
 &quot;\e\C-w&quot;: kill-whole-line
 
 # variables
+set colored-stats On
+set colored-completion-prefix On
 set enable-bracketed-paste On
-set mark-symlinked-directories On</div></pre></div>
+set mark-symlinked-directories On
+set blink-matching-paren On
+set skip-completed-text On</div></pre></div>
 <p><code>enable-bracketed-paste</code> が有効のとき，改行文字が <code>accept-line</code> として暴発するのを防ぐ（タブ文字の <code>complete</code> なども同様）．
 <code>mark-symlinked-directories</code> が有効のとき，ディレクトリを指すリンクが Tab 補完されたときに <code>/</code> が付加される．
 </p>

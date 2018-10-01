@@ -366,8 +366,12 @@ $ stty kill \^u
 "\e\C-w": kill-whole-line
 
 # variables
+set colored-stats On
+set colored-completion-prefix On
 set enable-bracketed-paste On
 set mark-symlinked-directories On
+set blink-matching-paren On
+set skip-completed-text On
 ```
 `enable-bracketed-paste` が有効のとき，改行文字が `accept-line` として暴発するのを防ぐ（タブ文字の `complete` なども同様）．
 `mark-symlinked-directories` が有効のとき，ディレクトリを指すリンクが Tab 補完されたときに `/` が付加される．
