@@ -412,6 +412,15 @@ C シェルの真似をして <code>M-C-z</code> で <code>C-z</code> の逆を�
  column-number-mode t
  column-number-indicator-zero-based nil)
 
+;; インデントの設定
+(add-hook &#x27;c++-mode-hook
+          &#x27;(lambda ()
+             (setq c-basic-offset 2)
+             (c-set-offset &#x27;arglist-intro &#x27;++)
+             (c-set-offset &#x27;arglist-cont 0)
+             (c-set-offset &#x27;arglist-close 0)
+             ))
+
 ;; その他モジュールの読み込み
 (add-to-list &#x27;load-path &quot;~/.emacs.d/elisp&quot;)
 (require &#x27;markdown)</div></pre></div>

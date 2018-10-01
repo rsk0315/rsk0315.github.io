@@ -414,6 +414,15 @@ emacs の初期化ファイル．
  column-number-mode t
  column-number-indicator-zero-based nil)
 
+;; インデントの設定
+(add-hook 'c++-mode-hook
+          '(lambda ()
+             (setq c-basic-offset 2)
+             (c-set-offset 'arglist-intro '++)
+             (c-set-offset 'arglist-cont 0)
+             (c-set-offset 'arglist-close 0)
+             ))
+
 ;; その他モジュールの読み込み
 (add-to-list 'load-path "~/.emacs.d/elisp")
 (require 'markdown)
