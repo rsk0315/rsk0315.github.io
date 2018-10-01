@@ -227,7 +227,7 @@ echo コピペの動作確認用</div></pre></div>
 <span class="cmd-in">cd ~/Downloads/</span>
 <span class="cmd-in">tar xvf php-7.2.10.tar.xz</span>
 <span class="cmd-in">cd php-7.2.10/</span>
-<span class="cmd-in">./configure --build=prefix=$HOME --x86_64-redhat-linux --enable-mbstring --with-openssl</span>
+<span class="cmd-in">./configure --prefix=$HOME --build=x86_64-redhat-linux --enable-mbstring --with-openssl</span>
 <span class="cmd-in">make</span>
 <span class="cmd-in">make test  # may fail ???</span>
 <span class="cmd-in">make install</span></pre></div>
