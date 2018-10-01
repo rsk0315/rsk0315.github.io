@@ -309,7 +309,7 @@ export LESS=FR</div></pre></div>
 
 <div><pre class="sourcecode" filename="~/.bashrc"><div style="margin:1.2em 0 0 0"># Completion configurations
 completion_loader () { return 124; }
-complete -EFcompletion_loader +o{bashdefault,default}
+complete -EFcompletion_loader +o{bash,}default
 export FIGNORE=.o:\~:#${FIGNORE:+:$FIGINORE}</div></pre></div>
 
 <p>何も補完しないようにさせるのもそっけないので，ヒント的なものを出してもよい．
