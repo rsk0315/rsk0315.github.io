@@ -96,7 +96,10 @@ echo コピペの動作確認用</div></pre></div>
 <p><code>prefix</code> は <code>$(HOME)</code> になっているので，<code>$PATH</code> を見てちゃんと新しいのが実行されるかを確認する．必要に応じて以下を実行してみる．
 </p>
 <div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">git --version</span>
-<span class="cmd-in">which git</span></pre></div>
+<span class="cmd-in">$(which git) --version</span></pre></div>
+<p><code>git</code> で新しい方が起動されない場合，シェルを再起動してもよいが，以下の方法を覚えておくとよい．
+</p>
+<div><pre style="color:#f3f3f3; background-color:#2e3436"><span class="cmd-in">hash -r</span></pre></div>
 
 <p><code>GIT_EDITOR</code> などを適宜変更しよう．
 </p>

@@ -67,7 +67,11 @@ $ make && make install
 `prefix` は `$(HOME)` になっているので，`$PATH` を見てちゃんと新しいのが実行されるかを確認する．必要に応じて以下を実行してみる．
 #_
 $ git --version
-$ which git
+$ $(which git) --version
+#_
+`git` で新しい方が起動されない場合，シェルを再起動してもよいが，以下の方法を覚えておくとよい．
+#_
+$ hash -r
 #_
 
 `GIT_EDITOR` などを適宜変更しよう．
