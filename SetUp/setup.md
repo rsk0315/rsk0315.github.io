@@ -483,6 +483,11 @@ $ git help config
         commit = 106
 ```
 
+#_
+$ git config credential.helper store
+#_
+さすがに毎回パスワードを求められるのも面倒な気がするけど，これはこれでどうかとも思うよね．
+
 ## フォントの設定
 MigMix はいいぞ．
 `/etc/fonts/conf.d/65-nonlatin.conf` を編集する．とりあえず一番上にしよう．
