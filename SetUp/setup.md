@@ -412,12 +412,13 @@ emacs の初期化ファイル．
 (setq
  mode-line-position
  `((-3 "%p ")
+   (size-indication-mode (8 " of %I"))
    (line-number-mode " L%l")
    (column-number-mode
     (,(version< emacs-version "26") " C%c"
      (column-number-indicator-zero-based " C%c" " CC%C"))))
  column-number-mode t
- column-number-indicator-zero-based nil)
+ column-number-indicator-zero-based t)
 
 ;; インデントの設定
 (add-hook 'c++-mode-hook
