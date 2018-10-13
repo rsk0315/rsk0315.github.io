@@ -431,32 +431,34 @@ C シェルの真似をして <code>M-C-z</code> で <code>C-z</code> の逆を�
 (require &#x27;markdown)</div></pre></div>
 
 <h3><code>vimrc</code> の編集</h3>
-<div><pre class="sourcecode" filename="~/.vimrc"><div style="margin:1.2em 0 0 0">&quot; 色の設定
+<div><pre class="sourcecode" filename="~/.vimrc"><div style="margin:1.2em 0 0 0">&quot;色の設定&quot;
 :colorscheme koehler
 :syntax on
 
-&quot; ステータスバーの設定
+&quot;ステータスバーの設定&quot;
+:set showmode
 :set showcmd
 :set ruler
 
-&quot; 行番号
+&quot;行番号&quot;
 :set number
 :highlight LineNr ctermfg=254
 
-&quot; ショートカット
+&quot;ショートカット&quot;
 :nnoremap ZX :w&lt;CR&gt;&lt;C-z&gt;
 
-&quot; バックスペースの挙動
+&quot;バックスペースの挙動&quot;
 :set backspace=eol,start,indent
-&quot; インデントの設定 cf: &#x27;:h cinoption-values&#x27;
+
+&quot;インデントの設定 cf: &#x27;:h cinoption-values&#x27;&quot;
 :set expandtab
 :set tabstop=4
 :set softtabstop=4
 :set shiftwidth=4
 :set autoindent
-:set smartindent  &quot; ここよくわかってません
+:set smartindent
 
-&quot; 言語特有の設定
+&quot;言語特有の設定&quot;
 augroup langc
     au BufNewFile,BufRead *.c,*.cpp,*.cc,*.cxx,*.C,*.h,*.hpp
         \ setlocal tabstop=2 softtabstop=2 shiftwidth=2 cindent
@@ -464,7 +466,11 @@ augroup END
 augroup langrs
     au BufNewFile *.rs
         \ 0r ~/codefolio/Rust/scanner.rs
-augroup END</div></pre></div>
+augroup END
+
+&quot;スペースなどを印字可能文字で表示&quot;
+:set list
+:set listchars=trail:~,tab:&gt;.</div></pre></div>
 
 <p><code>vimrc</code> が長い方がえらいと思っている人たちは正気ですか？
 ...とか書いてたくせに（そらで完全に書けるほど）短いとは言えなくなってきましたね．

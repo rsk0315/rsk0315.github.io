@@ -436,32 +436,34 @@ emacs の初期化ファイル．
 
 ### `vimrc` の編集
 ```[~/.vimrc]
-" 色の設定
+"色の設定"
 :colorscheme koehler
 :syntax on
 
-" ステータスバーの設定
+"ステータスバーの設定"
+:set showmode
 :set showcmd
 :set ruler
 
-" 行番号
+"行番号"
 :set number
 :highlight LineNr ctermfg=254
 
-" ショートカット
+"ショートカット"
 :nnoremap ZX :w<CR><C-z>
 
-" バックスペースの挙動
+"バックスペースの挙動"
 :set backspace=eol,start,indent
-" インデントの設定 cf: ':h cinoption-values'
+
+"インデントの設定 cf: ':h cinoption-values'"
 :set expandtab
 :set tabstop=4
 :set softtabstop=4
 :set shiftwidth=4
 :set autoindent
-:set smartindent  " ここよくわかってません
+:set smartindent
 
-" 言語特有の設定
+"言語特有の設定"
 augroup langc
     au BufNewFile,BufRead *.c,*.cpp,*.cc,*.cxx,*.C,*.h,*.hpp
         \ setlocal tabstop=2 softtabstop=2 shiftwidth=2 cindent
@@ -470,6 +472,10 @@ augroup langrs
     au BufNewFile *.rs
         \ 0r ~/codefolio/Rust/scanner.rs
 augroup END
+
+"スペースなどを印字可能文字で表示"
+:set list
+:set listchars=trail:~,tab:>.
 ```
 
 `vimrc` が長い方がえらいと思っている人たちは正気ですか？
