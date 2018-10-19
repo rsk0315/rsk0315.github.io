@@ -25,11 +25,9 @@ Python などの `eval` で殴れるレベルです．
 - [0291 Mystery of an Ancient Ruin](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/0291)
 - [1001 Binary Tree Intersection And Union](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1001)
 - [1012 Operations with Finite Sets](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1012)
-- [1037 Midnight Teatime](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1037)
 - [1102 Calculation of Expressions](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1102)
   - `std::complex<int>` が未規定というのは知っていますか？
 - [1145 The Genome Database of All Space Life](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1145)
-- [1155 How can I satisfy thee? Let me count the ways...](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1155)
 - [1188 Hierarchical Democracy](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1188)
   - 他の問題と少し見た目が違います．
 - [1244 Molecular Formula](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1244)
@@ -52,12 +50,17 @@ Python などの `eval` で殴れるレベルです．
 - [2740 Rooted Tree for Misawa-san](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2740)
 - [2883 Proof of Knowledge](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2883)
 
+## 全探索をする構文解析
+与えられた入力に対して代入を行い，パースを何度も行うタイプの問題です．
+- [1037 Midnight Teatime](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1037)
+- [1155 How can I satisfy thee? Let me count the ways...](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1155)
+- [2401 Equation](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2401)
+
 ## Python で楽をするタイプの構文解析
 C++ で頑張ろうとすると面倒そうに見えますが，Python で正規表現 (`re`) が使えたりすると殴りやすい問題です．
 この手の問題を見極められると嬉しいかもしれません．
 - [1078 SAT-EN-3](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1078)
 - [1282 Bug Hunt](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1282)
-- [2401 Equation](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2401)
 - [2438 YAML](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2438)
 - [2523 Time Complexity](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2523)
 - [3002 Factorization](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/3002)
