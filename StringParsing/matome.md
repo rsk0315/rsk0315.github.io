@@ -27,7 +27,7 @@ Python などの `eval` で殴れるレベルです．
 - [1012 Operations with Finite Sets](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1012)
 - [1037 Midnight Teatime](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1037)
 - [1102 Calculation of Expressions](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1102)
-  - `complex<int>` が未規定というのは知っていますか？
+  - `std::complex<int>` が未規定というのは知っていますか？
 - [1145 The Genome Database of All Space Life](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1145)
 - [1155 How can I satisfy thee? Let me count the ways...](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1155)
 - [1188 Hierarchical Democracy](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1188)
@@ -76,8 +76,8 @@ C++ で頑張ろうとすると面倒そうに見えますが，Python で正規
 - [1293 Common Polynomial](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1293)
 - [1300 Chemist's Math](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1300)
 
-## 実装が面倒な構文解析
-やりたくない．
+## 面倒な構文解析
+やりたくない．やらないことはないんですが．
 - [1031 Simple GUI Application](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1031)
 - [2365 Memory Leak](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2365)
 
