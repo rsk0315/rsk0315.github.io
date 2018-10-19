@@ -81,6 +81,7 @@ C++ で頑張ろうとすると面倒そうに見えますが，Python で正規
 やりたくない．やらないことはないんですが．
 - [1031 Simple GUI Application](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1031)
 - [2365 Memory Leak](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2365)
+- [2421 Markup language has Declined](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2421)
 
 ## 面白い構文解析
 やりたい．大変かもしれませんが苦痛ではないはずです．
