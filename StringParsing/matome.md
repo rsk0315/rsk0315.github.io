@@ -75,6 +75,7 @@ C++ で頑張ろうとすると面倒そうに見えますが，Python で正規
   - それはそれで結構ですが，抜け道を考えてみるのもアリです．
 - [1293 Common Polynomial](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1293)
 - [1300 Chemist's Math](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1300)
+- [1620 Boolean Expression Compressor](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1620)
 
 ## 面倒な構文解析
 やりたくない．やらないことはないんですが．
