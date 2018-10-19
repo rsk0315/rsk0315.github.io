@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          processEscapes: true,
+        },
+        CommonHTML: { matchFontHeight: false }
+      });
+    </script>
+    <script type="text/javascript" async src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Cuprum&subset=latin" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet" type="text/css">
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+
+    <link href="/css/base.css" rel="stylesheet">
+    <script src="/js/base.js"></script>
+
+    <link href="/css/codeblock.css" rel="stylesheet">
+    <script src="/js/codeblock.js"></script>
+  </head>
+  <body>
+    <div id="main-div" class="float-container">
+      <main class="container">
+<h1>AOJ 構文解析</h1>
+
+<h2>簡単な文字列処理</h2>
+<p>構文解析器を書いたりする必要がないものたちです．
+STL の使い方の練習など．
+</p>
+<ul>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/0105">0105 Book Index</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/0151">0151 Grid</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/0350">0350 Irreducible Fractionalization</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1602">1602 ICPC Calculator</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2369">2369 CatChecker</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2680">2680 LR</a></li>
+  <ul>
+    <li>分類が難しい．構文解析的な難しさはないはず．</li>
+  </ul>
+</ul>
+<h2>簡単な構文解析</h2>
+<p>簡単な構文解析器を書く練習です．
+Python などの <code>eval</code> で殴れるレベルです．
+</p>
+<ul>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/0109">0109 Smart Calculator</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/0110">0110 Alphametic</a></li>
+</ul>
+<h2>簡単な構文解析 2</h2>
+<p>やること自体は単純ですが，ほんの少し面倒なものたちです．
+適宜，構造体などを定義して実装するとよいかもしれません．
+構文解析器の返り値は必ずしも整数値である必要はないことを覚えておきましょう．
+</p>
+<ul>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/0264">0264 Finite Field Calculator</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/0291">0291 Mystery of an Ancient Ruin</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1001">1001 Binary Tree Intersection And Union</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1012">1012 Operations with Finite Sets</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1037">1037 Midnight Teatime</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1102">1102 Calculation of Expressions</a></li>
+  <ul>
+    <li><code>std::complex&lt;int&gt;</code> が未規定というのは知っていますか？</li>
+  </ul>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1145">1145 The Genome Database of All Space Life</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1155">1155 How can I satisfy thee? Let me count the ways...</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1188">1188 Hierarchical Democracy</a></li>
+  <ul>
+    <li>他の問題と少し見た目が違います．</li>
+  </ul>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1244">1244 Molecular Formula</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1314">1314 Matrix Calculator</a></li>
+  <ul>
+    <li>ある種のハラスメントで<strong>簡単</strong>と言っていますが，実際簡単に見えてきます．</li>
+  </ul>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1346">1346 Miscalculation</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2255">2255 6/2(1+2)</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2348">2348 Testing Circuits</a></li>
+  <ul>
+    <li>やることは簡単ですが，与えられる文字数が大きいです．</li>
+    <li>計算効率のよくない構文解析器を書きがちな人は注意がいるかもしれません．</li>
+  </ul>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2435">2435 Zero Division Checker</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2570">2570 Shipura</a></li>
+  <ul>
+    <li>ちょっと難しそう</li>
+  </ul>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2584">2584 Broken Cipher Generator</a></li>
+  <ul>
+    <li>ちょっと傾向が違う．</li>
+  </ul>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2596">2596 Points and Lines</a></li>
+  <ul>
+    <li>幾何かな？</li>
+  </ul>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2613">2613 Unordered Operators</a></li>
+  <ul>
+    <li>これすき．</li>
+  </ul>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2740">2740 Rooted Tree for Misawa-san</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2883">2883 Proof of Knowledge</a></li>
+</ul>
+<h2>Python で楽をするタイプの構文解析</h2>
+<p>C++ で頑張ろうとすると面倒そうに見えますが，Python で正規表現 (<code>re</code>) が使えたりすると殴りやすい問題です．
+この手の問題を見極められると嬉しいかもしれません．
+</p>
+<ul>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1078">1078 SAT-EN-3</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1282">1282 Bug Hunt</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2401">2401 Equation</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2438">2438 YAML</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2523">2523 Time Complexity</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/3002">3002 Factorization</a></li>
+</ul>
+<h2>難しめの構文解析</h2>
+<p>処理すべき文字列が，必ずしも与えられた文法に沿っていない場合，少々つらさが増します．
+</p>
+<ul>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1022">1022 Indian Puzzle</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2428">2428 Lost Number</a></li>
+</ul>
+<h2>やや面倒な構文解析</h2>
+<p>構文解析以外に面倒な要素が含まれていて面倒ですが，落ち着いてやれば平気です．
+</p>
+<ul>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1087">1087 Dimensional Analysis</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1233">1233 Equals are Equals</a></li>
+  <ul>
+    <li>多項式ライブラリが欲しくなりますか？</li>
+    <li>それはそれで結構ですが，抜け道を考えてみるのもアリです．</li>
+  </ul>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1293">1293 Common Polynomial</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1300">1300 Chemist&#x27;s Math</a></li>
+</ul>
+<h2>面倒な構文解析</h2>
+<p>やりたくない．やらないことはないんですが．
+</p>
+<ul>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1031">1031 Simple GUI Application</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2365">2365 Memory Leak</a></li>
+</ul>
+<h2>面白い構文解析</h2>
+<p>やりたい．大変かもしれませんが苦痛ではないはずです．
+</p>
+<ul>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1322">1322 ASCII Expression</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2437">2437 DNA</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2643">2643 AI</a></li>
+</ul>
+<h2>難しい構文解析</h2>
+<p>知識が必要そうな問題です．天才にとってはそんなことないかもしれません．
+</p>
+<ul>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2067">2067 Reading Brackets in English</a></li>
+</ul>
+<h2>To-Do</h2>
+<p>えびちゃんの課題です．
+</p>
+<ul>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2512">2512 Ononokomachi&#x27;s Edit War</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2710">2710 An Equiation in a Mine</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2731">2731 Shifting a Matrix</a></li>
+</ul>
+      </main>
+    </div>
+  </body>
+</html>
