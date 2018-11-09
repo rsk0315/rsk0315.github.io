@@ -67,8 +67,10 @@ C++ で頑張ろうとすると面倒そうに見えますが，Python で正規
 
 ## 難しめの構文解析
 処理すべき文字列が，必ずしも与えられた文法に沿っていない場合，少々つらさが増します．
+特に，与えられた文字列に自分で手を加えたものを処理する必要がある場合，バグを埋め込みやすいので注意です（適当に手を加えた文字列が正しい文法に沿っているかきちんと確認をしましょう）．
 - [1022 Indian Puzzle](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1022)
 - [2428 Lost Number](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2428)
+- [2512 Ononokomachi's Edit War](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2512)
 
 ## やや面倒な構文解析
 構文解析以外に面倒な要素が含まれていて面倒ですが，落ち着いてやれば平気です．
@@ -98,6 +100,5 @@ C++ で頑張ろうとすると面倒そうに見えますが，Python で正規
 
 ## To-Do
 えびちゃんの課題です．
-- [2512 Ononokomachi's Edit War](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2512)
 - [2710 An Equiation in a Mine](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2710)
 - [2731 Shifting a Matrix](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2731)
