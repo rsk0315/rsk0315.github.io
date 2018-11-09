@@ -47,6 +47,7 @@ Python などの `eval` で殴れるレベルです．
   - 幾何かな？
 - [2613 Unordered Operators](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2613)
   - これすき．
+- [2731 Shifting a Matrix](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2731)
 - [2740 Rooted Tree for Misawa-san](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2740)
 - [2883 Proof of Knowledge](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2883)
 
@@ -101,4 +102,3 @@ C++ で頑張ろうとすると面倒そうに見えますが，Python で正規
 ## To-Do
 えびちゃんの課題です．
 - [2710 An Equiation in a Mine](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2710)
-- [2731 Shifting a Matrix](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2731)
