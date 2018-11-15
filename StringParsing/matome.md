@@ -23,6 +23,8 @@ Python などの `eval` で殴れるレベルです．
 やること自体は単純ですが，ほんの少し面倒なものたちです．
 適宜，構造体などを定義して実装するとよいかもしれません．
 構文解析器の返り値は必ずしも整数値である必要はないことを覚えておきましょう．
+
+ここでいう簡単とは，定跡に沿って実装すればそのまま Accept される，程度の意味です．
 - [0264 Finite Field Calculator](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/0264)
 - [0291 Mystery of an Ancient Ruin](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/0291)
 ries/1001)
@@ -47,6 +49,7 @@ ries/1001)
   - 幾何かな？
 - [2613 Unordered Operators](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2613)
   - これすき．
+- [2731 Shifting a Matrix](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2731)
 - [2740 Rooted Tree for Misawa-san](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2740)
 - [2883 Proof of Knowledge](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2883)
 
@@ -101,10 +104,10 @@ C++ で頑張ろうとすると面倒そうに見えますが，Python で正規
 - [2643 AI](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2643)
 
 ## 難しい構文解析
-知識が必要そうな問題です．天才にとってはそんなことないかもしれません．
+知識が必要そうな問題です．天才にとってはそんなことないかもしれません．基本的には区間 DP です．
 - [2067 Reading Brackets in English](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2067)
+- [2710 An Equiation in a Mine](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2710)
 
 ## To-Do
 えびちゃんの課題です．
-- [2710 An Equiation in a Mine](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2710)
-- [2731 Shifting a Matrix](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2731)
+- none
