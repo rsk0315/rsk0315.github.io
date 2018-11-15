@@ -24,6 +24,37 @@ Python などの `eval` で殴れるレベルです．
 適宜，構造体などを定義して実装するとよいかもしれません．
 構文解析器の返り値は必ずしも整数値である必要はないことを覚えておきましょう．
 
+```
+// {"|", "^", "&", "+-", "*/"} のように，二項演算子を優先度が高くなる順に並べます
+BIN_OPS;
+ResultType parse(s, i, p) {
+  if (p == BIN_OPS.size()) {
+    if (s[i] == '(') {
+      res = parse(s, ++i, 0);
+      assert(s[i] == ')');
+      ++i;
+    } else if (s[i] == '~') {
+      // 前置の単項演算子
+      res = ~parse(s, ++i, p);
+    } else if (/* リテラル */) {
+      // 数値なりを適当にパースします
+    }
+    // 後置の単項演算子があれば適当にやります
+    // 適当おわり
+    return res;
+  }
+
+  ResultType res=parse(s, i, p+1);
+  while (i < s.length()) {
+    bin_op = s[i];
+    if (bin_op not in BIN_OPS[p]) break;
+    ResultType tmp=parse(s, ++i, p+1);
+    res `op`= tmp;
+  }
+  return res;
+}
+```
+
 ここでいう簡単とは，定跡に沿って実装すればそのまま Accept される，程度の意味です．
 - [0264 Finite Field Calculator](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/0264)
 - [0291 Mystery of an Ancient Ruin](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/0291)
