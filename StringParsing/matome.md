@@ -27,7 +27,6 @@ Python などの `eval` で殴れるレベルです．
 ここでいう簡単とは，定跡に沿って実装すればそのまま Accept される，程度の意味です．
 - [0264 Finite Field Calculator](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/0264)
 - [0291 Mystery of an Ancient Ruin](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/0291)
-ries/1001)
 - [1012 Operations with Finite Sets](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1012)
 - [1102 Calculation of Expressions](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1102)
   - `std::complex<int>` が未規定というのは知っていますか？
@@ -50,20 +49,22 @@ ries/1001)
 - [2613 Unordered Operators](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2613)
   - これすき．
 - [2731 Shifting a Matrix](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2731)
-- [2740 Rooted Tree for Misawa-san](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2740)
-- [2883 Proof of Knowledge](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2883)
+  - グッと睨むと，楽に構文解析できる構造になることがわかります．
 
 # 一風変わった構文解析
-- [1001 Binary Tree Intersection And Union](https://onlinejudge.u-aizu.ac.jp/challenges/search/catego
+- [1001 Binary Tree Intersection And Union](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1001)
   - 二つの文字列を同時に読み進めます．
 - [1188 Hierarchical Democracy](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1188)
   - 二項演算はしないです．
+- [2740 Rooted Tree for Misawa-san](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2740)
+  - これも二つの文字列を同時に読み進めます．
 
 ## 全探索をする構文解析
 与えられた入力に対して代入を行い，パースを何度も行うタイプの問題です．
 - [1037 Midnight Teatime](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1037)
 - [1155 How can I satisfy thee? Let me count the ways...](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1155)
 - [2401 Equation](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2401)
+- [2883 Proof of Knowledge](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2883)
 
 ## Python で楽をするタイプの構文解析
 C++ で頑張ろうとすると面倒そうに見えますが，Python で正規表現 (`re`) が使えたりすると殴りやすい問題です．

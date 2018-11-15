@@ -44,6 +44,10 @@ STL の使い方の練習など．
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/0350">0350 Irreducible Fractionalization</a></li>
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1602">1602 ICPC Calculator</a></li>
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2369">2369 CatChecker</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2435">2435 Zero Division Checker</a></li>
+  <ul>
+    <li>逆ポーランド記法は簡単なので．</li>
+  </ul>
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2680">2680 LR</a></li>
   <ul>
     <li>分類が難しい．構文解析的な難しさはないはず．</li>
@@ -68,17 +72,12 @@ Python などの <code>eval</code> で殴れるレベルです．
 <ul>
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/0264">0264 Finite Field Calculator</a></li>
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/0291">0291 Mystery of an Ancient Ruin</a></li>
-  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1001">1001 Binary Tree Intersection And Union</a></li>
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1012">1012 Operations with Finite Sets</a></li>
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1102">1102 Calculation of Expressions</a></li>
   <ul>
     <li><code>std::complex&lt;int&gt;</code> が未規定というのは知っていますか？</li>
   </ul>
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1145">1145 The Genome Database of All Space Life</a></li>
-  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1188">1188 Hierarchical Democracy</a></li>
-  <ul>
-    <li>他の問題と少し見た目が違います．</li>
-  </ul>
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1244">1244 Molecular Formula</a></li>
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1314">1314 Matrix Calculator</a></li>
   <ul>
@@ -86,19 +85,21 @@ Python などの <code>eval</code> で殴れるレベルです．
   </ul>
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1346">1346 Miscalculation</a></li>
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2255">2255 6/2(1+2)</a></li>
+  <ul>
+    <li>違うことをやる必要があるように見えるかもしれませんが，本質的に同じことをするだけでよいです．</li>
+  </ul>
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2348">2348 Testing Circuits</a></li>
   <ul>
     <li>やることは簡単ですが，与えられる文字数が大きいです．</li>
     <li>計算効率のよくない構文解析器を書きがちな人は注意がいるかもしれません．</li>
   </ul>
-  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2435">2435 Zero Division Checker</a></li>
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2570">2570 Shipura</a></li>
   <ul>
     <li>ちょっと難しそう</li>
   </ul>
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2584">2584 Broken Cipher Generator</a></li>
   <ul>
-    <li>ちょっと傾向が違う．</li>
+    <li>ちょっと傾向が違うといえば違う気もする．</li>
   </ul>
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2596">2596 Points and Lines</a></li>
   <ul>
@@ -109,8 +110,24 @@ Python などの <code>eval</code> で殴れるレベルです．
     <li>これすき．</li>
   </ul>
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2731">2731 Shifting a Matrix</a></li>
+  <ul>
+    <li>グッと睨むと，楽に構文解析できる構造になることがわかります．</li>
+  </ul>
+</ul>
+<h1>一風変わった構文解析</h1>
+<ul>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1001">1001 Binary Tree Intersection And Union</a></li>
+  <ul>
+    <li>二つの文字列を同時に読み進めます．</li>
+  </ul>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1188">1188 Hierarchical Democracy</a></li>
+  <ul>
+    <li>二項演算はしないです．</li>
+  </ul>
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2740">2740 Rooted Tree for Misawa-san</a></li>
-  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2883">2883 Proof of Knowledge</a></li>
+  <ul>
+    <li>これも二つの文字列を同時に読み進めます．</li>
+  </ul>
 </ul>
 <h2>全探索をする構文解析</h2>
 <p>与えられた入力に対して代入を行い，パースを何度も行うタイプの問題です．
@@ -119,6 +136,7 @@ Python などの <code>eval</code> で殴れるレベルです．
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1037">1037 Midnight Teatime</a></li>
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1155">1155 How can I satisfy thee? Let me count the ways...</a></li>
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2401">2401 Equation</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2883">2883 Proof of Knowledge</a></li>
 </ul>
 <h2>Python で楽をするタイプの構文解析</h2>
 <p>C++ で頑張ろうとすると面倒そうに見えますが，Python で正規表現 (<code>re</code>) が使えたりすると殴りやすい問題です．
