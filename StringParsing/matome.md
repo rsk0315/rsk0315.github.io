@@ -8,6 +8,8 @@ STL の使い方の練習など．
 - [0350 Irreducible Fractionalization](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/0350)
 - [1602 ICPC Calculator](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1602)
 - [2369 CatChecker](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2369)
+- [2435 Zero Division Checker](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2435)
+  - 逆ポーランド記法は簡単なので．
 - [2680 LR](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2680)
   - 分類が難しい．構文解析的な難しさはないはず．
 
@@ -23,32 +25,36 @@ Python などの `eval` で殴れるレベルです．
 構文解析器の返り値は必ずしも整数値である必要はないことを覚えておきましょう．
 - [0264 Finite Field Calculator](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/0264)
 - [0291 Mystery of an Ancient Ruin](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/0291)
-- [1001 Binary Tree Intersection And Union](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1001)
+ries/1001)
 - [1012 Operations with Finite Sets](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1012)
 - [1102 Calculation of Expressions](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1102)
   - `std::complex<int>` が未規定というのは知っていますか？
 - [1145 The Genome Database of All Space Life](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1145)
-- [1188 Hierarchical Democracy](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1188)
-  - 他の問題と少し見た目が違います．
 - [1244 Molecular Formula](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1244)
 - [1314 Matrix Calculator](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1314)
   - ある種のハラスメントで*簡単*と言っていますが，実際簡単に見えてきます．
 - [1346 Miscalculation](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1346)
 - [2255 6/2(1+2)](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2255)
+  - 違うことをやる必要があるように見えるかもしれませんが，本質的に同じことをするだけでよいです．
 - [2348 Testing Circuits](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2348)
   - やることは簡単ですが，与えられる文字数が大きいです．
   - 計算効率のよくない構文解析器を書きがちな人は注意がいるかもしれません．
-- [2435 Zero Division Checker](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2435)
 - [2570 Shipura](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2570)
   - ちょっと難しそう
 - [2584 Broken Cipher Generator](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2584)
-  - ちょっと傾向が違う．
+  - ちょっと傾向が違うといえば違う気もする．
 - [2596 Points and Lines](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2596)
   - 幾何かな？
 - [2613 Unordered Operators](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2613)
   - これすき．
 - [2740 Rooted Tree for Misawa-san](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2740)
 - [2883 Proof of Knowledge](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2883)
+
+# 一風変わった構文解析
+- [1001 Binary Tree Intersection And Union](https://onlinejudge.u-aizu.ac.jp/challenges/search/catego
+  - 二つの文字列を同時に読み進めます．
+- [1188 Hierarchical Democracy](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1188)
+  - 二項演算はしないです．
 
 ## 全探索をする構文解析
 与えられた入力に対して代入を行い，パースを何度も行うタイプの問題です．
