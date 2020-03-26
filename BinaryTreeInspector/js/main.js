@@ -37,7 +37,7 @@ function parse(s) {
     let head = 0;
     let sx = $('#canvas').width() / 2;
     let sy = 30;
-    let dx = 100;
+    let dx = $('#canvas').width() / 4;
     let dy = 50;
     let q = [[root, [sx, sy], 0]];  // [id, [x, y], depth]
     while (head < q.length) {
@@ -126,6 +126,8 @@ function draw(vertices, edges) {
 */
 
 $(function() {
+    $('#canvas').attr('width', $(window).width());
+
     canvas = new fabric.Canvas('canvas');
 
     let s = (
