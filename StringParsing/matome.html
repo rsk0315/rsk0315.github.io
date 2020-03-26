@@ -68,15 +68,15 @@ Python などの <code>eval</code> で殴れるレベルです．
 </p>
 
 <div><pre>// {&quot;|&quot;, &quot;^&quot;, &quot;&amp;&quot;, &quot;+-&quot;, &quot;*/&quot;} のように，二項演算子を優先度が高くなる順に並べます
-BIN_OPS;
-ResultType parse(s, i, p) {
+std::vector&lt;std::string&gt; BIN_OPS = {&quot;+-&quot;, &quot;*/%&quot;};
+ResultType parse(const std::string&amp; s, size_t&amp; i, size_t p) {
   if (p == BIN_OPS.size()) {
     if (s[i] == &#x27;(&#x27;) {
       res = parse(s, ++i, 0);
       assert(s[i] == &#x27;)&#x27;);
       ++i;
     } else if (s[i] == &#x27;~&#x27;) {
-      // 前置の単項演算子
+      // 前置の単項演算子があれば適当にやります
       res = ~parse(s, ++i, p);
     } else if (/* リテラル */) {
       // 数値なりを適当にパースします
@@ -86,12 +86,12 @@ ResultType parse(s, i, p) {
     return res;
   }
 
-  ResultType res=parse(s, i, p+1);
+  ResultType res = parse(s, i, p+1);
   while (i &lt; s.length()) {
     bin_op = s[i];
     if (bin_op not in BIN_OPS[p]) break;
-    ResultType tmp=parse(s, ++i, p+1);
-    res `op`= tmp;
+    ResultType tmp = parse(s, ++i, p+1);
+    res.op_eq(op, tmp);
   }
   return res;
 }</pre></div>
@@ -143,7 +143,7 @@ ResultType parse(s, i, p) {
     <li>グッと睨むと，楽に構文解析できる構造になることがわかります．</li>
   </ul>
 </ul>
-<h1>一風変わった構文解析</h1>
+<h2>一風変わった構文解析</h2>
 <ul>
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1001">1001 Binary Tree Intersection And Union</a></li>
   <ul>
@@ -176,6 +176,8 @@ ResultType parse(s, i, p) {
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1282">1282 Bug Hunt</a></li>
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2438">2438 YAML</a></li>
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2523">2523 Time Complexity</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2845">2845 Star in Parentheses</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2857">2857 Tournament Chart</a></li>
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/3002">3002 Factorization</a></li>
 </ul>
 <h2>難しめの構文解析</h2>
@@ -200,6 +202,10 @@ ResultType parse(s, i, p) {
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1293">1293 Common Polynomial</a></li>
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1300">1300 Chemist&#x27;s Math</a></li>
   <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1620">1620 Boolean Expression Compressor</a></li>
+  <li><a href="https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2328">2328 Mobile Network</a></li>
+  <ul>
+    <li>Dinic を信じろ</li>
+  </ul>
 </ul>
 <h2>面倒な構文解析</h2>
 <p>やりたくない．やらないことはないんですが．

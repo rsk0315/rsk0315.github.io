@@ -26,15 +26,15 @@ Python などの `eval` で殴れるレベルです．
 
 ```
 // {"|", "^", "&", "+-", "*/"} のように，二項演算子を優先度が高くなる順に並べます
-BIN_OPS;
-ResultType parse(s, i, p) {
+std::vector<std::string> BIN_OPS = {"+-", "*/%"};
+ResultType parse(const std::string& s, size_t& i, size_t p) {
   if (p == BIN_OPS.size()) {
     if (s[i] == '(') {
       res = parse(s, ++i, 0);
       assert(s[i] == ')');
       ++i;
     } else if (s[i] == '~') {
-      // 前置の単項演算子
+      // 前置の単項演算子があれば適当にやります
       res = ~parse(s, ++i, p);
     } else if (/* リテラル */) {
       // 数値なりを適当にパースします
@@ -44,12 +44,12 @@ ResultType parse(s, i, p) {
     return res;
   }
 
-  ResultType res=parse(s, i, p+1);
+  ResultType res = parse(s, i, p+1);
   while (i < s.length()) {
     bin_op = s[i];
     if (bin_op not in BIN_OPS[p]) break;
-    ResultType tmp=parse(s, ++i, p+1);
-    res `op`= tmp;
+    ResultType tmp = parse(s, ++i, p+1);
+    res.op_eq(op, tmp);
   }
   return res;
 }
@@ -82,7 +82,7 @@ ResultType parse(s, i, p) {
 - [2731 Shifting a Matrix](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2731)
   - グッと睨むと，楽に構文解析できる構造になることがわかります．
 
-# 一風変わった構文解析
+## 一風変わった構文解析
 - [1001 Binary Tree Intersection And Union](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1001)
   - 二つの文字列を同時に読み進めます．
 - [1188 Hierarchical Democracy](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1188)
@@ -104,6 +104,8 @@ C++ で頑張ろうとすると面倒そうに見えますが，Python で正規
 - [1282 Bug Hunt](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1282)
 - [2438 YAML](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2438)
 - [2523 Time Complexity](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2523)
+- [2845 Star in Parentheses](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2845)
+- [2857 Tournament Chart](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2857)
 - [3002 Factorization](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/3002)
 
 ## 難しめの構文解析
@@ -122,6 +124,8 @@ C++ で頑張ろうとすると面倒そうに見えますが，Python で正規
 - [1293 Common Polynomial](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1293)
 - [1300 Chemist's Math](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1300)
 - [1620 Boolean Expression Compressor](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/1620)
+- [2328 Mobile Network](https://onlinejudge.u-aizu.ac.jp/challenges/search/categories/2328)
+  - Dinic を信じろ
 
 ## 面倒な構文解析
 やりたくない．やらないことはないんですが．
