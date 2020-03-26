@@ -60,9 +60,10 @@ function draw(vertices, edges) {
     let tip = new fabric.Textbox('', {
         left: 0,
         top: 0,
-        width: 100,
+        width: 1000,
         selectable: false,
-        fontSize: 20,
+        fontSize: 16,
+        fill: 'red',
     });
     canvas.add(tip);
 
