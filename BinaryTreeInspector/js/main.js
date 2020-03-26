@@ -53,9 +53,10 @@ function parse(s) {
 }
 
 const RADIUS = 10;
+let canvas;
 
 function draw(vertices, edges) {
-    let canvas = new fabric.Canvas('canvas');
+    canvas.clear();
     let tip = new fabric.Textbox('', {
         left: 0,
         top: 0,
@@ -98,9 +99,9 @@ function draw(vertices, edges) {
             tip.set('text', v.description);
             canvas.renderAll();
         });
-        circ.on('mousedown', function() {
-            $('#textarea').val(v.description);
-        });
+        // circ.on('mousedown', function() {
+        //     $('#textarea').val(v.description);
+        // });
         canvas.add(circ);
     }
 }
@@ -124,6 +125,7 @@ function draw(vertices, edges) {
 */
 
 $(function() {
+    canvas = new fabric.Canvas('canvas');
 
     let s = (
         ''
@@ -133,6 +135,13 @@ $(function() {
             + '0x7fb08ec028a0 [0x7fb08ec027f0:0x0:0x7fb08ec028f0] 2\n'
             + '0x7fb08ec027f0 [0x0:0x0:0x7fb08ec028a0] 1\n'
     );
+    $('#textarea').attr('placeholder', s);
+
+    $('#button').on('click', function() {
+        let input = $('#textarea').val() || s;
+        let [vs, es] = parse(input);
+        draw(vs, es);
+    });
 
     let [vs, es] = parse(s);
     draw(vs, es);
