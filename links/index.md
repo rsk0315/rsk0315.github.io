@@ -126,6 +126,8 @@ Twitter で困っている人がいたときにリンクを貼る手間を少な
   - <https://atcoder.jp/contests/joisc2014/tasks/joisc2014_h>
   - <https://atcoder.jp/contests/bitflyer2018-final/tasks/bitflyer2018_final_c>
   - このテクを zero-sum ranges と呼ぶの、耳 DP と同じ現象そう
+- "耳 DP"
+  - <https://atcoder.jp/contests/yahoo-procon2019-qual/tasks/yahoo_procon2019_qual_d>
 
 ## 競プロ以外
 - [ログイン失敗時のやつ](https://superuser.com/questions/440991/why-does-a-failed-linux-login-take-so-long)
