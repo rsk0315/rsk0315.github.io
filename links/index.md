@@ -35,7 +35,6 @@ Twitter で困っている人がいたときにリンクを貼る手間を少な
 - [ロリハの衝突](https://codeforces.com/blog/entry/60442)
 - [非再帰セグ木](https://codeforces.com/blog/entry/18051)
 - [セグ木 beats](https://codeforces.com/blog/entry/57319) + [日本語記事](https://smijake3.hatenablog.com/entry/2019/04/28/021457)
-- [C++ Mangling](https://itanium-cxx-abi.github.io/cxx-abi/abi.html#mangling)
 - [Fibonacci heap](http://web.stanford.edu/class/archive/cs/cs166/cs166.1186/lectures/09/Slides09.pdf)
 - [SA-IS](http://web.stanford.edu/class/archive/cs/cs166/cs166.1186/lectures/04/Slides04.pdf)
 - [van Emde Boas tree](http://web.stanford.edu/class/archive/cs/cs166/cs166.1166/lectures/14/Slides14.pdf)
@@ -134,6 +133,7 @@ Twitter で困っている人がいたときにリンクを貼る手間を少な
 - [ADL](http://cpp.aquariuscode.com/argument-dependent-lookup)
 - [TheSans Mono Condensed](https://www.lucasfonts.com/fonts/the-sans/mono-condensed)
   - えびちゃんの普段使いのフォントです
+- [C++ Mangling](https://itanium-cxx-abi.github.io/cxx-abi/abi.html#mangling)
 
 ## ギャグ・おたのしみコンテンツ
 - [パズル](https://atcoder.jp/contests/xmascon19/tasks/xmascon19_a)
