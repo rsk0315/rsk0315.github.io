@@ -1,6 +1,6 @@
 # 便利リンク集
 
-Twitter で困っている人がいたときにリンクを貼るの手間を少なくするためのページです。
+Twitter で困っている人がいたときにリンクを貼る手間を少なくするためのページです。
 
 ## えびちゃんのもの
 - [未定義動作のやつ](https://rsk0315.hatenablog.com/entry/2019/09/10/213859)
@@ -116,7 +116,7 @@ Twitter で困っている人がいたときにリンクを貼るの手間を少
   - <https://codeforces.com/contest/620/problem/D>
 - 多項式補間
   - <https://codeforces.com/contest/622/problem/F>
-- simplex
+- simplex 法
   - <http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2911>
 - SWAG
   - <https://atcoder.jp/contests/jag2018summer-day2/tasks/jag2018summer_day2_d>
@@ -131,8 +131,9 @@ Twitter で困っている人がいたときにリンクを貼るの手間を少
 - [ログイン失敗時のやつ](https://superuser.com/questions/440991/why-does-a-failed-linux-login-take-so-long)
 - [ADL](http://cpp.aquariuscode.com/argument-dependent-lookup)
 - [TheSans Mono Condensed](https://www.lucasfonts.com/fonts/the-sans/mono-condensed)
+  - えびちゃんの普段使いのフォントです
 
-## ギャグ
+## ギャグ・おたのしみコンテンツ
 - [パズル](https://atcoder.jp/contests/xmascon19/tasks/xmascon19_a)
 - [しりとり](https://www.hackerrank.com/contests/april-fool-contest-2018/challenges/shiritori-2018)
 - [__________](https://highjellies.hatenadiary.org/entry/20111225/1324825710)
