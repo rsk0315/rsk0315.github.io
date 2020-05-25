@@ -1,0 +1,148 @@
+# 便利リンク集
+
+Twitter で困っている人がいたときにリンクを貼るの手間を少なくするためのページです。
+
+## えびちゃんのもの
+- [未定義動作のやつ](https://rsk0315.hatenablog.com/entry/2019/09/10/213859)
+  - 未定義動作に対して誤った認識をしている人に貼る
+- [`lower_bound` のやつ](https://rsk0315.hatenablog.com/entry/2019/09/10/173708)
+  - `std::set` に対して `std::lower_bound` を使って TLE してる人に貼る
+- [`multiset` のやつ](https://rsk0315.hatenablog.com/entry/2019/09/09/214811)
+  - `std::multiset` の `erase` や `count` でこわしている人に貼る
+- [イディオムのやつ](https://rsk0315.hatenablog.com/entry/2020/05/09/170315)
+  - おまじないの中身を知りたがっている初心者に貼る
+- [セグ木のスライド](https://hcpc-hokudai.github.io/archive/structure_segtree_001.pdf)
+  - セグ木を知りたがっている人に貼る
+- [構文解析のやつ](https://rsk0315.github.io/StringParsing/matome.html)
+  - 構文解析を解きたがっている人に貼る
+- [`make_vector` のやつ](https://rsk0315.github.io/library/library/utility/make/vector.cpp.html)
+  - 多次元の DP で `std::vector` を作りたがっている人に貼る
+- [Dijkstra の高速化](https://rsk0315.hatenablog.com/entry/2019/10/29/173703) / [Fibonacci heap](https://rsk0315.hatenablog.com/entry/2019/10/29/151823)
+- [OLE の境界](https://twitter.com/rsk0315_h4x/status/1197047591227101184)
+- [Cipher](http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=3109)
+
+## 他の人のもの
+- [`struct` 超初級](https://noshi91.hatenablog.com/entry/2020/03/22/231032)
+- [union find](https://noshi91.hatenablog.com/entry/2018/05/30/191943)
+- [計算量の呼称](https://noshi91.hatenablog.com/entry/2019/10/08/235335)
+- [modint](https://noshi91.hatenablog.com/entry/2019/03/31/174006)
+- [逆元テーブルを線形で求めるやつ](https://noshi91.hatenablog.com/entry/2019/10/18/182935)
+- [big-O notation](https://torus711.hatenablog.com/entry/2020/05/09/180701)
+- [SMAWK](http://web.cs.unlv.edu/larmore/Courses/CSC477/monge.pdf) 
+- [マージテク](http://web.archive.org/web/20181213115442/http://topcoder.g.hatena.ne.jp/iwiwi/20131226/1388062106)
+- [word RAM の話が書いてある](https://qiita.com/goonew/items/edb88e058bcdb9087bdb)
+- [高速 Kitamasa 法](https://misawa.github.io/others/fast_kitamasa_method.html)
+- [ロリハの衝突](https://codeforces.com/blog/entry/60442)
+- [非再帰セグ木](https://codeforces.com/blog/entry/18051)
+- [セグ木 beats](https://codeforces.com/blog/entry/57319) + [日本語記事](https://smijake3.hatenablog.com/entry/2019/04/28/021457)
+- [C++ Mangling](https://itanium-cxx-abi.github.io/cxx-abi/abi.html#mangling)
+- [Fibonacci heap](http://web.stanford.edu/class/archive/cs/cs166/cs166.1186/lectures/09/Slides09.pdf)
+- [SA-IS](http://web.stanford.edu/class/archive/cs/cs166/cs166.1186/lectures/04/Slides04.pdf)
+- [van Emde Boas tree](http://web.stanford.edu/class/archive/cs/cs166/cs166.1166/lectures/14/Slides14.pdf)
+- [bit twiddling hacks](https://graphics.stanford.edu/~seander/bithacks.html)
+- [starry sky tree](https://qnighy.github.io/informatics-olympiad/joi2009-day4-starry_sky-comment.html)
+- [GCC の `long double` のビット数のオプション](https://gcc.gnu.org/onlinedocs/gcc/x86-Options.html#index-m96bit-long-double-2671)
+- [`__builtin_*_overflow`](https://gcc.gnu.org/onlinedocs/gcc/Integer-Overflow-Builtins.html)
+- [燃やす埋めるスライド](https://www.slideshare.net/shindannin/project-selection-problem) + [PSP](http://tokoharuland.hateblo.jp/entry/2017/11/12/234636)
+- [双対性](https://www.slideshare.net/wata_orz/ss-91375739)
+- [Easiest HLD with subtree queries](https://codeforces.com/blog/entry/53170)
+- [グラフの生成](https://networkx.github.io/documentation/stable/reference/generators.html)
+- [週刊 spaghetti_source のアーカイブ](https://topcoder-g-hatena-ne-jp.jag-icpc.org/spaghetti_source/)
+- [数え上げ PDF](http://degwer.hatenablog.com/entries/2017/12/20)
+- [整数論 PDF](http://kirika-comp.hatenablog.com/entry/2018/03/12/210446)
+- ["contribution" technique](https://codeforces.com/blog/entry/62690)
+- [SWAG](https://scrapbox.io/data-structures/Sliding_Window_Aggregation)
+- [貪欲法](https://inzkyk.xyz/algorithms/greedy_algorithm/)
+
+## 過去問
+- 累積和と二項係数
+  - <https://atcoder.jp/contests/abc021/tasks/abc021_d>
+- グリッドと座標圧縮
+  - <https://onlinejudge.u-aizu.ac.jp/problems/0292>
+  - <https://atcoder.jp/contests/abc168/tasks/abc168_f>
+- ダブリング
+  - <https://codeforces.com/contest/702/problem/E>
+- CHT
+  - <https://codeforces.com/contest/660/problem/F>
+  - <https://onlinejudge.u-aizu.ac.jp/problems/2580>
+- 並列二分探索
+  - <https://atcoder.jp/contests/code-thanks-festival-2017/tasks/code_thanks_festival_2017_h>
+  - <http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=0575>
+- 構築
+  - <https://codeforces.com/contest/622/problem/D>
+  - <https://codeforces.com/contest/1202/problem/D>
+- しゃくとり
+  - <https://yukicoder.me/problems/no/1036>
+- 決め打ちにぶたん
+  - <https://atcoder.jp/contests/abc023/tasks/abc023_d>
+  - <https://atcoder.jp/contests/abc034/tasks/abc034_d>
+- 浮動小数点数の誤差
+  - <https://atcoder.jp/contests/tricky/tasks/tricky_2>
+  - <https://atcoder.jp/contests/panasonic2020/tasks/panasonic2020_c>
+- 階乗の計算
+  - <https://yukicoder.me/submissions/460341>
+- 構文解析
+  - [ASCII Expression](http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1322)
+  - [Matrix Calculator](http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1314)
+- tricks from Aliens
+  - <https://codeforces.com/contest/1279/problem/F>
+- がんばる DP
+  - <https://atcoder.jp/contests/tdpc/tasks/tdpc_grid>
+- Grundy 数
+  - <http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2698>
+- 浮動小数点数の出力
+  - <https://atcoder.jp/contests/arc054/tasks/arc054_b>
+  - <https://atcoder.jp/contests/abc026/tasks/abc026_d>
+  - <https://atcoder.jp/contests/abc130/tasks/abc130_c>
+  - <https://atcoder.jp/contests/abc144/tasks/abc144_d>
+- 周期検出
+  - <https://atcoder.jp/contests/abc030/tasks/abc030_d>
+- 戻す DP
+  - <https://atcoder.jp/contests/arc028/tasks/arc028_4>
+- binary trie OR wavelet matrix
+  - <https://codeforces.com/contest/817/problem/E>
+  - <https://codeforces.com/contest/665/problem/E>
+- 抽象化セグ木
+  - <https://atcoder.jp/contests/arc008/tasks/arc008_4>
+- 2-SAT
+  - <http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2991>
+- 行列累乗
+  - <https://codeforces.com/contest/691/problem/E>
+- 逆から union find
+  - <https://atcoder.jp/contests/arc056/tasks/arc056_b>
+  - <https://atcoder.jp/contests/abc040/tasks/abc040_d>
+  - <https://atcoder.jp/contests/abc120/tasks/abc120_d>
+- 半分全列挙
+  - <https://codeforces.com/contest/620/problem/D>
+- 多項式補間
+  - <https://codeforces.com/contest/622/problem/F>
+- simplex
+  - <http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2911>
+- SWAG
+  - <https://atcoder.jp/contests/jag2018summer-day2/tasks/jag2018summer_day2_d>
+- 括弧列
+  - <https://atcoder.jp/contests/mujin-pc-2016/tasks/mujin_pc_2016_d>
+- "zero-sum ranges"
+  - <https://atcoder.jp/contests/joisc2014/tasks/joisc2014_h>
+  - <https://atcoder.jp/contests/bitflyer2018-final/tasks/bitflyer2018_final_c>
+  - このテクを zero-sum ranges と呼ぶの、耳 DP と同じ現象そう
+
+## 競プロ以外
+- [ログイン失敗時のやつ](https://superuser.com/questions/440991/why-does-a-failed-linux-login-take-so-long)
+- [ADL](http://cpp.aquariuscode.com/argument-dependent-lookup)
+- [TheSans Mono Condensed](https://www.lucasfonts.com/fonts/the-sans/mono-condensed)
+
+## ギャグ
+- [パズル](https://atcoder.jp/contests/xmascon19/tasks/xmascon19_a)
+- [しりとり](https://www.hackerrank.com/contests/april-fool-contest-2018/challenges/shiritori-2018)
+- [__________](https://highjellies.hatenadiary.org/entry/20111225/1324825710)
+- [わくわく](https://suikaba.hatenablog.com/entry/2017/12/13/195643)
+- [Pretest passed](https://codeforces.com/blog/entry/68775?#comment-531437)
+- [人人　　ゾ人　　人](https://jag-icpc.org/?plugin=attach&refer=2019%2FPractice%2F%E5%A4%8F%E5%90%88%E5%AE%BF%2F%E8%AC%9B%E8%A9%95&openfile=I.pdf)
+- [We don't have the strict proof, but we have faith and stress.](https://codeforces.com/blog/entry/72577)
+- [Due to the unethical and ugly behavior...](https://codeforces.com/contest/1120)
+- [エディタですか？](https://twitter.com/rng_58/status/1044554704158519296)
+- [X - この問題はほんとうに](https://atcoder.jp/contests/birthday0410/tasks/birthday0410_x)
+- [tourist の戦略のやつ](https://codeforces.com/blog/entry/53457)
+- [永続データ構造](https://www.slideshare.net/qnighy/ss-15312828)
+- [14 重 `for`](https://onlinejudge.u-aizu.ac.jp/beta/review.html#RitsCamp19Day3/3415890)
