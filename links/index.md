@@ -78,8 +78,10 @@ Twitter で困っている人がいたときにリンクを貼る手間を少な
 - 決め打ちにぶたん
   - <https://atcoder.jp/contests/abc023/tasks/abc023_d>
   - <https://atcoder.jp/contests/abc034/tasks/abc034_d>
+  - <https://atcoder.jp/contests/arc029/tasks/arc029_2>
 - 浮動小数点数の誤差
   - <https://atcoder.jp/contests/tricky/tasks/tricky_2>
+  - <https://yukicoder.me/problems/no/955>
   - <https://atcoder.jp/contests/panasonic2020/tasks/panasonic2020_c>
 - 階乗の計算
   - <https://yukicoder.me/submissions/460341>
@@ -110,6 +112,7 @@ Twitter で困っている人がいたときにリンクを貼る手間を少な
   - <http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2991>
 - 行列累乗
   - <https://codeforces.com/contest/691/problem/E>
+  - <https://atcoder.jp/contests/abc129/tasks/abc129_f>
 - 逆から union find
   - <https://atcoder.jp/contests/arc056/tasks/arc056_b>
   - <https://atcoder.jp/contests/abc040/tasks/abc040_d>
@@ -130,6 +133,8 @@ Twitter で困っている人がいたときにリンクを貼る手間を少な
   - このテクを zero-sum ranges と呼ぶの、耳 DP と同じ現象そう
 - "耳 DP"
   - <https://atcoder.jp/contests/yahoo-procon2019-qual/tasks/yahoo_procon2019_qual_d>
+- bitset 高速化
+  - <https://atcoder.jp/contests/abc082/tasks/arc087_b>
 
 ## 競プロ以外
 - [ログイン失敗時のやつ](https://superuser.com/questions/440991/why-does-a-failed-linux-login-take-so-long)
