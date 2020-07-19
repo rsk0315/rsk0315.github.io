@@ -11,8 +11,10 @@ Twitter で困っている人がいたときにリンクを貼る手間を少な
   - `std::multiset` の `erase` や `count` でこわしている人に貼る
 - [イディオムのやつ](https://rsk0315.hatenablog.com/entry/2020/05/09/170315)
   - おまじないの中身を知りたがっている初心者に貼る
+- [セグ木導入](https://rsk0315.hatenablog.com/entry/2020/07/05/184929)
 - [セグ木のスライド](https://hcpc-hokudai.github.io/archive/structure_segtree_001.pdf)
   - セグ木を知りたがっている人に貼る
+- [リバースイテレータ](https://rsk0315.hatenablog.com/entry/2020/07/06/004531)
 - [構文解析のやつ](https://rsk0315.github.io/StringParsing/matome.html)
   - 構文解析を解きたがっている人に貼る
 - [`make_vector` のやつ](https://rsk0315.github.io/library/library/utility/make/vector.cpp.html)
@@ -52,6 +54,7 @@ Twitter で困っている人がいたときにリンクを貼る手間を少な
 - ["contribution" technique](https://codeforces.com/blog/entry/62690)
 - [SWAG](https://scrapbox.io/data-structures/Sliding_Window_Aggregation)
 - [貪欲法](https://inzkyk.xyz/algorithms/greedy_algorithm/)
+- [スタック拡張ヤバマクロ](http://www.colun.net/archives/547)
 
 ## 過去問
 - 累積和と二項係数
@@ -138,7 +141,9 @@ Twitter で困っている人がいたときにリンクを貼る手間を少な
 ## ギャグ・おたのしみコンテンツ
 - [パズル](https://atcoder.jp/contests/xmascon19/tasks/xmascon19_a)
 - [しりとり](https://www.hackerrank.com/contests/april-fool-contest-2018/challenges/shiritori-2018)
-- [__________](https://highjellies.hatenadiary.org/entry/20111225/1324825710)
+- [10^9+7 で割るやつ](https://www.hackerrank.com/contests/april-fool-contest-2018/challenges/wolf-sum)
+- [Polyglot](https://www.hackerrank.com/contests/april-fool-contest-2018/challenges/programming-in-python)
+- [\_\_\_\_\_\_\_\_\_\_](https://highjellies.hatenadiary.org/entry/20111225/1324825710)
 - [わくわく](https://suikaba.hatenablog.com/entry/2017/12/13/195643)
 - [Pretest passed](https://codeforces.com/blog/entry/68775?#comment-531437)
 - [人人　　ゾ人　　人](https://jag-icpc.org/?plugin=attach&refer=2019%2FPractice%2F%E5%A4%8F%E5%90%88%E5%AE%BF%2F%E8%AC%9B%E8%A9%95&openfile=I.pdf)
@@ -149,3 +154,4 @@ Twitter で困っている人がいたときにリンクを貼る手間を少な
 - [tourist の戦略のやつ](https://codeforces.com/blog/entry/53457)
 - [永続データ構造](https://www.slideshare.net/qnighy/ss-15312828)
 - [14 重 `for`](https://onlinejudge.u-aizu.ac.jp/beta/review.html#RitsCamp19Day3/3415890)
+- [回文](https://codeforces.com/problemset/problem/691/B)
