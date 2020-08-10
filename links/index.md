@@ -9,6 +9,8 @@ Twitter で困っている人がいたときにリンクを貼る手間を少な
   - `std::set` に対して `std::lower_bound` を使って TLE してる人に貼る
 - [`multiset` のやつ](https://rsk0315.hatenablog.com/entry/2019/09/09/214811)
   - `std::multiset` の `erase` や `count` でこわしている人に貼る
+- [コンテナとかイテレータのやつ](https://rsk0315.hatenablog.com/entry/2020/08/10/215942)
+  - コンテナとかイテレータでこわしている人に貼る
 - [イディオムのやつ](https://rsk0315.hatenablog.com/entry/2020/05/09/170315)
   - おまじないの中身を知りたがっている初心者に貼る
 - [セグ木導入](https://rsk0315.hatenablog.com/entry/2020/07/05/184929)
