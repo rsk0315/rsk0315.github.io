@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["foldable_deque","fold 可能両端キュー。"],["foldable_queue","fold 可能キュー。"],["union_find","union-find。"],["vec_segtree","`Vec` ベースのセグ木。"]],"struct":[["FoldableDeque","fold 可能両端キュー。"],["FoldableQueue","fold 可能キュー。"],["UnionFind","union-find。"],["VecSegtree","`Vec` ベースのセグ木。"]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["FoldBisect","左端を固定したときの区間和に関する境界を求める。"],["FoldBisectRev","右端を固定したときの区間和に関する境界を求める。"]]});

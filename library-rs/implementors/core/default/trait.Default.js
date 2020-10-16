@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["nekolib"] = [{"text":"impl&lt;M:&nbsp;Monoid&gt; Default for FoldableDeque&lt;M&gt; <span class=\"where fmt-newline\">where<br>&nbsp;&nbsp;&nbsp;&nbsp;M::Set: Clone,&nbsp;</span>","synthetic":false,"types":[]},{"text":"impl&lt;M:&nbsp;Monoid&gt; Default for FoldableQueue&lt;M&gt; <span class=\"where fmt-newline\">where<br>&nbsp;&nbsp;&nbsp;&nbsp;M::Set: Clone,&nbsp;</span>","synthetic":false,"types":[]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

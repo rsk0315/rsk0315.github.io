@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["AssocVal","値を返す関数を持つ。"]]});

@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["nekolib"] = [{"text":"impl&lt;M&gt; Index&lt;usize&gt; for VecSegtree&lt;M&gt; <span class=\"where fmt-newline\">where<br>&nbsp;&nbsp;&nbsp;&nbsp;M: Monoid,<br>&nbsp;&nbsp;&nbsp;&nbsp;M::Set: Clone,&nbsp;</span>","synthetic":false,"types":[]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

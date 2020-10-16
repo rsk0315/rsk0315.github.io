@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["OpMul","積を返す演算を持つ。"]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["extremum","三分探索で極値を探す。"]]});

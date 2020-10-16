@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["window_bisect","尺取り法で、各始端に対して境界を探す。"]]});

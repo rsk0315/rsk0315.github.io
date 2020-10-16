@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["Min","最小元を持つ。"]]});

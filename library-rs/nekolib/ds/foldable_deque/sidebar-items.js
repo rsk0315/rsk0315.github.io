@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["FoldableDeque","fold 可能両端キュー。"]]});

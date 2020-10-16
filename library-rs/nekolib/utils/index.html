@@ -1,0 +1,41 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `utils` mod in crate `nekolib`."><meta name="keywords" content="rust, rustlang, rust-lang, utils"><title>nekolib::utils - Rust</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js"                  integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/auto-render.min.js"    integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "$", right: "$", display: false},
+                {left: "\\[", right: "\\]", display: true}
+            ]
+        });
+    });
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet">
+<style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../nekolib/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a><p class='location'>Module utils</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#functions">Functions</a></li></ul></div><p class='location'><a href='../index.html'>nekolib</a></p><script>window.sidebarCurrent = {name: 'utils', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
+                <a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../../src/nekolib/utils.rs.html#1-24' title='goto source code'>[src]</a></span><span class='in-band'>Module <a href='../index.html'>nekolib</a>::<wbr><a class="mod" href=''>utils</a></span></h1><div class='docblock'><p>便利ちゃんたち。</p>
+<p>ここに何かを書く。</p>
+</div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table><tr class='module-item'><td><a class="mod" href="buf_range/index.html" title='nekolib::utils::buf_range mod'>buf_range</a></td><td class='docblock-short'><p>配列上の区間に関する関数。</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="modint/index.html" title='nekolib::utils::modint mod'>modint</a></td><td class='docblock-short'><p>法 $m$ での演算をする。</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="op_add/index.html" title='nekolib::utils::op_add mod'>op_add</a></td><td class='docblock-short'><p>加法に関する wrapper クラス。</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="op_max/index.html" title='nekolib::utils::op_max mod'>op_max</a></td><td class='docblock-short'><p>最大値に関する wrapper クラス。</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="op_min/index.html" title='nekolib::utils::op_min mod'>op_min</a></td><td class='docblock-short'><p>最小値に関する wrapper クラス。</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="op_mul/index.html" title='nekolib::utils::op_mul mod'>op_mul</a></td><td class='docblock-short'><p>乗法に関する wrapper クラス。</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="op_roll_hash/index.html" title='nekolib::utils::op_roll_hash mod'>op_roll_hash</a></td><td class='docblock-short'><p>ローリングハッシュに関する wrapper クラス。</p>
+</td></tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table><tr class='module-item'><td><a class="struct" href="struct.ModInt.html" title='nekolib::utils::ModInt struct'>ModInt</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.OpAdd.html" title='nekolib::utils::OpAdd struct'>OpAdd</a></td><td class='docblock-short'><p>和を返す演算を持つ。</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.OpMax.html" title='nekolib::utils::OpMax struct'>OpMax</a></td><td class='docblock-short'><p>最大値を返す演算を持つ。</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.OpMin.html" title='nekolib::utils::OpMin struct'>OpMin</a></td><td class='docblock-short'><p>最小値を返す演算を持つ。</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.OpMul.html" title='nekolib::utils::OpMul struct'>OpMul</a></td><td class='docblock-short'><p>積を返す演算を持つ。</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.OpRollHash.html" title='nekolib::utils::OpRollHash struct'>OpRollHash</a></td><td class='docblock-short'><p>文字列連結をローリングハッシュで行う演算を持つ。</p>
+</td></tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table><tr class='module-item'><td><a class="fn" href="fn.bounds_within.html" title='nekolib::utils::bounds_within fn'>bounds_within</a></td><td class='docblock-short'><p>区間を配列サイズに収まるように丸める。</p>
+</td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><div>
+  ねこちゃん🐱
+</div>
+
+<script>window.rootPath = "../../";window.currentCrate = "nekolib";</script><script src="../../main.js"></script><script defer src="../../search-index.js"></script></body></html>

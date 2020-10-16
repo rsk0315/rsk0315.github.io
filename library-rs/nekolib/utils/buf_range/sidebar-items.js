@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["bounds_within","区間を配列サイズに収まるように丸める。"]]});

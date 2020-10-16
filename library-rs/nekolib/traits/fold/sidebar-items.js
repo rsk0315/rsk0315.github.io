@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["Fold","区間和を求める。"]]});

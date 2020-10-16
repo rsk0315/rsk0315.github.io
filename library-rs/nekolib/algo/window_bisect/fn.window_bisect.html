@@ -1,0 +1,107 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `window_bisect` fn in crate `nekolib`."><meta name="keywords" content="rust, rustlang, rust-lang, window_bisect"><title>nekolib::algo::window_bisect::window_bisect - Rust</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js"                  integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/auto-render.min.js"    integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "$", right: "$", display: false},
+                {left: "\\[", right: "\\]", display: true}
+            ]
+        });
+    });
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet">
+<style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc fn"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../nekolib/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a><div class="sidebar-elems"><p class='location'><a href='../../index.html'>nekolib</a>::<wbr><a href='../index.html'>algo</a>::<wbr><a href='index.html'>window_bisect</a></p><script>window.sidebarCurrent = {name: 'window_bisect', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
+                <a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../../../src/nekolib/algo/window_bisect.rs.html#97-124' title='goto source code'>[src]</a></span><span class='in-band'>Function <a href='../../index.html'>nekolib</a>::<wbr><a href='../index.html'>algo</a>::<wbr><a href='index.html'>window_bisect</a>::<wbr><a class="fn" href=''>window_bisect</a></span></h1><pre class='rust fn'>pub fn window_bisect&lt;S, P&gt;(slice: S, pred: P) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;S: <a class="trait" href="../../../nekolib/traits/trait.ElasticSlice.html" title="trait nekolib::traits::ElasticSlice">ElasticSlice</a> + <a class="trait" href="../../../nekolib/traits/trait.ExpandBack.html" title="trait nekolib::traits::ExpandBack">ExpandBack</a> + <a class="trait" href="../../../nekolib/traits/trait.ShrinkFront.html" title="trait nekolib::traits::ShrinkFront">ShrinkFront</a> + <a class="trait" href="../../../nekolib/traits/trait.SliceHash.html" title="trait nekolib::traits::SliceHash">SliceHash</a>&lt;Salt = <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;S::<a class="type" href="../../../nekolib/traits/trait.SliceHash.html#associatedtype.Hashed" title="type nekolib::traits::SliceHash::Hashed">Hashed</a>: <a class="trait" href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;P: <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/function/trait.Fn.html" title="trait core::ops::function::Fn">Fn</a>(S::<a class="type" href="../../../nekolib/traits/trait.SliceHash.html#associatedtype.Hashed" title="type nekolib::traits::SliceHash::Hashed">Hashed</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a>,&nbsp;</span></pre><div class='docblock'><p>尺取り法で、各始端に対して境界を探す。</p>
+<p>スライスと述語を引数に取り、スライスの各始端 $l$ に対して $r_l$ を求める。
+$r_l$ は、以下の両方を満たす $r &lt; n$ が存在すればその $r$、存在しなければ $n$ である。</p>
+<ul>
+<li>$P(h([a_l, a_{r}]))$</li>
+<li>$\lnot P(h([a_l, a_{r+1}]))$</li>
+</ul>
+<p>ここで、$P$ は <code>pred</code>、$h([a_l, a_r])$ は <code>slice.start() == l</code>, <code>slice.end() == r+1</code>
+における <code>slice.hash(())</code> によって計算される。</p>
+<h1 id="requirements" class="section-header"><a href="#requirements">Requirements</a></h1>
+<p>各始端 $l$ に対して、$\lnot P(h([a_l, a_{m_l}]))$ なる $m_l$
+が存在するとき、次の二つが成り立つ。</p>
+<ul>
+<li>${}^\forall i\in [l, m_l)$ について $P(h([a_l, a_i]))$</li>
+<li>${}^\forall i\in [m, n)$ について $\lnot P(h([a_l, a_i]))$</li>
+</ul>
+<h1 id="complexity" class="section-header"><a href="#complexity">Complexity</a></h1>
+<p><code>expand_back</code> および <code>shrink_front</code> の呼び出しを高々 $n$ 回、
+<code>pred</code> の呼び出しを高々 $2n$ 回行う。</p>
+<h1 id="suggestions" class="section-header"><a href="#suggestions">Suggestions</a></h1>
+<p><a href="#examples">Examples</a> を見ての通り、構造体の宣言が大袈裟に感じられる。
+一方で、クロージャを渡すような設計でも綺麗にはならないと思われる。</p>
+<p>構造体を作るのが冗長に感じる程度の場合には、
+これを使わずにインラインで書いてしまう方が楽そうに見えてしまう。</p>
+<h1 id="examples" class="section-header"><a href="#examples">Examples</a></h1>
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">nekolib</span>::<span class="ident">traits</span>::{<span class="ident">ElasticSlice</span>, <span class="ident">ExpandBack</span>, <span class="ident">ShrinkFront</span>, <span class="ident">SliceHash</span>};
+<span class="kw">use</span> <span class="ident">nekolib</span>::<span class="ident">algo</span>::<span class="ident">window_bisect</span>;
+
+<span class="kw">struct</span> <span class="ident">RangeSum</span> {
+    <span class="ident">buf</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>,
+    <span class="ident">start</span>: <span class="ident">usize</span>,
+    <span class="ident">end</span>: <span class="ident">usize</span>,
+    <span class="ident">sum</span>: <span class="ident">i32</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;&gt;</span> <span class="kw">for</span> <span class="ident">RangeSum</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">buf</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="self">Self</span> { <span class="ident">buf</span>, <span class="ident">start</span>: <span class="number">0</span>, <span class="ident">end</span>: <span class="number">0</span>, <span class="ident">sum</span>: <span class="number">0</span> }
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">ElasticSlice</span> <span class="kw">for</span> <span class="ident">RangeSum</span> {
+    <span class="kw">fn</span> <span class="ident">reset</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
+        <span class="self">self</span>.<span class="ident">start</span> <span class="op">=</span> <span class="number">0</span>;
+        <span class="self">self</span>.<span class="ident">end</span> <span class="op">=</span> <span class="number">0</span>;
+        <span class="self">self</span>.<span class="ident">sum</span> <span class="op">=</span> <span class="number">0</span>;
+    }
+    <span class="kw">fn</span> <span class="ident">full_len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">len</span>() }
+    <span class="kw">fn</span> <span class="ident">start</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">start</span> }
+    <span class="kw">fn</span> <span class="ident">end</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">end</span> }
+}
+
+<span class="kw">impl</span> <span class="ident">SliceHash</span> <span class="kw">for</span> <span class="ident">RangeSum</span> {
+    <span class="kw">type</span> <span class="ident">Salt</span> <span class="op">=</span> ();
+    <span class="kw">type</span> <span class="ident">Hashed</span> <span class="op">=</span> <span class="ident">i32</span>;
+    <span class="kw">fn</span> <span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: ()) <span class="op">-&gt;</span> <span class="ident">i32</span> { <span class="self">self</span>.<span class="ident">sum</span> }
+}
+
+<span class="kw">impl</span> <span class="ident">ExpandBack</span> <span class="kw">for</span> <span class="ident">RangeSum</span> {
+    <span class="kw">fn</span> <span class="ident">expand_back</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
+        <span class="self">self</span>.<span class="ident">sum</span> <span class="op">+=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="self">self</span>.<span class="ident">end</span>];
+        <span class="self">self</span>.<span class="ident">end</span> <span class="op">+=</span> <span class="number">1</span>;
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">ShrinkFront</span> <span class="kw">for</span> <span class="ident">RangeSum</span> {
+    <span class="kw">fn</span> <span class="ident">shrink_front</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
+        <span class="self">self</span>.<span class="ident">sum</span> <span class="op">-=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="self">self</span>.<span class="ident">start</span>];
+        <span class="self">self</span>.<span class="ident">start</span> <span class="op">+=</span> <span class="number">1</span>;
+    }
+}
+
+<span class="kw">let</span> <span class="ident">rs</span>: <span class="ident">RangeSum</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">6</span>].<span class="ident">into</span>();
+<span class="macro">assert_eq</span><span class="macro">!</span>(
+    <span class="ident">window_bisect</span>(<span class="ident">rs</span>, <span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span> <span class="op">&lt;=</span> <span class="number">5</span>),
+    <span class="macro">vec</span><span class="macro">!</span>[<span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">8</span>]
+);
+
+<span class="kw">let</span> <span class="ident">rs</span>: <span class="ident">RangeSum</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">6</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>].<span class="ident">into</span>();
+<span class="macro">assert_eq</span><span class="macro">!</span>(
+    <span class="ident">window_bisect</span>(<span class="ident">rs</span>, <span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span> <span class="op">&lt;=</span> <span class="number">4</span>),
+    <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">9</span>, <span class="number">9</span>]
+);</pre></div>
+</div></section><section id="search" class="content hidden"></section><section class="footer"></section><div>
+  ねこちゃん🐱
+</div>
+
+<script>window.rootPath = "../../../";window.currentCrate = "nekolib";</script><script src="../../../main.js"></script><script defer src="../../../search-index.js"></script></body></html>

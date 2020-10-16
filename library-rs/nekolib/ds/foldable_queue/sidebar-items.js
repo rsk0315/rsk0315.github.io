@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["FoldableQueue","fold 可能キュー。"]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["OpAdd","和を返す演算を持つ。"]]});
