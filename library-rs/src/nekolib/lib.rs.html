@@ -38,25 +38,33 @@
 <span id="20">20</span>
 <span id="21">21</span>
 <span id="22">22</span>
+<span id="23">23</span>
+<span id="24">24</span>
+<span id="25">25</span>
+<span id="26">26</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! ねこちゃんライブラリ。</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ![verify](https://github.com/rsk0315/library-rs/workflows/verify/badge.svg)</span>
+<span class="doccomment">//! ![doctest](https://github.com/rsk0315/library-rs/workflows/test%20--doc/badge.svg)</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! [&lt;span style=&quot;font-family: Lato; color: #C0C000;&quot;&gt;rsk0315&lt;/span&gt;](https://atcoder.jp/users/rsk0315)</span>
 <span class="doccomment">//! の競プロライブラリです。</span>
 <span class="doccomment">//! まだ bundler を作っていないため、競プロでの使用には適していないと思います。</span>
 <span class="doccomment">//! と思ったのですが、全部貼りを厭わない人になれば大丈夫かもしれません。</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! 動機は別で説明します[^1]が、各種スニペットを個別クレートとして分けて作ったもの</span>
-<span class="doccomment">//! (`library-rs`) をモジュールの形に自動変換して作られたものがこれ (`nekolib`)</span>
-<span class="doccomment">//! になります。`library-rs` は現状非公開になっていますが、そのうち公開すると思います。</span>
+<span class="doccomment">//! 各種スニペットを個別クレートとして分けて作ったもの (`library-rs`)</span>
+<span class="doccomment">//! をモジュールの形に自動変換して作られたものがこれ (`nekolib`) になります。</span>
 <span class="doccomment">//! `nekolib` は仮称で、よりよい名前が見つかったら変わると思います。</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! モジュールの形に変換している理由は、主にドキュメントの見やすさのためです。</span>
+<span class="doccomment">//! 元コードでをクレートに分けて書いている理由は、詳しくはここでは書きません[^1]</span>
+<span class="doccomment">//! が、 主には依存関係を書きやすかったためです。</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! [^1]: 一度書いたところ、ここに載せるには長くなりすぎたため。</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # 🐱 Cat</span>
 <span class="doccomment">//! にゃー。</span>
-<span class="doccomment">//! ![verify](https://github.com/rsk0315/library-rs/workflows/verify/badge.svg)</span>
-<span class="doccomment">//! ![test --doc](https://github.com/rsk0315/library-rs/workflows/test%20--doc/badge.svg)</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">algo</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">ds</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">traits</span>;

@@ -16,19 +16,21 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet">
 <style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../nekolib/index.html'><div class='logo-container rust-logo'><img src='../rust-logo.png' alt='logo'></div></a><p class='location'>Crate nekolib</p><div class='block version'><p>Version 0.1.0</p></div><div class="sidebar-elems"><a id='all-types' href='all.html'><p>See all nekolib's items</p></a><div class="block items"><ul><li><a href="#modules">Modules</a></li><li><a href="#macros">Macros</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'nekolib', ty: 'mod', relpath: '../'};</script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
-                <a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/nekolib/lib.rs.html#1-22' title='goto source code'>[src]</a></span><span class='in-band'>Crate <a class="mod" href=''>nekolib</a></span></h1><div class='docblock'><p>ねこちゃんライブラリ。</p>
+                <a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/nekolib/lib.rs.html#1-26' title='goto source code'>[src]</a></span><span class='in-band'>Crate <a class="mod" href=''>nekolib</a></span></h1><div class='docblock'><p>ねこちゃんライブラリ。</p>
+<p><img src="https://github.com/rsk0315/library-rs/workflows/verify/badge.svg" alt="verify" />
+<img src="https://github.com/rsk0315/library-rs/workflows/test%20--doc/badge.svg" alt="doctest" /></p>
 <p><a href="https://atcoder.jp/users/rsk0315"><span style="font-family: Lato; color: #C0C000;">rsk0315</span></a>
 の競プロライブラリです。
 まだ bundler を作っていないため、競プロでの使用には適していないと思います。
 と思ったのですが、全部貼りを厭わない人になれば大丈夫かもしれません。</p>
-<p>動機は別で説明します<sup id="fnref1"><a href="#fn1">1</a></sup>が、各種スニペットを個別クレートとして分けて作ったもの
-(<code>library-rs</code>) をモジュールの形に自動変換して作られたものがこれ (<code>nekolib</code>)
-になります。<code>library-rs</code> は現状非公開になっていますが、そのうち公開すると思います。
+<p>各種スニペットを個別クレートとして分けて作ったもの (<code>library-rs</code>)
+をモジュールの形に自動変換して作られたものがこれ (<code>nekolib</code>) になります。
 <code>nekolib</code> は仮称で、よりよい名前が見つかったら変わると思います。</p>
+<p>モジュールの形に変換している理由は、主にドキュメントの見やすさのためです。
+元コードでをクレートに分けて書いている理由は、詳しくはここでは書きません<sup id="fnref1"><a href="#fn1">1</a></sup>
+が、 主には依存関係を書きやすかったためです。</p>
 <h1 id="-cat" class="section-header"><a href="#-cat">🐱 Cat</a></h1>
-<p>にゃー。
-<img src="https://github.com/rsk0315/library-rs/workflows/verify/badge.svg" alt="verify" />
-<img src="https://github.com/rsk0315/library-rs/workflows/test%20--doc/badge.svg" alt="test --doc" /></p>
+<p>にゃー。</p>
 <div class="footnotes"><hr><ol><li id="fn1"><p>一度書いたところ、ここに載せるには長くなりすぎたため。&nbsp;<a href="#fnref1" rev="footnote">↩</a></p></li></ol></div></div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table><tr class='module-item'><td><a class="mod" href="algo/index.html" title='nekolib::algo mod'>algo</a></td><td class='docblock-short'><p>アルゴリズムたち。</p>
 </td></tr><tr class='module-item'><td><a class="mod" href="ds/index.html" title='nekolib::ds mod'>ds</a></td><td class='docblock-short'><p>データ構造たち。</p>
