@@ -126,6 +126,12 @@
 <span id="108">108</span>
 <span id="109">109</span>
 <span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! union-find。</span>
 
@@ -144,8 +150,14 @@
 <span class="doccomment">/// union-find。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// `count`、`equiv`、 `repr`、`unite` をそれぞれ償却 $O(\\alpha(n))$ 時間で処理する。</span>
-<span class="doccomment">/// `subset` はデフォルト実装なので $\\Theta(n)$ 時間かかる。</span>
+<span class="doccomment">/// |演算|時間計算量|</span>
+<span class="doccomment">/// |---|---|</span>
+<span class="doccomment">/// |`new`|$\\Theta(n)$|</span>
+<span class="doccomment">/// |`unite`|amortized $O(\\alpha(n))$|</span>
+<span class="doccomment">/// |`repr`|amortized $O(\\alpha(n))$|</span>
+<span class="doccomment">/// |`equiv`|amortized $O(\\alpha(n))$|</span>
+<span class="doccomment">/// |`count`|amortized $O(\\alpha(n))$|</span>
+<span class="doccomment">/// |`subset`|$\\Theta(n)$|</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">/// ```</span>
