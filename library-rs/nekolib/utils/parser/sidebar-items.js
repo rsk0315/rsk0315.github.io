@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["Parser","パーサ。"]]});
+initSidebarItems({"struct":[["NextN",""],["Parser","パーサ。"]]});
