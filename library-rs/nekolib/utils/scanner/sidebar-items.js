@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["ScanTupleError",""],["Scanner","パーサ。"]],"trait":[["Scan",""]]});
+initSidebarItems({"struct":[["ScanTupleError",""],["Scanner","スキャナ。"]],"trait":[["Scan",""]]});

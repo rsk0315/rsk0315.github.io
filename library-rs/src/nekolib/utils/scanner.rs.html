@@ -235,14 +235,24 @@
 <span id="217">217</span>
 <span id="218">218</span>
 <span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="doccomment">//! パーサ。</span>
+<span class="doccomment">//! スキャナ。</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>::{<span class="ident">stdin</span>, <span class="ident">Error</span>, <span class="ident">Read</span>};
 
-<span class="doccomment">/// パーサ。</span>
+<span class="doccomment">/// スキャナ。</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// 文字列をパースし、所望の型に変換する。</span>
+<span class="doccomment">/// 文字列スライスを読み、所望の型に変換する。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">/// ```</span>
@@ -251,12 +261,22 @@
 <span class="doccomment">/// use std::num::ParseIntError;</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// let mut p: Scanner = &quot;1 2  a\nb 3&quot;.to_string().into();</span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// assert_eq!(p.next::&lt;i32&gt;(), Ok(1));</span>
 <span class="doccomment">/// assert_eq!(p.next::&lt;i32&gt;(), Ok(2));</span>
+<span class="doccomment">/// // `&quot;a&quot;` =&gt; `ParseIntError { kind: InvalidDigit }`</span>
 <span class="doccomment">/// assert!(p.next::&lt;i32&gt;().is_err());</span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// assert_eq!(p.next::&lt;char&gt;(), Ok(&#39;b&#39;));</span>
 <span class="doccomment">/// assert_eq!(p.next::&lt;String&gt;(), Ok(&quot;3&quot;.to_string()));</span>
+<span class="doccomment">/// assert_eq!(p.next::&lt;String&gt;(), Ok(&quot;&quot;.to_string()));</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// // `&quot;&quot;` =&gt; `ParseIntError { kind: Empty }`</span>
 <span class="doccomment">/// assert!(p.next::&lt;i32&gt;().is_err());</span>
+<span class="doccomment">/// // `&quot;&quot;` =&gt; `ParseCharError { kind: EmptyString }`</span>
+<span class="doccomment">/// assert!(p.next::&lt;char&gt;().is_err());</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// assert_eq!(p.next::&lt;String&gt;(), Ok(&quot;&quot;.to_string())); // ok again</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Scanner</span> {
     <span class="ident">buf</span>: <span class="ident">String</span>,
