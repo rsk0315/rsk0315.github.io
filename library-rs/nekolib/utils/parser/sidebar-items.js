@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["NextN",""],["Parser","パーサ。"]]});
