@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["GetMutIndex",""],["VecSegtree","`Vec` ベースのセグ木。"]]});
+initSidebarItems({"struct":[["VecSegtree","`Vec` ベースのセグ木。"]]});
