@@ -128,10 +128,6 @@
 <span id="110">110</span>
 <span id="111">111</span>
 <span id="112">112</span>
-<span id="113">113</span>
-<span id="114">114</span>
-<span id="115">115</span>
-<span id="116">116</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! disjoint sparse table。</span>
 
@@ -157,11 +153,7 @@
 <span class="doccomment">/// 前処理の際、モノイド積を高々 $n\\lfloor\\log\_2(n)-1\\rfloor$ 回計算するが、</span>
 <span class="doccomment">/// がんばって重複を削減することでもう少し削減でき、次の値で上から抑えられる。</span>
 <span class="doccomment">/// $$ \\begin{aligned}</span>
-<span class="doccomment">/// n\\cdot\\lceil{\\log\_2(n)-3}\\rceil + \\lceil{\\log\_2(n)}\\rceil + 2</span>
-<span class="doccomment">/// + \\begin{cases}</span>
-<span class="doccomment">/// \\log\_2(n), &amp; \\text{if }n\\text{ is power of }2; \\\\</span>
-<span class="doccomment">/// 2\^{\\lfloor\\log\_2(n)\\rfloor}, &amp; \\text{otherwise.}</span>
-<span class="doccomment">/// \\end{cases}</span>
+<span class="doccomment">/// n\\cdot\\lceil{\\log\_2(n)-3}\\rceil + 2\\cdot\\lceil{\\log\_2(n)}\\rceil + 2</span>
 <span class="doccomment">/// \\end{aligned} $$</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// また、クエリ処理の際、高々 $1$ 回（！）のモノイド積を計算する。</span>
