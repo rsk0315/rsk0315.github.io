@@ -128,6 +128,74 @@
 <span id="110">110</span>
 <span id="111">111</span>
 <span id="112">112</span>
+<span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! disjoint sparse table。</span>
 
@@ -149,19 +217,21 @@
 <span class="doccomment">/// 半群を返すことにしてもよいが、要検討。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Complexity</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 前処理の際、モノイド積を高々 $n\\lfloor\\log\_2(n)-1\\rfloor$ 回計算するが、</span>
+<span class="doccomment">/// 前処理の際、モノイド積を高々 $n\\cdot\\lfloor\\log\_2(n)-1\\rfloor$ 回計算するが、</span>
 <span class="doccomment">/// がんばって重複を削減することでもう少し削減でき、次の値で上から抑えられる。</span>
 <span class="doccomment">/// $$ \\begin{aligned}</span>
 <span class="doccomment">/// n\\cdot\\lceil{\\log\_2(n)-3}\\rceil + 2\\cdot\\lceil{\\log\_2(n)}\\rceil + 2</span>
 <span class="doccomment">/// \\end{aligned} $$</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// また、クエリ処理の際、高々 $1$ 回（！）のモノイド積を計算する。</span>
+<span class="doccomment">/// 与えられた区間が前処理で計算した区間であるか、長さが $1$ 以下の場合は、</span>
+<span class="doccomment">/// 新たにモノイド積を計算せずに答えを返す。</span>
+<span class="doccomment">/// そうでない場合はちょうど $1$ 回のモノイド積を計算する。</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// モノイド積の計算コストが非常に高いときは前処理の削減は有用だと思うが、</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// モノイド積の計算コストが非常に高いときは削減は有用だと思うが、</span>
 <span class="doccomment">/// そうでないときにどうなるかは要実測。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 現時点では、使い回す箇所の実装方法はよくわかっていない（たぶんできると思う）。</span>
+<span class="doccomment">/// 削減のための計算コストが無視できないかもしれないので。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ## Precise Analysis</span>
 <span class="doccomment">///</span>
@@ -202,9 +272,18 @@
 <span class="doccomment">///         + (n + 1) / (2 * p) * (p - 1)</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Examples</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// use nekolib::ds::DisjointSparseTable;</span>
+<span class="doccomment">/// use nekolib::traits::Fold;</span>
+<span class="doccomment">/// use nekolib::utils::OpAdd;</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// let dst: DisjointSparseTable&lt;OpAdd&lt;i32&gt;&gt; = vec![1, 6, 3, 8, 4].into();</span>
+<span class="doccomment">/// assert_eq!(dst.fold(1..=3), 17);</span>
+<span class="doccomment">/// assert_eq!(dst.fold(..), 22);</span>
+<span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DisjointSparseTable</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">Monoid</span><span class="op">&gt;</span> {
-    <span class="ident">len</span>: <span class="ident">usize</span>,
-    <span class="ident">height</span>: <span class="ident">usize</span>,
     <span class="ident">buf</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">M</span>::<span class="ident">Set</span><span class="op">&gt;&gt;</span>,
 }
 
@@ -216,8 +295,29 @@
 {
     <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">M</span>;
     <span class="kw">fn</span> <span class="ident">fold</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">b</span>: <span class="ident">B</span>) <span class="op">-&gt;</span> <span class="ident">M</span>::<span class="ident">Set</span> {
-        <span class="kw">let</span> <span class="ident">Range</span> { <span class="ident">start</span>, <span class="ident">end</span> } <span class="op">=</span> <span class="ident">bounds_within</span>(<span class="ident">b</span>, <span class="self">self</span>.<span class="ident">len</span>);
-        <span class="macro">todo</span><span class="macro">!</span>();
+        <span class="kw">let</span> <span class="ident">Range</span> { <span class="ident">start</span>, <span class="ident">end</span> } <span class="op">=</span> <span class="ident">bounds_within</span>(<span class="ident">b</span>, <span class="self">self</span>.<span class="ident">buf</span>[<span class="number">0</span>].<span class="ident">len</span>());
+        <span class="kw">if</span> <span class="ident">start</span> <span class="op">&gt;=</span> <span class="ident">end</span> {
+            <span class="kw">return</span> <span class="ident">M</span>::<span class="ident">id</span>();
+        }
+        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">end</span> <span class="op">-</span> <span class="ident">start</span>;
+        <span class="kw">let</span> <span class="ident">end</span> <span class="op">=</span> <span class="ident">end</span> <span class="op">-</span> <span class="number">1</span>;
+        <span class="kw">if</span> <span class="ident">start</span> <span class="op">==</span> <span class="ident">end</span> {
+            <span class="kw">return</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="number">0</span>][<span class="ident">start</span>].<span class="ident">clone</span>();
+        }
+        <span class="kw">let</span> <span class="ident">row</span> <span class="op">=</span> ((<span class="ident">start</span> <span class="op">^</span> <span class="ident">end</span>) <span class="op">+</span> <span class="number">1</span>).<span class="ident">next_power_of_two</span>().<span class="ident">trailing_zeros</span>() <span class="op">-</span> <span class="number">1</span>;
+        <span class="kw">let</span> <span class="ident">row_len</span> <span class="op">=</span> <span class="number">1_usize</span> <span class="op">&lt;&lt;</span> <span class="ident">row</span>;
+        <span class="kw">let</span> <span class="ident">row</span> <span class="op">=</span> <span class="ident">row</span> <span class="kw">as</span> <span class="ident">usize</span>;
+
+        <span class="kw">if</span> <span class="ident">len</span> <span class="op">&lt;=</span> <span class="number">2</span> <span class="op">*</span> <span class="ident">row_len</span> <span class="op">&amp;&amp;</span> <span class="ident">row</span> <span class="op">+</span> <span class="number">1</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">len</span>() {
+            <span class="kw">if</span> <span class="ident">start</span>.<span class="ident">is_power_of_two</span>() <span class="op">&amp;&amp;</span> <span class="ident">end</span> <span class="op">&gt;&gt;</span> (<span class="ident">row</span> <span class="op">+</span> <span class="number">1</span>) <span class="op">==</span> <span class="number">1</span> {
+                <span class="kw">return</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">row</span> <span class="op">+</span> <span class="number">1</span>][<span class="ident">end</span>].<span class="ident">clone</span>();
+            }
+            <span class="kw">if</span> (<span class="ident">end</span> <span class="op">+</span> <span class="number">1</span>).<span class="ident">is_power_of_two</span>() <span class="op">&amp;&amp;</span> <span class="ident">start</span> <span class="op">&gt;&gt;</span> (<span class="ident">row</span> <span class="op">+</span> <span class="number">1</span>) <span class="op">==</span> <span class="number">0</span> {
+                <span class="kw">return</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">row</span> <span class="op">+</span> <span class="number">1</span>][<span class="ident">start</span>].<span class="ident">clone</span>();
+            }
+        }
+
+        <span class="ident">M</span>::<span class="ident">op</span>(<span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">row</span>][<span class="ident">start</span>].<span class="ident">clone</span>(), <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">row</span>][<span class="ident">end</span>].<span class="ident">clone</span>())
     }
 }
 
@@ -226,8 +326,44 @@
     <span class="ident">M</span>: <span class="ident">Monoid</span>,
     <span class="ident">M</span>::<span class="ident">Set</span>: <span class="ident">Clone</span>,
 {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">v</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">M</span>::<span class="ident">Set</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="macro">todo</span><span class="macro">!</span>();
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">base</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">M</span>::<span class="ident">Set</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">base</span>.<span class="ident">len</span>();
+
+        <span class="kw">let</span> <span class="ident">height</span> <span class="op">=</span> <span class="ident">len</span>.<span class="ident">next_power_of_two</span>().<span class="ident">trailing_zeros</span>().<span class="ident">max</span>(<span class="number">1</span>) <span class="kw">as</span> <span class="ident">usize</span>;
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">base</span>; <span class="ident">height</span>];
+
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">1</span>..<span class="ident">height</span> {
+            <span class="kw">let</span> <span class="ident">w</span> <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="ident">i</span>;
+            <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> (<span class="number">1</span>..).<span class="ident">step_by</span>(<span class="number">2</span>).<span class="ident">take_while</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">j</span><span class="op">|</span> <span class="ident">j</span> <span class="op">*</span> <span class="ident">w</span> <span class="op">&lt;=</span> <span class="ident">len</span>) {
+                <span class="kw">let</span> <span class="ident">mid</span> <span class="op">=</span> <span class="ident">j</span> <span class="op">*</span> <span class="ident">w</span>;
+                <span class="kw">for</span> <span class="ident">r</span> <span class="kw">in</span> (<span class="number">1</span>..<span class="ident">w</span>).<span class="ident">take_while</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">mid</span> <span class="op">+</span> <span class="ident">r</span> <span class="op">&lt;</span> <span class="ident">len</span>) {
+                    <span class="ident">buf</span>[<span class="ident">i</span>][<span class="ident">mid</span> <span class="op">+</span> <span class="ident">r</span>] <span class="op">=</span> <span class="ident">M</span>::<span class="ident">op</span>(
+                        <span class="ident">buf</span>[<span class="ident">i</span>][<span class="ident">mid</span> <span class="op">+</span> <span class="ident">r</span> <span class="op">-</span> <span class="number">1</span>].<span class="ident">clone</span>(),
+                        <span class="ident">buf</span>[<span class="number">0</span>][<span class="ident">mid</span> <span class="op">+</span> <span class="ident">r</span>].<span class="ident">clone</span>(),
+                    );
+                }
+            }
+        }
+
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">1</span>..<span class="ident">height</span> {
+            <span class="kw">let</span> <span class="ident">w</span> <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="ident">i</span>;
+            <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> (<span class="number">1</span>..).<span class="ident">step_by</span>(<span class="number">2</span>).<span class="ident">take_while</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">j</span><span class="op">|</span> <span class="ident">j</span> <span class="op">*</span> <span class="ident">w</span> <span class="op">&lt;=</span> <span class="ident">len</span>) {
+                <span class="kw">let</span> <span class="ident">mid</span> <span class="op">=</span> <span class="ident">j</span> <span class="op">*</span> <span class="ident">w</span> <span class="op">-</span> <span class="number">1</span>;
+                <span class="kw">for</span> <span class="ident">l</span> <span class="kw">in</span> <span class="number">1</span>..<span class="ident">w</span> {
+                    <span class="ident">buf</span>[<span class="ident">i</span>][<span class="ident">mid</span> <span class="op">-</span> <span class="ident">l</span>] <span class="op">=</span> <span class="kw">if</span> <span class="ident">mid</span> <span class="op">&gt;</span> <span class="ident">l</span> <span class="op">&amp;&amp;</span> (<span class="ident">l</span> <span class="op">+</span> <span class="number">1</span>).<span class="ident">is_power_of_two</span>() {
+                        <span class="kw">let</span> <span class="ident">ei</span> <span class="op">=</span> (<span class="ident">mid</span> <span class="op">-</span> <span class="ident">l</span>).<span class="ident">trailing_zeros</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+                        <span class="kw">let</span> <span class="ident">ej</span> <span class="op">=</span> <span class="ident">mid</span>;
+                        <span class="ident">buf</span>[<span class="ident">ei</span>][<span class="ident">ej</span>].<span class="ident">clone</span>()
+                    } <span class="kw">else</span> {
+                        <span class="ident">M</span>::<span class="ident">op</span>(
+                            <span class="ident">buf</span>[<span class="number">0</span>][<span class="ident">mid</span> <span class="op">-</span> <span class="ident">l</span>].<span class="ident">clone</span>(),
+                            <span class="ident">buf</span>[<span class="ident">i</span>][<span class="ident">mid</span> <span class="op">-</span> <span class="ident">l</span> <span class="op">+</span> <span class="number">1</span>].<span class="ident">clone</span>(),
+                        )
+                    };
+                }
+            }
+        }
+        <span class="self">Self</span> { <span class="ident">buf</span> }
     }
 }
 
