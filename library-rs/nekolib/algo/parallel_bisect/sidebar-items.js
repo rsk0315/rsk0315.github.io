@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["parallel_bisect",""]]});
+initSidebarItems({"fn":[["parallel_bisect","並列二分探索を行う。"]]});
