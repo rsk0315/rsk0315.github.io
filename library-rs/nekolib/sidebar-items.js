@@ -1,1 +1,1 @@
-initSidebarItems({"macro":[["impl_assoc_val",""],["impl_mod_int",""]],"mod":[["algo","アルゴリズムたち。"],["ds","データ構造たち。"],["graph","グラフに関するものたち。"],["traits","トレイトたち。"],["utils","便利ちゃんたち。"]]});
+initSidebarItems({"macro":[["impl_assoc_val",""],["impl_mod_int",""]],"mod":[["algo","アルゴリズムたち。"],["ds","データ構造たち。"],["graph","グラフに関するものたち。"],["math","数学関連のアルゴリズムたち。"],["seq","文字列アルゴリズムたち。"],["traits","トレイトたち。"],["utils","便利ちゃんたち。"]]});
