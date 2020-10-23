@@ -69,6 +69,16 @@
 <span id="51">51</span>
 <span id="52">52</span>
 <span id="53">53</span>
+<span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
+<span id="62">62</span>
+<span id="63">63</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 周期検出。</span>
 
@@ -80,6 +90,16 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Requirements</span>
 <span class="doccomment">/// $f$ は参照透過である。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Notes</span>
+<span class="doccomment">/// 共通の $f$ に対して、異なる複数の $x\_0$ から周期検出を行いたい場合は、</span>
+<span class="doccomment">/// この関数を複数回呼ぶよりも高速なアルゴリズムがあると思われる。</span>
+<span class="doccomment">/// ある $x\_0$ での出力が $(\\mu, \\lambda)$ であれば、</span>
+<span class="doccomment">/// $x\_i$ ($1\\le i\&lt; \\mu$) での出力は $(\\mu-i, \\lambda)$、</span>
+<span class="doccomment">/// $x\_i$ ($\\mu\\le i&lt;\\mu+\\lambda$) での出力は $(0, \\lambda)$ とわかる。</span>
+<span class="doccomment">/// さらに、これら $\\mu+\\lambda$ 個以外の $x&#39;$ についても、</span>
+<span class="doccomment">/// $f\^i(x&#39;)$ がこれらのいずれかと等しくなる $i$ が存在すれば、</span>
+<span class="doccomment">/// $\\Theta(\\mu)$ 回の $f$ の呼び出しで $x&#39;, f(x&#39;), \\dots, f\^{i-1}(x&#39;)$ の出力もわかるはず。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Complexity</span>
 <span class="doccomment">/// $\\Theta(\\mu+\\lambda)$ 回の $f$ の呼び出しを行う。</span>
