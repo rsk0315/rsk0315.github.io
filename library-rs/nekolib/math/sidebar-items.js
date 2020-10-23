@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["math_sentinel",""]]});
+initSidebarItems({"mod":[["modint","法 $m$ での演算をする。"]],"struct":[["ModInt",""]]});
