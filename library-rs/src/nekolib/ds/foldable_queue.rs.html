@@ -188,13 +188,6 @@
 <span id="170">170</span>
 <span id="171">171</span>
 <span id="172">172</span>
-<span id="173">173</span>
-<span id="174">174</span>
-<span id="175">175</span>
-<span id="176">176</span>
-<span id="177">177</span>
-<span id="178">178</span>
-<span id="179">179</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! fold 可能キュー。</span>
 
@@ -210,7 +203,22 @@
 
 <span class="doccomment">/// fold 可能キュー。</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// モノイドのキューであって、全体のモノイド積を計算できる。</span>
+<span class="doccomment">/// いわゆる SWAG (*S*liding *W*indow *Ag*gregation)。</span>
+<span class="doccomment">/// モノイドを要素とするキューであって、全体のモノイド積を計算できる。</span>
+<span class="doccomment">/// 逆元がある演算であれば、単に要素を一つ持って計算すればよい。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Idea</span>
+<span class="doccomment">/// スタックを二つ使ってキューを実現できることを応用する。</span>
+<span class="doccomment">/// モノイド積を管理するスタックも二つ用意する。</span>
+<span class="doccomment">/// 後者のスタックそれぞれの top が、対応する前者のスタック中の要素の総積となるように管理する。</span>
+<span class="doccomment">/// これにより、キュー全体としての積は、二つの要素の積として計算できる。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Implementation notes</span>
+<span class="doccomment">/// `fold()` だけを考えると front stack には元の値を入れる必要はないが、</span>
+<span class="doccomment">/// `pop()` の際の挙動を標準の [`VecDeque`] などと合わせたかったので、含めることにした。</span>
+<span class="doccomment">/// fold した値を返すということにすれば含めなくて済むが、あまりそうしたくなかったので。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// [`VecDeque`]: https://doc.rust-lang.org/std/collections/struct.VecDeque.html#method.pop_front</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Complexity</span>
 <span class="doccomment">/// |演算|時間計算量|</span>
@@ -220,9 +228,12 @@
 <span class="doccomment">/// |`pop` (`pop_front`)|amortized $\\Theta(1)$|</span>
 <span class="doccomment">/// |`fold`|$\\Theta(1)$|</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// 逆元がない演算について処理できるのが強みです。</span>
+<span class="doccomment">/// `pop` の計算量は、two-stack queue のならし解析から従う。</span>
+<span class="doccomment">/// わかりやすい資料として</span>
+<span class="doccomment">/// [CS166](http://web.stanford.edu/class/archive/cs/cs166/cs166.1206/lectures/07/Small07.pdf)</span>
+<span class="doccomment">/// を挙げておく。</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// # Examples</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use nekolib::ds::FoldableQueue;</span>
 <span class="doccomment">/// use nekolib::traits::{Fold, Pop, Push};</span>
@@ -241,31 +252,6 @@
 <span class="doccomment">/// fq.pop();</span>
 <span class="doccomment">/// assert_eq!(fq.fold(..), 4);</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// もちろん非可換でも問題ありません。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::{impl_assoc_val, impl_mod_int};</span>
-<span class="doccomment">/// use nekolib::ds::FoldableQueue;</span>
-<span class="doccomment">/// use nekolib::traits::{AssocVal, Fold, Pop, Push};</span>
-<span class="doccomment">/// use nekolib::utils::{ModInt, OpRollHash};</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// impl_mod_int! { Mod1e9p7 =&gt; 1_000_000_007_i64 }</span>
-<span class="doccomment">/// type Mi = ModInt&lt;Mod1e9p7&gt;;</span>
-<span class="doccomment">/// impl_assoc_val! { Base&lt;Mi&gt; =&gt; Mi::from(123) }</span>
-<span class="doccomment">/// type OpRh = OpRollHash::&lt;Mi, Base&gt;;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let val_from = |s| OpRh::val_from(s);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let mut fq = FoldableQueue::&lt;OpRh&gt;::new();</span>
-<span class="doccomment">/// assert_eq!(fq.fold(..), val_from(&quot;&quot;));</span>
-<span class="doccomment">/// fq.push(val_from(&quot;abraca&quot;));</span>
-<span class="doccomment">/// fq.push(val_from(&quot;dabra&quot;));</span>
-<span class="doccomment">/// assert_eq!(fq.fold(..), val_from(&quot;abracadabra&quot;));</span>
-<span class="doccomment">/// fq.pop();</span>
-<span class="doccomment">/// assert_eq!(fq.fold(..), val_from(&quot;dabra&quot;));</span>
-<span class="doccomment">/// fq.pop();</span>
-<span class="doccomment">/// assert_eq!(fq.fold(..), val_from(&quot;&quot;));</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FoldableQueue</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">Monoid</span><span class="op">&gt;</span> {
     <span class="ident">buf_front</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">M</span>::<span class="ident">Set</span><span class="op">&gt;</span>,
