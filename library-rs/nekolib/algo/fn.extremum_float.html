@@ -1,0 +1,46 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `extremum_float` fn in crate `nekolib`."><meta name="keywords" content="rust, rustlang, rust-lang, extremum_float"><title>nekolib::algo::extremum_float - Rust</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js"                  integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/auto-render.min.js"    integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "$", right: "$", display: false},
+                {left: "\\[", right: "\\]", display: true}
+            ]
+        });
+    });
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet">
+<style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc fn"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../nekolib/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a><div class="sidebar-elems"><p class='location'><a href='../index.html'>nekolib</a>::<wbr><a href='index.html'>algo</a></p><script>window.sidebarCurrent = {name: 'extremum_float', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
+                <a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../../src/nekolib/algo/extremum_float.rs.html#40-74' title='goto source code'>[src]</a></span><span class='in-band'>Function <a href='../index.html'>nekolib</a>::<wbr><a href='index.html'>algo</a>::<wbr><a class="fn" href=''>extremum_float</a></span></h1><pre class='rust fn'>pub fn extremum_float&lt;F&gt;(range: <a class="struct" href="https://doc.rust-lang.org/nightly/core/ops/range/struct.Range.html" title="struct core::ops::range::Range">Range</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f64.html">f64</a>&gt;, eps: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f64.html">f64</a>, f: F) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">(</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f64.html">f64</a>, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f64.html">f64</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">)</a> <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;F: <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/function/trait.Fn.html" title="trait core::ops::function::Fn">Fn</a>(<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f64.html">f64</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f64.html">f64</a>,&nbsp;</span></pre><div class='docblock'><p>三分探索で極値を探す。</p>
+<h1 id="requirements" class="section-header"><a href="#requirements">Requirements</a></h1>
+<p>凸である。</p>
+<h1 id="implementation-notes" class="section-header"><a href="#implementation-notes">Implementation notes</a></h1>
+<p>黄金比を用いて分割する実装のため、関数値を使い回すことができる。</p>
+<p>関数 $f$ の呼び出し回数を、区間を三等分する素直な実装と比較する。</p>
+<p><code>todo!()</code></p>
+<h1 id="complexity" class="section-header"><a href="#complexity">Complexity</a></h1>
+<p><code>todo!()</code></p>
+<h1 id="suggestions" class="section-header"><a href="#suggestions">Suggestions</a></h1>
+<p><code>f64</code> に限らずジェネリックにするべき？ <code>NonNan</code> とかを渡したいときもありそう。
+関数の返り値も <code>T: PartialOrd</code> にする？</p>
+<h1 id="examples" class="section-header"><a href="#examples">Examples</a></h1>
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">nekolib</span>::<span class="ident">algo</span>::<span class="ident">extremum_float</span>;
+
+<span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="number">3.0_f64</span>;
+<span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="op">|</span><span class="ident">x</span>: <span class="ident">f64</span><span class="op">|</span> <span class="op">-</span><span class="ident">x</span>.<span class="ident">powf</span>(<span class="ident">x</span>);
+
+<span class="kw">let</span> <span class="ident">xl</span> <span class="op">=</span> <span class="number">0.0</span>;
+<span class="kw">let</span> <span class="ident">xr</span> <span class="op">=</span> <span class="number">140.0</span>;
+<span class="kw">let</span> <span class="ident">eps</span> <span class="op">=</span> <span class="number">1.0e-8</span>;
+<span class="kw">let</span> (<span class="ident">x</span>, <span class="ident">y</span>) <span class="op">=</span> <span class="ident">extremum_float</span>(<span class="ident">xl</span>..<span class="ident">xr</span>, <span class="ident">eps</span>, <span class="ident">f</span>);
+
+<span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="ident">std</span>::<span class="ident">f64</span>::<span class="ident">consts</span>::<span class="ident">E</span>;
+<span class="macro">assert</span><span class="macro">!</span>((<span class="number">1.0</span> <span class="op">/</span> <span class="ident">e</span> <span class="op">-</span> <span class="ident">x</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">eps</span>);
+<span class="macro">assert</span><span class="macro">!</span>((<span class="op">-</span><span class="ident">e</span>.<span class="ident">powf</span>(<span class="op">-</span><span class="number">1.0</span> <span class="op">/</span> <span class="ident">e</span>) <span class="op">-</span> <span class="ident">y</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">eps</span>);</pre></div>
+</div></section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "nekolib";</script><script src="../../main.js"></script><script defer src="../../search-index.js"></script></body></html>
