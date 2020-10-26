@@ -75,65 +75,119 @@
 <span id="57">57</span>
 <span id="58">58</span>
 <span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
+<span id="62">62</span>
+<span id="63">63</span>
+<span id="64">64</span>
+<span id="65">65</span>
+<span id="66">66</span>
+<span id="67">67</span>
+<span id="68">68</span>
+<span id="69">69</span>
+<span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
+<span id="76">76</span>
+<span id="77">77</span>
+<span id="78">78</span>
+<span id="79">79</span>
+<span id="80">80</span>
+<span id="81">81</span>
+<span id="82">82</span>
+<span id="83">83</span>
+<span id="84">84</span>
+<span id="85">85</span>
+<span id="86">86</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 区間和の二分探索に関するトレイトたちです。</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! # Suggestions</span>
-<span class="doccomment">//! 設計を見直します。</span>
-<span class="doccomment">//! `r = fold_bisect(l, pred).unwrap()` および `l = fold_bisect_rev(r, pred).unwrap()` の</span>
-<span class="doccomment">//! どちらの場合においても、`fold(l..r)` が `true`（あるいは `false`）で</span>
-<span class="doccomment">//! 同じ値になる方がいいんじゃないかという気がしてきました。</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! 現状では、前者は `fold(l..=r)` で（返り値の `r` を区間に含むので）`false`、</span>
-<span class="doccomment">//! 後者は `fold(l..r)` で（返り値の `l` を区間に含むので）`false` 、</span>
-<span class="doccomment">//! それより短い区間であれば `true` ということになっています。</span>
 
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">binop</span>;
+<span class="kw">use</span> <span class="kw">super</span>::<span class="ident">fold</span>;
+
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">Range</span>;
 
 <span class="kw">use</span> <span class="ident">binop</span>::{<span class="ident">Magma</span>, <span class="ident">Monoid</span>};
+<span class="kw">use</span> <span class="ident">fold</span>::<span class="ident">Fold</span>;
 
 <span class="doccomment">/// 左端を固定したときの区間和に関する境界を求める。</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">FoldBisect</span> {
-    <span class="doccomment">/// 区間和に関するモノイド $(M, \\circ, e)$。</span>
-    <span class="kw">type</span> <span class="ident">Folded</span>: <span class="ident">Monoid</span>;
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">FoldBisect</span>: <span class="ident">Fold</span><span class="op">&lt;</span><span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;&gt;</span> {
+    <span class="doccomment">/// 添字 `l` と述語 `pred` を引数に取り、次の条件を満たす `r` を返す。</span>
+    <span class="doccomment">/// ただし、区間長を `n` とする。</span>
+    <span class="doccomment">/// - `pred(&amp;self.fold(l..r))`</span>
+    <span class="doccomment">/// - `r == n || pred(&amp;self.fold(l..r + 1))`</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Requirements</span>
+    <span class="doccomment">/// 対象のモノイドの単位元を `e` とするとき、 `pred(e)` が成り立つ。</span>
+    <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use nekolib::ds::VecSegtree;</span>
     <span class="doccomment">/// use nekolib::traits::{Fold, FoldBisect};</span>
-    <span class="doccomment">/// use nekolib::utils::OpMin;</span>
+    <span class="doccomment">/// use nekolib::utils::OpAdd;</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// let vs: VecSegtree&lt;OpMin&lt;i32&gt;&gt; = vec![5, 3, 7, 4, 2].into();</span>
-    <span class="doccomment">/// let i = 1;</span>
-    <span class="doccomment">/// let pred = |&amp;x: &amp;i32| x &gt;= 4;</span>
-    <span class="doccomment">/// let j = vs.fold_bisect(i, pred).unwrap();</span>
-    <span class="doccomment">/// // assert!(pred(&amp;vs.fold(i..j)));</span>
-    <span class="doccomment">/// // assert!(!pred(&amp;vs.fold(i..=j)));</span>
+    <span class="doccomment">/// let vs: VecSegtree&lt;OpAdd&lt;i32&gt;&gt; = vec![2, 4, 1, 3, 5].into();</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt; 4), (1_usize, 0));</span>
+    <span class="doccomment">/// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt;= 4), (2_usize, 4));</span>
+    <span class="doccomment">/// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt; 13), (4_usize, 8));</span>
+    <span class="doccomment">/// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt;= 13), (5_usize, 13));</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// let l = 1;</span>
+    <span class="doccomment">/// let pred = |&amp;x: &amp;i32| x &lt;= 12;</span>
+    <span class="doccomment">/// let (r, x) = vs.fold_bisect(l, pred);</span>
+    <span class="doccomment">/// assert_eq!(vs.fold(l..r), x);</span>
+    <span class="doccomment">/// assert!(pred(&amp;x));</span>
+    <span class="doccomment">/// assert!(r == vs.len() || !pred(&amp;vs.fold(l..r + 1)));</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">fold_bisect</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>, <span class="ident">pred</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>
+    <span class="kw">fn</span> <span class="ident">fold_bisect</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">i</span>: <span class="ident">usize</span>,
+        <span class="ident">pred</span>: <span class="ident">F</span>,
+    ) <span class="op">-&gt;</span> (<span class="ident">usize</span>, <span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Output</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span>::<span class="ident">Set</span>)
     <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Folded</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span>::<span class="ident">Set</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>;
+        <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Output</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span>::<span class="ident">Set</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>;
 }
 
 <span class="doccomment">/// 右端を固定したときの区間和に関する境界を求める。</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">FoldBisectRev</span> {
-    <span class="doccomment">/// 区間和に関するモノイド $(M, \\circ, e)$。</span>
-    <span class="kw">type</span> <span class="ident">Folded</span>: <span class="ident">Monoid</span>;
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">FoldBisectRev</span>: <span class="ident">Fold</span><span class="op">&lt;</span><span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;&gt;</span> {
+    <span class="doccomment">/// 添字 `r` と述語 `pred` を引数に取り、次の条件を満たす `l` を返す。</span>
+    <span class="doccomment">/// - `pred(&amp;self.fold(l..r))`</span>
+    <span class="doccomment">/// - `l == 0 || pred(&amp;self.fold(l - 1..r))`</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Requirements</span>
+    <span class="doccomment">/// 対象のモノイドの単位元を `e` とするとき、`pred(e)` が成り立つ。</span>
+    <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use nekolib::ds::VecSegtree;</span>
     <span class="doccomment">/// use nekolib::traits::{Fold, FoldBisectRev};</span>
-    <span class="doccomment">/// use nekolib::utils::OpMin;</span>
+    <span class="doccomment">/// use nekolib::utils::OpAdd;</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// let vs: VecSegtree&lt;OpMin&lt;i32&gt;&gt; = vec![5, 3, 7, 4, 2].into();</span>
-    <span class="doccomment">/// let i = 4;</span>
-    <span class="doccomment">/// let pred = |&amp;x: &amp;i32| x &gt;= 4;</span>
-    <span class="doccomment">/// let j = vs.fold_bisect_rev(i, pred).unwrap();</span>
-    <span class="doccomment">/// // assert!(pred(&amp;vs.fold(i+1..j)));</span>
-    <span class="doccomment">/// // assert!(!pred(&amp;vs.fold(i..j)));</span>
+    <span class="doccomment">/// let vs: VecSegtree&lt;OpAdd&lt;i32&gt;&gt; = vec![2, 4, 1, 3, 5].into();</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// assert_eq!(vs.fold(..), 15);</span>
+    <span class="doccomment">/// assert_eq!(vs.fold_bisect_rev(5, |&amp;x| x &lt;= 0), (5_usize, 0));</span>
+    <span class="doccomment">/// assert_eq!(vs.fold_bisect_rev(5, |&amp;x| x &lt; 15), (1_usize, 13));</span>
+    <span class="doccomment">/// assert_eq!(vs.fold_bisect_rev(5, |&amp;x| x &lt;= 15), (0_usize, 15));</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// let r = 5;</span>
+    <span class="doccomment">/// let pred = |&amp;x: &amp;i32| x &lt;= 12;</span>
+    <span class="doccomment">/// let (l, x) = vs.fold_bisect_rev(r, pred);</span>
+    <span class="doccomment">/// assert_eq!(vs.fold(l..r), x);</span>
+    <span class="doccomment">/// assert!(pred(&amp;x));</span>
+    <span class="doccomment">/// assert!(l == 0 || !pred(&amp;vs.fold(l - 1..r)));</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">fold_bisect_rev</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>, <span class="ident">pred</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>
+    <span class="kw">fn</span> <span class="ident">fold_bisect_rev</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">i</span>: <span class="ident">usize</span>,
+        <span class="ident">pred</span>: <span class="ident">F</span>,
+    ) <span class="op">-&gt;</span> (<span class="ident">usize</span>, <span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Output</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span>::<span class="ident">Set</span>)
     <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Folded</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span>::<span class="ident">Set</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>;
+        <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Output</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span>::<span class="ident">Set</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>;
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../../";window.currentCrate = "nekolib";</script><script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>
