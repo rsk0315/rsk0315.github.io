@@ -102,8 +102,12 @@
 <span id="84">84</span>
 <span id="85">85</span>
 <span id="86">86</span>
+<span id="87">87</span>
+<span id="88">88</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="doccomment">//! 区間和の二分探索に関するトレイトたちです。</span>
+<span class="doccomment">//! 区間和の二分探索に関するトレイトたち。</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! 区間のモノイド積が述語を満たすような区間のうち、最大のものを返す。</span>
 
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">binop</span>;
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">fold</span>;
@@ -113,7 +117,7 @@
 <span class="kw">use</span> <span class="ident">binop</span>::{<span class="ident">Magma</span>, <span class="ident">Monoid</span>};
 <span class="kw">use</span> <span class="ident">fold</span>::<span class="ident">Fold</span>;
 
-<span class="doccomment">/// 左端を固定したときの区間和に関する境界を求める。</span>
+<span class="doccomment">/// 左端を固定したときの境界を求める。</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">FoldBisect</span>: <span class="ident">Fold</span><span class="op">&lt;</span><span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;&gt;</span> {
     <span class="doccomment">/// 添字 `l` と述語 `pred` を引数に取り、次の条件を満たす `r` を返す。</span>
     <span class="doccomment">/// ただし、区間長を `n` とする。</span>
@@ -145,14 +149,14 @@
     <span class="doccomment">/// ```</span>
     <span class="kw">fn</span> <span class="ident">fold_bisect</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">i</span>: <span class="ident">usize</span>,
+        <span class="ident">l</span>: <span class="ident">usize</span>,
         <span class="ident">pred</span>: <span class="ident">F</span>,
     ) <span class="op">-&gt;</span> (<span class="ident">usize</span>, <span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Output</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span>::<span class="ident">Set</span>)
     <span class="kw">where</span>
         <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Output</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span>::<span class="ident">Set</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>;
 }
 
-<span class="doccomment">/// 右端を固定したときの区間和に関する境界を求める。</span>
+<span class="doccomment">/// 右端を固定したときの境界を求める。</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">FoldBisectRev</span>: <span class="ident">Fold</span><span class="op">&lt;</span><span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;&gt;</span> {
     <span class="doccomment">/// 添字 `r` と述語 `pred` を引数に取り、次の条件を満たす `l` を返す。</span>
     <span class="doccomment">/// - `pred(&amp;self.fold(l..r))`</span>
@@ -183,7 +187,7 @@
     <span class="doccomment">/// ```</span>
     <span class="kw">fn</span> <span class="ident">fold_bisect_rev</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">i</span>: <span class="ident">usize</span>,
+        <span class="ident">r</span>: <span class="ident">usize</span>,
         <span class="ident">pred</span>: <span class="ident">F</span>,
     ) <span class="op">-&gt;</span> (<span class="ident">usize</span>, <span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Output</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span>::<span class="ident">Set</span>)
     <span class="kw">where</span>
