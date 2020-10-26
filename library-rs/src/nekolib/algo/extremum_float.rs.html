@@ -90,6 +90,14 @@
 <span id="72">72</span>
 <span id="73">73</span>
 <span id="74">74</span>
+<span id="75">75</span>
+<span id="76">76</span>
+<span id="77">77</span>
+<span id="78">78</span>
+<span id="79">79</span>
+<span id="80">80</span>
+<span id="81">81</span>
+<span id="82">82</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 三分探索（実数）。</span>
 
@@ -107,6 +115,9 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// `todo!()`</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// # Parameters</span>
+<span class="doccomment">/// `todo!()`</span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// # Complexity</span>
 <span class="doccomment">/// `todo!()`</span>
 <span class="doccomment">///</span>
@@ -115,6 +126,10 @@
 <span class="doccomment">/// 関数の返り値も `T: PartialOrd` にする？</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
+<span class="doccomment">/// $f(x) = x\^x$ の最小値を求める。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// $x = 1/e$ のとき、最小値 $e\^{-1/e}$ をとる。</span>
+<span class="doccomment">/// cf. [Wolfram|Alpha](https://www.wolframalpha.com/input/?i=y+%3D+x**x)</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use nekolib::algo::extremum_float;</span>
 <span class="doccomment">///</span>
@@ -125,10 +140,11 @@
 <span class="doccomment">/// let xr = 140.0;</span>
 <span class="doccomment">/// let eps = 1.0e-8;</span>
 <span class="doccomment">/// let (x, y) = extremum_float(xl..xr, eps, f);</span>
+<span class="doccomment">/// let y = -y;</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// let e = std::f64::consts::E;</span>
-<span class="doccomment">/// assert!((1.0 / e - x).abs() &lt; eps);</span>
-<span class="doccomment">/// assert!((-e.powf(-1.0 / e) - y).abs() &lt; eps);</span>
+<span class="doccomment">/// assert!(((1.0 / e) - x).abs() &lt; eps);</span>
+<span class="doccomment">/// assert!((e.powf(-1.0 / e) - y).abs() &lt; eps);</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extremum_float</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="ident">range</span>: <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>, <span class="ident">eps</span>: <span class="ident">f64</span>, <span class="ident">f</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> (<span class="ident">f64</span>, <span class="ident">f64</span>)
 <span class="kw">where</span>
