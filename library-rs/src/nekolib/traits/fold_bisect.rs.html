@@ -118,7 +118,7 @@
     <span class="doccomment">/// 添字 `l` と述語 `pred` を引数に取り、次の条件を満たす `r` を返す。</span>
     <span class="doccomment">/// ただし、区間長を `n` とする。</span>
     <span class="doccomment">/// - `pred(&amp;self.fold(l..r))`</span>
-    <span class="doccomment">/// - `r == n || pred(&amp;self.fold(l..r + 1))`</span>
+    <span class="doccomment">/// - `r == n || !pred(&amp;self.fold(l..r + 1))`</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Requirements</span>
     <span class="doccomment">/// 対象のモノイドの単位元を `e` とするとき、 `pred(e)` が成り立つ。</span>
@@ -156,7 +156,7 @@
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">FoldBisectRev</span>: <span class="ident">Fold</span><span class="op">&lt;</span><span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;&gt;</span> {
     <span class="doccomment">/// 添字 `r` と述語 `pred` を引数に取り、次の条件を満たす `l` を返す。</span>
     <span class="doccomment">/// - `pred(&amp;self.fold(l..r))`</span>
-    <span class="doccomment">/// - `l == 0 || pred(&amp;self.fold(l - 1..r))`</span>
+    <span class="doccomment">/// - `l == 0 || !pred(&amp;self.fold(l - 1..r))`</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Requirements</span>
     <span class="doccomment">/// 対象のモノイドの単位元を `e` とするとき、`pred(e)` が成り立つ。</span>

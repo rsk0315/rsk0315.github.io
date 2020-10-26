@@ -24,7 +24,7 @@
 ただし、区間長を <code>n</code> とする。</p>
 <ul>
 <li><code>pred(&amp;self.fold(l..r))</code></li>
-<li><code>r == n || pred(&amp;self.fold(l..r + 1))</code></li>
+<li><code>r == n || !pred(&amp;self.fold(l..r + 1))</code></li>
 </ul>
 <h1 id="requirements" class="section-header"><a href="#requirements">Requirements</a></h1>
 <p>対象のモノイドの単位元を <code>e</code> とするとき、 <code>pred(e)</code> が成り立つ。</p>
