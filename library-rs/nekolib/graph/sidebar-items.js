@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["dijkstra",""]],"mod":[["dijkstra",""]]});
+initSidebarItems({"fn":[["dijkstra","Dijkstra 法に基づく最短距離。"],["scc","lowlink に基づく強連結成分分解。"]],"mod":[["dijkstra","最短距離 (Dijkstra)。"],["scc","強連結成分分解。"]]});

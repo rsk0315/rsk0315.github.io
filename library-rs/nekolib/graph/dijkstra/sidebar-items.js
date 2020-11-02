@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["dijkstra",""]]});
+initSidebarItems({"fn":[["dijkstra","Dijkstra 法に基づく最短距離。"]]});
