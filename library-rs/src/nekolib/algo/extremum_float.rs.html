@@ -166,7 +166,7 @@
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">yml</span> <span class="op">=</span> <span class="ident">f</span>(<span class="ident">xml</span>);
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ymr</span> <span class="op">=</span> <span class="ident">f</span>(<span class="ident">xmr</span>);
 
-    <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">iter</span> {
+    <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">iter</span> {
         <span class="kw">if</span> <span class="ident">yml</span> <span class="op">&gt;</span> <span class="ident">ymr</span> {
             <span class="ident">xr</span> <span class="op">=</span> <span class="ident">std</span>::<span class="ident">mem</span>::<span class="ident">replace</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">xmr</span>, <span class="ident">xml</span>);
             <span class="ident">ymr</span> <span class="op">=</span> <span class="ident">yml</span>;
