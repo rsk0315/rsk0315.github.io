@@ -268,6 +268,23 @@
 <span id="250">250</span>
 <span id="251">251</span>
 <span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 区間の集合。</span>
 
@@ -472,6 +489,23 @@
     }
 
     <span class="doccomment">/// `x` 以上の値で、集合中の区間に含まれない最小のものを返す。</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// use std::ops::Bound::{Included, Excluded, Unbounded};</span>
+    <span class="doccomment">/// use nekolib::ds::IntervalSet;</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// let mut s = IntervalSet::new();</span>
+    <span class="doccomment">/// s.insert(1..5);</span>
+    <span class="doccomment">/// s.insert(7..=10);</span>
+    <span class="doccomment">/// s.insert(15..);</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// assert_eq!(s.mex(0), Included(0));</span>
+    <span class="doccomment">/// assert_eq!(s.mex(1), Included(5));</span>
+    <span class="doccomment">/// assert_eq!(s.mex(6), Included(6));</span>
+    <span class="doccomment">/// assert_eq!(s.mex(7), Excluded(10));</span>
+    <span class="doccomment">/// assert_eq!(s.mex(15), Unbounded);</span>
+    <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mex</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">x</span>: <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="ident">Bound</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">is_empty</span>() {
             <span class="kw">return</span> <span class="ident">Included</span>(<span class="ident">x</span>);
