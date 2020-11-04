@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["seq_sentinel",""],["suffix_array","接尾辞配列。"]],"struct":[["SuffixArray",""]]});
+initSidebarItems({"mod":[["seq_sentinel",""],["suffix_array","接尾辞配列。"]],"struct":[["SuffixArray","接尾辞配列。"]]});
