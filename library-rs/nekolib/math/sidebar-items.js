@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["modint","法 $m$ での演算をする。"],["polynomial","多項式。"]],"struct":[["ModInt",""]]});
+initSidebarItems({"mod":[["modint","法 $m$ での演算をする。"]],"struct":[["ModInt",""]]});
