@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["kmp",""],["suffix_array","接尾辞配列。"]],"struct":[["KmpSearcher",""],["SuffixArray","接尾辞配列。"]]});
+initSidebarItems({"mod":[["kmp",""],["suffix_array","接尾辞配列。"],["z_algo","Z algorithm。"]],"struct":[["KmpSearcher",""],["SuffixArray","接尾辞配列。"],["ZSearcher","Z algorithm。"]]});

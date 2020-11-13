@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Occurrences",""],["ZSearcher","Z algorithm。"]]});
