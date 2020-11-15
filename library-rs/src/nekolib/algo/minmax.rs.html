@@ -165,6 +165,9 @@
 <span id="147">147</span>
 <span id="148">148</span>
 <span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! スライスの最小値・最大値を求める。</span>
 
@@ -186,7 +189,7 @@
 <span class="doccomment">/// use nekolib::algo::minmax;</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// assert_eq!(minmax(&amp;[3, 2, 4, 1, 2, 0, 6]), Some((&amp;0, &amp;6)));</span>
-<span class="doccomment">/// assert_eq!(minmax(&amp;[]), None);</span>
+<span class="doccomment">/// assert_eq!(minmax(&amp;Vec::&lt;i32&gt;::new()), None);</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">minmax</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;</span>[<span class="ident">T</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="kw-2">&amp;</span><span class="ident">T</span>, <span class="kw-2">&amp;</span><span class="ident">T</span>)<span class="op">&gt;</span> {
     <span class="ident">minmax_by</span>(<span class="ident">buf</span>, <span class="op">|</span><span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>, <span class="ident">y</span>: <span class="kw-2">&amp;</span><span class="ident">T</span><span class="op">|</span> <span class="ident">x</span>.<span class="ident">cmp</span>(<span class="ident">y</span>))
@@ -210,9 +213,8 @@
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use nekolib::algo::minmax_by_key;</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// let buf =</span>
+<span class="doccomment">/// let buf: Vec&lt;_&gt; =</span>
 <span class="doccomment">///     vec![3, 5, 0, 1, 2, 0, 5].into_iter().enumerate().collect();</span>
-<span class="doccomment">///</span>
 <span class="doccomment">/// assert_eq!(minmax_by_key(&amp;buf, |&amp;(_, x)| x), Some((&amp;(2, 0), &amp;(6, 5))));</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// let buf: Vec&lt;i32&gt; = vec![];</span>
@@ -244,7 +246,7 @@
 <span class="doccomment">/// let rev = |&amp;(_, x): &amp;(usize, i32), &amp;(_, y): &amp;(usize, i32)| y.cmp(&amp;x);</span>
 <span class="doccomment">/// assert_eq!(minmax_by(&amp;buf, rev), Some((&amp;(1, 9), &amp;(5, 0))));</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// let buf: Vec&lt;(usize, i32)&gt; = vec![];</span>
+<span class="doccomment">/// let buf = vec![];</span>
 <span class="doccomment">/// assert_eq!(minmax_by(&amp;buf, rev), None);</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">minmax_by</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="ident">T</span>, <span class="kw-2">&amp;</span><span class="ident">T</span>) <span class="op">-&gt;</span> <span class="ident">Ordering</span><span class="op">&gt;</span>(
@@ -314,6 +316,10 @@
     <span class="ident">test_inner</span>(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">1</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">2</span>, <span class="kw-2">&amp;</span><span class="number">10</span>))), <span class="kw-2">&amp;</span>[<span class="number">10</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">0</span>]);
     <span class="ident">test_inner</span>(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">3</span>, <span class="kw-2">&amp;</span><span class="number">10</span>))), <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">10</span>]);
     <span class="ident">test_inner</span>(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">2</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">1</span>, <span class="kw-2">&amp;</span><span class="number">10</span>))), <span class="kw-2">&amp;</span>[<span class="number">10</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">0</span>]);
+
+    <span class="kw">let</span> <span class="ident">rev</span> <span class="op">=</span> <span class="op">|</span><span class="kw-2">&amp;</span>(<span class="kw">_</span>, <span class="ident">x</span>): <span class="kw-2">&amp;</span>(<span class="ident">usize</span>, <span class="ident">i32</span>), <span class="kw-2">&amp;</span>(<span class="kw">_</span>, <span class="ident">y</span>): <span class="kw-2">&amp;</span>(<span class="ident">usize</span>, <span class="ident">i32</span>)<span class="op">|</span> <span class="ident">y</span>.<span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>);
+    <span class="kw">let</span> <span class="ident">buf</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
+    <span class="macro">assert_ne</span><span class="macro">!</span>(<span class="ident">minmax_by</span>(<span class="kw-2">&amp;</span><span class="ident">buf</span>, <span class="ident">rev</span>), <span class="prelude-val">None</span>);
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../../";window.currentCrate = "nekolib";</script><script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>
