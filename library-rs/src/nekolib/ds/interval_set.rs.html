@@ -285,6 +285,48 @@
 <span id="267">267</span>
 <span id="268">268</span>
 <span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
+<span id="304">304</span>
+<span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
+<span id="308">308</span>
+<span id="309">309</span>
+<span id="310">310</span>
+<span id="311">311</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 区間の集合。</span>
 
@@ -295,6 +337,11 @@
     <span class="ident">RangeBounds</span>,
 };
 
+<span class="doccomment">/// 区間の集合。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Notes</span>
+<span class="doccomment">/// 整数のとき、Excluded(x) と Included(x-1) などの扱いに注意。</span>
+<span class="doccomment">/// あくまで実数の区間であるかのように扱われる。</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>)]</span>
 <span class="kw">struct</span> <span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span>(<span class="ident">Bound</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">Bound</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
 
@@ -325,19 +372,37 @@
         }
     }
     <span class="kw">fn</span> <span class="ident">is_superset</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="ident">other</span>) {
-            <span class="ident">Less</span> <span class="kw">if</span> <span class="self">self</span>.<span class="number">1</span> <span class="op">==</span> <span class="ident">other</span>.<span class="number">1</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
-            <span class="ident">Less</span> <span class="op">=&gt;</span> <span class="kw">match</span> (<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">1</span>, <span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="number">1</span>) {
-                (<span class="kw">_</span>, <span class="ident">Unbounded</span>) <span class="op">=&gt;</span> <span class="bool-val">false</span>,
-                (<span class="ident">Unbounded</span>, <span class="kw">_</span>) <span class="op">=&gt;</span> <span class="bool-val">true</span>,
-                (<span class="ident">Excluded</span>(<span class="ident">lhs</span>), <span class="ident">Included</span>(<span class="ident">rhs</span>)) <span class="kw">if</span> <span class="ident">lhs</span> <span class="op">==</span> <span class="ident">rhs</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
-                (<span class="ident">Included</span>(<span class="ident">lhs</span>), <span class="ident">Included</span>(<span class="ident">rhs</span>))
-                <span class="op">|</span> (<span class="ident">Included</span>(<span class="ident">lhs</span>), <span class="ident">Excluded</span>(<span class="ident">rhs</span>))
-                <span class="op">|</span> (<span class="ident">Excluded</span>(<span class="ident">lhs</span>), <span class="ident">Included</span>(<span class="ident">rhs</span>))
-                <span class="op">|</span> (<span class="ident">Excluded</span>(<span class="ident">lhs</span>), <span class="ident">Excluded</span>(<span class="ident">rhs</span>)) <span class="op">=&gt;</span> <span class="ident">lhs</span>.<span class="ident">cmp</span>(<span class="ident">rhs</span>) <span class="op">!=</span> <span class="ident">Less</span>,
-            },
-            <span class="ident">Equal</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
-            <span class="ident">Greater</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+        <span class="kw">if</span> <span class="ident">other</span>.<span class="ident">is_empty</span>() {
+            <span class="kw">return</span> <span class="bool-val">true</span>;
+        }
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_empty</span>() {
+            <span class="kw">return</span> <span class="bool-val">false</span>;
+        }
+
+        <span class="comment">// self.0 &lt;= other.0</span>
+        <span class="kw">match</span> (<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="number">0</span>) {
+            (<span class="ident">Unbounded</span>, <span class="kw">_</span>) <span class="op">=&gt;</span> {}
+            (<span class="kw">_</span>, <span class="ident">Unbounded</span>) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="bool-val">false</span>,
+            (<span class="ident">Excluded</span>(<span class="ident">lhs</span>), <span class="ident">Included</span>(<span class="ident">rhs</span>)) <span class="kw">if</span> <span class="ident">lhs</span> <span class="op">==</span> <span class="ident">rhs</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="bool-val">false</span>,
+            (<span class="ident">Included</span>(<span class="ident">lhs</span>), <span class="ident">Included</span>(<span class="ident">rhs</span>))
+            <span class="op">|</span> (<span class="ident">Included</span>(<span class="ident">lhs</span>), <span class="ident">Excluded</span>(<span class="ident">rhs</span>))
+            <span class="op">|</span> (<span class="ident">Excluded</span>(<span class="ident">lhs</span>), <span class="ident">Included</span>(<span class="ident">rhs</span>))
+            <span class="op">|</span> (<span class="ident">Excluded</span>(<span class="ident">lhs</span>), <span class="ident">Excluded</span>(<span class="ident">rhs</span>))
+                <span class="kw">if</span> <span class="ident">lhs</span> <span class="op">&gt;</span> <span class="ident">rhs</span> <span class="op">=&gt;</span>
+            {
+                <span class="kw">return</span> <span class="bool-val">false</span>
+            }
+            <span class="kw">_</span> <span class="op">=&gt;</span> {}
+        }
+
+        <span class="comment">// other.1 &lt;= self.1</span>
+        <span class="kw">match</span> (<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">1</span>, <span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="number">1</span>) {
+            (<span class="ident">Unbounded</span>, <span class="kw">_</span>) <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+            (<span class="kw">_</span>, <span class="ident">Unbounded</span>) <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+            (<span class="ident">Excluded</span>(<span class="ident">lhs</span>), <span class="ident">Included</span>(<span class="ident">rhs</span>)) <span class="op">=&gt;</span> <span class="ident">lhs</span> <span class="op">&gt;</span> <span class="ident">rhs</span>,
+            (<span class="ident">Included</span>(<span class="ident">lhs</span>), <span class="ident">Included</span>(<span class="ident">rhs</span>))
+            <span class="op">|</span> (<span class="ident">Included</span>(<span class="ident">lhs</span>), <span class="ident">Excluded</span>(<span class="ident">rhs</span>))
+            <span class="op">|</span> (<span class="ident">Excluded</span>(<span class="ident">lhs</span>), <span class="ident">Excluded</span>(<span class="ident">rhs</span>)) <span class="op">=&gt;</span> <span class="ident">lhs</span> <span class="op">&gt;=</span> <span class="ident">rhs</span>,
         }
     }
     <span class="kw">fn</span> <span class="ident">touches</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
@@ -369,7 +434,7 @@
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_empty</span>() <span class="op">&amp;&amp;</span> <span class="ident">other</span>.<span class="ident">is_empty</span>() {
             <span class="kw">return</span> <span class="ident">Equal</span>;
         }
-        <span class="kw">if</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span> <span class="op">!=</span> <span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="number">0</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="number">0</span> <span class="op">!=</span> <span class="ident">other</span>.<span class="number">0</span> {
             <span class="kw">return</span> <span class="kw">match</span> (<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="number">0</span>) {
                 (<span class="ident">Unbounded</span>, <span class="kw">_</span>) <span class="op">=&gt;</span> <span class="ident">Less</span>,
                 (<span class="kw">_</span>, <span class="ident">Unbounded</span>) <span class="op">=&gt;</span> <span class="ident">Greater</span>,
@@ -381,7 +446,7 @@
                 <span class="op">|</span> (<span class="ident">Excluded</span>(<span class="ident">lhs</span>), <span class="ident">Excluded</span>(<span class="ident">rhs</span>)) <span class="op">=&gt;</span> <span class="ident">lhs</span>.<span class="ident">cmp</span>(<span class="ident">rhs</span>),
             };
         }
-        <span class="kw">if</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">1</span> <span class="op">!=</span> <span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="number">1</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="number">1</span> <span class="op">!=</span> <span class="ident">other</span>.<span class="number">1</span> {
             <span class="kw">return</span> <span class="kw">match</span> (<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">1</span>, <span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="number">1</span>) {
                 (<span class="kw">_</span>, <span class="ident">Unbounded</span>) <span class="op">=&gt;</span> <span class="ident">Less</span>,
                 (<span class="ident">Unbounded</span>, <span class="kw">_</span>) <span class="op">=&gt;</span> <span class="ident">Greater</span>,
@@ -521,6 +586,25 @@
             <span class="prelude-val">Some</span>(<span class="ident">Interval</span>(<span class="kw">_</span>, <span class="ident">Excluded</span>(<span class="ident">y</span>))) <span class="op">=&gt;</span> <span class="ident">Included</span>(<span class="ident">y</span>),
             <span class="prelude-val">Some</span>(<span class="ident">Interval</span>(<span class="kw">_</span>, <span class="ident">Unbounded</span>)) <span class="op">=&gt;</span> <span class="ident">Unbounded</span>,
             <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">Included</span>(<span class="ident">x</span>),
+        }
+    }
+
+    <span class="doccomment">/// 区間 `r` を含んでいれば `true` を返す。</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">has_range</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">r</span>: <span class="kw-2">&amp;</span><span class="ident">R</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">is_empty</span>() {
+            <span class="kw">return</span> <span class="bool-val">false</span>;
+        }
+        <span class="kw">let</span> <span class="ident">r</span>: <span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="ident">r</span>.<span class="ident">start_bound</span>(), <span class="ident">r</span>.<span class="ident">end_bound</span>()).<span class="ident">into</span>();
+        <span class="kw">if</span> <span class="ident">r</span>.<span class="ident">is_empty</span>() {
+            <span class="kw">return</span> <span class="bool-val">true</span>;
+        }
+        <span class="kw">match</span> <span class="self">self</span>
+            .<span class="ident">buf</span>
+            .<span class="ident">range</span>(..<span class="op">=</span><span class="kw-2">&amp;</span><span class="ident">Interval</span>(<span class="ident">r</span>.<span class="number">0</span>.<span class="ident">clone</span>(), <span class="ident">Unbounded</span>))
+            .<span class="ident">next_back</span>()
+        {
+            <span class="prelude-val">Some</span>(<span class="ident">s</span>) <span class="op">=&gt;</span> <span class="ident">s</span>.<span class="ident">is_superset</span>(<span class="kw-2">&amp;</span><span class="ident">r</span>),
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
         }
     }
 
