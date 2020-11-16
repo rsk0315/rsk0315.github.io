@@ -212,6 +212,20 @@
 <span id="194">194</span>
 <span id="195">195</span>
 <span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 法 $m$ での演算をする。</span>
 
@@ -230,15 +244,22 @@
 <span class="kw">use</span> <span class="ident">assoc_val</span>::<span class="ident">AssocVal</span>;
 <span class="kw">use</span> <span class="ident">multiplicative</span>::{<span class="ident">MulAssoc</span>, <span class="ident">MulComm</span>, <span class="ident">MulRecip</span>, <span class="ident">One</span>};
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ModInt</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">AssocVal</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;&gt;</span> {
-    <span class="ident">n</span>: <span class="ident">i64</span>,
-    <span class="ident">_m</span>: <span class="ident">PhantomData</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>,
-}
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ModInt</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">AssocVal</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;&gt;</span>(<span class="kw">pub</span> <span class="ident">i64</span>, <span class="ident">PhantomData</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>);
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">AssocVal</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;&gt;</span> <span class="ident">Display</span> <span class="kw">for</span> <span class="ident">ModInt</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="self">self</span>.<span class="ident">n</span>)
+        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="self">self</span>.<span class="number">0</span>)
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">AssocVal</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;&gt;</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">ModInt</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+        <span class="kw">if</span> <span class="ident">f</span>.<span class="ident">alternate</span>() {
+            <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;[{} (mod {})]&quot;</span>, <span class="self">self</span>.<span class="number">0</span>, <span class="ident">M</span>::<span class="ident">get</span>())
+        } <span class="kw">else</span> {
+            <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="self">self</span>.<span class="number">0</span>)
+        }
     }
 }
 
@@ -248,7 +269,7 @@
             <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">n</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
                 <span class="kw">let</span> <span class="ident">n</span>: <span class="ident">i64</span> <span class="op">=</span> <span class="ident">n</span>.<span class="ident">into</span>();
                 <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">n</span> <span class="op">%</span> <span class="ident">M</span>::<span class="ident">get</span>();
-                <span class="self">Self</span> { <span class="ident">n</span>, <span class="ident">_m</span>: <span class="ident">PhantomData</span> }
+                <span class="self">Self</span>(<span class="ident">n</span>, <span class="ident">PhantomData</span>)
             }
         }
     };
@@ -261,26 +282,26 @@
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">n</span>: <span class="ident">u64</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">m</span>: <span class="ident">u64</span> <span class="op">=</span> <span class="ident">M</span>::<span class="ident">get</span>().<span class="ident">try_into</span>().<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">n</span>: <span class="ident">i64</span> <span class="op">=</span> (<span class="ident">n</span> <span class="op">%</span> <span class="ident">m</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>();
-        <span class="self">Self</span> { <span class="ident">n</span>, <span class="ident">_m</span>: <span class="ident">PhantomData</span> }
+        <span class="self">Self</span>(<span class="ident">n</span>, <span class="ident">PhantomData</span>)
     }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">AssocVal</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;&gt;</span> <span class="ident">Add</span> <span class="kw">for</span> <span class="ident">ModInt</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> {
     <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
     <span class="kw">fn</span> <span class="ident">add</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">n</span> <span class="op">+</span> <span class="ident">other</span>.<span class="ident">n</span> {
+        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="number">0</span> <span class="op">+</span> <span class="ident">other</span>.<span class="number">0</span> {
             <span class="ident">n</span> <span class="kw">if</span> <span class="ident">n</span> <span class="op">&gt;=</span> <span class="ident">M</span>::<span class="ident">get</span>() <span class="op">=&gt;</span> <span class="ident">n</span> <span class="op">-</span> <span class="ident">M</span>::<span class="ident">get</span>(),
             <span class="ident">n</span> <span class="op">=&gt;</span> <span class="ident">n</span>,
         };
-        <span class="self">Self</span> { <span class="ident">n</span>, <span class="ident">_m</span>: <span class="ident">PhantomData</span> }
+        <span class="self">Self</span>(<span class="ident">n</span>, <span class="ident">PhantomData</span>)
     }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">AssocVal</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;&gt;</span> <span class="ident">AddAssign</span> <span class="kw">for</span> <span class="ident">ModInt</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">add_assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) {
-        <span class="self">self</span>.<span class="ident">n</span> <span class="op">+=</span> <span class="ident">other</span>.<span class="ident">n</span>;
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">n</span> {
-            <span class="ident">n</span> <span class="kw">if</span> <span class="ident">n</span> <span class="op">&gt;=</span> <span class="ident">M</span>::<span class="ident">get</span>() <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">n</span> <span class="op">-=</span> <span class="ident">M</span>::<span class="ident">get</span>(),
+        <span class="self">self</span>.<span class="number">0</span> <span class="op">+=</span> <span class="ident">other</span>.<span class="number">0</span>;
+        <span class="kw">match</span> <span class="self">self</span>.<span class="number">0</span> {
+            <span class="ident">n</span> <span class="kw">if</span> <span class="ident">n</span> <span class="op">&gt;=</span> <span class="ident">M</span>::<span class="ident">get</span>() <span class="op">=&gt;</span> <span class="self">self</span>.<span class="number">0</span> <span class="op">-=</span> <span class="ident">M</span>::<span class="ident">get</span>(),
             <span class="kw">_</span> <span class="op">=&gt;</span> {}
         };
     }
@@ -289,19 +310,19 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">AssocVal</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;&gt;</span> <span class="ident">Sub</span> <span class="kw">for</span> <span class="ident">ModInt</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> {
     <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
     <span class="kw">fn</span> <span class="ident">sub</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">n</span> <span class="op">-</span> <span class="ident">other</span>.<span class="ident">n</span> {
+        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="number">0</span> <span class="op">-</span> <span class="ident">other</span>.<span class="number">0</span> {
             <span class="ident">n</span> <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span> <span class="number">0</span> <span class="op">=&gt;</span> <span class="ident">n</span> <span class="op">+</span> <span class="ident">M</span>::<span class="ident">get</span>(),
             <span class="ident">n</span> <span class="op">=&gt;</span> <span class="ident">n</span>,
         };
-        <span class="self">Self</span> { <span class="ident">n</span>, <span class="ident">_m</span>: <span class="ident">PhantomData</span> }
+        <span class="self">Self</span>(<span class="ident">n</span>, <span class="ident">PhantomData</span>)
     }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">AssocVal</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;&gt;</span> <span class="ident">SubAssign</span> <span class="kw">for</span> <span class="ident">ModInt</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">sub_assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) {
-        <span class="self">self</span>.<span class="ident">n</span> <span class="op">-=</span> <span class="ident">other</span>.<span class="ident">n</span>;
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">n</span> {
-            <span class="ident">n</span> <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span> <span class="number">0</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">n</span> <span class="op">+=</span> <span class="ident">M</span>::<span class="ident">get</span>(),
+        <span class="self">self</span>.<span class="number">0</span> <span class="op">-=</span> <span class="ident">other</span>.<span class="number">0</span>;
+        <span class="kw">match</span> <span class="self">self</span>.<span class="number">0</span> {
+            <span class="ident">n</span> <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span> <span class="number">0</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="number">0</span> <span class="op">+=</span> <span class="ident">M</span>::<span class="ident">get</span>(),
             <span class="kw">_</span> <span class="op">=&gt;</span> {}
         };
     }
@@ -310,14 +331,14 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">AssocVal</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;&gt;</span> <span class="ident">Mul</span> <span class="kw">for</span> <span class="ident">ModInt</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> {
     <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
     <span class="kw">fn</span> <span class="ident">mul</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> (<span class="self">self</span>.<span class="ident">n</span> <span class="op">*</span> <span class="ident">other</span>.<span class="ident">n</span>).<span class="ident">rem_euclid</span>(<span class="ident">M</span>::<span class="ident">get</span>());
-        <span class="self">Self</span> { <span class="ident">n</span>, <span class="ident">_m</span>: <span class="ident">PhantomData</span> }
+        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> (<span class="self">self</span>.<span class="number">0</span> <span class="op">*</span> <span class="ident">other</span>.<span class="number">0</span>).<span class="ident">rem_euclid</span>(<span class="ident">M</span>::<span class="ident">get</span>());
+        <span class="self">Self</span>(<span class="ident">n</span>, <span class="ident">PhantomData</span>)
     }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">AssocVal</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;&gt;</span> <span class="ident">MulAssign</span> <span class="kw">for</span> <span class="ident">ModInt</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">mul_assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) {
-        <span class="self">self</span>.<span class="ident">n</span> <span class="op">=</span> (<span class="self">self</span>.<span class="ident">n</span> <span class="op">*</span> <span class="ident">other</span>.<span class="ident">n</span>).<span class="ident">rem_euclid</span>(<span class="ident">M</span>::<span class="ident">get</span>());
+        <span class="self">self</span>.<span class="number">0</span> <span class="op">=</span> (<span class="self">self</span>.<span class="number">0</span> <span class="op">*</span> <span class="ident">other</span>.<span class="number">0</span>).<span class="ident">rem_euclid</span>(<span class="ident">M</span>::<span class="ident">get</span>());
     }
 }
 
@@ -336,10 +357,7 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">AssocVal</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;&gt;</span> <span class="ident">Zero</span> <span class="kw">for</span> <span class="ident">ModInt</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">zero</span>() <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">n</span>: <span class="number">0</span>,
-            <span class="ident">_m</span>: <span class="ident">PhantomData</span>,
-        }
+        <span class="self">Self</span>(<span class="number">0</span>, <span class="ident">PhantomData</span>)
     }
 }
 
@@ -352,11 +370,11 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">AssocVal</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;&gt;</span> <span class="ident">Neg</span> <span class="kw">for</span> <span class="ident">ModInt</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> {
     <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
     <span class="kw">fn</span> <span class="ident">neg</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">n</span> {
+        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="number">0</span> {
             <span class="number">0</span> <span class="op">=&gt;</span> <span class="number">0</span>,
             <span class="ident">n</span> <span class="op">=&gt;</span> <span class="ident">M</span>::<span class="ident">get</span>() <span class="op">-</span> <span class="ident">n</span>,
         };
-        <span class="self">Self</span> { <span class="ident">n</span>, <span class="ident">_m</span>: <span class="ident">PhantomData</span> }
+        <span class="self">Self</span>(<span class="ident">n</span>, <span class="ident">PhantomData</span>)
     }
 }
 
@@ -365,7 +383,7 @@
     <span class="kw">fn</span> <span class="ident">mul_recip</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x</span> <span class="op">=</span> <span class="number">0_i64</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">y</span> <span class="op">=</span> <span class="number">1_i64</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">a</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">n</span>;
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">a</span> <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">M</span>::<span class="ident">get</span>();
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">u</span> <span class="op">=</span> <span class="ident">y</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">x</span>;
@@ -387,7 +405,7 @@
                 <span class="ident">a</span> <span class="op">=</span> <span class="ident">tmp</span>;
             }
         }
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>, <span class="number">1</span>, <span class="string">&quot;{} has no reciprocal modulo {}&quot;</span>, <span class="self">self</span>.<span class="ident">n</span>, <span class="ident">M</span>::<span class="ident">get</span>());
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>, <span class="number">1</span>, <span class="string">&quot;{} has no reciprocal modulo {}&quot;</span>, <span class="self">self</span>.<span class="number">0</span>, <span class="ident">M</span>::<span class="ident">get</span>());
         <span class="self">Self</span>::<span class="ident">from</span>(<span class="ident">x</span>)
     }
 }
@@ -408,6 +426,16 @@
     };
     ( $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>:<span class="ident">ident</span> <span class="op">=&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">m</span>:<span class="ident">expr</span>, )<span class="op">*</span> ) <span class="op">=&gt;</span> { $( <span class="macro">impl_mod_int</span><span class="macro">!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span> <span class="op">=&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">m</span>); )<span class="op">*</span> };
     ( $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>:<span class="ident">ident</span> <span class="op">=&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">m</span>:<span class="ident">expr</span> ),<span class="op">*</span> ) <span class="op">=&gt;</span> { $( <span class="macro">impl_mod_int</span><span class="macro">!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span> <span class="op">=&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">m</span>); )<span class="op">*</span> };
+}
+
+<span class="attribute">#[<span class="ident">test</span>]</span>
+<span class="kw">fn</span> <span class="ident">test</span>() {
+    <span class="macro">impl_mod_int</span><span class="macro">!</span>(<span class="ident">Mod1e9p7</span> <span class="op">=&gt;</span> <span class="number">1_000_000_007</span>);
+    <span class="kw">type</span> <span class="ident">Mi</span> <span class="op">=</span> <span class="ident">ModInt</span><span class="op">&lt;</span><span class="ident">Mod1e9p7</span><span class="op">&gt;</span>;
+    <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">Mi</span>::<span class="ident">from</span>(<span class="number">1</span>) <span class="op">/</span> <span class="ident">Mi</span>::<span class="ident">from</span>(<span class="number">2</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">x</span>), <span class="string">&quot;500000004&quot;</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:#?}&quot;</span>, <span class="ident">x</span>), <span class="string">&quot;[500000004 (mod 1000000007)]&quot;</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">x</span>.<span class="number">0</span>, <span class="number">500_000_004</span>);
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../../";window.currentCrate = "nekolib";</script><script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>
