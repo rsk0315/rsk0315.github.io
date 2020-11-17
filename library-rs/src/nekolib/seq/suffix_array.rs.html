@@ -287,6 +287,16 @@
 <span id="269">269</span>
 <span id="270">270</span>
 <span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 接尾辞配列。</span>
 
@@ -297,10 +307,17 @@
 
 <span class="doccomment">/// 接尾辞配列。</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// 内部では高さ配列も持っている。</span>
+<span class="doccomment">/// 文字列 $S$ の各接尾辞を辞書順でソートしたもの。</span>
+<span class="doccomment">/// より正確には、$i$ ($0\\le i\\le |S|$) を $S[i:]$ をキーとしてソートした配列 $A$ である。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// 内部では高さ配列 (LCPA; Longest Common Prefix Array) $L$ も持っている。</span>
+<span class="doccomment">/// $L[i]$ ($0\\le i &lt; |S|$) は $S[A[i-1]:]$ と $S[A[i]:]$ の最長共通接頭辞の長さである。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Idea</span>
-<span class="doccomment">/// そのうち書く。</span>
+<span class="doccomment">/// そのうち書く：</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// - SA-IS の概要</span>
+<span class="doccomment">/// - SA/LCPA を用いた文字列検索の概要</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ## See also</span>
 <span class="doccomment">/// [CS166](http://web.stanford.edu/class/archive/cs/cs166/cs166.1206/lectures/04/Slides04.pdf)。</span>
@@ -308,10 +325,13 @@
 <span class="doccomment">/// [こっち](http://web.stanford.edu/class/archive/cs/cs166/cs166.1206/lectures/04/Small04.pdf)。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// アルファベットサイズを $\\sigma$、文字列長を $n$ とする。</span>
+<span class="doccomment">/// 入力中の文字の種類を $\\sigma$、文字列長を $n$ とする。</span>
 <span class="doccomment">/// SA-IS を用いて構築するため、前処理は $O(\\sigma\\log(\\sigma)+n)$ 時間。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// 検索は、パターン長を $m$ として $O(m\\log(n))$ 時間。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Notes</span>
+<span class="doccomment">/// 工夫をすると、検索は $O(m+\\log(n))$ 時間にできるらしい？</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SuffixArray</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> {
     <span class="ident">buf</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
