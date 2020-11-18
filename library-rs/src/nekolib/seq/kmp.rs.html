@@ -139,13 +139,87 @@
 <span id="121">121</span>
 <span id="122">122</span>
 <span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
 </pre><div class="example-wrap"><pre class="rust ">
+<span class="doccomment">//! KMP 法。</span>
+
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw">super</span>::<span class="ident">traits</span>::<span class="ident">push_pop</span>;
+
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">Range</span>;
 
 <span class="kw">use</span> <span class="ident">push_pop</span>::{<span class="ident">PopBack</span>, <span class="ident">PushBack</span>};
 
+<span class="doccomment">/// KMP 法 (Knuth–Morris–Pratt algorithm)。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// 文字列 $S$ を入力とする。</span>
+<span class="doccomment">/// 各 $S[\\dots i]$ ($0\\le i\\le |S|$) の最長 border と最長 tagged border</span>
+<span class="doccomment">/// の長さを求める。該当する border が存在しない要素は $-1$ とする。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// 文字列 $S[\\dots i]$ の _border_ とは、$S[\\dots i]$ の真部分文字列であり、$S[\\dots i]$</span>
+<span class="doccomment">/// の接頭辞かつ接尾辞であるような文字列である。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// 文字列 $S[\\dots i]$ の border $S[\\dots j]$ (0\\le j &lt; i$) が $S[j] \\neq S[i]$</span>
+<span class="doccomment">/// を満たすとき、$S[\\dots j]$ は $S[\\dots i]$ の _tagged border_ (_strict border_,</span>
+<span class="doccomment">/// _strong border_) であると言う。ただし、$S[|S|]$ は $S$ 中に含まれない文字として定義する。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ```text</span>
+<span class="doccomment">///     0 1 2 3 4 5 6 7 8   9</span>
+<span class="doccomment">///   +-------------------+-------+</span>
+<span class="doccomment">/// S | a a b a c a a b a | c ... |</span>
+<span class="doccomment">///   +-------------------+-------+</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// この例において、$S[\\dots 4] = \\mathtt{aaba}$ は $S[\\dots 9] = \\mathtt{aabacaabac}$</span>
+<span class="doccomment">/// の border だが tagged border ではない ($S[4] = S[9] = \\mathtt{c}$)。一方、</span>
+<span class="doccomment">/// $S[\\dots 2] = \\mathtt{aa}$ は tagged border である</span>
+<span class="doccomment">/// ($S[2] = \\mathtt{b} \\neq S[9] = \\mathtt{c})。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// この tagged border を用いることで、パターン検索を高速に行う。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Implementation notes</span>
+<span class="doccomment">/// パターンが静的であれば最長 border を求める必要はない。</span>
+<span class="doccomment">/// パターンの末尾に対する push/pop を行える実装になっており、その更新の際に最長</span>
+<span class="doccomment">/// border の長さが必要になる（はず）。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Complexity</span>
+<span class="doccomment">/// 構築は $O(|S|) 時間。パターン末尾における更新は $O(\\log(|S|))$ 時間。</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">KmpSearcher</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Eq</span><span class="op">&gt;</span> {
     <span class="ident">pat</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,

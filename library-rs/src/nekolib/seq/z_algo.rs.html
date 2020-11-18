@@ -134,6 +134,12 @@
 <span id="116">116</span>
 <span id="117">117</span>
 <span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Z algorithm。</span>
 
@@ -141,6 +147,9 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">Range</span>;
 
 <span class="doccomment">/// Z algorithm。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// 文字列 $S$ について、$Z[i]$ ($0\\le i &lt; |S|$) が</span>
+<span class="doccomment">/// $S$ と $S[i\\dots]$ の最長共通接頭辞の長さであるような配列 $Z$ を構築する。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Implementation notes</span>
 <span class="doccomment">/// テキスト `T` 中のパターン `P` を探すとき、`T` と `P` に含まれない文字 `&#39;$&#39;`</span>
@@ -159,6 +168,9 @@
 <span class="doccomment">/// [`std::str::matches`](https://doc.rust-lang.org/std/primitive.str.html#method.matches)</span>
 <span class="doccomment">/// の実装を参考にするなどして、`fn occurrences(&amp;self)` を持つような trait</span>
 <span class="doccomment">/// を作るとよさそう。テストを KMP に対して再利用できるので。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Complexity</span>
+<span class="doccomment">/// 構築は $O(|S|)$ 時間。検索は、テキスト $T$ に対して $O(|T|)$ 時間。</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ZSearcher</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Eq</span><span class="op">&gt;</span> {
     <span class="ident">pat</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
