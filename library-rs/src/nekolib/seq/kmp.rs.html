@@ -1,6 +1,14 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `nekolib/src/seq/kmp.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>kmp.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js"                  integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/auto-render.min.js"    integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `nekolib/src/seq/kmp.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>kmp.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><!-- For newer version of KaTeX, see https://katex.org/docs/browser.html -->
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+
+<!-- The loading of KaTeX is deferred to speed up page rendering -->
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
+
+<!-- To automatically render math in text elements, include the auto-render extension: -->
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         renderMathInElement(document.body, {
@@ -182,6 +190,10 @@
 <span id="164">164</span>
 <span id="165">165</span>
 <span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! KMP 法。</span>
 
@@ -206,7 +218,7 @@
 <span class="doccomment">/// _strong border_) であると言う。ただし、$S[|S|]$ は $S$ 中に含まれない文字として定義する。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```text</span>
-<span class="doccomment">///     0 1 2 3 4 5 6 7 8   9</span>
+<span class="doccomment">///     0 1 2 3 4 5 6 7 8   9 ...</span>
 <span class="doccomment">///   +-------------------+-------+</span>
 <span class="doccomment">/// S | a a b a c a a b a | c ... |</span>
 <span class="doccomment">///   +-------------------+-------+</span>
@@ -218,6 +230,10 @@
 <span class="doccomment">/// ($S[2] = \\mathtt{b} \\neq S[9] = \\mathtt{c}$)。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// この tagged border を用いることで、パターン検索を高速に行う。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Idea</span>
+<span class="doccomment">/// tagged border を $O(|S|)$ 時間で求める方法と、パターン検索を $O(|T|)$</span>
+<span class="doccomment">/// 時間で行う方法について書く。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Implementation notes</span>
 <span class="doccomment">/// パターンが静的であれば最長 border を求める必要はない。</span>
@@ -231,7 +247,7 @@
 <span class="doccomment">/// - &lt;http://www-igm.univ-mlv.fr/~lecroq/string/node8.html&gt;</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// 構築は $O(|S|) 時間。パターン末尾における更新は $O(\\log(|S|))$ 時間。</span>
+<span class="doccomment">/// 構築は $O(|S|)$ 時間。パターン末尾における更新は $O(\\log(|S|))$ 時間。</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">KmpSearcher</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Eq</span><span class="op">&gt;</span> {
     <span class="ident">pat</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
