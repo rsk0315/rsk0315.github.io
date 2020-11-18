@@ -176,6 +176,12 @@
 <span id="158">158</span>
 <span id="159">159</span>
 <span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! KMP 法。</span>
 
@@ -195,7 +201,7 @@
 <span class="doccomment">/// 文字列 $S[\\dots i]$ の _border_ とは、$S[\\dots i]$ の真部分文字列であり、$S[\\dots i]$</span>
 <span class="doccomment">/// の接頭辞かつ接尾辞であるような文字列である。</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// 文字列 $S[\\dots i]$ の border $S[\\dots j]$ (0\\le j &lt; i$) が $S[j] \\neq S[i]$</span>
+<span class="doccomment">/// 文字列 $S[\\dots i]$ の border $S[\\dots j]$ ($0\\le j &lt; i$) が $S[j] \\neq S[i]$</span>
 <span class="doccomment">/// を満たすとき、$S[\\dots j]$ は $S[\\dots i]$ の _tagged border_ (_strict border_,</span>
 <span class="doccomment">/// _strong border_) であると言う。ただし、$S[|S|]$ は $S$ 中に含まれない文字として定義する。</span>
 <span class="doccomment">///</span>
@@ -206,10 +212,10 @@
 <span class="doccomment">///   +-------------------+-------+</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// この例において、$S[\\dots 4] = \\mathtt{aaba}$ は $S[\\dots 9] = \\mathtt{aabacaabac}$</span>
+<span class="doccomment">/// この例において、$S[\\dots 4] = \\mathtt{aaba}$ は $S[\\dots 9] = \\mathtt{aabacaaba}$</span>
 <span class="doccomment">/// の border だが tagged border ではない ($S[4] = S[9] = \\mathtt{c}$)。一方、</span>
 <span class="doccomment">/// $S[\\dots 2] = \\mathtt{aa}$ は tagged border である</span>
-<span class="doccomment">/// ($S[2] = \\mathtt{b} \\neq S[9] = \\mathtt{c})。</span>
+<span class="doccomment">/// ($S[2] = \\mathtt{b} \\neq S[9] = \\mathtt{c}$)。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// この tagged border を用いることで、パターン検索を高速に行う。</span>
 <span class="doccomment">///</span>
@@ -217,6 +223,12 @@
 <span class="doccomment">/// パターンが静的であれば最長 border を求める必要はない。</span>
 <span class="doccomment">/// パターンの末尾に対する push/pop を行える実装になっており、その更新の際に最長</span>
 <span class="doccomment">/// border の長さが必要になる（はず）。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # See also</span>
+<span class="doccomment">/// - &lt;https://snuke.hatenablog.com/entry/2014/12/01/235807&gt;</span>
+<span class="doccomment">/// - &lt;https://snuke.hatenablog.com/entry/2017/07/18/101026&gt;</span>
+<span class="doccomment">/// - &lt;https://potetisensei.hatenablog.com/entry/2017/07/10/174908&gt;</span>
+<span class="doccomment">/// - &lt;http://www-igm.univ-mlv.fr/~lecroq/string/node8.html&gt;</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Complexity</span>
 <span class="doccomment">/// 構築は $O(|S|) 時間。パターン末尾における更新は $O(\\log(|S|))$ 時間。</span>
