@@ -57,6 +57,7 @@ Twitter で困っている人がいたときにリンクを貼る手間を少な
 - [SWAG](https://scrapbox.io/data-structures/Sliding_Window_Aggregation)
 - [貪欲法](https://inzkyk.xyz/algorithms/greedy_algorithm/)
 - [スタック拡張ヤバマクロ](http://www.colun.net/archives/547)
+- [高度合成数のリスト](http://wwwhomes.uni-bielefeld.de/achim/highly.txt)
 
 ## 過去問
 - 累積和と二項係数
