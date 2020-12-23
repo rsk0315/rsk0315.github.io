@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["SuffixArray","接尾辞配列。"]]});

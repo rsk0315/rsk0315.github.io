@@ -1,6 +1,14 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/ds/vec_segtree.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>vec_segtree.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js"                  integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/auto-render.min.js"    integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `nekolib/src/ds/vec_segtree.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>vec_segtree.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><!-- For newer version of KaTeX, see https://katex.org/docs/browser.html -->
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+
+<!-- The loading of KaTeX is deferred to speed up page rendering -->
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
+
+<!-- To automatically render math in text elements, include the auto-render extension: -->
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         renderMathInElement(document.body, {
@@ -385,23 +393,6 @@
 <span id="367">367</span>
 <span id="368">368</span>
 <span id="369">369</span>
-<span id="370">370</span>
-<span id="371">371</span>
-<span id="372">372</span>
-<span id="373">373</span>
-<span id="374">374</span>
-<span id="375">375</span>
-<span id="376">376</span>
-<span id="377">377</span>
-<span id="378">378</span>
-<span id="379">379</span>
-<span id="380">380</span>
-<span id="381">381</span>
-<span id="382">382</span>
-<span id="383">383</span>
-<span id="384">384</span>
-<span id="385">385</span>
-<span id="386">386</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! `Vec` ベースのセグ木。</span>
 
@@ -441,25 +432,39 @@
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use nekolib::ds::VecSegtree;</span>
-<span class="doccomment">/// use nekolib::traits::{Fold, FoldBisect, FoldBisectRev, SetValue};</span>
+<span class="doccomment">/// use nekolib::traits::{Fold, FoldBisect, FoldBisectRev, GetMut};</span>
 <span class="doccomment">/// use nekolib::utils::OpAdd;</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// let mut vs: VecSegtree&lt;OpAdd&lt;i32&gt;&gt; = vec![2, 4, 7, 3, 5].into();</span>
 <span class="doccomment">/// assert_eq!(vs.fold(1..3), 11);</span>
 <span class="doccomment">/// assert_eq!(vs.fold(..), 21);</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// vs.set_value(2usize, 1); // [2, 4, 1, 3, 5]</span>
+<span class="doccomment">/// *vs.get_mut(2).unwrap() = 1; // [2, 4, 1, 3, 5]</span>
 <span class="doccomment">/// assert_eq!(vs.fold(1..3), 5);</span>
 <span class="doccomment">/// assert_eq!(vs.fold(1..=3), 8);</span>
-<span class="doccomment">/// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt; 4), Some(1));</span>
-<span class="doccomment">/// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt;= 4), Some(2));</span>
-<span class="doccomment">/// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt; 13), Some(4));</span>
-<span class="doccomment">/// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt;= 13), None);</span>
+<span class="doccomment">/// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt; 4), (1_usize, 0));</span>
+<span class="doccomment">/// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt;= 4), (2_usize, 4));</span>
+<span class="doccomment">/// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt; 13), (4_usize, 8));</span>
+<span class="doccomment">/// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt;= 13), (5_usize, 13));</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// assert_eq!(vs.fold(..), 15);</span>
-<span class="doccomment">/// assert_eq!(vs.fold_bisect_rev(5, |&amp;x| x &lt;= 0), Some(4));</span>
-<span class="doccomment">/// assert_eq!(vs.fold_bisect_rev(5, |&amp;x| x &lt; 15), Some(0));</span>
-<span class="doccomment">/// assert_eq!(vs.fold_bisect_rev(5, |&amp;x| x &lt;= 15), None);</span>
+<span class="doccomment">/// assert_eq!(vs.fold_bisect_rev(5, |&amp;x| x &lt;= 0), (5_usize, 0));</span>
+<span class="doccomment">/// assert_eq!(vs.fold_bisect_rev(5, |&amp;x| x &lt; 15), (1_usize, 13));</span>
+<span class="doccomment">/// assert_eq!(vs.fold_bisect_rev(5, |&amp;x| x &lt;= 15), (0_usize, 15));</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// let l = 1;</span>
+<span class="doccomment">/// let pred = |&amp;x: &amp;i32| x &lt;= 12;</span>
+<span class="doccomment">/// let (r, x) = vs.fold_bisect(l, pred);</span>
+<span class="doccomment">/// assert_eq!(vs.fold(l..r), x);</span>
+<span class="doccomment">/// assert!(pred(&amp;x));</span>
+<span class="doccomment">/// assert!(r == vs.len() || !pred(&amp;vs.fold(l..r + 1)));</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// let r = 5;</span>
+<span class="doccomment">/// let pred = |&amp;x: &amp;i32| x &lt;= 12;</span>
+<span class="doccomment">/// let (l, x) = vs.fold_bisect_rev(r, pred);</span>
+<span class="doccomment">/// assert_eq!(vs.fold(l..r), x);</span>
+<span class="doccomment">/// assert!(pred(&amp;x));</span>
+<span class="doccomment">/// assert!(l == 0 || !pred(&amp;vs.fold(l - 1..r)));</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">VecSegtree</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
@@ -484,6 +489,14 @@
         }
     }
 
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">len</span> <span class="op">==</span> <span class="number">0</span>
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
+        <span class="self">self</span>.<span class="ident">len</span>
+    }
+
     <span class="kw">fn</span> <span class="ident">nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">l</span>: <span class="ident">usize</span>, <span class="ident">r</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">l</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span> <span class="op">+</span> <span class="ident">l</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">r</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span> <span class="op">+</span> <span class="ident">r</span>;
@@ -504,6 +517,10 @@
         <span class="ident">vr</span>.<span class="ident">reverse</span>();
         <span class="ident">vl</span>.<span class="ident">append</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">vr</span>);
         <span class="ident">vl</span>
+    }
+
+    <span class="kw">fn</span> <span class="ident">nodes_rev</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">l</span>: <span class="ident">usize</span>, <span class="ident">r</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">nodes</span>(<span class="ident">l</span>, <span class="ident">r</span>).<span class="ident">into_iter</span>().<span class="ident">rev</span>().<span class="ident">collect</span>()
     }
 }
 
@@ -554,7 +571,8 @@
     }
 }
 
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">IndexMut</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">M</span><span class="op">&gt;</span>
+<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetMutIndex</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">M</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">M</span>: <span class="ident">Monoid</span>,
     <span class="ident">M</span>::<span class="ident">Set</span>: <span class="ident">Clone</span>,
@@ -568,17 +586,17 @@
     <span class="ident">M</span>: <span class="ident">Monoid</span>,
     <span class="ident">M</span>::<span class="ident">Set</span>: <span class="ident">Clone</span>,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">IndexMut</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">M</span><span class="op">&gt;</span>;
-    <span class="kw">fn</span> <span class="ident">get_mut</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMut</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">M</span><span class="op">&gt;&gt;</span> {
+    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">GetMutIndex</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">M</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">get_mut</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">GetMutIndex</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">M</span><span class="op">&gt;&gt;</span> {
         <span class="kw">if</span> <span class="ident">index</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">len</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">IndexMut</span> { <span class="ident">tree</span>: <span class="self">self</span>, <span class="ident">index</span> })
+            <span class="prelude-val">Some</span>(<span class="ident">GetMutIndex</span> { <span class="ident">tree</span>: <span class="self">self</span>, <span class="ident">index</span> })
         } <span class="kw">else</span> {
             <span class="prelude-val">None</span>
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> <span class="ident">Drop</span> <span class="kw">for</span> <span class="ident">IndexMut</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">M</span><span class="op">&gt;</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> <span class="ident">Drop</span> <span class="kw">for</span> <span class="ident">GetMutIndex</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">M</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">M</span>: <span class="ident">Monoid</span>,
     <span class="ident">M</span>::<span class="ident">Set</span>: <span class="ident">Clone</span>,
@@ -595,7 +613,7 @@
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> <span class="ident">Deref</span> <span class="kw">for</span> <span class="ident">IndexMut</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">M</span><span class="op">&gt;</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> <span class="ident">Deref</span> <span class="kw">for</span> <span class="ident">GetMutIndex</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">M</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">M</span>: <span class="ident">Monoid</span>,
     <span class="ident">M</span>::<span class="ident">Set</span>: <span class="ident">Clone</span>,
@@ -606,7 +624,7 @@
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> <span class="ident">DerefMut</span> <span class="kw">for</span> <span class="ident">IndexMut</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">M</span><span class="op">&gt;</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> <span class="ident">DerefMut</span> <span class="kw">for</span> <span class="ident">GetMutIndex</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">M</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">M</span>: <span class="ident">Monoid</span>,
     <span class="ident">M</span>::<span class="ident">Set</span>: <span class="ident">Clone</span>,
@@ -665,8 +683,7 @@
     <span class="ident">M</span>: <span class="ident">Monoid</span>,
     <span class="ident">M</span>::<span class="ident">Set</span>: <span class="ident">Clone</span>,
 {
-    <span class="kw">type</span> <span class="ident">Folded</span> <span class="op">=</span> <span class="ident">M</span>;
-    <span class="kw">fn</span> <span class="ident">fold_bisect</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">l</span>: <span class="ident">usize</span>, <span class="ident">pred</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>
+    <span class="kw">fn</span> <span class="ident">fold_bisect</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">l</span>: <span class="ident">usize</span>, <span class="ident">pred</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> (<span class="ident">usize</span>, <span class="ident">M</span>::<span class="ident">Set</span>)
     <span class="kw">where</span>
         <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">M</span>::<span class="ident">Set</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>,
     {
@@ -677,10 +694,10 @@
         );
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">M</span>::<span class="ident">id</span>();
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>) {
-            <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">l</span>);
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">fold</span>(<span class="ident">l</span>..)) {
-            <span class="kw">return</span> <span class="prelude-val">None</span>;
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>), <span class="string">&quot;`pred(id)` must hold&quot;</span>);
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">fold</span>(<span class="ident">l</span>..) {
+            <span class="ident">x</span> <span class="kw">if</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>) <span class="op">=&gt;</span> <span class="kw">return</span> (<span class="self">self</span>.<span class="ident">len</span>, <span class="ident">x</span>),
+            <span class="kw">_</span> <span class="op">=&gt;</span> {}
         }
 
         <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">nodes</span>(<span class="ident">l</span>, <span class="self">self</span>.<span class="ident">len</span>) {
@@ -698,7 +715,7 @@
                     <span class="ident">v</span> <span class="op">+=</span> <span class="number">1</span>;
                 }
             }
-            <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">v</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">len</span>);
+            <span class="kw">return</span> (<span class="ident">v</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">len</span>, <span class="ident">x</span>);
         }
         <span class="macro">unreachable</span><span class="macro">!</span>();
     }
@@ -709,8 +726,7 @@
     <span class="ident">M</span>: <span class="ident">Monoid</span>,
     <span class="ident">M</span>::<span class="ident">Set</span>: <span class="ident">Clone</span>,
 {
-    <span class="kw">type</span> <span class="ident">Folded</span> <span class="op">=</span> <span class="ident">M</span>;
-    <span class="kw">fn</span> <span class="ident">fold_bisect_rev</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">r</span>: <span class="ident">usize</span>, <span class="ident">pred</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>
+    <span class="kw">fn</span> <span class="ident">fold_bisect_rev</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">r</span>: <span class="ident">usize</span>, <span class="ident">pred</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> (<span class="ident">usize</span>, <span class="ident">M</span>::<span class="ident">Set</span>)
     <span class="kw">where</span>
         <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">M</span>::<span class="ident">Set</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>,
     {
@@ -721,13 +737,13 @@
         );
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">M</span>::<span class="ident">id</span>();
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>) {
-            <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">r</span>);
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">fold</span>(..<span class="ident">r</span>)) {
-            <span class="kw">return</span> <span class="prelude-val">None</span>;
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>), <span class="string">&quot;`pred(id)` must hold&quot;</span>);
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">fold</span>(..<span class="ident">r</span>) {
+            <span class="ident">x</span> <span class="kw">if</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>) <span class="op">=&gt;</span> <span class="kw">return</span> (<span class="number">0</span>, <span class="ident">x</span>),
+            <span class="kw">_</span> <span class="op">=&gt;</span> {}
         }
 
-        <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">nodes</span>(<span class="number">0</span>, <span class="ident">r</span>).<span class="ident">into_iter</span>().<span class="ident">rev</span>() {
+        <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">nodes_rev</span>(<span class="number">0</span>, <span class="ident">r</span>) {
             <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">M</span>::<span class="ident">op</span>(<span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">v</span>].<span class="ident">clone</span>(), <span class="ident">x</span>.<span class="ident">clone</span>());
             <span class="kw">if</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">tmp</span>) {
                 <span class="ident">x</span> <span class="op">=</span> <span class="ident">tmp</span>;
@@ -735,58 +751,16 @@
             }
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">v</span>;
             <span class="kw">while</span> <span class="ident">v</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">len</span> {
-                <span class="ident">v</span> <span class="op">&lt;&lt;</span><span class="op">=</span> <span class="number">1</span>;
-                <span class="ident">v</span> <span class="op">+=</span> <span class="number">1</span>;
+                <span class="ident">v</span> <span class="op">=</span> <span class="ident">v</span> <span class="op">&lt;&lt;</span> <span class="number">1</span> <span class="op">|</span> <span class="number">1</span>;
                 <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">M</span>::<span class="ident">op</span>(<span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">v</span>].<span class="ident">clone</span>(), <span class="ident">x</span>.<span class="ident">clone</span>());
                 <span class="kw">if</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">tmp</span>) {
                     <span class="ident">x</span> <span class="op">=</span> <span class="ident">tmp</span>;
                     <span class="ident">v</span> <span class="op">-=</span> <span class="number">1</span>;
                 }
             }
-            <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">v</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">len</span>);
+            <span class="kw">return</span> (<span class="ident">v</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">len</span> <span class="op">+</span> <span class="number">1</span>, <span class="ident">x</span>);
         }
         <span class="macro">unreachable</span><span class="macro">!</span>();
-    }
-}
-
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">test</span> {
-    <span class="kw">use</span> <span class="ident">op_add</span>::<span class="ident">OpAdd</span>;
-
-    <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
-
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test</span>() {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">VecSegtree</span>::<span class="op">&lt;</span><span class="ident">OpAdd</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;&gt;</span>::<span class="ident">new</span>(<span class="number">5</span>);
-        <span class="ident">s</span>.<span class="ident">set_value</span>(<span class="number">1usize</span>, <span class="number">3</span>);
-        <span class="ident">s</span>.<span class="ident">set_value</span>(<span class="number">4usize</span>, <span class="number">5</span>);
-        <span class="ident">s</span>.<span class="ident">set_value</span>(<span class="number">2usize</span>, <span class="number">2</span>);
-        <span class="ident">s</span>.<span class="ident">set_value</span>(<span class="number">0usize</span>, <span class="number">4</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Vec</span>::<span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span>::<span class="ident">from</span>(<span class="ident">s</span>.<span class="ident">clone</span>()), <span class="macro">vec</span><span class="macro">!</span>[<span class="number">4</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">5</span>]);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">fold</span>(<span class="number">0</span>..<span class="number">4</span>), <span class="number">9</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">fold</span>(<span class="number">1</span>..<span class="op">=</span><span class="number">3</span>), <span class="number">5</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">fold</span>(<span class="number">3</span>..), <span class="number">5</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">fold</span>(..<span class="number">0</span>), <span class="number">0</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">fold</span>(..<span class="op">=</span><span class="number">2</span>), <span class="number">9</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">fold</span>(..), <span class="number">14</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>[<span class="number">1</span>], <span class="number">3</span>);
-
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">VecSegtree</span>::<span class="op">&lt;</span><span class="ident">OpAdd</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;&gt;</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">1</span>, <span class="number">4</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">3</span>]);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Vec</span>::<span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span>::<span class="ident">from</span>(<span class="ident">s</span>.<span class="ident">clone</span>()), <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1</span>, <span class="number">4</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">3</span>]);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">fold</span>(<span class="number">1</span>..<span class="number">3</span>), <span class="number">6</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">fold</span>(<span class="number">0</span>..<span class="op">=</span><span class="number">2</span>), <span class="number">7</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">fold</span>(<span class="number">5</span>..), <span class="number">0</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">fold</span>(..<span class="number">3</span>), <span class="number">7</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">fold</span>(..<span class="op">=</span><span class="number">4</span>), <span class="number">15</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>.<span class="ident">fold</span>(..), <span class="number">15</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>[<span class="number">4</span>], <span class="number">3</span>);
-    }
-
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">should_panic</span>(<span class="ident">expected</span> <span class="op">=</span> <span class="string">&quot;index&quot;</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">test_out_of_index</span>() {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">VecSegtree</span>::<span class="op">&lt;</span><span class="ident">OpAdd</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;&gt;</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">1</span>, <span class="number">4</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">3</span>]);
-        <span class="ident">s</span>.<span class="ident">set_value</span>(<span class="number">5</span>, <span class="number">2</span>);
     }
 }
 </pre></div>

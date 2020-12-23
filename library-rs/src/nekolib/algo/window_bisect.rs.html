@@ -1,6 +1,14 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/algo/window_bisect.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>window_bisect.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js"                  integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/auto-render.min.js"    integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `nekolib/src/algo/window_bisect.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>window_bisect.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><!-- For newer version of KaTeX, see https://katex.org/docs/browser.html -->
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+
+<!-- The loading of KaTeX is deferred to speed up page rendering -->
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
+
+<!-- To automatically render math in text elements, include the auto-render extension: -->
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         renderMathInElement(document.body, {
@@ -140,6 +148,8 @@
 <span id="122">122</span>
 <span id="123">123</span>
 <span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 尺取り法。</span>
 
@@ -151,17 +161,22 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// スライスと述語を引数に取り、スライスの各始端 $l$ に対して $r\_l$ を求める。</span>
 <span class="doccomment">/// $r\_l$ は、以下の両方を満たす $r &lt; n$ が存在すればその $r$、存在しなければ $n$ である。</span>
-<span class="doccomment">/// - $P(h([a\_l, a\_{r}]))$</span>
-<span class="doccomment">/// - $\\lnot P(h([a\_l, a\_{r+1}]))$</span>
+<span class="doccomment">/// $$ P(h([l, r))) \\text{ and } \\lnot P(h([l, r+1))). $$</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// ここで、$P$ は `pred`、$h([a\_l, a\_r])$ は `slice.start() == l`, `slice.end() == r+1`</span>
+<span class="doccomment">/// ここで、$P$ は `pred`、$h([l, r))$ は `slice.start() == l`, `slice.end() == r`</span>
 <span class="doccomment">/// における `slice.hash(())` によって計算される。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Requirements</span>
-<span class="doccomment">/// 各始端 $l$ に対して、$\\lnot P(h([a\_l, a\_{m\_l}]))$ なる $m\_l$</span>
+<span class="doccomment">/// 各始端 $l$ に対して、$\\lnot P(h([l, m\_l)))$ なる $m\_l$</span>
 <span class="doccomment">/// が存在するとき、次の二つが成り立つ。</span>
-<span class="doccomment">/// - ${}^\\forall i\\in [l, m\_l)$ について $P(h([a\_l, a\_i]))$</span>
-<span class="doccomment">/// - ${}^\\forall i\\in [m\_l, n)$ について $\\lnot P(h([a\_l, a\_i]))$</span>
+<span class="doccomment">/// - ${}^\\forall i\\in [l, m\_l)$ について $P(h([l, i)))$</span>
+<span class="doccomment">/// - ${}^\\forall i\\in (m\_l, n)$ について $\\lnot P(h([l, i)))$</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// また、空区間に対しては $P$ は真を返す必要がある[^1]。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// [^1]: そうでないと、返り値が定義しにくいためである。</span>
+<span class="doccomment">/// $l-1$ や $-1$ が返り値として挙げられるが、後者では</span>
+<span class="doccomment">/// `1_usize.wrapping_neg()` を使う必要がある上、大小関係がややこしくなり厄介。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Complexity</span>
 <span class="doccomment">/// `expand_back` および `shrink_front` の呼び出しを高々 $n$ 回、</span>
@@ -256,9 +271,6 @@
             <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">end</span>() <span class="op">==</span> <span class="ident">n</span> {
                 <span class="kw">return</span> <span class="ident">res</span>;
             }
-            <span class="ident">slice</span>.<span class="ident">expand_back</span>();
-        }
-        <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">is_empty</span>() {
             <span class="ident">slice</span>.<span class="ident">expand_back</span>();
         }
         <span class="ident">slice</span>.<span class="ident">shrink_front</span>();

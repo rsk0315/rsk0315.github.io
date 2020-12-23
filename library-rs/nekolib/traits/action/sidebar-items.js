@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["MonoidAction","作用モノイド。"]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["KmpSearcher","KMP 法 (Knuth–Morris–Pratt algorithm)。"],["Occurrences",""]]});

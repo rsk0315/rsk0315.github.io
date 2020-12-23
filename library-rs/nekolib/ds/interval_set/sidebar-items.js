@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["IntervalSet","区間の集合。"]]});

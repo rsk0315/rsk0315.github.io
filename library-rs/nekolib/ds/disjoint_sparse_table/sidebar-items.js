@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["DisjointSparseTable","disjoint sparse table。"]]});

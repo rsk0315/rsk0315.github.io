@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["nekolib"] = [{"text":"impl&lt;T:&nbsp;Eq, '_&gt; Iterator for Occurrences&lt;'_, T&gt;","synthetic":false,"types":[]},{"text":"impl&lt;T:&nbsp;Eq, '_&gt; Iterator for Occurrences&lt;'_, T&gt;","synthetic":false,"types":[]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

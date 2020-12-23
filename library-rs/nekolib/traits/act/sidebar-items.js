@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["Act","区間作用を行う。"]]});
