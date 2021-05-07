@@ -26,7 +26,7 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet">
 <style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc struct"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../nekolib/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a><p class="location">Struct SuffixArray</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#implementations">Methods</a><div class="sidebar-links"><a href="#method.search">search</a></div><a class="sidebar-title" href="#trait-implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-Clone">Clone</a><a href="#impl-Debug">Debug</a><a href="#impl-Eq">Eq</a><a href="#impl-From%3C%26%27_%20str%3E">From&lt;&amp;&#39;_ str&gt;</a><a href="#impl-From%3CVec%3CT%2C%20Global%3E%3E">From&lt;Vec&lt;T, Global&gt;&gt;</a><a href="#impl-PartialEq%3CSuffixArray%3CT%3E%3E">PartialEq&lt;SuffixArray&lt;T&gt;&gt;</a><a href="#impl-StructuralEq">StructuralEq</a><a href="#impl-StructuralPartialEq">StructuralPartialEq</a></div><a class="sidebar-title" href="#synthetic-implementations">Auto Trait Implementations</a><div class="sidebar-links"><a href="#impl-RefUnwindSafe">RefUnwindSafe</a><a href="#impl-Send">Send</a><a href="#impl-Sync">Sync</a><a href="#impl-Unpin">Unpin</a><a href="#impl-UnwindSafe">UnwindSafe</a></div><a class="sidebar-title" href="#blanket-implementations">Blanket Implementations</a><div class="sidebar-links"><a href="#impl-Any">Any</a><a href="#impl-Borrow%3CT%3E">Borrow&lt;T&gt;</a><a href="#impl-BorrowMut%3CT%3E">BorrowMut&lt;T&gt;</a><a href="#impl-From%3CT%3E">From&lt;T&gt;</a><a href="#impl-Into%3CU%3E">Into&lt;U&gt;</a><a href="#impl-ToOwned">ToOwned</a><a href="#impl-TryFrom%3CU%3E">TryFrom&lt;U&gt;</a><a href="#impl-TryInto%3CU%3E">TryInto&lt;U&gt;</a></div></div><p class="location"><a href="../../index.html">nekolib</a>::<wbr><a href="../index.html">seq</a>::<wbr><a href="index.html">suffix_array</a></p><div id="sidebar-vars" data-name="SuffixArray" data-ty="struct" data-relpath=""></div><script defer src="sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
-                <a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class="fqn"><span class="in-band">Struct <a href="../../index.html">nekolib</a>::<wbr><a href="../index.html">seq</a>::<wbr><a href="index.html">suffix_array</a>::<wbr><a class="struct" href="">SuffixArray</a></span><span class="out-of-band"><span id="render-detail"><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#233-237" title="goto source code">[src]</a></span></h1><div class="docblock type-decl hidden-by-usual-hider"><pre class="rust struct">pub struct SuffixArray&lt;T:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html" title="trait core::cmp::Ord">Ord</a>&gt; { /* fields omitted */ }</pre></div><div class="docblock"><p>接尾辞配列。</p>
+                <a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class="fqn"><span class="in-band">Struct <a href="../../index.html">nekolib</a>::<wbr><a href="../index.html">seq</a>::<wbr><a href="index.html">suffix_array</a>::<wbr><a class="struct" href="">SuffixArray</a></span><span class="out-of-band"><span id="render-detail"><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#335-339" title="goto source code">[src]</a></span></h1><div class="docblock type-decl hidden-by-usual-hider"><pre class="rust struct">pub struct SuffixArray&lt;T:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html" title="trait core::cmp::Ord">Ord</a>&gt; { /* fields omitted */ }</pre></div><div class="docblock"><p>接尾辞配列。</p>
 <p>文字列 $S$ の各接尾辞を辞書順でソートしたもの。
 より正確には、$i$ ($0\le i\le |S|$) を $S[i\dots]$ をキーとしてソートした配列 $A$ である。</p>
 <p>内部では高さ配列 (LCPA; Longest Common Prefix Array) $L$ も持っている。
@@ -47,18 +47,19 @@ $L[i]$ ($0\le i &lt; |S|$) は $S[A[i]\dots]$ と $S[A[i+1]\dots]$ の最長共�
 接尾辞 $i$ が接尾辞 $i+1$ より辞書順で小さい (smaller)
 とき、接尾辞 $i$ を S-type であると言う。そうでない (larger) とき、L-type
 であると言う。長さが異なるので、等しくなることはないことに注意せよ。
-なお、接尾辞 $|S|$ は S-type とする。</p>
-<p>$i$ ($0\le i \lt |S|$) について次が成り立つので、接尾辞 $|S|$ が S-type
+なお、接尾辞 $|S|$ は S-type とする。
+また、簡単のため、単に「$i$ が S-type である」などと言う。</p>
+<p>$i$ ($0\le i \lt |S|$) について次が成り立つので、$|S|$ が S-type
 であることと合わせて、末尾から順に線形時間で求められる。</p>
 <ul>
-<li>$S[i] \lt S[i+1]$ なら、接尾辞 $i$ は S-type。</li>
-<li>$S[i] \gt S[i+1]$ なら、接尾辞 $i$ は L-type。</li>
-<li>$S[i] = S[i+1]$ なら、接尾辞 $i$ と接尾辞 $i+1$ は同じ type。</li>
+<li>$S[i] \lt S[i+1]$ なら、$i$ は S-type。</li>
+<li>$S[i] \gt S[i+1]$ なら、$i$ は L-type。</li>
+<li>$S[i] = S[i+1]$ なら、$i$ と $i+1$ は同じ type。</li>
 </ul>
 <h3 id="lms-suffix-と-lms-block" class="section-header"><a href="#lms-suffix-と-lms-block">LMS suffix と LMS block</a></h3>
-<p>接尾辞 $i-1$ が L-type であるような S-type の接尾辞 $i$ を、特に
-LMS (leftmost S-type) suffix と言う。接尾辞 $0$ は LMS ではないことに注意せよ。</p>
-<p>また、LMS suffix を、次の LMS suffix（存在すれば）の開始位置で区切ったものを
+<p>$i-1$ が L-type であるような S-type の $i$ を、特に
+LMS (leftmost S-type) suffix と言う。$0$ は LMS ではないことに注意せよ。
+また、LMS suffix を、次の LMS suffix（存在すれば）の開始位置で区切ったものを
 LMS block と呼ぶ。LMS block は次のようになる。</p>
 <pre><code class="language-text"> G  T  C  C  C  G  A  T  G  T  C  A  T  G  T  C  A  G  G  A  $
  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20
@@ -72,7 +73,8 @@ LMS block と呼ぶ。LMS block は次のようになる。</p>
                                                             []
 </code></pre>
 <h3 id="バケット" class="section-header"><a href="#バケット">バケット</a></h3>
-<p>接尾辞配列を再掲する。ただし、接尾辞 $i$ に対して、その type と $S[i]$ を併記する。</p>
+<p>接尾辞配列を再掲する。ただし、各 $i$ に対して、その type と $S[i]$ を併記する。
+ただし、<code>*S</code> は LMS を表す。</p>
 <pre><code class="language-text"> 20 19 16 11  6 15 10  2  3  4 18  5 17 13  8  0 14  9  1 12  7
   $  A  A  A  A  C  C  C  C  C  G  G  G  G  G  G  T  T  T  T  T
  *S  L *S *S *S  L  L *S  S  S  L  L  L *S *S  S  L  L  L  L  L
@@ -84,26 +86,120 @@ LMS block と呼ぶ。LMS block は次のようになる。</p>
 を考えたとき、接尾辞 $i$ は $c$ が 1 つ以上続いた後に $c$ より小さい文字が現れ、
 接尾辞 $j$ は $c$ が 1 つ以上続いた後に $c$ より大きい文字が現れることから従う。</p>
 <h3 id="induced-sorting" class="section-header"><a href="#induced-sorting">Induced sorting</a></h3>
-<p>LMS suffix が適当な順で得られているとき、残りの接尾辞のソート順を求める。
-各 LMS suffix は対応するバケットの末尾に入っているとする。</p>
-<p>まず、バケットを前から走査する。接尾辞 $i$ を見つけたとき、
-接尾辞 $i-1$ が L-type であれば、対応するバケットに入れる。
-このとき、バケットを末尾から見て最初の空きに入れる。</p>
-<p>次に、バケットから S-type の接尾辞を取り除き、後ろから走査する。
-接尾辞 $i$ を見つけたとき、接尾辞 $i-1$ が S-type であれば、
-対応するバケットに入れる。このとき、バケットを先頭から見て最初の空きに入れる。</p>
-<p>LMS suffix を正しい順で与えれば、全体として正しいソート順が得られる。
-入力として与えた LMS suffix の順が保たれるとは限らなさそう。
-わからないことが多い。</p>
-<p>suffix のソートではなく、次の LMS block の開始位置までの substring
-のソートと見る方が妥当そうな気がしてきたので、見直します。<code>todo!()</code></p>
+<p>この操作により、LMS block のソート順を得ることができる。この操作では、部分文字列
+$S[i\dots j]$ (inclusive) に辞書順最大の文字を連結したものを考え<sup id="fnref1"><a href="#fn1">1</a></sup>、この
+$i$ をバケットに入れていく。$j$ については適宜説明する。ここでは、簡単のため
+$S[i\dots j]$ に辞書順最大の文字を連結したものを指して、単に部分文字列 $S[i\dots j]$
+と呼ぶことにする。</p>
+<p>まず、LMS suffix たちの添字 $i$ は得られているとし、それらを対応するバケットの
+末尾に適当な順に入れる。このとき $j = i$ とする。</p>
+<pre><code class="language-text"> 20  -  6 11 16  -  -  -  -  2  -  -  -  -  8 13  -  -  -  -  -
+  $  A  A  A  A  C  C  C  C  C  G  G  G  G  G  G  T  T  T  T  T
+ *S  - *S *S *S  -  -  -  - *S  -  -  -  - *S *S  -  -  -  -  -
+</code></pre>
+<pre><code class="language-text">20 $X
+ - -
+ 6 AX
+11 AX
+16 AX
+ - -
+ - -
+ - -
+ - -
+ 2 CX
+ - -
+ - -
+ - -
+ - -
+ 8 GX
+13 GX
+ - -
+ - -
+ - -
+ - -
+ - -
+</code></pre>
+<p>バケットを前から走査し、部分文字列 $S[i\dots j]$ を見つけたとき、$i-1$ が L-type
+であれば、文字 $S[i-1]$ に対応するバケットの空きの先頭に $S[i-1\dots j]$ を入れる。</p>
+<p>まず、この操作によりバケットに追加された部分文字列がソート済みであることを帰納的に示す。
+初期状態では明らかにソート済みである。$S[i\dots j]$ を見て $S[i-1\dots j]$
+を入れるとき、同一バケット内の L-type の各 $S[i'-1\dots j']$ に対して
+$S[i'-1\dots j'] \lt S[i-1\dots j]$ を示せば十分である（LMS については明らかなので）。
+これは、$S[i'-1] = S[i-1]$ のとき $S[i'-1\dots j'] \lt S[i-1\dots j] \iff
+S[i'\dots j'] \lt S[i\dots j]$ であることと、$i'$ が $i$ より先に処理されているため
+$S[i'\dots j'] \lt S[i\dots j]$ であることから従う。</p>
+<p>次に、L-type であるすべての $i$ がバケットに入っていることを示す。
+$i+1$ が LMS であれば、定義から $i$ は L-type であり、これはバケットに入れられる。
+L-type である各 $i$ について $S[i\dots j] \gt S[i+1\dots j]$ なので、
+$i+1$ がバケットに入っているならば、$i$ もバケットに入れられる。</p>
+<pre><code class="language-text"> 20 19  6 11 16 10 15  -  -  2 18  5 17  -  8 13  9 14  1  7 12
+  $  A  A  A  A  C  C  C  C  C  G  G  G  G  G  G  T  T  T  T  T
+ *S  L *S *S *S  L  L  -  - *S  L  L  L  - *S *S  L  L  L  L  L
+</code></pre>
+<pre><code class="language-text">20 $X
+19 A$X
+ 6 AX
+11 AX
+16 AX
+10 CAX
+15 CAX
+ - -
+ - -
+ 2 CX
+18 GA$X
+ 5 GAX
+17 GGA$X
+ - -
+ 8 GX
+13 GX
+ 9 TCAX
+14 TCAX
+ 1 TCX
+ 7 TGX
+12 TGX
+</code></pre>
+<p>次に、バケットから LMS を取り除き、逆順から同様の操作を S-type について行う。
+すなわち、バケットを後ろから走査し、部分文字列 $S[i\dots j]$ を見つけたとき、
+$i-1$ が S-type であれば、文字 $S[i-1]$ に対応するバケットの空きの末尾に
+$S[i-1\dots j]$ を入れる。</p>
+<p>L-type のときと同様の議論から、すべての S-type の $i$ がソート順で得られることがわかる。
+S-type と L-type の性質から、すべての $i$ についてソート順で得られたことになる。</p>
+<pre><code class="language-text"> 20 19 16  6 11 10 15  2  3  4 18  5 17  8 13  0  9 14  1  7 12
+  $  A  A  A  A  C  C  C  C  C  G  G  G  G  G  G  T  T  T  T  T
+ *S  L *S *S *S  L  L *S  S  S  L  L  L *S *S  S  L  L  L  L  L
+</code></pre>
+<pre><code class="language-text">20 $X
+19 A$X
+16 AGGA$X
+ 6 ATGX
+11 ATGX
+10 CAX
+15 CAX
+ 2 CCCGAX
+ 3 CCGAX
+ 4 CGAX
+18 GA$X
+ 5 GAX
+17 GGA$X
+ 8 GTCAX
+13 GTCAX
+ 0 GTCX
+ 9 TCAX
+14 TCAX
+ 1 TCX
+ 7 TGX
+12 TGX
+</code></pre>
+<p>各 LMS $i$ に対応する部分文字列が LMS block と等しくなることは簡単に示せて、
+以上より LMS block のソート順が得られることがわかった。また、初めに LMS
+をバケットに入れるときにソート順に入れていれば、$j = |S|$
+としても同様の議論ができ、接尾辞配列が得られる。</p>
 <h2 id="アルゴリズムの概要" class="section-header"><a href="#アルゴリズムの概要">アルゴリズムの概要</a></h2>
 <p>まず、$S$ を末尾から走査し、type を求める。</p>
 <pre><code class="language-text"> G  T  C  C  C  G  A  T  G  T  C  A  T  G  T  C  A  G  G  A  $
  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20
  S  L *S  S  S  L *S  L *S  L  L *S  L *S  L  L *S  L  L  L *S
 </code></pre>
-<p>ただし、<code>*S</code> は LMS を表す。</p>
 <p>次に、LMS を出現順にバケットの末尾に置いて induced sorting を行う。</p>
 <pre><code class="language-text"> 20  -  6 11 16  -  -  -  -  2  -  -  -  -  8 13  -  -  -  -  -
   $  A  A  A  A  C  C  C  C  C  G  G  G  G  G  G  T  T  T  T  T
@@ -117,23 +213,9 @@ LMS block と呼ぶ。LMS block は次のようになる。</p>
   $  A  A  A  A  C  C  C  C  C  G  G  G  G  G  G  T  T  T  T  T
  *S  L *S *S *S  L  L *S  S  S  L  L  L *S *S  S  L  L  L  L  L
 </code></pre>
-<p>この時点では各接尾辞の正しいソート順は得られていないが、次の LMS block
-先頭以降の文字を無視すれば、ソート順に並んでいる。</p>
-<pre><code class="language-text"> : ...
-16 AGGA$
- 6 ATG   // TCATG ...
-11 ATG   // TCAGG ...
-10 CA    // TGTCA ...
-15 CA    // GGA$
- 2 CCCGA // TGTCA ...
- 3 CCGA  // TGTCA ...
- 4 CGA   // TGTCA ...
-18 GA$
- : ...
-</code></pre>
-<p>特に、LMS block の正しいソート順は得られている。
+<p>これにより、LMS block の正しいソート順が得られる。
 <code>*S</code> の添字を得られた順に並べると <code>20 16 6 11 2 8 13</code> となり、対応する
-LMS block を順に並べると次のようになる。</p>
+LMS block を順に並べると次のようになる<sup id="fnref2"><a href="#fn2">2</a></sup>。</p>
 <pre><code class="language-text">$ AGGA$ ATG ATG CCCGA GTCA GTCA
 </code></pre>
 <p>これはソート順で得られているので、隣同士の要素を比較するだけで、各要素の順序づけがわかる。
@@ -145,8 +227,14 @@ LMS block を順に並べると次のようになる。</p>
                  3     2        4     2        4           1 0
 </code></pre>
 <p>この順序づけによってできる列 (<em>reduced string</em>) <code>3 2 4 2 4 1 0</code> の接尾辞配列は
-再帰的に SA-IS によって求めることができ、<code>6 5 3 1 0 4 2</code> となる。
-これを元の文字列に対応させることで、LMS suffix のソート順が <code>20 16 11 6 2 13 8</code>
+再帰的に SA-IS によって求めることができ、<code>6 5 3 1 0 4 2</code> となる。</p>
+<p>LMS block たちをそのまま連結させると境界部分の文字が重複するのが気になる。
+reduced string 中に暗黙にあるそれらの重複が許されることに触れておく。
+等しいペアについては、重複の 1 文字目で等しければ 2 文字目でも等しいので、
+辞書順比較には影響しない。等しくないペアについて、<code>$</code> 以外の LMS block の形は
+<code>SS..SLL..LS</code> であり、最悪時でも片方に <code>LS</code> が現れた時点で大小関係が決まるので、
+重複部分まで走査されることがない。</p>
+<p>これを元の文字列に対応させることで、LMS suffix のソート順が <code>20 16 11 6 2 13 8</code>
 であるとわかり、これを用いて再度 induced sorting を行う。</p>
 <pre><code class="language-text"> 20  - 16 11  6  -  -  -  -  2  -  -  -  - 13  8  -  -  -  -  -
   $  A  A  A  A  C  C  C  C  C  G  G  G  G  G  G  T  T  T  T  T
@@ -161,13 +249,12 @@ LMS block を順に並べると次のようになる。</p>
  *S  L *S *S *S  L  L *S  S  S  L  L  L *S *S  S  L  L  L  L  L
 </code></pre>
 <p>これにより、所望の接尾辞配列が得られる。</p>
-<p>なお、reduced string の接尾辞配列は SA-IS を再帰的に呼ぶことで得られる。
-再帰の base case は、列の各要素が distinct な場合で、逆順列が接尾辞配列となる。</p>
-<p>連続して LMS suffix が現れないことと、先頭位置は LMS にならないことから、
+<p>再帰の base case は、列の各要素が distinct な場合で、逆順列が接尾辞配列となる。
+連続して LMS suffix が現れないことと、先頭位置は LMS にならないことから、
 reduced string は元の文字列の半分以下の長さになることがわかる。
 よって、長さ $n$ での計算量を $T(n)$ とおくと、次のようになる。
 $$ T(n) \le T(n/2) + T(n/4) + \dots + T(1) + O(n) \in O(n). $$</p>
-<h2 id="salcpa-を用いた文字列検索" class="section-header"><a href="#salcpa-を用いた文字列検索">SA/LCPA を用いた文字列検索</a></h2>
+<h2 id="パターン検索" class="section-header"><a href="#パターン検索">パターン検索</a></h2>
 <p><code>todo!()</code></p>
 <h1 id="complexity" class="section-header"><a href="#complexity">Complexity</a></h1>
 <p>入力中の文字の種類を $\sigma$、文字列長を $n$ とする。
@@ -184,15 +271,16 @@ SA-IS を用いて構築するため、前処理は $O(\sigma\log(\sigma)+n)$ �
 <p><a href="http://web.stanford.edu/class/archive/cs/cs166/cs166.1206/lectures/04/Slides04.pdf">CS166</a>。
 差分スライドの関係でページ数がめちゃくちゃ多くて重いので注意。軽いのは
 <a href="http://web.stanford.edu/class/archive/cs/cs166/cs166.1206/lectures/04/Small04.pdf">こっち</a>。</p>
-</div><h2 id="implementations" class="small-section-header">Implementations<a href="#implementations" class="anchor"></a></h2><h3 id="impl" class="impl"><code class="in-band">impl&lt;T:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html" title="trait core::cmp::Ord">Ord</a>&gt; <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt;</code><a href="#impl" class="anchor"></a><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#472-506" title="goto source code">[src]</a></h3><div class="impl-items"><h4 id="method.search" class="method"><code>pub fn <a href="#method.search" class="fnname">search</a>(&amp;self, pat: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">&amp;[T]</a>) -&gt; impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/iter/traits/iterator/trait.Iterator.html" title="trait core::iter::traits::iterator::Iterator">Iterator</a>&lt;Item = <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>&gt; + '_</code><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#473-505" title="goto source code">[src]</a></h4></div><h2 id="trait-implementations" class="small-section-header">Trait Implementations<a href="#trait-implementations" class="anchor"></a></h2><div id="trait-implementations-list"><h3 id="impl-Clone" class="impl"><code class="in-band">impl&lt;T:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html" title="trait core::cmp::Ord">Ord</a>&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a> for <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt;</code><a href="#impl-Clone" class="anchor"></a><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#232" title="goto source code">[src]</a></h3><div class="impl-items"><h4 id="method.clone" class="method hidden"><code>fn <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone" class="fnname">clone</a>(&amp;self) -&gt; <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt;</code><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#232" title="goto source code">[src]</a></h4><div class='docblock hidden'><p>Returns a copy of the value. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone">Read more</a></p>
+<div class="footnotes"><hr><ol><li id="fn1"><p>よくある説明では suffix $S[i\dots]$ だと思いますが、それだと納得のいく説明が
+できなかったのでこういう説明になりました。&nbsp;<a href="#fnref1" rev="footnote">↩</a></p></li><li id="fn2"><p><code>$</code> で始まる <code>&lt;pre&gt;</code> がシェルスクリプトではない例。&nbsp;<a href="#fnref2" rev="footnote">↩</a></p></li></ol></div></div><h2 id="implementations" class="small-section-header">Implementations<a href="#implementations" class="anchor"></a></h2><h3 id="impl" class="impl"><code class="in-band">impl&lt;T:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html" title="trait core::cmp::Ord">Ord</a>&gt; <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt;</code><a href="#impl" class="anchor"></a><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#574-608" title="goto source code">[src]</a></h3><div class="impl-items"><h4 id="method.search" class="method"><code>pub fn <a href="#method.search" class="fnname">search</a>(&amp;self, pat: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">&amp;[T]</a>) -&gt; impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/iter/traits/iterator/trait.Iterator.html" title="trait core::iter::traits::iterator::Iterator">Iterator</a>&lt;Item = <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>&gt; + '_</code><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#575-607" title="goto source code">[src]</a></h4></div><h2 id="trait-implementations" class="small-section-header">Trait Implementations<a href="#trait-implementations" class="anchor"></a></h2><div id="trait-implementations-list"><h3 id="impl-Clone" class="impl"><code class="in-band">impl&lt;T:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html" title="trait core::cmp::Ord">Ord</a>&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a> for <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt;</code><a href="#impl-Clone" class="anchor"></a><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#334" title="goto source code">[src]</a></h3><div class="impl-items"><h4 id="method.clone" class="method hidden"><code>fn <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone" class="fnname">clone</a>(&amp;self) -&gt; <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt;</code><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#334" title="goto source code">[src]</a></h4><div class='docblock hidden'><p>Returns a copy of the value. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone">Read more</a></p>
 </div><h4 id="method.clone_from" class="method hidden"><code>pub fn <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from" class="fnname">clone_from</a>(&amp;mut self, source: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>Self)</code><span class="since" title="Stable since Rust version 1.0.0">1.0.0</span><a class="srclink" href="https://doc.rust-lang.org/nightly/src/core/clone.rs.html#128" title="goto source code">[src]</a></h4><div class='docblock hidden'><p>Performs copy-assignment from <code>source</code>. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from">Read more</a></p>
-</div></div><h3 id="impl-Debug" class="impl"><code class="in-band">impl&lt;T:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html" title="trait core::cmp::Ord">Ord</a>&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt;</code><a href="#impl-Debug" class="anchor"></a><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#232" title="goto source code">[src]</a></h3><div class="impl-items"><h4 id="method.fmt" class="method hidden"><code>fn <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt" class="fnname">fmt</a>(&amp;self, f: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>&lt;'_&gt;) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html" title="type core::fmt::Result">Result</a></code><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#232" title="goto source code">[src]</a></h4><div class='docblock hidden'><p>Formats the value using the given formatter. <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt">Read more</a></p>
-</div></div><h3 id="impl-Eq" class="impl"><code class="in-band">impl&lt;T:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html" title="trait core::cmp::Eq">Eq</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html" title="trait core::cmp::Ord">Ord</a>&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html" title="trait core::cmp::Eq">Eq</a> for <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt;</code><a href="#impl-Eq" class="anchor"></a><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#232" title="goto source code">[src]</a></h3><div class="impl-items"></div><h3 id="impl-From%3C%26%27_%20str%3E" class="impl"><code class="in-band">impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;&amp;'_ <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.str.html">str</a>&gt; for <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.char.html">char</a>&gt;</code><a href="#impl-From%3C%26%27_%20str%3E" class="anchor"></a><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#248-252" title="goto source code">[src]</a></h3><div class="impl-items"><h4 id="method.from-1" class="method hidden"><code>fn <a href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from" class="fnname">from</a>(buf: &amp;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.str.html">str</a>) -&gt; Self</code><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#249-251" title="goto source code">[src]</a></h4><div class='docblock hidden'><p>Performs the conversion.</p>
-</div></div><h3 id="impl-From%3CVec%3CT%2C%20Global%3E%3E" class="impl"><code class="in-band">impl&lt;T:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html" title="trait core::cmp::Ord">Ord</a>&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;T, <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/alloc/struct.Global.html" title="struct alloc::alloc::Global">Global</a>&gt;&gt; for <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt;</code><a href="#impl-From%3CVec%3CT%2C%20Global%3E%3E" class="anchor"></a><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#239-246" title="goto source code">[src]</a></h3><div class="impl-items"><h4 id="method.from" class="method hidden"><code>fn <a href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from" class="fnname">from</a>(buf: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;T&gt;) -&gt; Self</code><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#240-245" title="goto source code">[src]</a></h4><div class='docblock hidden'><p>Performs the conversion.</p>
-</div></div><h3 id="impl-PartialEq%3CSuffixArray%3CT%3E%3E" class="impl"><code class="in-band">impl&lt;T:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html" title="trait core::cmp::PartialEq">PartialEq</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html" title="trait core::cmp::Ord">Ord</a>&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html" title="trait core::cmp::PartialEq">PartialEq</a>&lt;<a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt;&gt; for <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt;</code><a href="#impl-PartialEq%3CSuffixArray%3CT%3E%3E" class="anchor"></a><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#232" title="goto source code">[src]</a></h3><div class="impl-items"><h4 id="method.eq" class="method hidden"><code>fn <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#tymethod.eq" class="fnname">eq</a>(&amp;self, other: &amp;<a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt;) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#232" title="goto source code">[src]</a></h4><div class='docblock hidden'><p>This method tests for <code>self</code> and <code>other</code> values to be equal, and is used
+</div></div><h3 id="impl-Debug" class="impl"><code class="in-band">impl&lt;T:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html" title="trait core::cmp::Ord">Ord</a>&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt;</code><a href="#impl-Debug" class="anchor"></a><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#334" title="goto source code">[src]</a></h3><div class="impl-items"><h4 id="method.fmt" class="method hidden"><code>fn <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt" class="fnname">fmt</a>(&amp;self, f: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>&lt;'_&gt;) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html" title="type core::fmt::Result">Result</a></code><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#334" title="goto source code">[src]</a></h4><div class='docblock hidden'><p>Formats the value using the given formatter. <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt">Read more</a></p>
+</div></div><h3 id="impl-Eq" class="impl"><code class="in-band">impl&lt;T:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html" title="trait core::cmp::Eq">Eq</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html" title="trait core::cmp::Ord">Ord</a>&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html" title="trait core::cmp::Eq">Eq</a> for <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt;</code><a href="#impl-Eq" class="anchor"></a><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#334" title="goto source code">[src]</a></h3><div class="impl-items"></div><h3 id="impl-From%3C%26%27_%20str%3E" class="impl"><code class="in-band">impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;&amp;'_ <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.str.html">str</a>&gt; for <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.char.html">char</a>&gt;</code><a href="#impl-From%3C%26%27_%20str%3E" class="anchor"></a><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#350-354" title="goto source code">[src]</a></h3><div class="impl-items"><h4 id="method.from-1" class="method hidden"><code>fn <a href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from" class="fnname">from</a>(buf: &amp;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.str.html">str</a>) -&gt; Self</code><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#351-353" title="goto source code">[src]</a></h4><div class='docblock hidden'><p>Performs the conversion.</p>
+</div></div><h3 id="impl-From%3CVec%3CT%2C%20Global%3E%3E" class="impl"><code class="in-band">impl&lt;T:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html" title="trait core::cmp::Ord">Ord</a>&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;T, <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/alloc/struct.Global.html" title="struct alloc::alloc::Global">Global</a>&gt;&gt; for <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt;</code><a href="#impl-From%3CVec%3CT%2C%20Global%3E%3E" class="anchor"></a><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#341-348" title="goto source code">[src]</a></h3><div class="impl-items"><h4 id="method.from" class="method hidden"><code>fn <a href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from" class="fnname">from</a>(buf: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;T&gt;) -&gt; Self</code><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#342-347" title="goto source code">[src]</a></h4><div class='docblock hidden'><p>Performs the conversion.</p>
+</div></div><h3 id="impl-PartialEq%3CSuffixArray%3CT%3E%3E" class="impl"><code class="in-band">impl&lt;T:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html" title="trait core::cmp::PartialEq">PartialEq</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html" title="trait core::cmp::Ord">Ord</a>&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html" title="trait core::cmp::PartialEq">PartialEq</a>&lt;<a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt;&gt; for <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt;</code><a href="#impl-PartialEq%3CSuffixArray%3CT%3E%3E" class="anchor"></a><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#334" title="goto source code">[src]</a></h3><div class="impl-items"><h4 id="method.eq" class="method hidden"><code>fn <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#tymethod.eq" class="fnname">eq</a>(&amp;self, other: &amp;<a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt;) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#334" title="goto source code">[src]</a></h4><div class='docblock hidden'><p>This method tests for <code>self</code> and <code>other</code> values to be equal, and is used
 by <code>==</code>. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#tymethod.eq">Read more</a></p>
-</div><h4 id="method.ne" class="method hidden"><code>fn <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#method.ne" class="fnname">ne</a>(&amp;self, other: &amp;<a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt;) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#232" title="goto source code">[src]</a></h4><div class='docblock hidden'><p>This method tests for <code>!=</code>.</p>
-</div></div><h3 id="impl-StructuralEq" class="impl"><code class="in-band">impl&lt;T:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html" title="trait core::cmp::Ord">Ord</a>&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.StructuralEq.html" title="trait core::marker::StructuralEq">StructuralEq</a> for <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt;</code><a href="#impl-StructuralEq" class="anchor"></a><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#232" title="goto source code">[src]</a></h3><div class="impl-items"></div><h3 id="impl-StructuralPartialEq" class="impl"><code class="in-band">impl&lt;T:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html" title="trait core::cmp::Ord">Ord</a>&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.StructuralPartialEq.html" title="trait core::marker::StructuralPartialEq">StructuralPartialEq</a> for <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt;</code><a href="#impl-StructuralPartialEq" class="anchor"></a><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#232" title="goto source code">[src]</a></h3><div class="impl-items"></div></div><h2 id="synthetic-implementations" class="small-section-header">Auto Trait Implementations<a href="#synthetic-implementations" class="anchor"></a></h2><div id="synthetic-implementations-list"><h3 id="impl-RefUnwindSafe" class="impl"><code class="in-band">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/std/panic/trait.RefUnwindSafe.html" title="trait std::panic::RefUnwindSafe">RefUnwindSafe</a> for <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: <a class="trait" href="https://doc.rust-lang.org/nightly/std/panic/trait.RefUnwindSafe.html" title="trait std::panic::RefUnwindSafe">RefUnwindSafe</a>,&nbsp;</span></code><a href="#impl-RefUnwindSafe" class="anchor"></a><a class="srclink" href="../../../src/nekolib/lib.rs.html#1" title="goto source code">[src]</a></h3><div class="impl-items"></div><h3 id="impl-Send" class="impl"><code class="in-band">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> for <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a>,&nbsp;</span></code><a href="#impl-Send" class="anchor"></a><a class="srclink" href="../../../src/nekolib/lib.rs.html#1" title="goto source code">[src]</a></h3><div class="impl-items"></div><h3 id="impl-Sync" class="impl"><code class="in-band">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html" title="trait core::marker::Sync">Sync</a> for <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html" title="trait core::marker::Sync">Sync</a>,&nbsp;</span></code><a href="#impl-Sync" class="anchor"></a><a class="srclink" href="../../../src/nekolib/lib.rs.html#1" title="goto source code">[src]</a></h3><div class="impl-items"></div><h3 id="impl-Unpin" class="impl"><code class="in-band">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Unpin.html" title="trait core::marker::Unpin">Unpin</a> for <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Unpin.html" title="trait core::marker::Unpin">Unpin</a>,&nbsp;</span></code><a href="#impl-Unpin" class="anchor"></a><a class="srclink" href="../../../src/nekolib/lib.rs.html#1" title="goto source code">[src]</a></h3><div class="impl-items"></div><h3 id="impl-UnwindSafe" class="impl"><code class="in-band">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/std/panic/trait.UnwindSafe.html" title="trait std::panic::UnwindSafe">UnwindSafe</a> for <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: <a class="trait" href="https://doc.rust-lang.org/nightly/std/panic/trait.UnwindSafe.html" title="trait std::panic::UnwindSafe">UnwindSafe</a>,&nbsp;</span></code><a href="#impl-UnwindSafe" class="anchor"></a><a class="srclink" href="../../../src/nekolib/lib.rs.html#1" title="goto source code">[src]</a></h3><div class="impl-items"></div></div><h2 id="blanket-implementations" class="small-section-header">Blanket Implementations<a href="#blanket-implementations" class="anchor"></a></h2><div id="blanket-implementations-list"><h3 id="impl-Any" class="impl"><code class="in-band">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/any/trait.Any.html" title="trait core::any::Any">Any</a> for T <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: 'static + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,&nbsp;</span></code><a href="#impl-Any" class="anchor"></a><a class="srclink" href="https://doc.rust-lang.org/nightly/src/core/any.rs.html#131-135" title="goto source code">[src]</a></h3><div class="impl-items"><h4 id="method.type_id" class="method hidden"><code>pub fn <a href="https://doc.rust-lang.org/nightly/core/any/trait.Any.html#tymethod.type_id" class="fnname">type_id</a>(&amp;self) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/any/struct.TypeId.html" title="struct core::any::TypeId">TypeId</a></code><a class="srclink" href="https://doc.rust-lang.org/nightly/src/core/any.rs.html#132" title="goto source code">[src]</a></h4><div class='docblock hidden'><p>Gets the <code>TypeId</code> of <code>self</code>. <a href="https://doc.rust-lang.org/nightly/core/any/trait.Any.html#tymethod.type_id">Read more</a></p>
+</div><h4 id="method.ne" class="method hidden"><code>fn <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#method.ne" class="fnname">ne</a>(&amp;self, other: &amp;<a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt;) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#334" title="goto source code">[src]</a></h4><div class='docblock hidden'><p>This method tests for <code>!=</code>.</p>
+</div></div><h3 id="impl-StructuralEq" class="impl"><code class="in-band">impl&lt;T:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html" title="trait core::cmp::Ord">Ord</a>&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.StructuralEq.html" title="trait core::marker::StructuralEq">StructuralEq</a> for <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt;</code><a href="#impl-StructuralEq" class="anchor"></a><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#334" title="goto source code">[src]</a></h3><div class="impl-items"></div><h3 id="impl-StructuralPartialEq" class="impl"><code class="in-band">impl&lt;T:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html" title="trait core::cmp::Ord">Ord</a>&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.StructuralPartialEq.html" title="trait core::marker::StructuralPartialEq">StructuralPartialEq</a> for <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt;</code><a href="#impl-StructuralPartialEq" class="anchor"></a><a class="srclink" href="../../../src/nekolib/seq/suffix_array.rs.html#334" title="goto source code">[src]</a></h3><div class="impl-items"></div></div><h2 id="synthetic-implementations" class="small-section-header">Auto Trait Implementations<a href="#synthetic-implementations" class="anchor"></a></h2><div id="synthetic-implementations-list"><h3 id="impl-RefUnwindSafe" class="impl"><code class="in-band">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/std/panic/trait.RefUnwindSafe.html" title="trait std::panic::RefUnwindSafe">RefUnwindSafe</a> for <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: <a class="trait" href="https://doc.rust-lang.org/nightly/std/panic/trait.RefUnwindSafe.html" title="trait std::panic::RefUnwindSafe">RefUnwindSafe</a>,&nbsp;</span></code><a href="#impl-RefUnwindSafe" class="anchor"></a><a class="srclink" href="../../../src/nekolib/lib.rs.html#1" title="goto source code">[src]</a></h3><div class="impl-items"></div><h3 id="impl-Send" class="impl"><code class="in-band">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> for <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a>,&nbsp;</span></code><a href="#impl-Send" class="anchor"></a><a class="srclink" href="../../../src/nekolib/lib.rs.html#1" title="goto source code">[src]</a></h3><div class="impl-items"></div><h3 id="impl-Sync" class="impl"><code class="in-band">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html" title="trait core::marker::Sync">Sync</a> for <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html" title="trait core::marker::Sync">Sync</a>,&nbsp;</span></code><a href="#impl-Sync" class="anchor"></a><a class="srclink" href="../../../src/nekolib/lib.rs.html#1" title="goto source code">[src]</a></h3><div class="impl-items"></div><h3 id="impl-Unpin" class="impl"><code class="in-band">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Unpin.html" title="trait core::marker::Unpin">Unpin</a> for <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Unpin.html" title="trait core::marker::Unpin">Unpin</a>,&nbsp;</span></code><a href="#impl-Unpin" class="anchor"></a><a class="srclink" href="../../../src/nekolib/lib.rs.html#1" title="goto source code">[src]</a></h3><div class="impl-items"></div><h3 id="impl-UnwindSafe" class="impl"><code class="in-band">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/std/panic/trait.UnwindSafe.html" title="trait std::panic::UnwindSafe">UnwindSafe</a> for <a class="struct" href="../../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: <a class="trait" href="https://doc.rust-lang.org/nightly/std/panic/trait.UnwindSafe.html" title="trait std::panic::UnwindSafe">UnwindSafe</a>,&nbsp;</span></code><a href="#impl-UnwindSafe" class="anchor"></a><a class="srclink" href="../../../src/nekolib/lib.rs.html#1" title="goto source code">[src]</a></h3><div class="impl-items"></div></div><h2 id="blanket-implementations" class="small-section-header">Blanket Implementations<a href="#blanket-implementations" class="anchor"></a></h2><div id="blanket-implementations-list"><h3 id="impl-Any" class="impl"><code class="in-band">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/any/trait.Any.html" title="trait core::any::Any">Any</a> for T <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: 'static + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,&nbsp;</span></code><a href="#impl-Any" class="anchor"></a><a class="srclink" href="https://doc.rust-lang.org/nightly/src/core/any.rs.html#131-135" title="goto source code">[src]</a></h3><div class="impl-items"><h4 id="method.type_id" class="method hidden"><code>pub fn <a href="https://doc.rust-lang.org/nightly/core/any/trait.Any.html#tymethod.type_id" class="fnname">type_id</a>(&amp;self) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/any/struct.TypeId.html" title="struct core::any::TypeId">TypeId</a></code><a class="srclink" href="https://doc.rust-lang.org/nightly/src/core/any.rs.html#132" title="goto source code">[src]</a></h4><div class='docblock hidden'><p>Gets the <code>TypeId</code> of <code>self</code>. <a href="https://doc.rust-lang.org/nightly/core/any/trait.Any.html#tymethod.type_id">Read more</a></p>
 </div></div><h3 id="impl-Borrow%3CT%3E" class="impl"><code class="in-band">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html" title="trait core::borrow::Borrow">Borrow</a>&lt;T&gt; for T <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,&nbsp;</span></code><a href="#impl-Borrow%3CT%3E" class="anchor"></a><a class="srclink" href="https://doc.rust-lang.org/nightly/src/core/borrow.rs.html#207-211" title="goto source code">[src]</a></h3><div class="impl-items"><h4 id="method.borrow" class="method hidden"><code>pub fn <a href="https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html#tymethod.borrow" class="fnname">borrow</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>T</code><a class="srclink" href="https://doc.rust-lang.org/nightly/src/core/borrow.rs.html#208" title="goto source code">[src]</a></h4><div class='docblock hidden'><p>Immutably borrows from an owned value. <a href="https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html#tymethod.borrow">Read more</a></p>
 </div></div><h3 id="impl-BorrowMut%3CT%3E" class="impl"><code class="in-band">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/borrow/trait.BorrowMut.html" title="trait core::borrow::BorrowMut">BorrowMut</a>&lt;T&gt; for T <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,&nbsp;</span></code><a href="#impl-BorrowMut%3CT%3E" class="anchor"></a><a class="srclink" href="https://doc.rust-lang.org/nightly/src/core/borrow.rs.html#214-218" title="goto source code">[src]</a></h3><div class="impl-items"><h4 id="method.borrow_mut" class="method hidden"><code>pub fn <a href="https://doc.rust-lang.org/nightly/core/borrow/trait.BorrowMut.html#tymethod.borrow_mut" class="fnname">borrow_mut</a>(&amp;mut self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;mut </a>T</code><a class="srclink" href="https://doc.rust-lang.org/nightly/src/core/borrow.rs.html#215" title="goto source code">[src]</a></h4><div class='docblock hidden'><p>Mutably borrows from an owned value. <a href="https://doc.rust-lang.org/nightly/core/borrow/trait.BorrowMut.html#tymethod.borrow_mut">Read more</a></p>
 </div></div><h3 id="impl-From%3CT%3E" class="impl"><code class="in-band">impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;T&gt; for T</code><a href="#impl-From%3CT%3E" class="anchor"></a><a class="srclink" href="https://doc.rust-lang.org/nightly/src/core/convert/mod.rs.html#545-549" title="goto source code">[src]</a></h3><div class="impl-items"><h4 id="method.from-2" class="method hidden"><code>pub fn <a href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from" class="fnname">from</a>(t: T) -&gt; T</code><a class="srclink" href="https://doc.rust-lang.org/nightly/src/core/convert/mod.rs.html#546" title="goto source code">[src]</a></h4><div class='docblock hidden'><p>Performs the conversion.</p>
