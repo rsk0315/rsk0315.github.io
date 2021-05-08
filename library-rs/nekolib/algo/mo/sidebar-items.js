@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["mo","Mo's algorithm。"]]});
+initSidebarItems({"fn":[["mo","Mo’s algorithm。"]]});
