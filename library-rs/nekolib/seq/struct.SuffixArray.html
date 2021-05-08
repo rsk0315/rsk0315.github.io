@@ -189,7 +189,7 @@ S-type と L-type の性質から、すべての $i$ についてソート順で
 12 TGX
 </code></pre>
 <p>各 LMS $i$ に対応する部分文字列が LMS block と等しくなることは簡単に示せて、
-以上より LMS block のソート順が得られることがわかった。また、初めに LMS
+以上より LMS block のソート順が得られることがわかった。なお、初めに LMS
 をバケットに入れるときにソート順に入れていれば、$j = |S|$
 としても同様の議論ができ、接尾辞配列が得られる。</p>
 <h2 id="アルゴリズムの概要" class="section-header"><a href="#アルゴリズムの概要">アルゴリズムの概要</a></h2>
@@ -227,7 +227,7 @@ LMS block を順に並べると次のようになる<sup id="fnref2"><a href="#f
 <p>この順序づけによってできる列 (<em>reduced string</em>) <code>3 2 4 2 4 1 0</code> の接尾辞配列は
 再帰的に SA-IS によって求めることができ、<code>6 5 3 1 0 4 2</code> となる。</p>
 <p>LMS block たちをそのまま連結させると境界部分の文字が重複するのが気になる。
-reduced string 中に暗黙にあるそれらの重複が許されることに触れておく。
+reduced string 中にも暗黙にそれらの重複があるが、それが許されることに触れておく。
 等しいペアについては、重複の 1 文字目で等しければ 2 文字目でも等しいので、
 辞書順比較には影響しない。等しくないペアについて、<code>$</code> 以外の LMS block の形は
 <code>SS..SLL..LS</code> であり、最悪時でも片方に <code>LS</code> が現れた時点で大小関係が決まるので、
@@ -261,19 +261,20 @@ $$ T(n) \le T(n/2) + T(n/4) + \dots + T(1) + O(n) \in O(n). $$</p>
 <p>入力中の文字の種類を $\sigma$、文字列長を $n$ とする。
 SA-IS を用いて構築するため、前処理は $O(\sigma\log(\sigma)+n)$ 時間。</p>
 <p>検索は、パターン長を $m$ として $O(m\log(n))$ 時間。</p>
-<h1 id="notes" class="section-header"><a href="#notes">Notes</a></h1>
-<p>工夫をすると、検索は $O(m+\log(n))$ 時間にできるらしい？</p>
 <h1 id="references" class="section-header"><a href="#references">References</a></h1>
 <ul>
-<li>Nong, Ge, Sen Zhang, and Wai Hong Chan. &quot;Two efficient algorithms for linear time suffix array construction.&quot; <em>IEEE Transactions on Computers</em> 60, no. 10 (2010): 1471-1484.</li>
-<li>Ko, Pang, and Srinivas Aluru. &quot;Space efficient linear time construction of suffix arrays.&quot; In <em>Annual Symposium on Combinatorial Pattern Matching</em>, pp. 200-210. Springer, Berlin, Heidelberg, 2003.</li>
+<li>Nong, Ge, Sen Zhang, and Wai Hong Chan. &quot;Two efficient algorithms for linear time suffix array construction.&quot; <em>IEEE Transactions on Computers</em> 60, no. 10 (2010): 1471--1484.</li>
+<li>Ko, Pang, and Srinivas Aluru. &quot;Space efficient linear time construction of suffix arrays.&quot; In <em>Annual Symposium on Combinatorial Pattern Matching</em>, pp. 200--210. Springer, Berlin, Heidelberg, 2003.</li>
 </ul>
 <h2 id="see-also" class="section-header"><a href="#see-also">See also</a></h2>
 <p><a href="http://web.stanford.edu/class/archive/cs/cs166/cs166.1206/lectures/04/Slides04.pdf">CS166</a>。
 差分スライドの関係でページ数がめちゃくちゃ多くて重いので注意。軽いのは
 <a href="http://web.stanford.edu/class/archive/cs/cs166/cs166.1206/lectures/04/Small04.pdf">こっち</a>。</p>
 <div class="footnotes"><hr><ol><li id="fn1"><p>よくある説明では suffix $S[i\dots]$ だと思いますが、
-それだと納得のいく説明ができなかったのでこういう説明になりました。&nbsp;<a href="#fnref1" rev="footnote">↩</a></p></li><li id="fn2"><p><code>$</code> で始まる <code>&lt;pre&gt;</code> がシェルスクリプトではない例。&nbsp;<a href="#fnref2" rev="footnote">↩</a></p></li></ol></div></div><h2 id="implementations" class="small-section-header">Implementations<a href="#implementations" class="anchor"></a></h2><h3 id="impl" class="impl"><code class="in-band">impl&lt;T:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html" title="trait core::cmp::Ord">Ord</a>&gt; <a class="struct" href="../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt;</code><a href="#impl" class="anchor"></a><a class="srclink" href="../../src/nekolib/seq/suffix_array.rs.html#555-635" title="goto source code">[src]</a></h3><div class="impl-items"><h4 id="method.search" class="method"><code>pub fn <a href="#method.search" class="fnname">search</a>(&amp;self, pat: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">&amp;[T]</a>) -&gt; impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/iter/traits/iterator/trait.Iterator.html" title="trait core::iter::traits::iterator::Iterator">Iterator</a>&lt;Item = <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>&gt; + '_</code><a class="srclink" href="../../src/nekolib/seq/suffix_array.rs.html#586-618" title="goto source code">[src]</a></h4><div class="docblock"><p>パターン検索を行う。</p>
+それだと納得のいく説明ができなかったのでこういう説明になりました。
+「LMS suffix がソート順に並んでいるときに IS をすると SA
+が得られます」というのが示されたあと、適当な順で LMS suffix を入力して
+IS を実行されると、もやもやします。&nbsp;<a href="#fnref1" rev="footnote">↩</a></p></li><li id="fn2"><p><code>$</code> で始まる <code>&lt;pre&gt;</code> がシェルスクリプトではない例。&nbsp;<a href="#fnref2" rev="footnote">↩</a></p></li></ol></div></div><h2 id="implementations" class="small-section-header">Implementations<a href="#implementations" class="anchor"></a></h2><h3 id="impl" class="impl"><code class="in-band">impl&lt;T:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html" title="trait core::cmp::Ord">Ord</a>&gt; <a class="struct" href="../../nekolib/seq/struct.SuffixArray.html" title="struct nekolib::seq::SuffixArray">SuffixArray</a>&lt;T&gt;</code><a href="#impl" class="anchor"></a><a class="srclink" href="../../src/nekolib/seq/suffix_array.rs.html#555-635" title="goto source code">[src]</a></h3><div class="impl-items"><h4 id="method.search" class="method"><code>pub fn <a href="#method.search" class="fnname">search</a>(&amp;self, pat: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">&amp;[T]</a>) -&gt; impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/iter/traits/iterator/trait.Iterator.html" title="trait core::iter::traits::iterator::Iterator">Iterator</a>&lt;Item = <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>&gt; + '_</code><a class="srclink" href="../../src/nekolib/seq/suffix_array.rs.html#586-618" title="goto source code">[src]</a></h4><div class="docblock"><p>パターン検索を行う。</p>
 <h1 id="complexity-1" class="section-header"><a href="#complexity-1">Complexity</a></h1>
 <p>$O(|T|\log(|S|))$ 時間。</p>
 <h1 id="examples" class="section-header"><a href="#examples">Examples</a></h1>
