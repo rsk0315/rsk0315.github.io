@@ -146,6 +146,22 @@
 <span id="118">118</span>
 <span id="119">119</span>
 <span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 素数の数え上げ。</span>
 
@@ -154,10 +170,25 @@
 <span class="doccomment">/// $n$ 以下の素数の個数 $\\pi(n)$ を返す。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Idea</span>
-<span class="doccomment">/// これから理解します。</span>
+<span class="doccomment">/// 次の二つのパートで構成される。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// 1. Eratosthenes の篩を行う際に篩われる個数を小さい素数について数える</span>
+<span class="doccomment">/// 2. 大きい素数の積で表される合成数を数える</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// $p$ 以下まで篩った際に残っている $2$ 以上 $v$ 以下の整数の個数を $S(v, p)$ と表す。</span>
+<span class="doccomment">/// $p$ が合成数または $p\^2 \\gt n$ のときは変化しないので、$S(v, p) = S(v, p-1)$ が成り立つ。</span>
+<span class="doccomment">/// そうでないとき、すなわち $p$ が $v\^2$ 未満の素数であれば次の式が成り立つ。</span>
+<span class="doccomment">/// $$ S(v, p) = S(v, p-1) - (S(\\lfloor v/p\\rfloor, p-1) - S(p-1, p-1)). $$</span>
+<span class="doccomment">/// このことから、$S(\\lfloor n/\\bullet\\rfloor, \\bullet)$ の値を管理すればよく、</span>
+<span class="doccomment">/// $O(\\sqrt{n})$ space の DP を構成できる。この DP を $p\\le \\sqrt\[4\]{n}$ に対して行う。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// $\\sqrt\[4\]{n}$ 以下の素数について篩った後に残っている整数は、$\\sqrt\[4\]{n}$</span>
+<span class="doccomment">/// より大きい素因数たかだか $3$ つの積で表されることに注意する。</span>
+<span class="doccomment">/// これを利用して残っている合成数を数えるが、これは</span>
+<span class="doccomment">/// $S(\\lfloor n/\\bullet\\rfloor, \\lfloor\\sqrt\[4\]{n}\\rfloor)$ を用いて計算できる。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// $O(n^{3/4})$ らしいです。</span>
+<span class="doccomment">/// $O(\\sqrt{n})$ space, $O(n^{3/4} / \\log(n))$ time.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">/// ```</span>
@@ -171,6 +202,7 @@
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # References</span>
+<span class="doccomment">/// - &lt;https://rsk0315.hatenablog.com/entry/2021/05/18/015511&gt;</span>
 <span class="doccomment">/// - &lt;https://judge.yosupo.jp/submission/7976&gt;</span>
 <span class="doccomment">/// - &lt;https://math314.hateblo.jp/entry/2016/06/05/004332&gt;</span>
 <span class="doccomment">/// - &lt;https://projecteuler.net/thread=10;page=5#111677&gt;</span>

@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["sum_divided","$ \\sum_{i=0}^{n-1} \\left\\lfloor\\frac{ai+b}{m}\\right\\rfloor. $"]]});
