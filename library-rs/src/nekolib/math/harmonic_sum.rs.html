@@ -216,6 +216,35 @@
 <span id="188">188</span>
 <span id="189">189</span>
 <span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! $\\sum\_{i=1}^n \\lfloor m/i\\rfloor$ および $\\sum\_{i=1}^n (m\\bmod i)$.</span>
 
@@ -263,6 +292,14 @@
 
 <span class="kw">impl</span> <span class="ident">HarmonicSum</span> {
     <span class="doccomment">/// 前処理を行う。</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// use nekolib::math::HarmonicSum;</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// let m = 100;</span>
+    <span class="doccomment">/// let hs = HarmonicSum::new(m);</span>
+    <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">m</span>: <span class="ident">i128</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">q</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>];
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
@@ -311,6 +348,10 @@
     }
     <span class="doccomment">/// $\\sum\_{i=s}^e \\lfloor m/i\\rfloor$ を返す。</span>
     <span class="doccomment">///</span>
+    <span class="doccomment">/// $\\sum\_{i=s}^{\\infty} \\lfloor m/i\\rfloor = \\sum\_{i=s}^m \\lfloor m/i\\rfloor$</span>
+    <span class="doccomment">/// なので、上限を指定しない場合は $m$ までの和を求める。下限を指定しない場合は</span>
+    <span class="doccomment">/// $1$ からの和を求める。</span>
+    <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use nekolib::math::HarmonicSum;</span>
@@ -318,6 +359,8 @@
     <span class="doccomment">/// let m = 100;</span>
     <span class="doccomment">/// let hs = HarmonicSum::new(m);</span>
     <span class="doccomment">/// assert_eq!(hs.quot(1..=m), (1..=m).map(|i| m / i).sum());</span>
+    <span class="doccomment">/// assert_eq!(hs.quot(..), (1..=m).map(|i| m / i).sum());</span>
+    <span class="doccomment">/// assert_eq!(hs.quot(1..=m), hs.quot(1..=m + 1));</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">quot</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">r</span>: <span class="kw">impl</span> <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">i128</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">i128</span> {
         <span class="kw">let</span> <span class="ident">end</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">r</span>.<span class="ident">end_bound</span>() {
@@ -349,6 +392,12 @@
     }
     <span class="doccomment">/// $\\sum\_{i=s}^e (m\\bmod i)$ を返す。</span>
     <span class="doccomment">///</span>
+    <span class="doccomment">/// 下限を指定しない場合は $1$ からの和を求める。</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Panics</span>
+    <span class="doccomment">/// $\\sum\_{i=s}^{\\infty} (m\\bmod i) = \\infty$ なので、上限が `Unbounded` の場合は</span>
+    <span class="doccomment">/// panic する。</span>
+    <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use nekolib::math::HarmonicSum;</span>
@@ -356,12 +405,21 @@
     <span class="doccomment">/// let m = 100;</span>
     <span class="doccomment">/// let hs = HarmonicSum::new(m);</span>
     <span class="doccomment">/// assert_eq!(hs.rem(1..=m), (1..=m).map(|i| m % i).sum());</span>
+    <span class="doccomment">/// assert_eq!(hs.rem(..=m), (1..=m).map(|i| m % i).sum());</span>
+    <span class="doccomment">/// assert_ne!(hs.rem(1..=m), hs.rem(1..=m + 1)); // m % (m + 1) = m &gt; 0</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```should_panic</span>
+    <span class="doccomment">/// use nekolib::math::HarmonicSum;</span>
+    <span class="doccomment">/// let m = 100;</span>
+    <span class="doccomment">/// let hs = HarmonicSum::new(m);</span>
+    <span class="doccomment">/// let infty = hs.rem(1..); // diverges</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rem</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">r</span>: <span class="kw">impl</span> <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">i128</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">i128</span> {
         <span class="kw">let</span> <span class="ident">end</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">r</span>.<span class="ident">end_bound</span>() {
             <span class="ident">Included</span>(<span class="kw-2">&amp;</span><span class="ident">e</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">rem_internal</span>(<span class="ident">e</span>),
             <span class="ident">Excluded</span>(<span class="kw-2">&amp;</span><span class="ident">e</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">rem_internal</span>(<span class="ident">e</span> <span class="op">-</span> <span class="number">1</span>),
-            <span class="ident">Unbounded</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">rsum</span>.<span class="ident">last</span>().<span class="ident">unwrap</span>(),
+            <span class="ident">Unbounded</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;the infinite sum does not converge&quot;</span>),
         };
         <span class="kw">let</span> <span class="ident">start</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">r</span>.<span class="ident">start_bound</span>() {
             <span class="ident">Included</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">rem_internal</span>(<span class="ident">s</span> <span class="op">-</span> <span class="number">1</span>),
