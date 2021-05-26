@@ -244,7 +244,6 @@
 <span id="216">216</span>
 <span id="217">217</span>
 <span id="218">218</span>
-<span id="219">219</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! $\\sum\_{i=1}^n \\lfloor m/i\\rfloor$ および $\\sum\_{i=1}^n (m\\bmod i)$.</span>
 
@@ -330,7 +329,6 @@
         } <span class="kw">else</span> {
             <span class="self">self</span>.<span class="ident">q</span>.<span class="ident">len</span>() <span class="op">-</span> (<span class="self">self</span>.<span class="ident">m</span> <span class="op">/</span> <span class="ident">n</span>) <span class="kw">as</span> <span class="ident">usize</span>
         };
-        <span class="macro">eprintln</span><span class="macro">!</span>(<span class="string">&quot;self.m: {}, search({}) = {}&quot;</span>, <span class="self">self</span>.<span class="ident">m</span>, <span class="ident">n</span>, <span class="ident">res</span>);
         <span class="ident">res</span>
     }
     <span class="kw">fn</span> <span class="ident">quot_internal</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">i128</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">i128</span> {
