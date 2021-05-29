@@ -101,39 +101,27 @@
 <span id="73">73</span>
 <span id="74">74</span>
 <span id="75">75</span>
-<span id="76">76</span>
-<span id="77">77</span>
-<span id="78">78</span>
-<span id="79">79</span>
-<span id="80">80</span>
-<span id="81">81</span>
-<span id="82">82</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 三分探索（実数）。</span>
 
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">Range</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">RangeInclusive</span>;
 
 <span class="doccomment">/// 三分探索で極値を探す。</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// # Requirements</span>
-<span class="doccomment">/// 凸である。</span>
+<span class="doccomment">/// 関数 $f$ の $[x\_l, x\_r]$ における極大値を $x\^\\ast$ として、</span>
+<span class="doccomment">/// $|x-x\^\\ast| \\le \\varepsilon$ なる $x$ を求め、$(x, f(x))$ を返す。</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// # Implementation notes</span>
+<span class="doccomment">/// # Requirements</span>
+<span class="doccomment">/// $f$ は凸である。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Notes</span>
 <span class="doccomment">/// 黄金比を用いて分割する実装のため、関数値を使い回すことができる。</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// 関数 $f$ の呼び出し回数を、区間を三等分する素直な実装と比較する。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// `todo!()`</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Parameters</span>
-<span class="doccomment">/// `todo!()`</span>
-<span class="doccomment">///</span>
 <span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// `todo!()`</span>
+<span class="doccomment">/// `f` の呼び出しを $\\log\_{\\varphi}(\\frac{x\_r-x\_l}{\\varepsilon}) + 1$ 回行う。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Suggestions</span>
-<span class="doccomment">/// `f64` に限らずジェネリックにするべき？ `NonNan` とかを渡したいときもありそう。</span>
-<span class="doccomment">/// 関数の返り値も `T: PartialOrd` にする？</span>
+<span class="doccomment">/// `f64` に限らずジェネリックにするべき？ 関数の返り値も `T: PartialOrd` にする？</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">/// $f(x) = x\^x$ の最小値を求める。</span>
@@ -149,27 +137,25 @@
 <span class="doccomment">/// let xl = 0.0;</span>
 <span class="doccomment">/// let xr = 140.0;</span>
 <span class="doccomment">/// let eps = 1.0e-8;</span>
-<span class="doccomment">/// let (x, y) = extremum_float(xl..xr, eps, f);</span>
+<span class="doccomment">/// let (x, y) = extremum_float(xl..=xr, eps, f);</span>
 <span class="doccomment">/// let y = -y;</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// let e = std::f64::consts::E;</span>
 <span class="doccomment">/// assert!(((1.0 / e) - x).abs() &lt; eps);</span>
 <span class="doccomment">/// assert!((e.powf(-1.0 / e) - y).abs() &lt; eps);</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extremum_float</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="ident">range</span>: <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>, <span class="ident">eps</span>: <span class="ident">f64</span>, <span class="ident">f</span>: <span class="ident">F</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">f64</span>, <span class="ident">f64</span>)
-<span class="kw">where</span>
-    <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="ident">f64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">f64</span>,
-{
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extremum_float</span>(
+    <span class="ident">range</span>: <span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
+    <span class="ident">eps</span>: <span class="ident">f64</span>,
+    <span class="kw-2">mut</span> <span class="ident">f</span>: <span class="kw">impl</span> <span class="ident">FnMut</span>(<span class="ident">f64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">f64</span>,
+) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">f64</span>, <span class="ident">f64</span>) {
     <span class="kw">let</span> <span class="ident">phi</span>: <span class="ident">f64</span> <span class="op">=</span> (<span class="number">1.0</span> <span class="op">+</span> <span class="number">5.0_f64</span>.<span class="ident">sqrt</span>()) <span class="op">/</span> <span class="number">2.0</span>;
     <span class="kw">let</span> <span class="ident">phi_p1</span> <span class="op">=</span> <span class="ident">phi</span> <span class="op">+</span> <span class="number">1.0</span>;
 
-    <span class="kw">let</span> <span class="ident">Range</span> {
-        <span class="ident">start</span>: <span class="kw-2">mut</span> <span class="ident">xl</span>,
-        <span class="ident">end</span>: <span class="kw-2">mut</span> <span class="ident">xr</span>,
-    } <span class="op">=</span> <span class="ident">range</span>;
+    <span class="kw">let</span> <span class="kw-2">&amp;</span>(<span class="kw-2">mut</span> <span class="ident">xl</span>) <span class="op">=</span> <span class="ident">range</span>.<span class="ident">start</span>();
+    <span class="kw">let</span> <span class="kw-2">&amp;</span>(<span class="kw-2">mut</span> <span class="ident">xr</span>) <span class="op">=</span> <span class="ident">range</span>.<span class="ident">end</span>();
 
-    <span class="kw">let</span> <span class="ident">iter</span> <span class="op">=</span>
-        <span class="kw">unsafe</span> { ((<span class="ident">xr</span> <span class="op">-</span> <span class="ident">xl</span>) <span class="op">/</span> <span class="ident">eps</span>).<span class="ident">log</span>(<span class="ident">phi</span>).<span class="ident">to_int_unchecked</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>() } <span class="op">+</span> <span class="number">1</span>;
+    <span class="kw">let</span> <span class="ident">iter</span> <span class="op">=</span> ((<span class="ident">xr</span> <span class="op">-</span> <span class="ident">xl</span>) <span class="op">/</span> <span class="ident">eps</span>).<span class="ident">log</span>(<span class="ident">phi</span>) <span class="kw">as</span> <span class="ident">u32</span> <span class="op">+</span> <span class="number">1</span>;
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xml</span> <span class="op">=</span> (<span class="ident">phi</span> <span class="op">*</span> <span class="ident">xl</span> <span class="op">+</span> <span class="ident">xr</span>) <span class="op">/</span> <span class="ident">phi_p1</span>;
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xmr</span> <span class="op">=</span> (<span class="ident">xl</span> <span class="op">+</span> <span class="ident">phi</span> <span class="op">*</span> <span class="ident">xr</span>) <span class="op">/</span> <span class="ident">phi_p1</span>;

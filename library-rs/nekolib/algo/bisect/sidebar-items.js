@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["bisect","二分探索で境界を探す。"]]});
+initSidebarItems({"fn":[["bisect","二分探索で境界を探す。"],["bisect_slice","二分探索で境界を探す。"]]});
