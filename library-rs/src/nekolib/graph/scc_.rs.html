@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/graph/scc.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>scc.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings"></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/graph/scc_.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>scc_.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings"></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
 <link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png">
 <link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><!-- For newer version of KaTeX, see https://katex.org/docs/browser.html -->
 
@@ -201,11 +201,7 @@
 <span class="doccomment">///     vec![],</span>
 <span class="doccomment">/// ];</span>
 <span class="doccomment">/// let index = |&amp;v: &amp;usize| v;</span>
-<span class="doccomment">/// let delta = |&amp;v: &amp;usize, search: &amp;mut dyn FnMut(usize)| {</span>
-<span class="doccomment">///     for &amp;nv in &amp;g[v] {</span>
-<span class="doccomment">///         search(nv);</span>
-<span class="doccomment">///     }</span>
-<span class="doccomment">/// };</span>
+<span class="doccomment">/// let delta = |&amp;v: &amp;usize| g[v].iter().cloned();</span>
 <span class="doccomment">/// let comp_id = scc(10, 0..10, index, delta);</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// assert_eq!(comp_id, vec![0, 0, 0, 1, 0, 3, 3, 3, 3, 2]);</span>
@@ -216,12 +212,14 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// # References</span>
 <span class="doccomment">/// - &lt;https://niuez.github.io/posts/impl_abstract_dijkstra/&gt;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">scc</span><span class="op">&lt;</span><span class="ident">G</span>, <span class="ident">V</span>, <span class="ident">I</span>, <span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">n</span>: <span class="ident">usize</span>, <span class="ident">vs</span>: <span class="ident">G</span>, <span class="ident">index</span>: <span class="ident">I</span>, <span class="ident">delta</span>: <span class="ident">D</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">scc</span><span class="op">&lt;</span><span class="ident">V</span>, <span class="ident">E</span><span class="op">&gt;</span>(
+    <span class="ident">n</span>: <span class="ident">usize</span>,
+    <span class="ident">vs</span>: <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">V</span><span class="op">&gt;</span>,
+    <span class="ident">index</span>: <span class="kw">impl</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">V</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> <span class="op">+</span> <span class="ident">Copy</span>,
+    <span class="ident">delta</span>: <span class="kw">impl</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">V</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">E</span> <span class="op">+</span> <span class="ident">Copy</span>,
+) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>
 <span class="kw">where</span>
-    <span class="ident">G</span>: <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">V</span><span class="op">&gt;</span>,
-    <span class="ident">V</span>: <span class="ident">Clone</span>,
-    <span class="ident">I</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">V</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> <span class="op">+</span> <span class="ident">Copy</span>,
-    <span class="ident">D</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">V</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="kw">dyn</span> <span class="ident">FnMut</span>(<span class="ident">V</span>)) <span class="op">+</span> <span class="ident">Copy</span>,
+    <span class="ident">E</span>: <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">V</span><span class="op">&gt;</span>,
 {
     <span class="kw">struct</span> <span class="ident">State</span> {
         <span class="ident">scc</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span><span class="op">&gt;</span>,
@@ -232,11 +230,13 @@
         <span class="ident">t</span>: <span class="ident">usize</span>,
     }
 
-    <span class="kw">fn</span> <span class="ident">dfs</span><span class="op">&lt;</span><span class="ident">V</span>, <span class="ident">I</span>, <span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">v</span>: <span class="ident">V</span>, <span class="ident">index</span>: <span class="ident">I</span>, <span class="ident">delta</span>: <span class="ident">D</span>, <span class="ident">state</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">State</span>)
-    <span class="kw">where</span>
-        <span class="ident">V</span>: <span class="ident">Clone</span>,
-        <span class="ident">I</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">V</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> <span class="op">+</span> <span class="ident">Copy</span>,
-        <span class="ident">D</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">V</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="kw">dyn</span> <span class="ident">FnMut</span>(<span class="ident">V</span>)) <span class="op">+</span> <span class="ident">Copy</span>,
+    <span class="kw">fn</span> <span class="ident">dfs</span><span class="op">&lt;</span><span class="ident">V</span>, <span class="ident">E</span><span class="op">&gt;</span>(
+        <span class="ident">v</span>: <span class="ident">V</span>,
+        <span class="ident">index</span>: <span class="kw">impl</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">V</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> <span class="op">+</span> <span class="ident">Copy</span>,
+        <span class="ident">delta</span>: <span class="kw">impl</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">V</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">E</span> <span class="op">+</span> <span class="ident">Copy</span>,
+        <span class="ident">state</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">State</span>,
+    ) <span class="kw">where</span>
+        <span class="ident">E</span>: <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">V</span><span class="op">&gt;</span>,
     {
         <span class="ident">state</span>.<span class="ident">t</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
         <span class="kw">let</span> <span class="ident">vi</span> <span class="op">=</span> <span class="ident">index</span>(<span class="kw-2">&amp;</span><span class="ident">v</span>);
@@ -244,7 +244,7 @@
         <span class="ident">state</span>.<span class="ident">num</span>[<span class="ident">vi</span>] <span class="op">=</span> <span class="ident">state</span>.<span class="ident">t</span>;
         <span class="ident">state</span>.<span class="ident">s</span>.<span class="ident">push</span>(<span class="ident">vi</span>);
         <span class="ident">state</span>.<span class="ident">ins</span>[<span class="ident">vi</span>] <span class="op">=</span> <span class="bool-val">true</span>;
-        <span class="ident">delta</span>(<span class="kw-2">&amp;</span><span class="ident">v</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="op">|</span><span class="ident">nv</span><span class="op">|</span> {
+        <span class="kw">for</span> <span class="ident">nv</span> <span class="kw">in</span> <span class="ident">delta</span>(<span class="kw-2">&amp;</span><span class="ident">v</span>) {
             <span class="kw">let</span> <span class="ident">nvi</span> <span class="op">=</span> <span class="ident">index</span>(<span class="kw-2">&amp;</span><span class="ident">nv</span>);
             <span class="kw">if</span> <span class="ident">state</span>.<span class="ident">num</span>[<span class="ident">nvi</span>] <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
                 <span class="ident">dfs</span>(<span class="ident">nv</span>, <span class="ident">index</span>, <span class="ident">delta</span>, <span class="ident">state</span>);
@@ -252,7 +252,7 @@
             } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">state</span>.<span class="ident">ins</span>[<span class="ident">nvi</span>] {
                 <span class="ident">state</span>.<span class="ident">low</span>[<span class="ident">vi</span>] <span class="op">=</span> <span class="ident">state</span>.<span class="ident">low</span>[<span class="ident">vi</span>].<span class="ident">min</span>(<span class="ident">state</span>.<span class="ident">num</span>[<span class="ident">nvi</span>]);
             }
-        });
+        }
         <span class="kw">if</span> <span class="ident">state</span>.<span class="ident">low</span>[<span class="ident">vi</span>] <span class="op">=</span><span class="op">=</span> <span class="ident">state</span>.<span class="ident">num</span>[<span class="ident">vi</span>] {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
             <span class="kw">loop</span> {
