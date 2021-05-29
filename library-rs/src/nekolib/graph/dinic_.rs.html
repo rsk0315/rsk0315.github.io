@@ -261,6 +261,29 @@
 <span id="233">233</span>
 <span id="234">234</span>
 <span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 最大流 (Dinic)。</span>
 
@@ -289,6 +312,28 @@
 <span class="doccomment">///     - 二部マッチングであれば $k = 1$ であり、$O(|V|^{1/2}|E|)$ 時間。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// 次のようなグラフを考える。</span>
+<span class="doccomment">/// [Wikipedia](https://en.wikipedia.org/wiki/Dinic%27s_algorithm#Example) にある例である。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ```text</span>
+<span class="doccomment">///       10           4       10</span>
+<span class="doccomment">///  +--------&gt; [1] ----&gt; [3] -------+</span>
+<span class="doccomment">///  |           | \       ^ 4       |</span>
+<span class="doccomment">///  |           |  \  8   |         v</span>
+<span class="doccomment">/// [0]        2 |   \--&gt; [4] ----&gt; [5]</span>
+<span class="doccomment">///  |           |         ^   10</span>
+<span class="doccomment">///  |    10     v     9   |</span>
+<span class="doccomment">///  +--------&gt; [2] -------+</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// 流れるフローは次の通りで、$19$ である。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// - $(0, 1, 3, 5)$ に $4$</span>
+<span class="doccomment">/// - $(0, 1, 4, 5)$ に $6$</span>
+<span class="doccomment">/// - $(0, 2, 4, 5)$ に $4$</span>
+<span class="doccomment">/// - $(0, 2, 4, 3, 5)$ に $5$</span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use std::cell::RefCell;</span>
 <span class="doccomment">/// use std::rc::Rc;</span>
@@ -443,6 +488,7 @@
     }
 
     <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="ident">es</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">e</span>, <span class="kw">_</span>, <span class="kw">_</span>)<span class="op">|</span> <span class="ident">e</span>.<span class="ident">borrow</span>().<span class="ident">clone</span>()).<span class="ident">min</span>().<span class="ident">unwrap</span>();
+    <span class="macro">eprintln</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">vis</span>);
 
     <span class="kw">for</span> (<span class="ident">w</span>, <span class="ident">nv</span>, <span class="ident">r</span>) <span class="kw">in</span> <span class="ident">es</span> {
         <span class="kw-2">*</span><span class="ident">w</span>.<span class="ident">borrow_mut</span>() <span class="op">-</span><span class="op">=</span> <span class="ident">f</span>.<span class="ident">clone</span>();
