@@ -192,12 +192,6 @@
 <span id="164">164</span>
 <span id="165">165</span>
 <span id="166">166</span>
-<span id="167">167</span>
-<span id="168">168</span>
-<span id="169">169</span>
-<span id="170">170</span>
-<span id="171">171</span>
-<span id="172">172</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! fold 可能キュー。</span>
 
@@ -323,9 +317,7 @@
     <span class="ident">M</span>::<span class="ident">Set</span>: <span class="ident">Clone</span>,
 {
     <span class="kw">type</span> <span class="ident">Input</span> <span class="op">=</span> <span class="ident">M</span>::<span class="ident">Set</span>;
-    <span class="kw">fn</span> <span class="ident">push</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">x</span>: <span class="self">Self</span>::<span class="ident">Input</span>) {
-        <span class="self">self</span>.<span class="ident">push_back</span>(<span class="ident">x</span>);
-    }
+    <span class="kw">fn</span> <span class="ident">push</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">x</span>: <span class="self">Self</span>::<span class="ident">Input</span>) { <span class="self">self</span>.<span class="ident">push_back</span>(<span class="ident">x</span>); }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">Monoid</span><span class="op">&gt;</span> <span class="ident">PopFront</span> <span class="kw">for</span> <span class="ident">FoldableQueue</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
@@ -347,9 +339,7 @@
     <span class="ident">M</span>::<span class="ident">Set</span>: <span class="ident">Clone</span>,
 {
     <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">M</span>::<span class="ident">Set</span>;
-    <span class="kw">fn</span> <span class="ident">pop</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Output</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">pop_front</span>()
-    }
+    <span class="kw">fn</span> <span class="ident">pop</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Output</span><span class="op">&gt;</span> { <span class="self">self</span>.<span class="ident">pop_front</span>() }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">Monoid</span><span class="op">&gt;</span> <span class="ident">Fold</span><span class="op">&lt;</span><span class="ident">RangeFull</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">FoldableQueue</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
@@ -367,9 +357,7 @@
 <span class="kw">where</span>
     <span class="ident">M</span>::<span class="ident">Set</span>: <span class="ident">Clone</span>,
 {
-    <span class="kw">fn</span> <span class="ident">default</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="self">Self</span>::<span class="ident">new</span>()
-    }
+    <span class="kw">fn</span> <span class="ident">default</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> { <span class="self">Self</span>::<span class="ident">new</span>() }
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-search-js="../../../search-index.js"></div>

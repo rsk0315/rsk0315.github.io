@@ -177,8 +177,6 @@
 <span id="149">149</span>
 <span id="150">150</span>
 <span id="151">151</span>
-<span id="152">152</span>
-<span id="153">153</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 線形篩。</span>
 
@@ -275,9 +273,7 @@
     <span class="doccomment">/// assert!(sieve.is_prime(23));</span>
     <span class="doccomment">/// assert!(!sieve.is_prime(24));</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_prime</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-        <span class="ident">n</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">2</span> <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">lpf</span>[<span class="ident">n</span>] <span class="op">=</span><span class="op">=</span> <span class="ident">n</span>
-    }
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_prime</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> { <span class="ident">n</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">2</span> <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">lpf</span>[<span class="ident">n</span>] <span class="op">=</span><span class="op">=</span> <span class="ident">n</span> }
 
     <span class="doccomment">/// $n$ の最小素因数を返す。</span>
     <span class="doccomment">///</span>
