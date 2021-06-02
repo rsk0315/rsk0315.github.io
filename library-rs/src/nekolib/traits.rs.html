@@ -93,6 +93,12 @@
 <span id="65">65</span>
 <span id="66">66</span>
 <span id="67">67</span>
+<span id="68">68</span>
+<span id="69">69</span>
+<span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! トレイトたち。</span>
 <span class="doccomment">//!</span>
@@ -102,17 +108,19 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">additive</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">assoc_val</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">binop</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">count</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">disjoint_set</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">elastic_slice</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">find_nth</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">fold</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">fold_bisect</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">get_mut</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">max</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">min</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">multiplicative</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">nth_min</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">push_pop</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">range_bounds</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">rank_select</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">set_value</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">stateful_predicate</span>;
 
@@ -131,11 +139,15 @@
     <span class="ident">PartialRecip</span>, <span class="ident">Recip</span>, <span class="ident">Ring</span>, <span class="ident">Semigroup</span>,
 };
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">count</span>::{<span class="ident">Count</span>, <span class="ident">Count3way</span>};
+<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">disjoint_set</span>::<span class="ident">DisjointSet</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">elastic_slice</span>::{
     <span class="ident">ElasticSlice</span>, <span class="ident">ExpandBack</span>, <span class="ident">ExpandFront</span>, <span class="ident">ShrinkBack</span>, <span class="ident">ShrinkFront</span>, <span class="ident">SliceHash</span>,
 };
+<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">find_nth</span>::<span class="ident">FindNth</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">fold</span>::<span class="ident">Fold</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
@@ -149,14 +161,14 @@
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">multiplicative</span>::{<span class="ident">MulAssoc</span>, <span class="ident">MulComm</span>, <span class="ident">MulRecip</span>, <span class="ident">One</span>};
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">nth_min</span>::<span class="ident">NthMin</span>;
+<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">push_pop</span>::{<span class="ident">Pop</span>, <span class="ident">PopBack</span>, <span class="ident">PopFront</span>, <span class="ident">Push</span>, <span class="ident">PushBack</span>, <span class="ident">PushFront</span>};
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">range_bounds</span>::{
     <span class="ident">EndBounded</span>, <span class="ident">EndExclusive</span>, <span class="ident">EndInclusive</span>, <span class="ident">EndUnbounded</span>, <span class="ident">StartBounded</span>,
     <span class="ident">StartInclusive</span>, <span class="ident">StartUnbounded</span>,
 };
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">rank_select</span>::<span class="ident">RankSelect</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">set_value</span>::<span class="ident">SetValue</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>

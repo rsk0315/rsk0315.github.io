@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["WaveletMatrix",""]]});
+initSidebarItems({"struct":[["WaveletMatrix","wavelet matrix。"]]});
