@@ -58,9 +58,13 @@
 <span id="30">30</span>
 <span id="31">31</span>
 <span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 計数クエリ。</span>
 
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">RangeBounds</span>;
 
 <span class="doccomment">/// 計数クエリ。</span>
@@ -77,6 +81,7 @@
     ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Count3wayResult</span>;
 }
 
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Count3wayResult</span> {
     <span class="ident">lt</span>: <span class="ident">usize</span>,
     <span class="ident">eq</span>: <span class="ident">usize</span>,
@@ -90,6 +95,7 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">gt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">gt</span> }
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">le</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">lt</span> <span class="op">+</span> <span class="self">self</span>.<span class="ident">eq</span> }
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ge</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">gt</span> <span class="op">+</span> <span class="self">self</span>.<span class="ident">eq</span> }
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ne</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">lt</span> <span class="op">+</span> <span class="self">self</span>.<span class="ident">gt</span> }
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-search-js="../../../search-index.js"></div>
