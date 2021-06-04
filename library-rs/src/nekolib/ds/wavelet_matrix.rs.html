@@ -458,14 +458,14 @@
         <span class="kw">let</span> <span class="ident">si</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">start_pos</span>(<span class="ident">value</span>);
         <span class="kw">let</span> <span class="ident">value0</span> <span class="op">=</span> (<span class="ident">value</span> <span class="op">&amp;</span> <span class="number">1</span>) <span class="kw">as</span> <span class="ident">u64</span>;
         <span class="ident">n</span> <span class="op">+</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="number">0</span>].<span class="ident">rank</span>(<span class="ident">si</span>, <span class="ident">value0</span>);
-        <span class="ident">n</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="number">0</span>].<span class="ident">select</span>(<span class="ident">value0</span>, <span class="ident">n</span>);
+        <span class="ident">n</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="number">0</span>].<span class="ident">select</span>(<span class="ident">value0</span>, <span class="ident">n</span>).<span class="ident">unwrap</span>();
 
         <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">1</span>..<span class="self">self</span>.<span class="ident">bitlen</span> {
             <span class="kw">if</span> <span class="ident">value</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">i</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
-                <span class="ident">n</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">select</span>(<span class="number">0</span>, <span class="ident">n</span>);
+                <span class="ident">n</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">select</span>(<span class="number">0</span>, <span class="ident">n</span>).<span class="ident">unwrap</span>();
             } <span class="kw">else</span> {
                 <span class="ident">n</span> <span class="op">-</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">zeros</span>[<span class="ident">i</span>];
-                <span class="ident">n</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">select</span>(<span class="number">1</span>, <span class="ident">n</span>);
+                <span class="ident">n</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">select</span>(<span class="number">1</span>, <span class="ident">n</span>).<span class="ident">unwrap</span>();
             }
         }
         <span class="prelude-val">Some</span>(<span class="ident">n</span>)
