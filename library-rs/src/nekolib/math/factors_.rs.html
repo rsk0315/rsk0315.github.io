@@ -59,14 +59,8 @@
 <span id="31">31</span>
 <span id="32">32</span>
 <span id="33">33</span>
-<span id="34">34</span>
-<span id="35">35</span>
-<span id="36">36</span>
-<span id="37">37</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 素因数分解。</span>
-
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">BTreeMap</span>;
 
 <span class="doccomment">/// 素因数分解。</span>
 <span class="doccomment">///</span>
@@ -77,29 +71,27 @@
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use nekolib::math::factors;</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// let fac: Vec&lt;_&gt; = factors(735134400).collect();</span>
+<span class="doccomment">/// let n = 735134400;</span>
+<span class="doccomment">/// let fac: Vec&lt;_&gt; = factors(n).collect();</span>
 <span class="doccomment">/// assert_eq!(fac, [(2, 6), (3, 3), (5, 2), (7, 1), (11, 1), (13, 1), (17, 1)]);</span>
+<span class="doccomment">/// assert_eq!(factors(n).map(|(p, e)| p.pow(e)).product::&lt;u64&gt;(), n);</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">factors</span>(
-    <span class="kw-2">mut</span> <span class="ident">n</span>: <span class="ident">u64</span>,
-) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> (<span class="ident">u64</span>, <span class="ident">u32</span>)<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">DoubleEndedIterator</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">BTreeMap</span>::<span class="ident">new</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="number">2</span>;
-    <span class="kw">while</span> <span class="ident">i</span> <span class="op">*</span> <span class="ident">i</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">n</span> {
-        <span class="kw">if</span> <span class="ident">n</span> <span class="op">%</span> <span class="ident">i</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">e</span> <span class="op">=</span> <span class="number">0</span>;
-            <span class="kw">while</span> <span class="ident">n</span> <span class="op">%</span> <span class="ident">i</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
-                <span class="ident">n</span> <span class="op">/</span><span class="op">=</span> <span class="ident">i</span>;
-                <span class="ident">e</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">factors</span>(<span class="kw-2">mut</span> <span class="ident">n</span>: <span class="ident">u64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> (<span class="ident">u64</span>, <span class="ident">u32</span>)<span class="op">&gt;</span> {
+    (<span class="number">2</span>..)
+        .<span class="ident">filter_map</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">i</span><span class="op">|</span> {
+            <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">1</span> {
+                <span class="prelude-val">Some</span>(<span class="prelude-val">None</span>)
+            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">i</span> <span class="op">*</span> <span class="ident">i</span> <span class="op">&gt;</span> <span class="ident">n</span> {
+                <span class="prelude-val">Some</span>(<span class="prelude-val">Some</span>((<span class="ident">std</span>::<span class="ident">mem</span>::<span class="ident">take</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">n</span>), <span class="number">1</span>)))
+            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">n</span> <span class="op">%</span> <span class="ident">i</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
+                <span class="prelude-val">None</span>
+            } <span class="kw">else</span> {
+                <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> (<span class="number">0</span>..).<span class="ident">take_while</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">n</span> <span class="op">%</span> <span class="ident">i</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> (<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="bool-val">true</span>)(<span class="ident">n</span> <span class="op">/</span><span class="op">=</span> <span class="ident">i</span>));
+                <span class="prelude-val">Some</span>(<span class="prelude-val">Some</span>((<span class="ident">i</span>, <span class="ident">e</span>.<span class="ident">count</span>() <span class="kw">as</span> <span class="ident">u32</span>)))
             }
-            <span class="ident">res</span>.<span class="ident">insert</span>(<span class="ident">i</span>, <span class="ident">e</span>);
-        }
-        <span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-    }
-    <span class="kw">if</span> <span class="ident">n</span> <span class="op">&gt;</span> <span class="number">1</span> {
-        <span class="ident">res</span>.<span class="ident">insert</span>(<span class="ident">n</span>, <span class="number">1</span>);
-    }
-    <span class="ident">res</span>.<span class="ident">into_iter</span>()
+        })
+        .<span class="ident">take_while</span>(<span class="prelude-ty">Option</span>::<span class="ident">is_some</span>)
+        .<span class="ident">map</span>(<span class="prelude-ty">Option</span>::<span class="ident">unwrap</span>)
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-search-js="../../../search-index.js"></div>
