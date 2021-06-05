@@ -243,7 +243,6 @@
 <span id="215">215</span>
 <span id="216">216</span>
 <span id="217">217</span>
-<span id="218">218</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! $\\sum\_{i=1}^n \\lfloor m/i\\rfloor$ および $\\sum\_{i=1}^n (m\\bmod i)$.</span>
 
@@ -322,14 +321,13 @@
         <span class="self">Self</span> { <span class="ident">m</span>, <span class="ident">q</span>, <span class="ident">qsum</span>, <span class="ident">rsum</span> }
     }
     <span class="kw">fn</span> <span class="ident">search</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">i128</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">n</span> <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">m</span> {
+        <span class="kw">if</span> <span class="ident">n</span> <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">m</span> {
             <span class="self">self</span>.<span class="ident">q</span>.<span class="ident">len</span>()
         } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">n</span> <span class="op">*</span> <span class="ident">n</span> <span class="op">&lt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">m</span> {
             <span class="ident">n</span> <span class="kw">as</span> <span class="ident">usize</span>
         } <span class="kw">else</span> {
             <span class="self">self</span>.<span class="ident">q</span>.<span class="ident">len</span>() <span class="op">-</span> (<span class="self">self</span>.<span class="ident">m</span> <span class="op">/</span> <span class="ident">n</span>) <span class="kw">as</span> <span class="ident">usize</span>
-        };
-        <span class="ident">res</span>
+        }
     }
     <span class="kw">fn</span> <span class="ident">quot_internal</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">i128</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">i128</span> {
         <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">0</span> {
