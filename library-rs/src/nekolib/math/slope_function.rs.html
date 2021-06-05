@@ -270,6 +270,43 @@
 <span id="242">242</span>
 <span id="243">243</span>
 <span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 区分線形凸関数。</span>
 
@@ -312,6 +349,43 @@
 <span class="doccomment">/// // f(x) |  2  0 -2 -4 -6 -7 -8 -9 -9 -8 -7</span>
 <span class="doccomment">/// assert_eq!(sf.min(), -9);</span>
 <span class="doccomment">/// assert_eq!(sf.argmin(), (Included(2), Included(3)));</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Notes</span>
+<span class="doccomment">/// $(a\_1, a\_2, \\dots, a\_n)$ の中央値を $a\_{\\text{med}}$ とすると、</span>
+<span class="doccomment">/// $\\sum\_{i=1}^n |x-a\_i|$ は $x = a\_{\\text{med}}$ のとき最小となる。</span>
+<span class="doccomment">/// このことから、値の追加と中央値を求めるクエリを処理できる。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// use std::ops::Bound::{Included, Excluded, Unbounded};</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// use nekolib::math::SlopeFunction;</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// #[derive(Clone, Default)]</span>
+<span class="doccomment">/// struct IncrementalMedian(SlopeFunction);</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// impl IncrementalMedian {</span>
+<span class="doccomment">///     fn new() -&gt; Self { Self::default() }</span>
+<span class="doccomment">///     fn insert(&amp;mut self, a: i128) { self.0.add_abs(a); }</span>
+<span class="doccomment">///     fn median(&amp;self) -&gt; Option&lt;i128&gt; {</span>
+<span class="doccomment">///         match self.0.argmin().0 {</span>
+<span class="doccomment">///             Included(x) =&gt; Some(x),</span>
+<span class="doccomment">///             Excluded(_) =&gt; unreachable!(),</span>
+<span class="doccomment">///             Unbounded =&gt; None,</span>
+<span class="doccomment">///         }</span>
+<span class="doccomment">///     }</span>
+<span class="doccomment">/// }</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// let mut im = IncrementalMedian::new();</span>
+<span class="doccomment">/// assert_eq!(im.median(), None);</span>
+<span class="doccomment">/// im.insert(2);</span>
+<span class="doccomment">/// assert_eq!(im.median(), Some(2));</span>
+<span class="doccomment">/// im.insert(3);</span>
+<span class="doccomment">/// assert_eq!(im.median(), Some(2));</span>
+<span class="doccomment">/// im.insert(1);</span>
+<span class="doccomment">/// assert_eq!(im.median(), Some(2));</span>
+<span class="doccomment">/// im.insert(1);</span>
+<span class="doccomment">/// assert_eq!(im.median(), Some(1));</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # References</span>
