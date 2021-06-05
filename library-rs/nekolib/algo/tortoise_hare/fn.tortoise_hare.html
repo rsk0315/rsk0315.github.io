@@ -38,9 +38,9 @@ $x_{\mu} = x_{\mu+\lambda}$ なる最小の $(\mu, \lambda)$ を返す。</p>
 ある $x_0$ での出力が $(\mu, \lambda)$ であれば、
 $x_i$ ($1\le i&lt; \mu$) での出力は $(\mu-i, \lambda)$、
 $x_i$ ($\mu\le i&lt;\mu+\lambda$) での出力は $(0, \lambda)$ とわかる。
-さらに、これら $\mu+\lambda$ 個以外の $x’$ についても、
-$f^i(x’)$ がこれらのいずれかと等しくなる $i$ が存在すれば、
-$\Theta(\mu)$ 回の $f$ の呼び出しで $x’, f(x’), \dots, f^{i-1}(x’)$ の出力もわかるはず。</p>
+さらに、これら $\mu+\lambda$ 個以外の $x'$ についても、
+$f^i(x')$ がこれらのいずれかと等しくなる $i$ が存在すれば、
+$\Theta(\mu)$ 回の $f$ の呼び出しで $x', f(x'), \dots, f^{i-1}(x')$ の出力もわかるはず。</p>
 <h1 id="complexity" class="section-header"><a href="#complexity">Complexity</a></h1>
 <p>$\Theta(\mu+\lambda)$ 回の $f$ の呼び出しを行う。</p>
 <h1 id="examples" class="section-header"><a href="#examples">Examples</a></h1>
