@@ -59,10 +59,57 @@
 <span id="31">31</span>
 <span id="32">32</span>
 <span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
+<span id="47">47</span>
+<span id="48">48</span>
+<span id="49">49</span>
+<span id="50">50</span>
+<span id="51">51</span>
+<span id="52">52</span>
+<span id="53">53</span>
+<span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
+<span id="62">62</span>
+<span id="63">63</span>
+<span id="64">64</span>
+<span id="65">65</span>
+<span id="66">66</span>
+<span id="67">67</span>
+<span id="68">68</span>
+<span id="69">69</span>
+<span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
+<span id="76">76</span>
+<span id="77">77</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 素因数分解。</span>
 
 <span class="doccomment">/// 素因数分解。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// $n = \\prod\_{p:\\text{ prime}} p\_i^{e\_i}$ に対して、各 $(p\_i, e\_i)$ を $p\_i$</span>
+<span class="doccomment">/// の昇順に返す。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Complexity</span>
 <span class="doccomment">/// $O(\\sqrt{n})$ time.</span>
@@ -74,7 +121,9 @@
 <span class="doccomment">/// let n = 735134400;</span>
 <span class="doccomment">/// let fac: Vec&lt;_&gt; = factors(n).collect();</span>
 <span class="doccomment">/// assert_eq!(fac, [(2, 6), (3, 3), (5, 2), (7, 1), (11, 1), (13, 1), (17, 1)]);</span>
-<span class="doccomment">/// assert_eq!(factors(n).map(|(p, e)| p.pow(e)).product::&lt;u64&gt;(), n);</span>
+<span class="doccomment">/// assert_eq!(fac.iter().map(|&amp;(p, e)| p.pow(e)).product::&lt;u64&gt;(), n);</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// assert_eq!(factors(1).next(), None);</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">factors</span>(<span class="kw-2">mut</span> <span class="ident">n</span>: <span class="ident">u64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> (<span class="ident">u64</span>, <span class="ident">u32</span>)<span class="op">&gt;</span> {
     (<span class="number">2</span>..)
@@ -92,6 +141,45 @@
         })
         .<span class="ident">take_while</span>(<span class="prelude-ty">Option</span>::<span class="ident">is_some</span>)
         .<span class="ident">map</span>(<span class="prelude-ty">Option</span>::<span class="ident">unwrap</span>)
+}
+
+<span class="doccomment">/// 素因数分解。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// $n = \\prod\_{p:\\text{ prime}} p\_i^{e\_i}$ に対して、各 $p\_i$ を $e\_i$ 個、$p\_i$</span>
+<span class="doccomment">/// の昇順に返す。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Complexity</span>
+<span class="doccomment">/// $O(\\sqrt{n})$ time.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Examples</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// use nekolib::math::factors_dup;</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// let n = 735134400;</span>
+<span class="doccomment">/// let fac: Vec&lt;_&gt; = factors_dup(n).collect();</span>
+<span class="doccomment">/// assert_eq!(fac, [2, 2, 2, 2, 2, 2, 3, 3, 3, 5, 5, 7, 11, 13, 17]);</span>
+<span class="doccomment">/// assert_eq!(fac.iter().product::&lt;u64&gt;(), n);</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// assert_eq!(</span>
+<span class="doccomment">///     factors_dup(2_u64.pow(5) * 3_u64.pow(5)).product::&lt;u64&gt;(),</span>
+<span class="doccomment">///     6_u64.pow(5)</span>
+<span class="doccomment">/// );</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// assert_eq!(factors_dup(1).next(), None);</span>
+<span class="doccomment">/// ```</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">factors_dup</span>(<span class="ident">n</span>: <span class="ident">u64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">u64</span><span class="op">&gt;</span> {
+    <span class="ident">std</span>::<span class="ident">iter</span>::<span class="ident">successors</span>(<span class="prelude-val">Some</span>((<span class="number">2</span>, <span class="ident">n</span>, <span class="bool-val">false</span>)), <span class="op">|</span><span class="kw-2">&amp;</span>(<span class="ident">i</span>, <span class="ident">n</span>, <span class="kw">_</span>)<span class="op">|</span> {
+        <span class="kw">if</span> <span class="ident">n</span> <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
+            <span class="prelude-val">None</span>
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">i</span> <span class="op">*</span> <span class="ident">i</span> <span class="op">&gt;</span> <span class="ident">n</span> {
+            <span class="prelude-val">Some</span>((<span class="ident">n</span>, <span class="number">1</span>, <span class="bool-val">true</span>))
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">n</span> <span class="op">%</span> <span class="ident">i</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+            <span class="prelude-val">Some</span>((<span class="ident">i</span>, <span class="ident">n</span> <span class="op">/</span> <span class="ident">i</span>, <span class="bool-val">true</span>))
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Some</span>((<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>, <span class="ident">n</span>, <span class="bool-val">false</span>))
+        }
+    })
+    .<span class="ident">filter_map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="kw">_</span>, <span class="ident">c</span>)<span class="op">|</span> <span class="kw">if</span> <span class="ident">c</span> { <span class="prelude-val">Some</span>(<span class="ident">i</span>) } <span class="kw">else</span> { <span class="prelude-val">None</span> })
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-search-js="../../../search-index.js"></div>
