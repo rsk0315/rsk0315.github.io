@@ -433,25 +433,23 @@
         <span class="ident">value</span>: <span class="ident">u128</span>,
         <span class="ident">n</span>: <span class="ident">usize</span>,
     ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">Range</span> { <span class="ident">start</span>, <span class="ident">end</span> } <span class="op">=</span> <span class="ident">bounds_within</span>(<span class="ident">range</span>, <span class="self">self</span>.<span class="ident">len</span>);
+        <span class="kw">let</span> <span class="ident">start</span> <span class="op">=</span> <span class="ident">bounds_within</span>(<span class="ident">range</span>, <span class="self">self</span>.<span class="ident">len</span>).<span class="ident">start</span>;
         <span class="kw">let</span> (<span class="ident">lt</span>, <span class="ident">gt</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">count_3way_internal</span>(<span class="number">0</span>..<span class="ident">start</span>, <span class="ident">value</span>);
         <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="ident">start</span> <span class="op">-</span> (<span class="ident">lt</span> <span class="op">+</span> <span class="ident">gt</span>);
-        <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">select</span>(<span class="ident">end</span>, <span class="ident">value</span>, <span class="ident">n</span> <span class="op">+</span> <span class="ident">offset</span> <span class="op">+</span> <span class="number">1</span>)<span class="question-mark">?</span> <span class="op">-</span> <span class="number">1</span>)
+        <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">select</span>(<span class="ident">value</span>, <span class="ident">n</span> <span class="op">+</span> <span class="ident">offset</span> <span class="op">+</span> <span class="number">1</span>)<span class="question-mark">?</span> <span class="op">-</span> <span class="number">1</span>)
     }
 }
 
 <span class="kw">impl</span> <span class="ident">WaveletMatrix</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">select</span>(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">end</span>: <span class="ident">usize</span>,
-        <span class="ident">value</span>: <span class="ident">u128</span>,
-        <span class="kw-2">mut</span> <span class="ident">n</span>: <span class="ident">usize</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rank</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">end</span>: <span class="ident">usize</span>, <span class="ident">value</span>: <span class="ident">u128</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+        <span class="self">self</span>.<span class="ident">count</span>(<span class="number">0</span>..<span class="ident">end</span>, <span class="ident">value</span>..<span class="op">=</span><span class="ident">value</span>)
+    }
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">select</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">value</span>: <span class="ident">u128</span>, <span class="kw-2">mut</span> <span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="ident">n</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
             <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="number">0</span>);
         }
-        <span class="kw">let</span> (<span class="ident">lt</span>, <span class="ident">gt</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">count_3way_internal</span>(<span class="number">0</span>..<span class="ident">end</span>, <span class="ident">value</span>);
-        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="ident">end</span> <span class="op">-</span> (<span class="ident">lt</span> <span class="op">+</span> <span class="ident">gt</span>);
+        <span class="kw">let</span> (<span class="ident">lt</span>, <span class="ident">gt</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">count_3way_internal</span>(<span class="number">0</span>..<span class="self">self</span>.<span class="ident">len</span>, <span class="ident">value</span>);
+        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span> <span class="op">-</span> (<span class="ident">lt</span> <span class="op">+</span> <span class="ident">gt</span>);
         <span class="kw">if</span> <span class="ident">count</span> <span class="op">&lt;</span> <span class="ident">n</span> {
             <span class="kw">return</span> <span class="prelude-val">None</span>;
         }
@@ -506,10 +504,12 @@
         }
     }
 
+    <span class="macro">eprintln</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">buf</span>);
     <span class="kw">for</span> <span class="ident">start</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">count</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="number">8</span>];
         <span class="kw">for</span> <span class="ident">end</span> <span class="kw">in</span> <span class="ident">start</span>..<span class="ident">n</span> {
             <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">buf</span>[<span class="ident">end</span>];
+            <span class="macro">eprintln</span><span class="macro">!</span>(<span class="string">&quot;{:?}, {} ({})&quot;</span>, <span class="ident">start</span>..<span class="op">=</span><span class="ident">end</span>, <span class="ident">x</span>, <span class="ident">count</span>[<span class="ident">x</span> <span class="kw">as</span> <span class="ident">usize</span>]);
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">wm</span>.<span class="ident">find_nth</span>(<span class="ident">start</span>.., <span class="ident">x</span>, <span class="ident">count</span>[<span class="ident">x</span> <span class="kw">as</span> <span class="ident">usize</span>]), <span class="prelude-val">Some</span>(<span class="ident">end</span>));
             <span class="ident">count</span>[<span class="ident">x</span> <span class="kw">as</span> <span class="ident">usize</span>] <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
         }
