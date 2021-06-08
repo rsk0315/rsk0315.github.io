@@ -307,11 +307,13 @@
 <span id="279">279</span>
 <span id="280">280</span>
 <span id="281">281</span>
+<span id="282">282</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 区分線形凸関数。</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">cmp</span>::<span class="ident">Reverse</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">BinaryHeap</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::{<span class="ident">Bound</span>, <span class="ident">RangeInclusive</span>};
 
 <span class="doccomment">/// 区分線形凸関数。</span>
@@ -390,7 +392,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// # References</span>
 <span class="doccomment">/// - &lt;https://maspypy.com/slope-trick-1-%E8%A7%A3%E8%AA%AC%E7%B7%A8&gt;</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SlopeFunction</span> {
     <span class="ident">left</span>: <span class="ident">BinaryHeap</span><span class="op">&lt;</span><span class="ident">i128</span><span class="op">&gt;</span>,
     <span class="ident">right</span>: <span class="ident">BinaryHeap</span><span class="op">&lt;</span><span class="ident">Reverse</span><span class="op">&lt;</span><span class="ident">i128</span><span class="op">&gt;</span><span class="op">&gt;</span>,

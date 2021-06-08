@@ -57,10 +57,14 @@
 <span id="29">29</span>
 <span id="30">30</span>
 <span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! データ構造たち。</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ここに何かを書く。</span>
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">bicremental_median</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">disjoint_sparse_table</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">foldable_deque</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">foldable_queue</span>;
@@ -71,6 +75,8 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">vec_segtree</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">wavelet_matrix</span>;
 
+<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">bicremental_median</span>::<span class="ident">BicrementalMedian</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">disjoint_sparse_table</span>::<span class="ident">DisjointSparseTable</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
