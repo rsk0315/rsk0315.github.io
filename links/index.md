@@ -13,6 +13,8 @@ Twitter で困っている人がいたときにリンクを貼る手間を少な
   - コンテナとかイテレータでこわしている人に貼る
 - [イディオムのやつ](https://rsk0315.hatenablog.com/entry/2020/05/09/170315)
   - おまじないの中身を知りたがっている初心者に貼る
+- [bitset のやつ](https://rsk0315.hatenablog.com/entry/2021/06/08/091128)
+  - 64 倍高速化の話題になったら貼る
 - [セグ木導入](https://rsk0315.hatenablog.com/entry/2020/07/05/184929)
 - [セグ木のスライド](https://hcpc-hokudai.github.io/archive/structure_segtree_001.pdf)
   - セグ木を知りたがっている人に貼る
@@ -58,6 +60,7 @@ Twitter で困っている人がいたときにリンクを貼る手間を少な
 - [貪欲法](https://inzkyk.xyz/algorithms/greedy_algorithm/)
 - [スタック拡張ヤバマクロ](http://www.colun.net/archives/547)
 - [高度合成数のリスト](http://wwwhomes.uni-bielefeld.de/achim/highly.txt)
+- [TeX に変換するやつ](https://www.unicodeit.net/)
 
 ## 過去問
 - 累積和と二項係数
@@ -163,3 +166,4 @@ Twitter で困っている人がいたときにリンクを貼る手間を少な
 - [永続データ構造](https://www.slideshare.net/qnighy/ss-15312828)
 - [14 重 `for`](https://onlinejudge.u-aizu.ac.jp/beta/review.html#RitsCamp19Day3/3415890)
 - [回文](https://codeforces.com/problemset/problem/691/B)
+- [2e-3](https://twitter.com/kyuridenamida/status/1256137028116156416)
