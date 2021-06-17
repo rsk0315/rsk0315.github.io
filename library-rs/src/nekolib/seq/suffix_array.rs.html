@@ -25,7 +25,7 @@
 </script>
 
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet">
-<style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../nekolib/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
+<style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../nekolib/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
                 <a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" height="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
@@ -740,9 +740,9 @@
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 接尾辞配列。</span>
 
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">cmp</span>::<span class="ident">Ordering</span>::{<span class="ident">Equal</span>, <span class="ident">Greater</span>, <span class="ident">Less</span>};
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::{<span class="ident">BTreeMap</span>, <span class="ident">BTreeSet</span>};
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span>;
+<span class="kw">use</span> <span class="ident">std::cmp::Ordering</span>::{<span class="ident">Equal</span>, <span class="ident">Greater</span>, <span class="ident">Less</span>};
+<span class="kw">use</span> <span class="ident">std::collections</span>::{<span class="ident">BTreeMap</span>, <span class="ident">BTreeSet</span>};
+<span class="kw">use</span> <span class="ident">std::fmt::Debug</span>;
 
 <span class="doccomment">/// 接尾辞配列。</span>
 <span class="doccomment">///</span>
@@ -1104,7 +1104,7 @@
         <span class="ident">enc</span>.<span class="ident">into_iter</span>().<span class="ident">enumerate</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">x</span>)<span class="op">|</span> (<span class="ident">x</span>, <span class="ident">i</span>)).<span class="ident">collect</span>();
     <span class="ident">buf</span>.<span class="ident">iter</span>()
         .<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">enc</span>[<span class="ident">x</span>] <span class="op">+</span> <span class="number">1</span>)
-        .<span class="ident">chain</span>(<span class="ident">std</span>::<span class="ident">iter</span>::<span class="ident">once</span>(<span class="number">0</span>)) <span class="comment">// for &#39;$&#39;</span>
+        .<span class="ident">chain</span>(<span class="ident">std::iter::once</span>(<span class="number">0</span>)) <span class="comment">// for &#39;$&#39;</span>
         .<span class="ident">collect</span>()
 }
 
@@ -1115,10 +1115,10 @@
 <span class="kw">fn</span> <span class="ident">hash_chars</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;</span>[<span class="ident">char</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">max</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">buf</span>.<span class="ident">iter</span>().<span class="ident">max</span>() {
         <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">c</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">c</span> <span class="kw">as</span> <span class="ident">usize</span>,
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>], <span class="comment">// &quot;$&quot;</span>
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="macro">vec!</span>[<span class="number">0</span>], <span class="comment">// &quot;$&quot;</span>
     };
     <span class="kw">let</span> <span class="ident">enc</span> <span class="op">=</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">enc</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="ident">max</span> <span class="op">+</span> <span class="number">1</span>];
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">enc</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">max</span> <span class="op">+</span> <span class="number">1</span>];
         <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">c</span> <span class="kw">in</span> <span class="ident">buf</span> {
             <span class="ident">enc</span>[<span class="ident">c</span> <span class="kw">as</span> <span class="ident">usize</span>] <span class="op">=</span> <span class="number">1</span>;
         }
@@ -1128,7 +1128,7 @@
         <span class="ident">enc</span>
     };
     <span class="ident">buf</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">x</span><span class="op">|</span> <span class="ident">enc</span>[<span class="ident">x</span> <span class="kw">as</span> <span class="ident">usize</span>])
-        .<span class="ident">chain</span>(<span class="ident">std</span>::<span class="ident">iter</span>::<span class="ident">once</span>(<span class="number">0</span>)) <span class="comment">// for &#39;$&#39;</span>
+        .<span class="ident">chain</span>(<span class="ident">std::iter::once</span>(<span class="number">0</span>)) <span class="comment">// for &#39;$&#39;</span>
         .<span class="ident">collect</span>()
 }
 
@@ -1146,7 +1146,7 @@
 <span class="doccomment">/// # Requirements</span>
 <span class="doccomment">/// `buf` の要素は `0..buf.len()` に含まれる。</span>
 <span class="kw">fn</span> <span class="ident">count_freq</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;</span>[<span class="ident">usize</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="ident">buf</span>.<span class="ident">len</span>()];
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">buf</span>.<span class="ident">len</span>()];
     <span class="ident">buf</span>.<span class="ident">iter</span>().<span class="ident">for_each</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">x</span><span class="op">|</span> <span class="ident">res</span>[<span class="ident">x</span>] <span class="op">+</span><span class="op">=</span> <span class="number">1</span>);
     <span class="ident">res</span>
 }
@@ -1158,7 +1158,7 @@
 <span class="doccomment">/// # Requirements</span>
 <span class="doccomment">/// `buf` の要素は `0..buf.len()` に含まれ、かつ distinct である。</span>
 <span class="kw">fn</span> <span class="ident">inv_perm</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;</span>[<span class="ident">usize</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="ident">buf</span>.<span class="ident">len</span>()];
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">buf</span>.<span class="ident">len</span>()];
     <span class="ident">buf</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>().<span class="ident">for_each</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="kw-2">&amp;</span><span class="ident">x</span>)<span class="op">|</span> <span class="ident">res</span>[<span class="ident">x</span>] <span class="op">=</span> <span class="ident">i</span>);
     <span class="ident">res</span>
 }
@@ -1167,7 +1167,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// `res[i]` が `buf[i]` の LS type である配列 `res` を返す。</span>
 <span class="kw">fn</span> <span class="ident">ls_classify</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;</span>[<span class="ident">usize</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">LsType</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">SType</span>(<span class="bool-val">false</span>); <span class="ident">buf</span>.<span class="ident">len</span>()];
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">SType</span>(<span class="bool-val">false</span>); <span class="ident">buf</span>.<span class="ident">len</span>()];
     <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> (<span class="number">0</span>..<span class="ident">buf</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>).<span class="ident">rev</span>() {
         <span class="ident">res</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="kw">match</span> <span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="ident">buf</span>[<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>]) {
             <span class="ident">Less</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SType</span>(<span class="bool-val">false</span>),
@@ -1190,7 +1190,7 @@
 <span class="kw">fn</span> <span class="ident">bucket_head</span>(<span class="ident">count</span>: <span class="kw-2">&amp;</span>[<span class="ident">usize</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">count</span>.<span class="ident">len</span>();
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">head</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span>
-        <span class="ident">std</span>::<span class="ident">iter</span>::<span class="ident">once</span>(<span class="kw-2">&amp;</span><span class="number">0</span>).<span class="ident">chain</span>(<span class="kw-2">&amp;</span><span class="ident">count</span>[..<span class="ident">n</span> <span class="op">-</span> <span class="number">1</span>]).<span class="ident">cloned</span>().<span class="ident">collect</span>();
+        <span class="ident">std::iter::once</span>(<span class="kw-2">&amp;</span><span class="number">0</span>).<span class="ident">chain</span>(<span class="kw-2">&amp;</span><span class="ident">count</span>[..<span class="ident">n</span> <span class="op">-</span> <span class="number">1</span>]).<span class="ident">cloned</span>().<span class="ident">collect</span>();
     <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">1</span>..<span class="ident">n</span> {
         <span class="ident">head</span>[<span class="ident">i</span>] <span class="op">+</span><span class="op">=</span> <span class="ident">head</span>[<span class="ident">i</span> <span class="op">-</span> <span class="number">1</span>];
     }
@@ -1244,7 +1244,7 @@
 <span class="doccomment">/// `[CCCG][AT][GTC][AT][GTC][AGGA][$]` → `3242410`</span>
 <span class="kw">fn</span> <span class="ident">reduce</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;</span>[<span class="ident">usize</span>], <span class="ident">lms</span>: <span class="kw-2">&amp;</span>[<span class="ident">usize</span>], <span class="ident">ls</span>: <span class="kw-2">&amp;</span>[<span class="ident">LsType</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
     <span class="kw">if</span> <span class="ident">lms</span>.<span class="ident">len</span>() <span class="op">&lt;</span><span class="op">=</span> <span class="number">1</span> {
-        <span class="kw">return</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="ident">lms</span>.<span class="ident">len</span>()];
+        <span class="kw">return</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">lms</span>.<span class="ident">len</span>()];
     }
 
     <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="op">|</span>(<span class="ident">i0</span>, <span class="ident">i1</span>)<span class="op">|</span> {
@@ -1257,7 +1257,7 @@
         }
     };
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">map</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="ident">buf</span>.<span class="ident">len</span>()]; <span class="comment">// map[lms[0]] = 0</span>
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">map</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">buf</span>.<span class="ident">len</span>()]; <span class="comment">// map[lms[0]] = 0</span>
     <span class="ident">map</span>[<span class="ident">lms</span>[<span class="number">1</span>]] <span class="op">=</span> <span class="number">1</span>;
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x</span> <span class="op">=</span> <span class="number">1</span>;
     <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">2</span>..<span class="ident">lms</span>.<span class="ident">len</span>() {
@@ -1286,7 +1286,7 @@
     }
 
     <span class="kw">let</span> <span class="ident">ls</span> <span class="op">=</span> <span class="ident">ls_classify</span>(<span class="ident">buf</span>);
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sa</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="prelude-val">None</span>; <span class="ident">len</span>];
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sa</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="prelude-val">None</span>; <span class="ident">len</span>];
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tail</span> <span class="op">=</span> <span class="ident">bucket_tail</span>(<span class="kw-2">&amp;</span><span class="ident">count</span>);
     <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> (<span class="number">1</span>..<span class="ident">len</span>).<span class="ident">rev</span>().<span class="ident">filter</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">i</span><span class="op">|</span> <span class="ident">ls</span>[<span class="ident">i</span>] <span class="op">=</span><span class="op">=</span> <span class="ident">SType</span>(<span class="bool-val">true</span>)) {
         <span class="ident">tail</span>[<span class="ident">buf</span>[<span class="ident">i</span>]] <span class="op">-</span><span class="op">=</span> <span class="number">1</span>;
@@ -1297,7 +1297,7 @@
 
     <span class="kw">let</span> <span class="ident">lms</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">sa</span>
         .<span class="ident">into_iter</span>()
-        .<span class="ident">map</span>(<span class="ident">std</span>::<span class="ident">option</span>::<span class="prelude-ty">Option</span>::<span class="ident">unwrap</span>)
+        .<span class="ident">map</span>(<span class="ident">std::option::Option::unwrap</span>)
         .<span class="ident">filter</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">i</span><span class="op">|</span> <span class="ident">ls</span>[<span class="ident">i</span>] <span class="op">=</span><span class="op">=</span> <span class="ident">SType</span>(<span class="bool-val">true</span>))
         .<span class="ident">collect</span>(); <span class="comment">// in lexicographic order</span>
     <span class="kw">let</span> <span class="ident">rs_sa</span> <span class="op">=</span> <span class="ident">sa_is</span>(<span class="kw-2">&amp;</span><span class="ident">reduce</span>(<span class="ident">buf</span>, <span class="kw-2">&amp;</span><span class="ident">lms</span>, <span class="kw-2">&amp;</span><span class="ident">ls</span>));
@@ -1306,7 +1306,7 @@
     <span class="kw">let</span> <span class="ident">lms</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">len</span>).<span class="ident">filter</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">i</span><span class="op">|</span> <span class="ident">ls</span>[<span class="ident">i</span>] <span class="op">=</span><span class="op">=</span> <span class="ident">SType</span>(<span class="bool-val">true</span>)).<span class="ident">collect</span>();
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tail</span> <span class="op">=</span> <span class="ident">bucket_tail</span>(<span class="kw-2">&amp;</span><span class="ident">count</span>);
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sa</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="prelude-val">None</span>; <span class="ident">len</span>];
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sa</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="prelude-val">None</span>; <span class="ident">len</span>];
     <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="ident">rs_sa</span>.<span class="ident">into_iter</span>().<span class="ident">rev</span>() {
         <span class="kw">let</span> <span class="ident">j</span> <span class="op">=</span> <span class="ident">lms</span>[<span class="ident">i</span>];
         <span class="ident">tail</span>[<span class="ident">buf</span>[<span class="ident">j</span>]] <span class="op">-</span><span class="op">=</span> <span class="number">1</span>;
@@ -1314,7 +1314,7 @@
     }
     <span class="ident">induce</span>(<span class="ident">buf</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">sa</span>, <span class="kw-2">&amp;</span><span class="ident">count</span>, <span class="kw-2">&amp;</span><span class="ident">ls</span>);
 
-    <span class="ident">sa</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">std</span>::<span class="ident">option</span>::<span class="prelude-ty">Option</span>::<span class="ident">unwrap</span>).<span class="ident">collect</span>()
+    <span class="ident">sa</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">std::option::Option::unwrap</span>).<span class="ident">collect</span>()
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">SuffixArray</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
@@ -1417,29 +1417,29 @@
     <span class="kw">let</span> <span class="ident">buf</span> <span class="op">=</span> <span class="string">&quot;abracadabra&quot;</span>.<span class="ident">to_string</span>();
     <span class="kw">let</span> <span class="ident">sa</span>: <span class="ident">SuffixArray</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">into</span>();
     <span class="kw">let</span> <span class="ident">sa</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">sa</span>.<span class="ident">into</span>();
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">sa</span>, [<span class="number">11</span>, <span class="number">10</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">8</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">9</span>, <span class="number">2</span>])
+    <span class="macro">assert_eq!</span>(<span class="ident">sa</span>, [<span class="number">11</span>, <span class="number">10</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">8</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">9</span>, <span class="number">2</span>])
 }
 
 <span class="attribute">#[<span class="ident">test</span>]</span>
 <span class="kw">fn</span> <span class="ident">test_empty_text</span>() {
     <span class="kw">let</span> <span class="ident">sa</span>: <span class="ident">SuffixArray</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>().<span class="ident">into</span>();
     <span class="kw">let</span> <span class="ident">occ</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">sa</span>.<span class="ident">search_str</span>(<span class="string">&quot;&quot;</span>).<span class="ident">collect</span>();
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">occ</span>, [<span class="number">0</span>]);
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">sa</span>.<span class="ident">search_str</span>(<span class="string">&quot;x&quot;</span>).<span class="ident">next</span>(), <span class="prelude-val">None</span>);
+    <span class="macro">assert_eq!</span>(<span class="ident">occ</span>, [<span class="number">0</span>]);
+    <span class="macro">assert_eq!</span>(<span class="ident">sa</span>.<span class="ident">search_str</span>(<span class="string">&quot;x&quot;</span>).<span class="ident">next</span>(), <span class="prelude-val">None</span>);
 }
 
 <span class="attribute">#[<span class="ident">test</span>]</span>
 <span class="kw">fn</span> <span class="ident">test_empty_pat</span>() {
     <span class="kw">let</span> <span class="ident">sa</span>: <span class="ident">SuffixArray</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="string">&quot;empty&quot;</span>.<span class="ident">to_string</span>().<span class="ident">into</span>();
     <span class="kw">let</span> <span class="ident">occ</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">sa</span>.<span class="ident">search_str</span>(<span class="string">&quot;&quot;</span>).<span class="ident">collect</span>();
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">occ</span>, [<span class="number">5</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]);
+    <span class="macro">assert_eq!</span>(<span class="ident">occ</span>, [<span class="number">5</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]);
 }
 
 <span class="attribute">#[<span class="ident">test</span>]</span>
 <span class="kw">fn</span> <span class="ident">test_naive</span>() {
     <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="number">1000</span>;
     <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="op">|</span><span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">i32</span><span class="op">|</span> <span class="prelude-val">Some</span>((<span class="ident">x</span> <span class="op">*</span> <span class="number">29</span> <span class="op">+</span> <span class="number">71</span>) <span class="op">%</span> <span class="number">143</span>);
-    <span class="kw">let</span> <span class="ident">buf</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">std</span>::<span class="ident">iter</span>::<span class="ident">successors</span>(<span class="prelude-val">Some</span>(<span class="number">2_i32</span>), <span class="ident">f</span>).<span class="ident">take</span>(<span class="ident">n</span>).<span class="ident">collect</span>();
+    <span class="kw">let</span> <span class="ident">buf</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">std::iter::successors</span>(<span class="prelude-val">Some</span>(<span class="number">2_i32</span>), <span class="ident">f</span>).<span class="ident">take</span>(<span class="ident">n</span>).<span class="ident">collect</span>();
     <span class="kw">let</span> <span class="ident">naive_sa</span> <span class="op">=</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sa</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="op">=</span><span class="ident">n</span>).<span class="ident">collect</span>();
         <span class="ident">sa</span>.<span class="ident">sort_unstable_by_key</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">i</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">buf</span>[<span class="ident">i</span>..]);
@@ -1447,8 +1447,8 @@
     };
     <span class="kw">let</span> <span class="ident">sa</span>: <span class="ident">SuffixArray</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">into</span>();
     <span class="kw">let</span> <span class="ident">sa</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">sa</span>.<span class="ident">into</span>();
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">sa</span>, <span class="ident">naive_sa</span>);
+    <span class="macro">assert_eq!</span>(<span class="ident">sa</span>, <span class="ident">naive_sa</span>);
 }
 </pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-search-js="../../../search-index.js"></div>
+</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div>
     <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script></body></html>

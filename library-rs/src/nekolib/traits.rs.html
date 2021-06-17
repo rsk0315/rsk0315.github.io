@@ -25,7 +25,7 @@
 </script>
 
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet">
-<style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../nekolib/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
+<style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../nekolib/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
                 <a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" height="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1"> 1</span>
 <span id="2"> 2</span>
 <span id="3"> 3</span>
@@ -125,13 +125,13 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">stateful_predicate</span>;
 
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">act</span>::<span class="ident">Act</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">act::Act</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">action</span>::<span class="ident">MonoidAction</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">action::MonoidAction</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">additive</span>::{<span class="ident">AddAssoc</span>, <span class="ident">AddComm</span>, <span class="ident">Zero</span>};
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">assoc_val</span>::<span class="ident">AssocVal</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">assoc_val::AssocVal</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">binop</span>::{
     <span class="ident">Associative</span>, <span class="ident">Commutative</span>, <span class="ident">CommutativeGroup</span>, <span class="ident">CommutativeMonoid</span>,
@@ -141,38 +141,38 @@
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">count</span>::{<span class="ident">Count</span>, <span class="ident">Count3way</span>};
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">disjoint_set</span>::<span class="ident">DisjointSet</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">disjoint_set::DisjointSet</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">elastic_slice</span>::{
     <span class="ident">ElasticSlice</span>, <span class="ident">ExpandBack</span>, <span class="ident">ExpandFront</span>, <span class="ident">ShrinkBack</span>, <span class="ident">ShrinkFront</span>, <span class="ident">SliceHash</span>,
 };
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">find_nth</span>::<span class="ident">FindNth</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">find_nth::FindNth</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">fold</span>::<span class="ident">Fold</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">fold::Fold</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">fold_bisect</span>::{<span class="ident">FoldBisect</span>, <span class="ident">FoldBisectRev</span>};
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">get_mut</span>::<span class="ident">GetMut</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">get_mut::GetMut</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">max</span>::<span class="ident">Max</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">max::Max</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">min</span>::<span class="ident">Min</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">min::Min</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">multiplicative</span>::{<span class="ident">MulAssoc</span>, <span class="ident">MulComm</span>, <span class="ident">MulRecip</span>, <span class="ident">One</span>};
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">push_pop</span>::{<span class="ident">Pop</span>, <span class="ident">PopBack</span>, <span class="ident">PopFront</span>, <span class="ident">Push</span>, <span class="ident">PushBack</span>, <span class="ident">PushFront</span>};
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">quantile</span>::<span class="ident">Quantile</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">quantile::Quantile</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">range_bounds</span>::{
     <span class="ident">EndBounded</span>, <span class="ident">EndExclusive</span>, <span class="ident">EndInclusive</span>, <span class="ident">EndUnbounded</span>, <span class="ident">StartBounded</span>,
     <span class="ident">StartInclusive</span>, <span class="ident">StartUnbounded</span>,
 };
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">set_value</span>::<span class="ident">SetValue</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">set_value::SetValue</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">stateful_predicate</span>::<span class="ident">StatefulPred</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">stateful_predicate::StatefulPred</span>;
 </pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nekolib" data-search-js="../../search-index.js"></div>
+</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nekolib" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>
     <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script></body></html>

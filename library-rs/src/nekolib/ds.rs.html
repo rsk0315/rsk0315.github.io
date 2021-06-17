@@ -25,7 +25,7 @@
 </script>
 
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet">
-<style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../nekolib/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
+<style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../nekolib/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
                 <a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" height="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1"> 1</span>
 <span id="2"> 2</span>
 <span id="3"> 3</span>
@@ -64,9 +64,6 @@
 <span id="36">36</span>
 <span id="37">37</span>
 <span id="38">38</span>
-<span id="39">39</span>
-<span id="40">40</span>
-<span id="41">41</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! データ構造たち。</span>
 <span class="doccomment">//!</span>
@@ -78,7 +75,6 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">foldable_deque</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">foldable_queue</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">interval_set</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">range_tree</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">rs_dict</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">union_find</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">vec_act_segtree</span>;
@@ -86,29 +82,27 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">wavelet_matrix</span>;
 
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">bicremental_median</span>::<span class="ident">BicrementalMedian</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">bicremental_median::BicrementalMedian</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">bicremental_median_dev</span>::<span class="ident">BicrementalMedianDev</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">bicremental_median_dev::BicrementalMedianDev</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">disjoint_sparse_table</span>::<span class="ident">DisjointSparseTable</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">disjoint_sparse_table::DisjointSparseTable</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">foldable_deque</span>::<span class="ident">FoldableDeque</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">foldable_deque::FoldableDeque</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">foldable_queue</span>::<span class="ident">FoldableQueue</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">foldable_queue::FoldableQueue</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">interval_set</span>::<span class="ident">IntervalSet</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">interval_set::IntervalSet</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">range_tree</span>::<span class="ident">RangeTree</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">rs_dict::RsDict</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">rs_dict</span>::<span class="ident">RsDict</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">union_find::UnionFind</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">union_find</span>::<span class="ident">UnionFind</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">vec_act_segtree::VecActSegtree</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">vec_act_segtree</span>::<span class="ident">VecActSegtree</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">vec_segtree::VecSegtree</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">vec_segtree</span>::<span class="ident">VecSegtree</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">wavelet_matrix</span>::<span class="ident">WaveletMatrix</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">wavelet_matrix::WaveletMatrix</span>;
 </pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nekolib" data-search-js="../../search-index.js"></div>
+</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nekolib" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>
     <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script></body></html>
