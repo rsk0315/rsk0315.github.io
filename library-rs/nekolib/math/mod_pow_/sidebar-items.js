@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["mod_pow","冪乗。"]]});
+initSidebarItems({"fn":[["mod_pow","冪乗。"],["mod_pow_with_cd","冪乗。"]]});

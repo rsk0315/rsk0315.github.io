@@ -54,8 +54,46 @@
 <span id="26">26</span>
 <span id="27">27</span>
 <span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
+<span id="47">47</span>
+<span id="48">48</span>
+<span id="49">49</span>
+<span id="50">50</span>
+<span id="51">51</span>
+<span id="52">52</span>
+<span id="53">53</span>
+<span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
+<span id="62">62</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 冪乗。</span>
+
+<span class="kw">use</span> <span class="kw">super</span><span class="ident">::const_div</span>;
+
+<span class="kw">use</span> <span class="ident">const_div::ConstDiv</span>;
 
 <span class="doccomment">/// 冪乗。</span>
 <span class="doccomment">///</span>
@@ -72,16 +110,46 @@
 <span class="doccomment">/// assert_eq!(mod_pow(2, 11, 1024), 0);</span>
 <span class="doccomment">/// assert_eq!(mod_pow(0, 0, 1), 0);</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mod_pow</span>(<span class="kw-2">mut</span> <span class="ident">x</span>: <span class="ident">u64</span>, <span class="kw-2">mut</span> <span class="ident">e</span>: <span class="ident">u64</span>, <span class="ident">p</span>: <span class="ident">u64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u64</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="number">1</span> <span class="op">%</span> <span class="ident">p</span>;
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mod_pow</span>(<span class="ident">x</span>: <span class="ident">u64</span>, <span class="ident">e</span>: <span class="ident">u64</span>, <span class="ident">p</span>: <span class="ident">u64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u64</span> {
+    <span class="kw">let</span> <span class="ident">cd</span> <span class="op">=</span> <span class="ident">ConstDiv::new</span>(<span class="ident">p</span>);
+    <span class="ident">mod_pow_with_cd</span>(<span class="ident">x</span> <span class="op">%</span> <span class="ident">p</span>, <span class="ident">e</span>, <span class="ident">cd</span>)
+}
+
+<span class="doccomment">/// 冪乗。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// $x^e \\bmod p$ を返す。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Complexity</span>
+<span class="doccomment">/// $O(\\log(e))$ time.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Examples</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// use nekolib::math::{mod_pow_with_cd, ConstDiv};</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// let cd = ConstDiv::new(13);</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// assert_eq!(mod_pow_with_cd(3, 14, cd), 9);</span>
+<span class="doccomment">/// assert_eq!(mod_pow_with_cd(2, 11, cd), 7);</span>
+<span class="doccomment">/// assert_eq!(mod_pow_with_cd(0, 0, cd), 1);</span>
+<span class="doccomment">/// ```</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mod_pow_with_cd</span>(<span class="kw-2">mut</span> <span class="ident">x</span>: <span class="ident">u64</span>, <span class="kw-2">mut</span> <span class="ident">e</span>: <span class="ident">u64</span>, <span class="ident">cd</span>: <span class="ident">ConstDiv</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u64</span> {
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">cd</span>.<span class="ident">rem</span>(<span class="number">1</span>);
     <span class="kw">while</span> <span class="ident">e</span> <span class="op">&gt;</span> <span class="number">0</span> {
         <span class="kw">if</span> <span class="ident">e</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
-            <span class="ident">res</span> <span class="op">=</span> <span class="ident">res</span> <span class="op">*</span> <span class="ident">x</span> <span class="op">%</span> <span class="ident">p</span>;
+            <span class="ident">res</span> <span class="op">=</span> <span class="ident">cd</span>.<span class="ident">rem</span>(<span class="ident">res</span> <span class="op">*</span> <span class="ident">x</span>);
         }
-        <span class="ident">x</span> <span class="op">=</span> <span class="ident">x</span> <span class="op">*</span> <span class="ident">x</span> <span class="op">%</span> <span class="ident">p</span>;
+        <span class="ident">x</span> <span class="op">=</span> <span class="ident">cd</span>.<span class="ident">rem</span>(<span class="ident">x</span> <span class="op">*</span> <span class="ident">x</span>);
         <span class="ident">e</span> <span class="op">&gt;</span><span class="op">&gt;</span><span class="op">=</span> <span class="number">1</span>;
     }
     <span class="ident">res</span>
+}
+
+<span class="attribute">#[<span class="ident">test</span>]</span>
+<span class="kw">fn</span> <span class="ident">test</span>() {
+    <span class="kw">let</span> <span class="ident">cd</span> <span class="op">=</span> <span class="ident">ConstDiv::new</span>(<span class="number">13</span>);
+    <span class="macro">assert_eq!</span>(<span class="ident">mod_pow_with_cd</span>(<span class="number">2</span>, <span class="number">11</span>, <span class="ident">cd</span>), <span class="number">7</span>);
+    <span class="macro">assert_eq!</span>(<span class="ident">mod_pow_with_cd</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="ident">cd</span>), <span class="number">1</span>);
+    <span class="macro">assert_eq!</span>(<span class="ident">mod_pow</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>), <span class="number">0</span>);
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div>
