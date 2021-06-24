@@ -183,7 +183,6 @@
 <span id="155">155</span>
 <span id="156">156</span>
 <span id="157">157</span>
-<span id="158">158</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 離散対数。</span>
 
@@ -293,8 +292,7 @@
 }
 
 <span class="kw">fn</span> <span class="ident">bsgs</span>(<span class="ident">bb</span>: <span class="ident">u64</span>, <span class="ident">b</span>: <span class="ident">u64</span>, <span class="ident">a</span>: <span class="ident">u64</span>, <span class="ident">n</span>: <span class="ident">u64</span>, <span class="ident">c</span>: <span class="ident">u64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">nlgn</span> <span class="op">=</span> <span class="op">|</span><span class="ident">n</span>: <span class="ident">u64</span><span class="op">|</span> <span class="ident">n</span> <span class="op">*</span> (<span class="ident">n</span>.<span class="ident">next_power_of_two</span>().<span class="ident">trailing_zeros</span>() <span class="kw">as</span> <span class="ident">u64</span>);
-    <span class="kw">let</span> <span class="ident">step</span> <span class="op">=</span> (<span class="number">1</span>..).<span class="ident">find</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">i</span><span class="op">|</span> <span class="ident">nlgn</span>(<span class="ident">i</span>).<span class="ident">pow</span>(<span class="number">2</span>) <span class="op">&gt;</span><span class="op">=</span> <span class="ident">c</span>).<span class="ident">unwrap</span>();
+    <span class="kw">let</span> <span class="ident">step</span> <span class="op">=</span> (<span class="number">1</span>..).<span class="ident">find</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span> <span class="op">*</span> <span class="ident">i</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">c</span>).<span class="ident">unwrap</span>();
     <span class="kw">let</span> <span class="ident">seen</span> <span class="op">=</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">seen</span> <span class="op">=</span> <span class="ident">BTreeMap::new</span>();
         <span class="kw">let</span> <span class="ident">baby_recip</span> <span class="op">=</span> <span class="ident">mod_pow</span>(<span class="ident">b</span>, <span class="ident">c</span> <span class="op">-</span> <span class="number">1</span>, <span class="ident">n</span>);
