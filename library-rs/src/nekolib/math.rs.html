@@ -74,6 +74,18 @@
 <span id="46">46</span>
 <span id="47">47</span>
 <span id="48">48</span>
+<span id="49">49</span>
+<span id="50">50</span>
+<span id="51">51</span>
+<span id="52">52</span>
+<span id="53">53</span>
+<span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 数学関連のアルゴリズムたち。</span>
 <span class="doccomment">//!</span>
@@ -86,13 +98,17 @@
 <span class="comment">// pub mod polynomial;</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">count_prime</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">divisors_</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">dlog_</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">factors_</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">gcd_</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">gcd_recip_</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">harmonic_sum</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">incremental_line_set</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">lcm_</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">linear_floor_sum_</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">linear_sieve</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">mod_pow_</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">ord_</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">slope_function</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">totient_phi_</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">two_sat</span>;
@@ -102,9 +118,13 @@
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">divisors_::divisors</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">dlog_::dlog</span>;
+<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">factors_</span>::{<span class="ident">factors</span>, <span class="ident">factors_dup</span>};
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">gcd_::gcd</span>;
+<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">gcd_recip_::gcd_recip</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">harmonic_sum::HarmonicSum</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
@@ -116,7 +136,11 @@
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">linear_sieve::LinearSieve</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">mod_pow_::mod_pow</span>;
+<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">modint::ModInt</span>;
+<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">ord_::ord</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">slope_function::SlopeFunction</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>

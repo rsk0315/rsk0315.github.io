@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/totient_phi_.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>totient_phi_.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings"></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/ord_.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>ord_.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings"></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
 <link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png">
 <link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><!-- For newer version of KaTeX, see https://katex.org/docs/browser.html -->
 
@@ -65,44 +65,54 @@
 <span id="37">37</span>
 <span id="38">38</span>
 <span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="doccomment">//! Euler の $\\phi$ 関数。</span>
+<span class="doccomment">//! 位数。</span>
 
 <span class="kw">use</span> <span class="kw">super</span><span class="ident">::factors_</span>;
+<span class="kw">use</span> <span class="kw">super</span><span class="ident">::mod_pow_</span>;
+<span class="kw">use</span> <span class="kw">super</span><span class="ident">::totient_phi_</span>;
 
-<span class="kw">use</span> <span class="ident">factors_::factors</span>;
+<span class="kw">use</span> <span class="ident">factors_::factors_dup</span>;
+<span class="kw">use</span> <span class="ident">mod_pow_::mod_pow</span>;
+<span class="kw">use</span> <span class="ident">totient_phi_::totient_phi</span>;
 
-<span class="doccomment">/// Euler の $\\phi$ 関数。</span>
+<span class="doccomment">/// 位数。</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// $n$ 以下の自然数のうち、$n$ と互いに素であるものの個数を返す。$1$</span>
-<span class="doccomment">/// と $1$ は互いに素であることに注意。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Note</span>
-<span class="doccomment">/// 素数冪 $p^k$, $p\&#39;^{k\&#39;}$ ($p\\ne p\&#39;$) について $\\phi(p^k p\&#39;^{k\&#39;}) = \\phi(p^k)\\phi(p\&#39;^{k\&#39;})$</span>
-<span class="doccomment">/// が成り立つ。また、$\\phi(p^k) = \\phi^{k-1}\\cdot(p-1)$ が成り立つ。</span>
+<span class="doccomment">/// $a^z \\equiv 1 \\pmod{n}$ なる $z\\ge 0$ が存在すれば、そのうち最小のものを返す。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// $O(\\sqrt{n})$ time.</span>
+<span class="doccomment">/// $\\phi(n)$ に対する素因数列挙にかかる時間に加え、各素因数に対して</span>
+<span class="doccomment">/// $O(\\log(\\phi(n)))$ 時間。試し割り法では $O(\\sqrt{n})$ 時間。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::math::totient_phi;</span>
+<span class="doccomment">/// use nekolib::math::ord;</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(totient_phi(1), 1);</span>
-<span class="doccomment">/// assert_eq!(totient_phi(60), 16);</span>
+<span class="doccomment">/// assert_eq!(ord(7, 10), Some(4));</span>
+<span class="doccomment">/// assert_eq!(ord(1, 3), Some(1));</span>
+<span class="doccomment">/// assert_eq!(ord(22, 30), None);</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">totient_phi</span>(<span class="ident">n</span>: <span class="ident">u64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u64</span> {
-    <span class="ident">factors</span>(<span class="ident">n</span>).<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">p</span>, <span class="ident">e</span>)<span class="op">|</span> <span class="ident">p</span>.<span class="ident">pow</span>(<span class="ident">e</span> <span class="op">-</span> <span class="number">1</span>) <span class="op">*</span> (<span class="ident">p</span> <span class="op">-</span> <span class="number">1</span>)).<span class="ident">product</span>()
-}
-
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test_naive</span>() {
-    <span class="kw">use</span> <span class="ident">gcd_::gcd</span>;
-    <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="number">100</span>;
-    <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">1</span>..<span class="op">=</span><span class="ident">n</span> {
-        <span class="kw">let</span> <span class="ident">phi</span> <span class="op">=</span>
-            (<span class="number">1</span>..<span class="op">=</span><span class="ident">i</span>).<span class="ident">filter</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">j</span><span class="op">|</span> <span class="ident">gcd</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">u128</span>, <span class="ident">j</span> <span class="kw">as</span> <span class="ident">u128</span>) <span class="op">=</span><span class="op">=</span> <span class="number">1</span>).<span class="ident">count</span>() <span class="kw">as</span> <span class="ident">u64</span>;
-        <span class="macro">assert_eq!</span>(<span class="ident">totient_phi</span>(<span class="ident">i</span>), <span class="ident">phi</span>);
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Suggestions</span>
+<span class="doccomment">/// [`dlog`] と同様、$\\phi$ 関数と素因数列挙に関して引数で渡したいかも。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// [`dlog`]: fn.dlog.html</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ord</span>(<span class="ident">a</span>: <span class="ident">u64</span>, <span class="ident">n</span>: <span class="ident">u64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span> {
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">q</span> <span class="op">=</span> <span class="ident">totient_phi</span>(<span class="ident">n</span>);
+    <span class="kw">for</span> <span class="ident">e</span> <span class="kw">in</span> <span class="ident">factors_dup</span>(<span class="ident">q</span>) {
+        <span class="kw">if</span> <span class="ident">mod_pow</span>(<span class="ident">a</span>, <span class="ident">q</span> <span class="op">/</span> <span class="ident">e</span>, <span class="ident">n</span>) <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
+            <span class="ident">q</span> <span class="op">/</span><span class="op">=</span> <span class="ident">e</span>;
+        }
+    }
+    <span class="kw">if</span> <span class="ident">mod_pow</span>(<span class="ident">a</span>, <span class="ident">q</span>, <span class="ident">n</span>) <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">q</span>)
+    } <span class="kw">else</span> {
+        <span class="prelude-val">None</span>
     }
 }
 </pre></div>
