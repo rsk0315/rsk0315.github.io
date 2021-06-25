@@ -26,13 +26,39 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet">
 <style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc fn"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../nekolib/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a><div class="sidebar-elems"><p class="location"><a href="../index.html">nekolib</a>::<wbr><a href="index.html">math</a></p><div id="sidebar-vars" data-name="dlog" data-ty="fn" data-relpath=""></div><script defer src="sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
-                <a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" height="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class="fqn"><span class="in-band">Function <a href="../index.html">nekolib</a>::<wbr><a href="index.html">math</a>::<wbr><a class="fn" href="">dlog</a><button id="copy-path" onclick="copy_path(this)">⎘</button></span><span class="out-of-band"><span id="render-detail"><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span><a class="srclink" href="../../src/nekolib/math/dlog_.rs.html#67-116" title="goto source code">[src]</a></span></h1><pre class="rust fn">pub fn dlog(b: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u64.html">u64</a>, a: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u64.html">u64</a>, n: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u64.html">u64</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u64.html">u64</a>&gt;</pre><div class="docblock"><p>離散対数。</p>
+                <a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" height="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class="fqn"><span class="in-band">Function <a href="../index.html">nekolib</a>::<wbr><a href="index.html">math</a>::<wbr><a class="fn" href="">dlog</a><button id="copy-path" onclick="copy_path(this)">⎘</button></span><span class="out-of-band"><span id="render-detail"><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span><a class="srclink" href="../../src/nekolib/math/dlog_.rs.html#102-148" title="goto source code">[src]</a></span></h1><pre class="rust fn">pub fn dlog(b: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u64.html">u64</a>, a: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u64.html">u64</a>, n: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u64.html">u64</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u64.html">u64</a>&gt;</pre><div class="docblock"><p>離散対数。</p>
 <p>$n$ を法とする $\mathrm{dlog}_b(a)$。
 $b^z \equiv a \pmod{n}$ なる $z\ge 0$ が存在すれば、そのうち最小のものを返す。</p>
 <h1 id="idea" class="section-header"><a href="#idea">Idea</a></h1>
-<p><code>todo!()</code></p>
+<p>$1\to b\to b^2\to\dots\pmod{n}$ でできる functional graph を考えると、$\rho$
+の字状になっていることに気づく。しっぽの長さ $\mu$ は高々 $\log(n)$、頭の長さ
+$\lambda$ は $\phi(n)$ の約数になっていることが示せる。</p>
+<p>そこで、まずしっぽの部分に解があるかを愚直に $O(\mu)$ 時間で調べる。
+見つからなければ、頭の部分に解があるかを $o(\lambda)$ 時間で調べる。
+$O(\sqrt{\lambda}\log(\lambda))$ 時間のアルゴリズムを紹介する。</p>
+<p>$\rho$ の頭の部分は $b^\mu\to b^{\mu+1}\to\dots\to b^{\mu+\lambda}\equiv b^\mu$
+である。このとき、${}^\forall i\ge\mu$ について
+$b^{i+1}\cdot b^{\lambda-1} \equiv b^i \pmod{n}$ が成り立つ。
+すなわち、$b^{\lambda-1}$ を掛けることで、$\to$ をひとつ戻ることができる<sup id="fnref1"><a href="#fn1">1</a></sup>。</p>
+<p>そこで、$z = \mu+i\cdot\lfloor\sqrt{\lambda}\rfloor+j$ ($0\le j\lt\sqrt{\lambda}$)
+とし、$(i, j)$ を探すことを考える。
+$$ \begin{aligned}
+b^{\mu+i\cdot\lfloor\sqrt{\lambda}\rfloor+j} &amp;\equiv a \\
+b^{\mu+i\cdot\lfloor\sqrt{\lambda}\rfloor+j}\cdot (b^{\lambda-1})^j
+&amp;\equiv a\cdot (b^{\lambda-1})^j \\
+b^{\mu+i\cdot\lfloor\sqrt{\lambda}\rfloor}
+&amp;\equiv a\cdot (b^{\lambda-1})^j \\
+\end{aligned} $$
+これより、$i$ と $j$ を分離でき、$a\cdot(b^{\lambda-1})^j\mapsto j$
+の連想配列を作っておくことで、$b^{\mu+i\cdot\lfloor\sqrt{\lambda}\rfloor}$
+に対応する要素があれば返せる。ただし、複数の $j$ について
+$a\cdot(b^{\lambda-1})^j$ が同じ値を取りうるので注意する必要がある。</p>
+<p>$j$ による小さい幅で連想配列を作り、$i$ による大きい幅でそれにアクセスする様子から
+baby-step giant-step algorithm と呼ばれている。</p>
+<p>以下では、$\mu$ と $\lambda$ を求める方法について述べる。<code>todo!()</code></p>
 <h1 id="complexity" class="section-header"><a href="#complexity">Complexity</a></h1>
-<p>$\tilde{O}(\sqrt{n})$ time.</p>
+<p>$O(\sqrt{n} + \sqrt{\lambda}\log(\lambda))$ time.
+ここで、$\lambda$ は最悪 $\Theta(n)$ である。</p>
 <p><code>todo!()</code></p>
 <h1 id="examples" class="section-header"><a href="#examples">Examples</a></h1>
 <div class="example-wrap"><pre class="rust rust-example-rendered">
@@ -65,5 +91,7 @@ $b^z \equiv a \pmod{n}$ なる $z\ge 0$ が存在すれば、そのうち最小�
 <p>一方で、そうでない場合にわざわざ関数を渡す必要があるので単に面倒かも。
 お手軽パターンと二つ用意するといいかも？（デフォルト引数欲しいね）</p>
 <p>とはいえ、結局 BS/GS パートが律速で $O(\sqrt{n\log(n)})$ 時間とかになってしまいそう。</p>
-</div></section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nekolib" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>
+<div class="footnotes"><hr><ol><li id="fn1"><p>$\mu\gt 0$ なら、 $b^\mu$ は $b^{\mu-1}$ と $b^{\mu+\lambda-1}$
+($\neq b^{\mu-1}$) のふたつから $\to$ が入ってくるが、$\rho$
+の頭に含まれる後者に戻る。&nbsp;<a href="#fnref1" rev="footnote">↩</a></p></li></ol></div></div></section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nekolib" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>
     <script src="../../main.js"></script></body></html>
