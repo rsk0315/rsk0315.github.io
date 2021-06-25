@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["ConstDiv",""]]});
+initSidebarItems({"struct":[["ConstDiv","定数除算。"]]});
