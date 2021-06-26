@@ -251,6 +251,11 @@
 <span id="223">223</span>
 <span id="224">224</span>
 <span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 定数除算。</span>
 
@@ -460,7 +465,12 @@
 <span class="kw">fn</span> <span class="ident">test_small</span>() {
     <span class="kw">for</span> <span class="ident">n</span> <span class="kw">in</span> <span class="number">1</span>..<span class="op">=</span><span class="number">500</span> {
         <span class="kw">let</span> <span class="ident">cd</span> <span class="op">=</span> <span class="ident">ConstDiv::new</span>(<span class="ident">n</span>);
-        <span class="kw">for</span> <span class="ident">a</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">10</span> <span class="op">*</span> <span class="ident">n</span> <span class="op">*</span> <span class="ident">n</span> {
+        <span class="kw">for</span> <span class="ident">a</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">5</span> <span class="op">*</span> <span class="ident">n</span> <span class="op">*</span> <span class="ident">n</span> {
+            <span class="macro">assert_eq!</span>(<span class="ident">cd</span>.<span class="ident">quot</span>(<span class="ident">a</span>), <span class="ident">a</span> <span class="op">/</span> <span class="ident">n</span>);
+            <span class="macro">assert_eq!</span>(<span class="ident">cd</span>.<span class="ident">rem</span>(<span class="ident">a</span>), <span class="ident">a</span> <span class="op">%</span> <span class="ident">n</span>);
+        }
+        <span class="kw">for</span> <span class="ident">a</span> <span class="kw">in</span> <span class="number">1</span>..<span class="op">=</span><span class="number">5</span> <span class="op">*</span> <span class="ident">n</span> <span class="op">*</span> <span class="ident">n</span> {
+            <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">std::u64::MAX</span> <span class="op">-</span> <span class="ident">a</span>;
             <span class="macro">assert_eq!</span>(<span class="ident">cd</span>.<span class="ident">quot</span>(<span class="ident">a</span>), <span class="ident">a</span> <span class="op">/</span> <span class="ident">n</span>);
             <span class="macro">assert_eq!</span>(<span class="ident">cd</span>.<span class="ident">rem</span>(<span class="ident">a</span>), <span class="ident">a</span> <span class="op">%</span> <span class="ident">n</span>);
         }
