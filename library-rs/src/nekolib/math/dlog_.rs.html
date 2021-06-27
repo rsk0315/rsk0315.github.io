@@ -447,7 +447,12 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Complexity</span>
 <span class="doccomment">/// $O(\\sqrt{n} + \\sqrt{\\lambda}\\cdot H(\\sqrt{\\lambda}))$ time.</span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// ただし、$H(n)$ は要素数 $n$ の [`HashMap`] の [`insert`] と [`get`] にかかる時間とする。</span>
+<span class="doccomment">/// BS/GS パートでは [`BTreeMap`] を用いるよりも [`HashMap`]</span>
+<span class="doccomment">/// を用いた方が高速だったので、とりあえずそうした。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// [`BTreeMap`]: https://doc.rust-lang.org/std/collections/struct.BTreeMap.html</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// [`HashMap`]: https://doc.rust-lang.org/std/collections/struct.HashMap.html</span>
 <span class="doccomment">/// [`insert`]: https://doc.rust-lang.org/std/collections/struct.HashMap.html#method.insert</span>
@@ -465,11 +470,6 @@
 <span class="doccomment">/// の方が若干複雑だが、全体では高速に動作したので後者を選択した。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// [`carmichael_lambda`]: fn.carmichael_lambda.html</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// また、BS/GS パートでは [`BTreeMap`] を用いるよりも [`HashMap`]</span>
-<span class="doccomment">/// を用いた方が高速だったので、とりあえずそうしてある。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [`BTreeMap`]: https://doc.rust-lang.org/std/collections/struct.BTreeMap.html</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">/// ```</span>

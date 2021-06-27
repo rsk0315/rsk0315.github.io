@@ -112,8 +112,10 @@ ${}^\exists i\ge 0: b^{\mu+i} \equiv a\pmod{n}$ であることの必要条件�
 <p>より、$\gcd(b^{\mu+i}, n) = p$ ($i\ge 0$) で一定となる。
 すなわち、$\gcd(a, n) = p$ が必要となる。</p>
 <h1 id="complexity" class="section-header"><a href="#complexity">Complexity</a></h1>
-<p>$O(\sqrt{n} + \sqrt{\lambda}\cdot H(\sqrt{\lambda}))$ time.
-ただし、$H(n)$ は要素数 $n$ の <a href="https://doc.rust-lang.org/std/collections/struct.HashMap.html"><code>HashMap</code></a> の <a href="https://doc.rust-lang.org/std/collections/struct.HashMap.html#method.insert"><code>insert</code></a> と <a href="https://doc.rust-lang.org/std/collections/struct.HashMap.html#method.get"><code>get</code></a> にかかる時間とする。</p>
+<p>$O(\sqrt{n} + \sqrt{\lambda}\cdot H(\sqrt{\lambda}))$ time.</p>
+<p>ただし、$H(n)$ は要素数 $n$ の <a href="https://doc.rust-lang.org/std/collections/struct.HashMap.html"><code>HashMap</code></a> の <a href="https://doc.rust-lang.org/std/collections/struct.HashMap.html#method.insert"><code>insert</code></a> と <a href="https://doc.rust-lang.org/std/collections/struct.HashMap.html#method.get"><code>get</code></a> にかかる時間とする。
+BS/GS パートでは <a href="https://doc.rust-lang.org/std/collections/struct.BTreeMap.html"><code>BTreeMap</code></a> を用いるよりも <a href="https://doc.rust-lang.org/std/collections/struct.HashMap.html"><code>HashMap</code></a>
+を用いた方が高速だったので、とりあえずそうした。</p>
 <p>ここで、$\lambda$ は最悪 $\Theta(n)$ である。
 また、篩の前計算などで $n$, $b$ の素因数分解と $\varphi(n)$ の約数列挙を $O(1)$ delay
 でできるなら $\sqrt{n}$ の項をそれらの個数に落とせる。</p>
@@ -123,8 +125,6 @@ ${}^\exists i\ge 0: b^{\mu+i} \equiv a\pmod{n}$ であることの必要条件�
 <a href="fn.carmichael_lambda.html">$\lambda(n')$</a>
 の約数を探せばよい。関数値を求めるの自体は $\varphi(\bullet)$ よりも $\lambda(\bullet)$
 の方が若干複雑だが、全体では高速に動作したので後者を選択した。</p>
-<p>また、BS/GS パートでは <a href="https://doc.rust-lang.org/std/collections/struct.BTreeMap.html"><code>BTreeMap</code></a> を用いるよりも <a href="https://doc.rust-lang.org/std/collections/struct.HashMap.html"><code>HashMap</code></a>
-を用いた方が高速だったので、とりあえずそうしてある。</p>
 <h1 id="examples" class="section-header"><a href="#examples">Examples</a></h1>
 <div class="example-wrap"><pre class="rust rust-example-rendered">
 <span class="kw">use</span> <span class="ident">nekolib::math::dlog</span>;
