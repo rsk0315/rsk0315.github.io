@@ -73,21 +73,21 @@
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 位数。</span>
 
+<span class="kw">use</span> <span class="kw">super</span><span class="ident">::euler_phi_</span>;
 <span class="kw">use</span> <span class="kw">super</span><span class="ident">::factors_</span>;
 <span class="kw">use</span> <span class="kw">super</span><span class="ident">::mod_pow_</span>;
-<span class="kw">use</span> <span class="kw">super</span><span class="ident">::totient_phi_</span>;
 
+<span class="kw">use</span> <span class="ident">euler_phi_::euler_phi</span>;
 <span class="kw">use</span> <span class="ident">factors_::factors_dup</span>;
 <span class="kw">use</span> <span class="ident">mod_pow_::mod_pow</span>;
-<span class="kw">use</span> <span class="ident">totient_phi_::totient_phi</span>;
 
 <span class="doccomment">/// 位数。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// $a^z \\equiv 1 \\pmod{n}$ なる $z\\ge 0$ が存在すれば、そのうち最小のものを返す。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// $\\phi(n)$ に対する素因数列挙にかかる時間に加え、各素因数に対して</span>
-<span class="doccomment">/// $O(\\log(\\phi(n)))$ 時間。試し割り法では $O(\\sqrt{n})$ 時間。</span>
+<span class="doccomment">/// $\\varphi(n)$ に対する素因数列挙にかかる時間に加え、各素因数に対して</span>
+<span class="doccomment">/// $O(\\log(\\varphi(n)))$ 時間。試し割り法では $O(\\sqrt{n})$ 時間。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">/// ```</span>
@@ -99,11 +99,11 @@
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Suggestions</span>
-<span class="doccomment">/// [`dlog`] と同様、$\\phi$ 関数と素因数列挙に関して引数で渡したいかも。</span>
+<span class="doccomment">/// [`dlog`] と同様、$\\varphi$ 関数と素因数列挙に関して引数で渡したいかも。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// [`dlog`]: fn.dlog.html</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ord</span>(<span class="ident">a</span>: <span class="ident">u64</span>, <span class="ident">n</span>: <span class="ident">u64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">q</span> <span class="op">=</span> <span class="ident">totient_phi</span>(<span class="ident">n</span>);
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">q</span> <span class="op">=</span> <span class="ident">euler_phi</span>(<span class="ident">n</span>);
     <span class="kw">for</span> <span class="ident">e</span> <span class="kw">in</span> <span class="ident">factors_dup</span>(<span class="ident">q</span>) {
         <span class="kw">if</span> <span class="ident">mod_pow</span>(<span class="ident">a</span>, <span class="ident">q</span> <span class="op">/</span> <span class="ident">e</span>, <span class="ident">n</span>) <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
             <span class="ident">q</span> <span class="op">/</span><span class="op">=</span> <span class="ident">e</span>;
