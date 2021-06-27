@@ -285,6 +285,20 @@
 <span id="257">257</span>
 <span id="258">258</span>
 <span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 定数除算。</span>
 
@@ -431,7 +445,8 @@
 <span class="doccomment">/// = \\left\\lfloor\\frac{n\\vphantom{2^s}}{d} + \\frac{r\\cdot n}{2^s}\\right\\rfloor. $$</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// 有理数と床関数の性質から、$r\\cdot n/2^s \\lt 1/d$ が常に成り立てばよい。</span>
-<span class="doccomment">/// このとき、$0\\le M\_d\\lt 2^{w+1}$ をみたす $M\_d$ が存在することを示す。`todo!()`</span>
+<span class="doccomment">/// このとき、$0\\le M\_d\\lt 2^{w+1}$ をみたす $M\_d$ が存在することを示す。</span>
+<span class="doccomment">/// すなわち、$\\lfloor M\_d/2^w\\rfloor\\in\\{0, 1\\}$ となる。`todo!()`</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// さて、$M\_d$ が見つかったとする。$0\\le M\_d\\lt 2^w$ であれば上の式に基づいて、</span>
 <span class="doccomment">/// 直接計算できる。一方で、$2^w\\le M\_d\\lt 2^{w+1}$ の場合はワードサイズに収まらないので、</span>
@@ -445,7 +460,7 @@
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">enum</span> <span class="ident">DivAlgo</span> {
-    <span class="ident">Shr</span>(<span class="ident">u32</span>),
+    <span class="ident">Shr</span>(<span class="ident">u32</span>, <span class="ident">u64</span>),
     <span class="ident">MulShr</span>(<span class="ident">u64</span>, <span class="ident">u32</span>),
     <span class="ident">MulAddShr</span>(<span class="ident">u64</span>, <span class="ident">u32</span>),
     <span class="ident">Ge</span>(<span class="ident">u64</span>),
@@ -455,13 +470,19 @@
 <span class="kw">impl</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">DivAlgo</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt::Result</span> {
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">Shr</span>(<span class="ident">s</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">format!</span>(<span class="string">&quot;n &gt;&gt; {}&quot;</span>, <span class="ident">s</span>),
-            <span class="ident">MulShr</span>(<span class="ident">m</span>, <span class="ident">s</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">format!</span>(<span class="string">&quot;(n * 0x{:016X}) &gt;&gt; {}&quot;</span>, <span class="ident">m</span>, <span class="ident">s</span>),
+            <span class="ident">Shr</span>(<span class="ident">s</span>, <span class="ident">a</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">format!</span>(<span class="string">&quot;|n| n &gt;&gt; {}, |n| n &amp; 0x{:016X}&quot;</span>, <span class="ident">s</span>, <span class="ident">a</span>),
+            <span class="ident">MulShr</span>(<span class="ident">m</span>, <span class="ident">s</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">format!</span>(<span class="string">&quot;|n| (n * 0x{:016X}) &gt;&gt; {}&quot;</span>, <span class="ident">m</span>, <span class="ident">s</span>),
             <span class="ident">MulAddShr</span>(<span class="ident">m</span>, <span class="ident">s</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="macro">format!</span>(<span class="string">&quot;(n + ((n * 0x{:016X}) &gt;&gt; 64) &gt;&gt; 1) &gt;&gt; {}&quot;</span>, <span class="ident">m</span>, <span class="ident">s</span>)
+                <span class="macro">format!</span>(<span class="string">&quot;|n| (n + ((n * 0x{:016X}) &gt;&gt; 64) &gt;&gt; 1) &gt;&gt; {}&quot;</span>, <span class="ident">m</span>, <span class="ident">s</span>)
             }
             <span class="ident">Ge</span>(<span class="ident">g</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="macro">format!</span>(<span class="string">&quot;if n &gt;= 0x{:016x} {{ 1 }} else {{ 0 }}&quot;</span>, <span class="ident">g</span>)
+                <span class="kw">let</span> <span class="ident">q</span> <span class="op">=</span>
+                    <span class="macro">format!</span>(<span class="string">&quot;|n| if n &gt;= 0x{:016x} {{ 1 }} else {{ 0 }}&quot;</span>, <span class="ident">g</span>);
+                <span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="macro">format!</span>(
+                    <span class="string">&quot;|n| if n &gt;= 0x{0:016X} {{ n - 0x{0:016X} }} else {{ n }}&quot;</span>,
+                    <span class="ident">g</span>
+                );
+                <span class="macro">format!</span>(<span class="string">&quot;{}, {}&quot;</span>, <span class="ident">q</span>, <span class="ident">r</span>)
             }
         };
         <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="ident">res</span>.<span class="ident">as_str</span>())
@@ -472,7 +493,7 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">n</span>: <span class="ident">u64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">ns</span> <span class="op">=</span> <span class="ident">n</span>.<span class="ident">next_power_of_two</span>().<span class="ident">trailing_zeros</span>();
         <span class="kw">if</span> <span class="ident">n</span>.<span class="ident">is_power_of_two</span>() {
-            <span class="kw">return</span> <span class="self">Self</span> { <span class="ident">n</span>, <span class="ident">di</span>: <span class="ident">Shr</span>(<span class="ident">ns</span>) };
+            <span class="kw">return</span> <span class="self">Self</span> { <span class="ident">n</span>, <span class="ident">di</span>: <span class="ident">Shr</span>(<span class="ident">ns</span>, <span class="ident">n</span> <span class="op">-</span> <span class="number">1</span>) };
         }
         <span class="kw">if</span> <span class="ident">n</span>.<span class="ident">leading_zeros</span>() <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
             <span class="kw">return</span> <span class="self">Self</span> { <span class="ident">n</span>, <span class="ident">di</span>: <span class="ident">Ge</span>(<span class="ident">n</span>) };
@@ -495,7 +516,7 @@
     }
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">quot</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">u64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u64</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">di</span> {
-            <span class="ident">Shr</span>(<span class="ident">s</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">n</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">s</span>,
+            <span class="ident">Shr</span>(<span class="ident">s</span>, <span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">n</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">s</span>,
             <span class="ident">MulShr</span>(<span class="ident">m</span>, <span class="ident">s</span>) <span class="op">=</span><span class="op">&gt;</span> ((<span class="ident">n</span> <span class="kw">as</span> <span class="ident">u128</span> <span class="op">*</span> <span class="ident">m</span> <span class="kw">as</span> <span class="ident">u128</span>) <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">s</span>) <span class="kw">as</span> <span class="ident">u64</span>,
             <span class="ident">MulAddShr</span>(<span class="ident">m</span>, <span class="ident">s</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> ((<span class="ident">n</span> <span class="kw">as</span> <span class="ident">u128</span> <span class="op">*</span> <span class="ident">m</span> <span class="kw">as</span> <span class="ident">u128</span>) <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">64</span>) <span class="kw">as</span> <span class="ident">u64</span>;
@@ -505,7 +526,14 @@
             <span class="ident">Ge</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="number">0</span>,
         }
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rem</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">u64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u64</span> { <span class="ident">n</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">quot</span>(<span class="ident">n</span>) <span class="op">*</span> <span class="self">self</span>.<span class="ident">n</span> }
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rem</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">u64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u64</span> {
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">di</span> {
+            <span class="ident">Shr</span>(<span class="kw">_</span>, <span class="ident">a</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">n</span> <span class="op">&amp;</span> <span class="ident">a</span>,
+            <span class="ident">Ge</span>(<span class="ident">g</span>) <span class="kw">if</span> <span class="ident">n</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">g</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">n</span> <span class="op">-</span> <span class="ident">g</span>,
+            <span class="ident">Ge</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">n</span>,
+            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">n</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">quot</span>(<span class="ident">n</span>) <span class="op">*</span> <span class="self">self</span>.<span class="ident">n</span>,
+        }
+    }
 }
 
 <span class="attribute">#[<span class="ident">test</span>]</span>
