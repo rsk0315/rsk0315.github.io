@@ -70,49 +70,125 @@
 <span id="42">42</span>
 <span id="43">43</span>
 <span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
+<span id="47">47</span>
+<span id="48">48</span>
+<span id="49">49</span>
+<span id="50">50</span>
+<span id="51">51</span>
+<span id="52">52</span>
+<span id="53">53</span>
+<span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
+<span id="62">62</span>
+<span id="63">63</span>
+<span id="64">64</span>
+<span id="65">65</span>
+<span id="66">66</span>
+<span id="67">67</span>
+<span id="68">68</span>
+<span id="69">69</span>
+<span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
+<span id="76">76</span>
+<span id="77">77</span>
+<span id="78">78</span>
+<span id="79">79</span>
+<span id="80">80</span>
+<span id="81">81</span>
+<span id="82">82</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 位数。</span>
 
-<span class="kw">use</span> <span class="kw">super</span><span class="ident">::euler_phi_</span>;
+<span class="kw">use</span> <span class="kw">super</span><span class="ident">::carmichael_lambda_</span>;
+<span class="kw">use</span> <span class="kw">super</span><span class="ident">::const_div</span>;
 <span class="kw">use</span> <span class="kw">super</span><span class="ident">::factors_</span>;
 <span class="kw">use</span> <span class="kw">super</span><span class="ident">::mod_pow_</span>;
 
-<span class="kw">use</span> <span class="ident">euler_phi_::euler_phi</span>;
+<span class="kw">use</span> <span class="ident">carmichael_lambda_::carmichael_lambda</span>;
+<span class="kw">use</span> <span class="ident">const_div::ConstDiv</span>;
 <span class="kw">use</span> <span class="ident">factors_::factors_dup</span>;
-<span class="kw">use</span> <span class="ident">mod_pow_::mod_pow</span>;
+<span class="kw">use</span> <span class="ident">mod_pow_::mod_pow_with_cd</span>;
 
 <span class="doccomment">/// 位数。</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// $a^z \\equiv 1 \\pmod{n}$ なる $z\\ge 0$ が存在すれば、そのうち最小のものを返す。</span>
+<span class="doccomment">/// ~~$a^z \\equiv 1 \\pmod{n}$ なる $z\\gt 0$ が存在すれば、そのうち最小のものを返す。~~</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// $\\varphi(n)$ に対する素因数列挙にかかる時間に加え、各素因数に対して</span>
-<span class="doccomment">/// $O(\\log(\\varphi(n)))$ 時間。試し割り法では $O(\\sqrt{n})$ 時間。</span>
+<span class="doccomment">/// $0\\le a\\lt n$ とする。</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::math::ord;</span>
+<span class="doccomment">/// 嘘じゃん。</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(ord(7, 10), Some(4));</span>
-<span class="doccomment">/// assert_eq!(ord(1, 3), Some(1));</span>
-<span class="doccomment">/// assert_eq!(ord(22, 30), None);</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Suggestions</span>
-<span class="doccomment">/// [`dlog`] と同様、$\\varphi$ 関数と素因数列挙に関して引数で渡したいかも。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [`dlog`]: fn.dlog.html</span>
+<span class="comment">// # Complexity</span>
+<span class="comment">// $\\lambda(n)$ に対する素因数列挙にかかる時間に加え、各素因数に対して</span>
+<span class="comment">// $O(\\log(\\lambda(n)))$ 時間。試し割り法では $O(\\sqrt{n})$ 時間。</span>
+<span class="comment">//</span>
+<span class="comment">// # Examples</span>
+<span class="comment">// ```</span>
+<span class="comment">// use nekolib::math::ord;</span>
+<span class="comment">//</span>
+<span class="comment">// assert_eq!(ord(7, 10), Some(4));</span>
+<span class="comment">// assert_eq!(ord(1, 3), Some(1));</span>
+<span class="comment">// assert_eq!(ord(22, 30), None);</span>
+<span class="comment">// ```</span>
+<span class="comment">//</span>
+<span class="comment">// # Suggestions</span>
+<span class="comment">// [`dlog`] と同様、$\\lambda$ 関数と素因数列挙に関して引数で渡したいかも。</span>
+<span class="comment">//</span>
+<span class="comment">// [`dlog`]: fn.dlog.html</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ord</span>(<span class="ident">a</span>: <span class="ident">u64</span>, <span class="ident">n</span>: <span class="ident">u64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">q</span> <span class="op">=</span> <span class="ident">euler_phi</span>(<span class="ident">n</span>);
+    <span class="kw">if</span> <span class="ident">n</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+        <span class="macro">panic!</span>(<span class="string">&quot;modulo must be positive&quot;</span>)
+    }
+    <span class="kw">match</span> (<span class="ident">a</span>, <span class="ident">n</span>) {
+        (<span class="number">0</span>, <span class="number">1</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="prelude-val">None</span>,
+        (<span class="number">0</span>, <span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="number">0</span>),
+        (<span class="number">1</span>, <span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="number">0</span>),
+        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> {}
+    }
+
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">q</span> <span class="op">=</span> <span class="ident">carmichael_lambda</span>(<span class="ident">n</span>);
+    <span class="kw">let</span> <span class="ident">cd</span> <span class="op">=</span> <span class="ident">ConstDiv::new</span>(<span class="ident">n</span>);
     <span class="kw">for</span> <span class="ident">e</span> <span class="kw">in</span> <span class="ident">factors_dup</span>(<span class="ident">q</span>) {
-        <span class="kw">if</span> <span class="ident">mod_pow</span>(<span class="ident">a</span>, <span class="ident">q</span> <span class="op">/</span> <span class="ident">e</span>, <span class="ident">n</span>) <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
+        <span class="kw">if</span> <span class="ident">mod_pow_with_cd</span>(<span class="ident">a</span>, <span class="ident">q</span> <span class="op">/</span> <span class="ident">e</span>, <span class="ident">cd</span>) <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
             <span class="ident">q</span> <span class="op">/</span><span class="op">=</span> <span class="ident">e</span>;
         }
     }
-    <span class="kw">if</span> <span class="ident">mod_pow</span>(<span class="ident">a</span>, <span class="ident">q</span>, <span class="ident">n</span>) <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
+    <span class="kw">if</span> <span class="ident">mod_pow_with_cd</span>(<span class="ident">a</span>, <span class="ident">q</span>, <span class="ident">cd</span>) <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
         <span class="prelude-val">Some</span>(<span class="ident">q</span>)
     } <span class="kw">else</span> {
         <span class="prelude-val">None</span>
+    }
+}
+
+<span class="attribute">#[<span class="ident">test</span>]</span>
+<span class="kw">fn</span> <span class="ident">test</span>() {
+    <span class="kw">let</span> <span class="ident">n_max</span> <span class="op">=</span> <span class="number">200</span>;
+
+    <span class="kw">for</span> <span class="ident">n</span> <span class="kw">in</span> <span class="number">2</span>..<span class="op">=</span><span class="ident">n_max</span> {
+        <span class="kw">for</span> <span class="ident">a</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span> {
+            <span class="kw">let</span> <span class="ident">actual</span> <span class="op">=</span> <span class="ident">ord</span>(<span class="ident">a</span>, <span class="ident">n</span>);
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x</span> <span class="op">=</span> <span class="number">1</span>;
+            <span class="kw">let</span> <span class="ident">expected</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">n</span>).<span class="ident">find_map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> {
+                <span class="ident">x</span> <span class="op">=</span> <span class="ident">x</span> <span class="op">*</span> <span class="ident">a</span> <span class="op">%</span> <span class="ident">n</span>;
+                <span class="kw">if</span> <span class="ident">x</span> <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
+                    <span class="prelude-val">Some</span>(<span class="ident">i</span>)
+                } <span class="kw">else</span> {
+                    <span class="prelude-val">None</span>
+                }
+            });
+            <span class="comment">// assert_eq!(actual, expected);</span>
+        }
     }
 }
 </pre></div>
