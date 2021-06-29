@@ -1,0 +1,121 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="tetration。"><meta name="keywords" content="rust, rustlang, rust-lang, mod_tetration"><title>mod_tetration in nekolib::math::mod_tetration_ - Rust</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings"></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
+<link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png">
+<link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><!-- For newer version of KaTeX, see https://katex.org/docs/browser.html -->
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+
+<!-- The loading of KaTeX is deferred to speed up page rendering -->
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
+
+<!-- To automatically render math in text elements, include the auto-render extension: -->
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "$", right: "$", display: false},
+                {left: "\\[", right: "\\]", display: true}
+            ]
+        });
+    });
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet">
+<style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc fn"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../nekolib/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a><div class="sidebar-elems"><p class="location"><a href="../../index.html">nekolib</a>::<wbr><a href="../index.html">math</a>::<wbr><a href="index.html">mod_tetration_</a></p><div id="sidebar-vars" data-name="mod_tetration" data-ty="fn" data-relpath=""></div><script defer src="sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
+                <a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" height="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class="fqn"><span class="in-band">Function <a href="../../index.html">nekolib</a>::<wbr><a href="../index.html">math</a>::<wbr><a href="index.html">mod_tetration_</a>::<wbr><a class="fn" href="">mod_tetration</a><button id="copy-path" onclick="copy_path(this)">⎘</button></span><span class="out-of-band"><span id="render-detail"><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span><a class="srclink" href="../../../src/nekolib/math/mod_tetration_.rs.html#118-128" title="goto source code">[src]</a></span></h1><pre class="rust fn">pub fn mod_tetration(a: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u64.html">u64</a>, b: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u64.html">u64</a>, n: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u64.html">u64</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u64.html">u64</a></pre><div class="docblock"><p>tetration。</p>
+<p>${}^b a\bmod n$ を求める。${}^\bullet \bullet$ は次のように定義される。
+$$ {}^b a = \begin{cases}
+1, &amp; \text{if } b = 0; \\
+a^{\left({}^{(b-1)} a\right)}, &amp; \text{if } b \ge 1.
+\end{cases} $$
+直感的に書けば、$\underbrace{a^{(a^{(\cdots ^a)})}}_{b\text{ many}} \bmod n$ である。</p>
+<h1 id="idea" class="section-header"><a href="#idea">Idea</a></h1>
+<p>大変大きくなりうる $z$ に対して $a^z\bmod n$ を求めることを考える。
+このとき、<a href="fn.dlog.html"><code>dlog</code></a> の <a href="fn.dlog.html#idea">Idea</a> と同じ議論から、ある $\mu$, $\lambda$ が存在して
+$z\lt\mu$ または $z=\mu+q\cdot\lambda+r$ とでき、後者のとき
+$a^z\equiv a^{\mu+r}\pmod{n}$ が成り立つ。</p>
+<p>ここで、$\mu\le\log_2(n)$, $\lambda\sqsubseteq\varphi(n)$ である。
+さらに、任意の $n$ に対して $\log_2(n)\le\varphi(n)$ なので、$z\ge\varphi(n)$
+ならば $z\ge\mu$ とわかる<sup id="fnref1"><a href="#fn1">1</a></sup>。よって、以下のようにできる。
+$$ \begin{aligned}
+a^z \equiv \begin{cases}
+a^z, &amp; \text{if }z\lt \varphi(n); \\
+a^{(z\bmod\varphi(n))+\varphi(n)}, &amp; \text{otherwise}.
+\end{cases}
+\end{aligned} $$</p>
+<p>直感的には、指数部が $\varphi(n)$ 以上であればすでに周期の中に入っており、入った後は
+$\varphi(n)$ を法として合同かつ $\varphi(n)$ 以上の値さえ得られれば十分ということである。</p>
+<h2 id="when-b-is-large" class="section-header"><a href="#when-b-is-large">When $b$ is large</a></h2>
+<p>前述のように、${}^b a\bmod{n}$ を求める際に ${}^{b-1} a$ を法 ${\varphi(n)}$ で考える。
+その次は $\varphi(\varphi(n)), \varphi(\varphi(\varphi(n))), \dots$ と続く。
+$\varphi^\star(n)$ 段では考えるべき法が $1$ となり、それより上の段のことは無視できる。</p>
+<p>そこで、$\varphi^\star(n)$ を考える。奇素数 $p$ に対して $\varphi(p^e)=p^{e-1}\cdot(p-1)$
+が偶数であることと、$\varphi(2^e)=2^{e-1}$ であることから、$\varphi(\varphi(n))\lt n/2$
+が成り立つ。すなわち、$\varphi^\star(n)\le 2\log(n)$ である<sup id="fnref1"><a href="#fn1">1</a></sup>。</p>
+<p>よって、$b\ge 2\log(n)$ であれば ${}^{b+1} a\equiv {}^b a\pmod{n}$ となる。</p>
+<h2 id="common-bugs" class="section-header"><a href="#common-bugs">Common bugs</a></h2>
+<p>繰り返し二乗法で $\varphi(n)$ 以上か判断しつつ $a^z\bmod\varphi(n)$ を求める際、
+$a^{2^\bullet}$ が $\varphi(n)$ 以上になった時点で $a^z\ge\varphi(n)$
+と判断してしまうと、誤検出してしまう場合がある。</p>
+
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
+<span class="kw">fn</span> <span class="ident">mod_pow</span>(<span class="kw-2">mut</span> <span class="ident">a</span>: <span class="ident">u64</span>, <span class="kw-2">mut</span> <span class="ident">b</span>: <span class="ident">u64</span>, <span class="ident">n</span>: <span class="ident">u64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u64</span> {
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="number">1</span> <span class="op">%</span> <span class="ident">n</span>;
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">large</span> <span class="op">=</span> <span class="bool-val">false</span>;
+    <span class="kw">while</span> <span class="ident">b</span> <span class="op">&gt;</span> <span class="number">0</span> {
+        <span class="kw">if</span> <span class="ident">b</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
+            <span class="ident">res</span> <span class="kw-2">*</span><span class="op">=</span> <span class="ident">a</span>;
+            <span class="kw">if</span> <span class="ident">res</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">n</span> { <span class="ident">res</span> <span class="op">%</span><span class="op">=</span> <span class="ident">n</span>; <span class="ident">large</span> <span class="op">=</span> <span class="bool-val">true</span>; }
+        }
+        <span class="ident">a</span> <span class="kw-2">*</span><span class="op">=</span> <span class="ident">a</span>;
+        <span class="kw">if</span> <span class="ident">a</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">n</span> { <span class="ident">a</span> <span class="op">%</span><span class="op">=</span> <span class="ident">n</span>; <span class="ident">large</span> <span class="op">=</span> <span class="bool-val">true</span>; } <span class="comment">// !</span>
+        <span class="ident">b</span> <span class="op">&gt;</span><span class="op">&gt;</span><span class="op">=</span> <span class="number">1</span>;
+    }
+    <span class="kw">if</span> <span class="ident">large</span> { <span class="ident">res</span> <span class="op">+</span> <span class="ident">n</span> } <span class="kw">else</span> { <span class="ident">res</span> }
+}</pre></div>
+<p>最後のループで初めて <code>a &gt;= n</code> になると、<code>res &lt; n</code> なのに <code>res + n</code> が返ってしまう。
+このような理由により、${}^3 2\bmod 32 = 0$ としてしまうコードがたくさん提出されている。
+<a href="https://judge.yosupo.jp/submission/4054">$\bullet$</a>
+<a href="https://judge.yosupo.jp/submission/4564">$\bullet$</a>
+<a href="https://judge.yosupo.jp/submission/12501">$\bullet$</a>
+<a href="https://judge.yosupo.jp/submission/18734">$\bullet$</a>
+<a href="https://judge.yosupo.jp/submission/23725">$\bullet$</a>
+<a href="https://judge.yosupo.jp/submission/25108">$\bullet$</a>
+<a href="https://judge.yosupo.jp/submission/28794">$\bullet$</a>
+<a href="https://judge.yosupo.jp/submission/36536">$\bullet$</a>
+<a href="https://judge.yosupo.jp/submission/38102">$\bullet$</a>
+<a href="https://judge.yosupo.jp/submission/39646">$\bullet$</a>
+<a href="https://judge.yosupo.jp/submission/40708">$\bullet$</a>
+<a href="https://judge.yosupo.jp/submission/42416">$\bullet$</a></p>
+<h1 id="complexity" class="section-header"><a href="#complexity">Complexity</a></h1>
+<p>$O(\sqrt{n})$ time.</p>
+<p>律速は、$\varphi(n), \varphi(\varphi(n)), \dots$ を求めるパートであり、
+$O(\sum_{i=0}^{\varphi^\star(n)} \sqrt{n/2^i}) = O(\sqrt{n})$ である。</p>
+<h1 id="examples" class="section-header"><a href="#examples">Examples</a></h1>
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">nekolib::math::mod_tetration</span>;
+
+<span class="macro">assert_eq!</span>(<span class="ident">mod_tetration</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">100000</span>), <span class="number">1</span>);
+<span class="macro">assert_eq!</span>(<span class="ident">mod_tetration</span>(<span class="number">0</span>, <span class="number">1</span>, <span class="number">100000</span>), <span class="number">0</span>);
+<span class="macro">assert_eq!</span>(<span class="ident">mod_tetration</span>(<span class="number">0</span>, <span class="number">2</span>, <span class="number">100000</span>), <span class="number">1</span>);
+<span class="macro">assert_eq!</span>(<span class="ident">mod_tetration</span>(<span class="number">0</span>, <span class="number">3</span>, <span class="number">100000</span>), <span class="number">0</span>);
+
+<span class="macro">assert_eq!</span>(<span class="ident">mod_tetration</span>(<span class="number">1</span>, <span class="number">0</span>, <span class="number">100000</span>), <span class="number">1</span>);
+<span class="macro">assert_eq!</span>(<span class="ident">mod_tetration</span>(<span class="number">1</span>, <span class="number">1</span>, <span class="number">100000</span>), <span class="number">1</span>);
+
+<span class="macro">assert_eq!</span>(<span class="ident">mod_tetration</span>(<span class="number">2</span>, <span class="number">0</span>, <span class="number">100000</span>), <span class="number">1</span>);
+<span class="macro">assert_eq!</span>(<span class="ident">mod_tetration</span>(<span class="number">2</span>, <span class="number">1</span>, <span class="number">100000</span>), <span class="number">2</span>);
+<span class="macro">assert_eq!</span>(<span class="ident">mod_tetration</span>(<span class="number">2</span>, <span class="number">2</span>, <span class="number">100000</span>), <span class="number">4</span>);
+<span class="macro">assert_eq!</span>(<span class="ident">mod_tetration</span>(<span class="number">2</span>, <span class="number">3</span>, <span class="number">100000</span>), <span class="number">16</span>);
+<span class="macro">assert_eq!</span>(<span class="ident">mod_tetration</span>(<span class="number">2</span>, <span class="number">4</span>, <span class="number">100000</span>), <span class="number">65536</span>);
+
+<span class="macro">assert_eq!</span>(<span class="ident">mod_tetration</span>(<span class="number">2</span>, <span class="number">4</span>, <span class="number">65535</span>), <span class="number">1</span>);</pre></div>
+<h1 id="notations" class="section-header"><a href="#notations">Notations</a></h1>
+<p>${}^b a$ は $a\uparrow\uparrow b$ (Knuth’s up-arrow notation) や
+$a\to b\to 2$ (Conway chained arrow notation) などとも表記される。</p>
+<div class="footnotes"><hr><ol><li id="fn1"><p>ゆるゆるな bound である。実際にはもっと速く減りそう。&nbsp;<a href="#fnref1" rev="footnote">↩</a></p></li></ol></div></div></section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div>
+    <script src="../../../main.js"></script></body></html>
