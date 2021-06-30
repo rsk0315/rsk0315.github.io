@@ -224,6 +224,7 @@
 <span id="196">196</span>
 <span id="197">197</span>
 <span id="198">198</span>
+<span id="199">199</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! tetration。</span>
 
@@ -322,21 +323,26 @@
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use nekolib::math::mod_tetration;</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(mod_tetration(0, 0, 100000), 1);</span>
-<span class="doccomment">/// assert_eq!(mod_tetration(0, 1, 100000), 0);</span>
-<span class="doccomment">/// assert_eq!(mod_tetration(0, 2, 100000), 1);</span>
-<span class="doccomment">/// assert_eq!(mod_tetration(0, 3, 100000), 0);</span>
+<span class="doccomment">/// let n = 10_u64.pow(9);</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(mod_tetration(1, 0, 100000), 1);</span>
-<span class="doccomment">/// assert_eq!(mod_tetration(1, 1, 100000), 1);</span>
+<span class="doccomment">/// assert_eq!(mod_tetration(0, 0, n), 1);</span>
+<span class="doccomment">/// assert_eq!(mod_tetration(0, 1, n), 0);</span>
+<span class="doccomment">/// assert_eq!(mod_tetration(0, 2, n), 1);</span>
+<span class="doccomment">/// assert_eq!(mod_tetration(0, 3, n), 0);</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(mod_tetration(2, 0, 100000), 1);</span>
-<span class="doccomment">/// assert_eq!(mod_tetration(2, 1, 100000), 2);</span>
-<span class="doccomment">/// assert_eq!(mod_tetration(2, 2, 100000), 4);</span>
-<span class="doccomment">/// assert_eq!(mod_tetration(2, 3, 100000), 16);</span>
-<span class="doccomment">/// assert_eq!(mod_tetration(2, 4, 100000), 65536);</span>
+<span class="doccomment">/// assert_eq!(mod_tetration(1, 0, n), 1);</span>
+<span class="doccomment">/// assert_eq!(mod_tetration(1, 1, n), 1);</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(mod_tetration(2, 4, 65535), 1);</span>
+<span class="doccomment">/// assert_eq!(mod_tetration(2, 0, n), 1);</span>
+<span class="doccomment">/// assert_eq!(mod_tetration(2, 1, n), 2);</span>
+<span class="doccomment">/// assert_eq!(mod_tetration(2, 2, n), 4);</span>
+<span class="doccomment">/// assert_eq!(mod_tetration(2, 3, n), 16);</span>
+<span class="doccomment">/// assert_eq!(mod_tetration(2, 4, n), 65536);</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// assert_eq!(mod_tetration(3, 9, n), 64_195_387);</span>
+<span class="doccomment">/// assert_eq!(mod_tetration(3, 10, n), 464_195_387);</span>
+<span class="doccomment">/// assert_eq!(mod_tetration(3, 11, n), 464_195_387);</span>
+<span class="doccomment">/// assert_eq!(mod_tetration(3, 99, n), 464_195_387);</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Notations</span>
@@ -397,10 +403,6 @@
 
 <span class="attribute">#[<span class="ident">test</span>]</span>
 <span class="kw">fn</span> <span class="ident">test</span>() {
-    <span class="comment">// for b in 0..20 {</span>
-    <span class="comment">//     println!(&quot;{}&quot;, mod_tetration(3, b, 1000000000));</span>
-    <span class="comment">// }</span>
-
     <span class="kw">for</span> <span class="ident">n</span> <span class="kw">in</span> <span class="number">1</span>..<span class="number">100000</span> {
         <span class="kw">if</span> <span class="ident">mod_tetration</span>(<span class="number">2</span>, <span class="number">2</span>, <span class="ident">n</span>) <span class="op">!</span><span class="op">=</span> <span class="number">4</span> <span class="op">%</span> <span class="ident">n</span> {
             <span class="macro">eprintln!</span>(<span class="string">&quot;{:?}&quot;</span>, (<span class="number">2</span>, <span class="number">2</span>, <span class="ident">n</span>));
@@ -419,7 +421,7 @@
             <span class="macro">eprintln!</span>(<span class="string">&quot;{:?}&quot;</span>, (<span class="number">3</span>, <span class="number">2</span>, <span class="ident">n</span>));
         }
         <span class="kw">if</span> <span class="ident">mod_tetration</span>(<span class="number">3</span>, <span class="number">3</span>, <span class="ident">n</span>) <span class="op">!</span><span class="op">=</span> <span class="number">7_625_597_484_987</span> <span class="op">%</span> <span class="ident">n</span> {
-            <span class="macro">eprintln!</span>(<span class="string">&quot;{:?}&quot;</span>, (<span class="number">3</span>, <span class="number">2</span>, <span class="ident">n</span>));
+            <span class="macro">eprintln!</span>(<span class="string">&quot;{:?}&quot;</span>, (<span class="number">3</span>, <span class="number">3</span>, <span class="ident">n</span>));
         }
     }
 }
