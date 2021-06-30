@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["majority","Boyer–Moore’s majority vote algorithm。"]]});
