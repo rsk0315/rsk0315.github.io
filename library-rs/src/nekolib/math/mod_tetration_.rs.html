@@ -225,6 +225,7 @@
 <span id="197">197</span>
 <span id="198">198</span>
 <span id="199">199</span>
+<span id="200">200</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! tetration。</span>
 
@@ -299,7 +300,8 @@
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// 最後のループで初めて `a &gt;= n` になると、`res &lt; n` なのに `res + n` が返ってしまう。</span>
-<span class="doccomment">/// このような理由により、${}^3 2\\bmod 32 = 0$ としてしまうコードがたくさん提出されている。</span>
+<span class="doccomment">/// このバグや、あるいはそもそも $z\\ge\\varphi(n)$ を仮定していることなどにより、</span>
+<span class="doccomment">/// ${}^3 2\\bmod 32 = 0$ としてしまうコードがたくさん提出されている。</span>
 <span class="doccomment">/// [$\\bullet$](https://judge.yosupo.jp/submission/4054)</span>
 <span class="doccomment">/// [$\\bullet$](https://judge.yosupo.jp/submission/4564)</span>
 <span class="doccomment">/// [$\\bullet$](https://judge.yosupo.jp/submission/12501)</span>
