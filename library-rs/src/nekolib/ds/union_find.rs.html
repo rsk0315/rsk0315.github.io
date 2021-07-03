@@ -132,14 +132,6 @@
 <span id="104">104</span>
 <span id="105">105</span>
 <span id="106">106</span>
-<span id="107">107</span>
-<span id="108">108</span>
-<span id="109">109</span>
-<span id="110">110</span>
-<span id="111">111</span>
-<span id="112">112</span>
-<span id="113">113</span>
-<span id="114">114</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! union-find。</span>
 
@@ -187,10 +179,7 @@
 
 <span class="kw">impl</span> <span class="ident">DisjointSet</span> <span class="kw">for</span> <span class="ident">UnionFind</span> {
     <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">n</span>,
-            <span class="ident">buf</span>: <span class="ident">RefCell::new</span>(<span class="macro">vec!</span>[<span class="ident">Item::Size</span>(<span class="number">1</span>); <span class="ident">n</span>]),
-        }
+        <span class="self">Self</span> { <span class="ident">n</span>, <span class="ident">buf</span>: <span class="ident">RefCell::new</span>(<span class="macro">vec!</span>[<span class="ident">Item::Size</span>(<span class="number">1</span>); <span class="ident">n</span>]) }
     }
     <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">n</span> }
     <span class="kw">fn</span> <span class="ident">unite</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">u</span>: <span class="ident">usize</span>, <span class="ident">v</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
@@ -234,26 +223,21 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::DisjointSet</span>;
-    <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::UnionFind</span>;
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test</span>() {
-        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="number">4</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">uf</span> <span class="op">=</span> <span class="ident">UnionFind::new</span>(<span class="ident">n</span>);
-        <span class="macro">assert!</span>(<span class="op">!</span><span class="ident">uf</span>.<span class="ident">equiv</span>(<span class="number">1</span>, <span class="number">3</span>));
-        <span class="macro">assert_eq!</span>(<span class="ident">uf</span>.<span class="ident">count</span>(<span class="number">1</span>), <span class="number">1</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">uf</span>.<span class="ident">count</span>(<span class="number">3</span>), <span class="number">1</span>);
-        <span class="ident">uf</span>.<span class="ident">unite</span>(<span class="number">1</span>, <span class="number">3</span>);
-        <span class="macro">assert!</span>(<span class="ident">uf</span>.<span class="ident">equiv</span>(<span class="number">1</span>, <span class="number">3</span>));
-        <span class="macro">assert_eq!</span>(<span class="ident">uf</span>.<span class="ident">count</span>(<span class="number">1</span>), <span class="number">2</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">uf</span>.<span class="ident">count</span>(<span class="number">3</span>), <span class="number">2</span>);
-        <span class="ident">uf</span>.<span class="ident">unite</span>(<span class="number">2</span>, <span class="number">3</span>);
-        <span class="macro">assert!</span>(<span class="ident">uf</span>.<span class="ident">equiv</span>(<span class="number">2</span>, <span class="number">3</span>));
-        <span class="macro">assert!</span>(<span class="ident">uf</span>.<span class="ident">equiv</span>(<span class="number">1</span>, <span class="number">2</span>));
-        <span class="macro">assert!</span>(<span class="op">!</span><span class="ident">uf</span>.<span class="ident">equiv</span>(<span class="number">1</span>, <span class="number">0</span>));
-    }
+<span class="attribute">#[<span class="ident">test</span>]</span>
+<span class="kw">fn</span> <span class="ident">test</span>() {
+    <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="number">4</span>;
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">uf</span> <span class="op">=</span> <span class="ident">UnionFind::new</span>(<span class="ident">n</span>);
+    <span class="macro">assert!</span>(<span class="op">!</span><span class="ident">uf</span>.<span class="ident">equiv</span>(<span class="number">1</span>, <span class="number">3</span>));
+    <span class="macro">assert_eq!</span>(<span class="ident">uf</span>.<span class="ident">count</span>(<span class="number">1</span>), <span class="number">1</span>);
+    <span class="macro">assert_eq!</span>(<span class="ident">uf</span>.<span class="ident">count</span>(<span class="number">3</span>), <span class="number">1</span>);
+    <span class="ident">uf</span>.<span class="ident">unite</span>(<span class="number">1</span>, <span class="number">3</span>);
+    <span class="macro">assert!</span>(<span class="ident">uf</span>.<span class="ident">equiv</span>(<span class="number">1</span>, <span class="number">3</span>));
+    <span class="macro">assert_eq!</span>(<span class="ident">uf</span>.<span class="ident">count</span>(<span class="number">1</span>), <span class="number">2</span>);
+    <span class="macro">assert_eq!</span>(<span class="ident">uf</span>.<span class="ident">count</span>(<span class="number">3</span>), <span class="number">2</span>);
+    <span class="ident">uf</span>.<span class="ident">unite</span>(<span class="number">2</span>, <span class="number">3</span>);
+    <span class="macro">assert!</span>(<span class="ident">uf</span>.<span class="ident">equiv</span>(<span class="number">2</span>, <span class="number">3</span>));
+    <span class="macro">assert!</span>(<span class="ident">uf</span>.<span class="ident">equiv</span>(<span class="number">1</span>, <span class="number">2</span>));
+    <span class="macro">assert!</span>(<span class="op">!</span><span class="ident">uf</span>.<span class="ident">equiv</span>(<span class="number">1</span>, <span class="number">0</span>));
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div>
