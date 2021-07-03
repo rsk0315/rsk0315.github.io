@@ -299,6 +299,9 @@
 <span id="271">271</span>
 <span id="272">272</span>
 <span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 定数除算。</span>
 
@@ -452,6 +455,9 @@
 <span class="doccomment">/// 直接計算できる。一方で、$2^w\\le M\_d\\lt 2^{w+1}$ の場合はワードサイズに収まらないので、</span>
 <span class="doccomment">/// 少々工夫する必要がある。$M\_d-2\^w$ はワードサイズに収まるので、それを利用する。</span>
 <span class="doccomment">/// `todo!()`</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # References</span>
+<span class="doccomment">/// - Warren, Henry S. _Hacker&#39;s delight_. Pearson Education, 2013.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ConstDiv</span> {
     <span class="ident">n</span>: <span class="ident">u64</span>,
