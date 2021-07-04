@@ -98,6 +98,9 @@
 <span id="70">70</span>
 <span id="71">71</span>
 <span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 数学関連のアルゴリズムたち。</span>
 <span class="doccomment">//!</span>
@@ -109,6 +112,7 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">modint</span>;
 <span class="comment">// pub mod polynomial;</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">carmichael_lambda_</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">compact_sieve</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">const_div</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">count_prime</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">divisors_</span>;
@@ -131,6 +135,8 @@
 
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">carmichael_lambda_::carmichael_lambda</span>;
+<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">compact_sieve::CompactSieve</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">const_div</span>::{<span class="ident">ConstDiv</span>, <span class="ident">ConstDiv2</span>};
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
