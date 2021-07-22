@@ -235,6 +235,21 @@
 <span id="207">207</span>
 <span id="208">208</span>
 <span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! 線形篩。</span>
 
@@ -426,6 +441,21 @@
         }
         <span class="ident">res</span>.<span class="ident">sort_unstable</span>();
         <span class="ident">res</span>.<span class="ident">into_iter</span>()
+    }
+
+    <span class="doccomment">/// $n$ の約数の個数を返す。</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// use nekolib::math::LinearSieve;</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// let sieve = LinearSieve::new(60);</span>
+    <span class="doccomment">/// assert_eq!(sieve.divisors_count(1), 1);</span>
+    <span class="doccomment">/// assert_eq!(sieve.divisors_count(60), sieve.divisors(60).count());</span>
+    <span class="doccomment">/// ```</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">divisors_count</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+        <span class="self">self</span>.<span class="ident">factors</span>(<span class="ident">n</span>).<span class="ident">map</span>(<span class="op">|</span>(<span class="kw">_</span>, <span class="ident">e</span>)<span class="op">|</span> <span class="ident">e</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">+</span> <span class="number">1</span>).<span class="ident">product</span>()
     }
 
     <span class="doccomment">/// 素数を列挙する。</span>
