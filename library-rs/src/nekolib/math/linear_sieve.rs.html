@@ -25,8 +25,7 @@
 </script>
 
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet">
-<style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../nekolib/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
-                <a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" height="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../nekolib/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img src="../../../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img src="../../../wheel.svg" width="18" height="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -250,7 +249,25 @@
 <span id="222">222</span>
 <span id="223">223</span>
 <span id="224">224</span>
-</pre><div class="example-wrap"><pre class="rust ">
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+</pre><pre class="rust">
 <span class="doccomment">//! 線形篩。</span>
 
 <span class="doccomment">/// 線形篩。</span>
@@ -272,6 +289,8 @@
 <span class="doccomment">/// |`is_prime`|$\\Theta(1)$|</span>
 <span class="doccomment">/// |`least_factor`|$\\Theta(1)$|</span>
 <span class="doccomment">/// |`factors_dup`|$\\Theta(1)$ delay|</span>
+<span class="doccomment">/// |`factors`|$\\Theta(e\_i)$ delay|</span>
+<span class="doccomment">/// |`euler_phi`|$\\Theta(\\Omega(n))$|</span>
 <span class="doccomment">/// |`primes`|$\\Theta(1)$ delay|</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// $n$ の素因数の個数を $\\Omega(n)$ とすると、以下の式が成り立つらしい。</span>
@@ -413,6 +432,22 @@
             .<span class="ident">filter_map</span>(<span class="ident">std::convert::identity</span>)
     }
 
+    <span class="doccomment">/// $\\phi(n)$ を求める。</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// use nekolib::math::LinearSieve;</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// let sieve = LinearSieve::new(60);</span>
+    <span class="doccomment">/// assert_eq!(sieve.euler_phi(1), 1);</span>
+    <span class="doccomment">/// assert_eq!(sieve.euler_phi(35), 24);</span>
+    <span class="doccomment">/// assert_eq!(sieve.euler_phi(60), 16);</span>
+    <span class="doccomment">/// ```</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">euler_phi</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+        <span class="self">self</span>.<span class="ident">factors</span>(<span class="ident">n</span>).<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">p</span>, <span class="ident">e</span>)<span class="op">|</span> (<span class="ident">p</span> <span class="op">-</span> <span class="number">1</span>) <span class="op">*</span> <span class="ident">p</span>.<span class="ident">pow</span>(<span class="ident">e</span> <span class="kw">as</span> <span class="ident">u32</span> <span class="op">-</span> <span class="number">1</span>)).<span class="ident">product</span>()
+    }
+
     <span class="doccomment">/// $n$ の約数を列挙する。</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
@@ -476,5 +511,4 @@
     }
 }
 </pre></div>
-</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div>
-    <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script></body></html>
+</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div><script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script></body></html>
