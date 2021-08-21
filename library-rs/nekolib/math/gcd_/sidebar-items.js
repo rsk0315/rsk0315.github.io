@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["gcd","最大公約数。"]]});

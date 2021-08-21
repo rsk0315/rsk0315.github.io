@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["dlog","離散対数。"]]});

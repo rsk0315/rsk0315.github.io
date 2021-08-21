@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["nekolib"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.54.0/core/iter/traits/collect/trait.Extend.html\" title=\"trait core::iter::traits::collect::Extend\">Extend</a>&lt;<a class=\"primitive\" href=\"https://doc.rust-lang.org/1.54.0/std/primitive.usize.html\">usize</a>&gt; for <a class=\"struct\" href=\"nekolib/ds/struct.BitSet.html\" title=\"struct nekolib::ds::BitSet\">BitSet</a>","synthetic":false,"types":["nekolib::ds::bit_set::BitSet"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

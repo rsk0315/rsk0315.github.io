@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["carmichael_lambda","Carmichael の $\\lambda$ 関数。"]]});

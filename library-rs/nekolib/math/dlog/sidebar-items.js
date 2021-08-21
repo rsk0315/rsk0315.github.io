@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["DLog","離散対数。"]]});

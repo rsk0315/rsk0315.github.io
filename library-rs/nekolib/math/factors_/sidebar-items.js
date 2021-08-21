@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["factors","素因数分解（指数）。"],["factors_dup","素因数分解（重複）。"]]});

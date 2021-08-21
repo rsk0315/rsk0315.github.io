@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["ModAckermann","Ackermann 関数。"]]});

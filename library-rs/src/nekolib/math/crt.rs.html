@@ -154,11 +154,11 @@
 </pre><pre class="rust">
 <span class="doccomment">//! Chinese remaindering。</span>
 
-<span class="kw">use</span> <span class="kw">super</span><span class="ident">::gcd_recip_</span>;
+<span class="kw">use</span> <span class="kw">super</span><span class="ident">::gcd_recip</span>;
 
 <span class="kw">use</span> <span class="ident">std::fmt::Debug</span>;
 
-<span class="kw">use</span> <span class="ident">gcd_recip_::gcd_recip</span>;
+<span class="kw">use</span> <span class="ident">gcd_recip::GcdRecip</span>;
 
 <span class="doccomment">/// Chinese remaindering。</span>
 <span class="doccomment">///</span>
@@ -204,7 +204,7 @@
             <span class="kw">return</span> <span class="self">self</span>;
         }
 
-        <span class="kw">let</span> (<span class="ident">g</span>, <span class="ident">re</span>) <span class="op">=</span> <span class="ident">gcd_recip</span>(<span class="ident">m0</span> <span class="kw">as</span> <span class="ident">u64</span>, <span class="ident">m1</span> <span class="kw">as</span> <span class="ident">u64</span>);
+        <span class="kw">let</span> (<span class="ident">g</span>, <span class="ident">re</span>) <span class="op">=</span> <span class="ident">m0</span>.<span class="ident">gcd_recip</span>(<span class="ident">m1</span>);
         <span class="kw">let</span> (<span class="ident">g</span>, <span class="ident">re</span>) <span class="op">=</span> (<span class="ident">g</span> <span class="kw">as</span> <span class="ident">i64</span>, <span class="ident">re</span> <span class="kw">as</span> <span class="ident">i64</span>);
         <span class="kw">let</span> <span class="ident">u1</span> <span class="op">=</span> <span class="ident">m1</span> <span class="op">/</span> <span class="ident">g</span>;
         <span class="kw">if</span> (<span class="ident">r1</span> <span class="op">-</span> <span class="ident">r0</span>) <span class="op">%</span> <span class="ident">g</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {

@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["euler_phi","Euler の $\\varphi$ 関数。"]]});
