@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["multiply","Karatsuba 法。Карацуба 法？"]]});
+initSidebarItems({"fn":[["convolve","Karatsuba 法。Карацуба 法？"]]});
