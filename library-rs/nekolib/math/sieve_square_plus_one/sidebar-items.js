@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["SieveSquarePlusOne","$n^2+1$ 型素数の篩。"]]});
