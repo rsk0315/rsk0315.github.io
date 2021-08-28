@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["sqrt_fraction","平方根の連分数展開。"],["sqrt_fraction_fn","平方根の連分数展開。"]]});
