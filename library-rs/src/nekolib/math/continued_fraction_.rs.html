@@ -61,6 +61,21 @@
 <span id="34">34</span>
 <span id="35">35</span>
 <span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
+<span id="47">47</span>
+<span id="48">48</span>
+<span id="49">49</span>
+<span id="50">50</span>
+<span id="51">51</span>
 </pre><pre class="rust">
 <span class="doccomment">//! 連分数展開。</span>
 
@@ -69,34 +84,49 @@
 <span class="doccomment">/// $[a\_0, a\_1, \\dots, a\_{i-1}]$ の連分数展開。</span>
 <span class="doccomment">/// $a\_\\bullet$ を生成するイテレータから</span>
 <span class="doccomment">/// $$</span>
-<span class="doccomment">/// a\_0 + \\frac{1}{a\_1 + \\frac{1}{\\cdots + \\frac{1}{a\_{i-1} + \\frac{1}{a\_\\bullet$}}}}</span>
+<span class="doccomment">/// a\_0 + \\frac{1}{a\_1 + \\frac{1}{\\cdots\\, + \\frac{1}{a\_{\\bullet}}}}</span>
 <span class="doccomment">/// $$</span>
 <span class="doccomment">/// を生成するイテレータを作る。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Implementation notes</span>
+<span class="doccomment">/// [`std::iter::successors`](https://doc.rust-lang.org/std/iter/fn.successors.html)</span>
+<span class="doccomment">/// によって次の項が計算されるタイミングの関係で、</span>
+<span class="doccomment">/// 実際には必要ない値の計算のせいでオーバーフローし、panic するのを避けるため、</span>
+<span class="doccomment">/// 同等の処理を `map` 中に再度書いている。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Pell 方程式を解く際、解は [`i128`](https://doc.rust-lang.org/std/primitive.i128.html)</span>
+<span class="doccomment">/// に収まるが上記の問題で panic したのでこうなった。</span>
+<span class="doccomment">/// 実際には release build では問題なく動くことが予想されるので無視してもいい気もするが...</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use nekolib::math::continued_fraction;</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// let sqrt2 = std::iter::once(1).chain(std::iter::repeat(2));</span>
-<span class="doccomment">/// let mut it = continued_fraction(sqrt2);</span>
+<span class="doccomment">/// let frac_exp = [1, 2];</span>
+<span class="doccomment">/// let sqrt3 = std::iter::once(1).chain(frac_exp.iter().copied().cycle());</span>
+<span class="doccomment">/// let mut it = continued_fraction(sqrt3);</span>
 <span class="doccomment">/// assert_eq!(it.next(), Some((1, 1)));</span>
-<span class="doccomment">/// assert_eq!(it.next(), Some((3, 2)));</span>
-<span class="doccomment">/// assert_eq!(it.next(), Some((7, 5)));</span>
-<span class="doccomment">/// assert_eq!(it.next(), Some((17, 12)));</span>
-<span class="doccomment">/// assert_eq!(it.next(), Some((41, 29)));</span>
+<span class="doccomment">/// assert_eq!(it.next(), Some((2, 1)));</span>
+<span class="doccomment">/// assert_eq!(it.next(), Some((5, 3)));</span>
+<span class="doccomment">/// assert_eq!(it.next(), Some((7, 4)));</span>
+<span class="doccomment">/// assert_eq!(it.next(), Some((19, 11)));</span>
+<span class="doccomment">/// assert_eq!(it.next(), Some((26, 15)));</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// let (x, y) = it.nth(24).unwrap();</span>
+<span class="doccomment">/// assert!(((x as f64 / y as f64) - 3.0_f64.sqrt()).abs() &lt; 1.0e-16);</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">continued_fraction</span>(
     <span class="kw-2">mut</span> <span class="ident">a</span>: <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">i128</span><span class="op">&gt;</span>,
 ) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> (<span class="ident">i128</span>, <span class="ident">i128</span>)<span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">a0</span> <span class="op">=</span> <span class="ident">a</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>();
-    <span class="ident">std::iter::successors</span>(
-        <span class="prelude-val">Some</span>(((<span class="number">1</span>, <span class="ident">a0</span>), (<span class="number">0</span>, <span class="number">1</span>))),
-        <span class="kw">move</span> <span class="op">|</span><span class="kw-2">&amp;</span>((<span class="ident">nx</span>, <span class="ident">ny</span>), (<span class="ident">dx</span>, <span class="ident">dy</span>))<span class="op">|</span> {
-            <span class="kw">let</span> <span class="ident">ai</span> <span class="op">=</span> <span class="ident">a</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>();
-            <span class="prelude-val">Some</span>(((<span class="ident">ny</span>, <span class="ident">nx</span> <span class="op">+</span> <span class="ident">ai</span> <span class="op">*</span> <span class="ident">ny</span>), (<span class="ident">dy</span>, <span class="ident">dx</span> <span class="op">+</span> <span class="ident">ai</span> <span class="op">*</span> <span class="ident">dy</span>)))
+    <span class="kw">let</span> <span class="ident">frac</span> <span class="op">=</span> <span class="ident">std::iter::successors</span>(
+        <span class="prelude-val">Some</span>(((<span class="number">1</span>, <span class="ident">a0</span>), (<span class="number">0</span>, <span class="number">1</span>), <span class="ident">a</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>())),
+        <span class="kw">move</span> <span class="op">|</span><span class="kw-2">&amp;</span>((<span class="ident">nx</span>, <span class="ident">ny</span>), (<span class="ident">dx</span>, <span class="ident">dy</span>), <span class="ident">ai</span>)<span class="op">|</span> {
+            <span class="prelude-val">Some</span>(((<span class="ident">ny</span>, <span class="ident">nx</span> <span class="op">+</span> <span class="ident">ai</span> <span class="op">*</span> <span class="ident">ny</span>), (<span class="ident">dy</span>, <span class="ident">dx</span> <span class="op">+</span> <span class="ident">ai</span> <span class="op">*</span> <span class="ident">dy</span>), <span class="ident">a</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>()))
         },
     )
-    .<span class="ident">map</span>(<span class="op">|</span>((<span class="kw">_</span>, <span class="ident">ny</span>), (<span class="kw">_</span>, <span class="ident">dy</span>))<span class="op">|</span> (<span class="ident">ny</span>, <span class="ident">dy</span>))
+    .<span class="ident">map</span>(<span class="op">|</span>((<span class="ident">nx</span>, <span class="ident">ny</span>), (<span class="ident">dx</span>, <span class="ident">dy</span>), <span class="ident">ai</span>)<span class="op">|</span> (<span class="ident">nx</span> <span class="op">+</span> <span class="ident">ai</span> <span class="op">*</span> <span class="ident">ny</span>, <span class="ident">dx</span> <span class="op">+</span> <span class="ident">ai</span> <span class="op">*</span> <span class="ident">dy</span>));
+    <span class="ident">std::iter::once</span>((<span class="ident">a0</span>, <span class="number">1</span>)).<span class="ident">chain</span>(<span class="ident">frac</span>)
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div><script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script></body></html>
