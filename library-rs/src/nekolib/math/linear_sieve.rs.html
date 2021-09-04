@@ -305,6 +305,18 @@
 <span id="278">278</span>
 <span id="279">279</span>
 <span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
 </pre><pre class="rust">
 <span class="doccomment">//! 線形篩。</span>
 
@@ -317,8 +329,10 @@
 <span class="doccomment">/// なる各素数 $j$ に対して、$\\mathrm{lpf}(i\\times j) = j$ とわかる。</span>
 <span class="doccomment">/// 素因数分解の一意性から、各整数の最小素因数の更新は一回ずつしか行われず、線形時間で構築できる。</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// ## See also</span>
-<span class="doccomment">/// &lt;https://cp-algorithms.com/algebra/prime-sieve-linear.html&gt;</span>
+<span class="doccomment">/// また、$\\mathrm{lpf}(i)$ が $\\mathrm{lpf}(i / \\mathrm{lpf}(i))$</span>
+<span class="doccomment">/// と等しいかで場合分けしながら DP することで、各 $i$ が $\\mathrm{lpf}(i)$</span>
+<span class="doccomment">/// で何回割り切れるかも求められる。</span>
+<span class="doccomment">/// なお、これは DP せず各 $i$ に対して愚直に計算しても $O(n)$ になることが示せるらしい。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Complexity</span>
 <span class="doccomment">/// |演算|時間計算量|</span>
@@ -327,13 +341,13 @@
 <span class="doccomment">/// |`is_prime`|$\\Theta(1)$|</span>
 <span class="doccomment">/// |`least_factor`|$\\Theta(1)$|</span>
 <span class="doccomment">/// |`factors_dup`|$\\Theta(1)$ delay|</span>
-<span class="doccomment">/// |`factors`|$\\Theta(e\_i)$ delay|</span>
-<span class="doccomment">/// |`euler_phi`|$\\Theta(\\Omega(n))$|</span>
-<span class="doccomment">/// |`euler_phi_star`|$\\O(\\Omega(n)\\log(n))$|</span>
+<span class="doccomment">/// |`factors`|$\\Theta(1)$ delay|</span>
+<span class="doccomment">/// |`euler_phi`|$\\Theta(\\omega(n))$|</span>
+<span class="doccomment">/// |`euler_phi_star`|$O(\\omega(n)\\log(n))$|</span>
 <span class="doccomment">/// |`primes`|$\\Theta(1)$ delay|</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// $n$ の素因数の個数を $\\Omega(n)$ とすると、以下の式が成り立つらしい。</span>
-<span class="doccomment">/// $$ \\sum\_{i\\le n} \\Omega(i) = n\\ln(\\ln(n)) + O(n). $$</span>
+<span class="doccomment">/// $n$ の素因数の個数を $\\omega(n)$ とすると、以下の式が成り立つらしい。</span>
+<span class="doccomment">/// $$ \\sum\_{i\\le n} \\omega(i) = n\\ln(\\ln(n)) + O(n). $$</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// また、$n$ 以下の素数の個数を $\\pi(n)$ とすると、以下の式が成り立つ（素数定理）。</span>
 <span class="doccomment">/// $$ \\pi(n) = \\frac{n}{\\ln(n)} + O{\\left(\\frac{n}{\\ln(n)\^2}\\right)}. $$</span>
@@ -360,8 +374,13 @@
 <span class="doccomment">///     vec![2, 3, 5, 7, 11, 13, 17, 19, 23, 29]</span>
 <span class="doccomment">/// );</span>
 <span class="doccomment">/// ```</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # References</span>
+<span class="doccomment">/// - &lt;https://cp-algorithms.com/algebra/prime-sieve-linear.html&gt;</span>
+<span class="doccomment">/// - &lt;https://twitter.com/hidesugar2/status/1431243186362458114&gt;</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">LinearSieve</span> {
     <span class="ident">lpf</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
+    <span class="ident">lpf_e</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">u32</span>)<span class="op">&gt;</span>,
     <span class="ident">pr</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
 }
 
@@ -388,7 +407,17 @@
                 <span class="ident">lpf</span>[<span class="ident">i</span> <span class="op">*</span> <span class="ident">j</span>] <span class="op">=</span> <span class="ident">j</span>;
             }
         }
-        <span class="self">Self</span> { <span class="ident">lpf</span>, <span class="ident">pr</span> }
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">lpf_e</span> <span class="op">=</span> <span class="macro">vec!</span>[(<span class="number">1</span>, <span class="number">0</span>); <span class="ident">n</span> <span class="op">+</span> <span class="number">1</span>];
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">2</span>..<span class="op">=</span><span class="ident">n</span> {
+            <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">lpf</span>[<span class="ident">i</span>];
+            <span class="kw">let</span> <span class="ident">j</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">/</span> <span class="ident">p</span>;
+            <span class="ident">lpf_e</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="kw">if</span> <span class="ident">lpf</span>[<span class="ident">j</span>] <span class="op">=</span><span class="op">=</span> <span class="ident">p</span> {
+                (<span class="ident">lpf_e</span>[<span class="ident">j</span>].<span class="number">0</span> <span class="op">*</span> <span class="ident">p</span>, <span class="ident">lpf_e</span>[<span class="ident">j</span>].<span class="number">1</span> <span class="op">+</span> <span class="number">1</span>)
+            } <span class="kw">else</span> {
+                (<span class="ident">lpf</span>[<span class="ident">i</span>], <span class="number">1</span>)
+            };
+        }
+        <span class="self">Self</span> { <span class="ident">lpf</span>, <span class="ident">lpf_e</span>, <span class="ident">pr</span> }
     }
 
     <span class="doccomment">/// $n$ が素数であれば `true` を返す。</span>
@@ -458,17 +487,9 @@
     <span class="doccomment">/// );</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">factors</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> (<span class="ident">usize</span>, <span class="ident">u32</span>)<span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;_</span> {
-        <span class="self">self</span>.<span class="ident">factors_dup</span>(<span class="ident">n</span>)
-            .<span class="ident">chain</span>(<span class="ident">std::iter::once</span>(<span class="number">1</span>))
-            .<span class="ident">scan</span>((<span class="self">self</span>.<span class="ident">lpf</span>[<span class="ident">n</span>], <span class="number">0</span>), <span class="op">|</span><span class="ident">state</span>, <span class="ident">x</span><span class="op">|</span> {
-                <span class="kw">if</span> <span class="ident">state</span>.<span class="number">0</span> <span class="op">=</span><span class="op">=</span> <span class="ident">x</span> {
-                    <span class="ident">state</span>.<span class="number">1</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-                    <span class="prelude-val">Some</span>(<span class="prelude-val">None</span>)
-                } <span class="kw">else</span> {
-                    <span class="prelude-val">Some</span>(<span class="prelude-val">Some</span>(<span class="ident">std::mem::replace</span>(<span class="ident">state</span>, (<span class="ident">x</span>, <span class="number">1</span>))))
-                }
-            })
-            .<span class="ident">filter_map</span>(<span class="ident">std::convert::identity</span>)
+        <span class="ident">std::iter::successors</span>(<span class="prelude-val">Some</span>(<span class="ident">n</span>), <span class="kw">move</span> <span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">n</span><span class="op">|</span> <span class="prelude-val">Some</span>(<span class="ident">n</span> <span class="op">/</span> <span class="self">self</span>.<span class="ident">lpf_e</span>[<span class="ident">n</span>].<span class="number">0</span>))
+            .<span class="ident">take_while</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">n</span><span class="op">|</span> <span class="ident">n</span> <span class="op">&gt;</span> <span class="number">1</span>)
+            .<span class="ident">map</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">n</span><span class="op">|</span> (<span class="self">self</span>.<span class="ident">lpf</span>[<span class="ident">n</span>], <span class="self">self</span>.<span class="ident">lpf_e</span>[<span class="ident">n</span>].<span class="number">1</span>))
     }
 
     <span class="doccomment">/// $\\phi(n)$ を求める。</span>
@@ -484,7 +505,10 @@
     <span class="doccomment">/// assert_eq!(sieve.euler_phi(60), 16);</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">euler_phi</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
-        <span class="self">self</span>.<span class="ident">factors</span>(<span class="ident">n</span>).<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">p</span>, <span class="ident">e</span>)<span class="op">|</span> (<span class="ident">p</span> <span class="op">-</span> <span class="number">1</span>) <span class="op">*</span> <span class="ident">p</span>.<span class="ident">pow</span>(<span class="ident">e</span> <span class="kw">as</span> <span class="ident">u32</span> <span class="op">-</span> <span class="number">1</span>)).<span class="ident">product</span>()
+        <span class="ident">std::iter::successors</span>(<span class="prelude-val">Some</span>(<span class="ident">n</span>), <span class="kw">move</span> <span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">n</span><span class="op">|</span> <span class="prelude-val">Some</span>(<span class="ident">n</span> <span class="op">/</span> <span class="self">self</span>.<span class="ident">lpf_e</span>[<span class="ident">n</span>].<span class="number">0</span>))
+            .<span class="ident">take_while</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">n</span><span class="op">|</span> <span class="ident">n</span> <span class="op">&gt;</span> <span class="number">1</span>)
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">lpf_e</span>[<span class="ident">n</span>].<span class="number">0</span> <span class="op">/</span> <span class="self">self</span>.<span class="ident">lpf</span>[<span class="ident">n</span>] <span class="op">*</span> (<span class="self">self</span>.<span class="ident">lpf</span>[<span class="ident">n</span>] <span class="op">-</span> <span class="number">1</span>))
+            .<span class="ident">product</span>()
     }
 
     <span class="doccomment">/// $\\phi^\\star(n)$ を求める。</span>
