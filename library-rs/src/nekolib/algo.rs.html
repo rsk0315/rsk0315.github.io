@@ -62,11 +62,15 @@
 <span id="35">35</span>
 <span id="36">36</span>
 <span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
 </pre><pre class="rust">
 <span class="doccomment">//! アルゴリズムたち。</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ここに何かを書く。</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">bisect</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">exact_cover</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">extremum</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">extremum_float</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">karatsuba</span>;
@@ -80,6 +84,8 @@
 
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">bisect</span>::{<span class="ident">bisect</span>, <span class="ident">bisect_slice</span>};
+<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">exact_cover::ExactCover</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">extremum</span>::{<span class="ident">extremum</span>, <span class="ident">extremum_slice</span>};
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>

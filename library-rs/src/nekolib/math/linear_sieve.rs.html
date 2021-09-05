@@ -317,6 +317,17 @@
 <span id="290">290</span>
 <span id="291">291</span>
 <span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
 </pre><pre class="rust">
 <span class="doccomment">//! 線形篩。</span>
 
@@ -344,6 +355,9 @@
 <span class="doccomment">/// |`factors`|$\\Theta(1)$ delay|</span>
 <span class="doccomment">/// |`euler_phi`|$\\Theta(\\omega(n))$|</span>
 <span class="doccomment">/// |`euler_phi_star`|$O(\\omega(n)\\log(n))$|</span>
+<span class="doccomment">/// |`divisors`|$O(\\sigma(n))$|</span>
+<span class="doccomment">/// |`divisors_count`|$O(\\omega(n))$|</span>
+<span class="doccomment">/// |`divisors_sum`|$O(\\omega(n))$|</span>
 <span class="doccomment">/// |`primes`|$\\Theta(1)$ delay|</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// $n$ の素因数の個数を $\\omega(n)$ とすると、以下の式が成り立つらしい。</span>
@@ -388,7 +402,6 @@
     <span class="doccomment">/// $n$ 以下の自然数に対する篩を用意する。</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use nekolib::math::LinearSieve;</span>
     <span class="doccomment">///</span>
@@ -423,7 +436,6 @@
     <span class="doccomment">/// $n$ が素数であれば `true` を返す。</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use nekolib::math::LinearSieve;</span>
     <span class="doccomment">///</span>
@@ -438,7 +450,6 @@
     <span class="doccomment">/// $n$ の最小素因数を返す。</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use nekolib::math::LinearSieve;</span>
     <span class="doccomment">///</span>
@@ -458,7 +469,6 @@
     <span class="doccomment">/// $n$ の素因数を列挙する。重複あり。</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use nekolib::math::LinearSieve;</span>
     <span class="doccomment">///</span>
@@ -475,7 +485,6 @@
     <span class="doccomment">/// $n$ を素因数分解する。</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use nekolib::math::LinearSieve;</span>
     <span class="doccomment">///</span>
@@ -495,7 +504,6 @@
     <span class="doccomment">/// $\\phi(n)$ を求める。</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use nekolib::math::LinearSieve;</span>
     <span class="doccomment">///</span>
@@ -518,7 +526,6 @@
     <span class="doccomment">/// $\\phi^\\star(n) = O(\\log(n))$ である。</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use nekolib::math::LinearSieve;</span>
     <span class="doccomment">///</span>
@@ -546,7 +553,6 @@
     <span class="doccomment">/// $n$ の約数を列挙する。</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use nekolib::math::LinearSieve;</span>
     <span class="doccomment">///</span>
@@ -579,7 +585,6 @@
     <span class="doccomment">/// $n$ の約数の個数を返す。</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use nekolib::math::LinearSieve;</span>
     <span class="doccomment">///</span>
@@ -591,10 +596,27 @@
         <span class="self">self</span>.<span class="ident">factors</span>(<span class="ident">n</span>).<span class="ident">map</span>(<span class="op">|</span>(<span class="kw">_</span>, <span class="ident">e</span>)<span class="op">|</span> <span class="ident">e</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">+</span> <span class="number">1</span>).<span class="ident">product</span>()
     }
 
+    <span class="doccomment">/// $n$ の約数の総和を返す。</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// use nekolib::math::LinearSieve;</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// let sieve = LinearSieve::new(60);</span>
+    <span class="doccomment">/// assert_eq!(sieve.divisors_sum(1), 1);</span>
+    <span class="doccomment">/// assert_eq!(sieve.divisors_sum(8), 15);</span>
+    <span class="doccomment">/// assert_eq!(sieve.divisors_sum(60), 168);</span>
+    <span class="doccomment">/// ```</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">divisors_sum</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+        <span class="ident">std::iter::successors</span>(<span class="prelude-val">Some</span>(<span class="ident">n</span>), <span class="kw">move</span> <span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">n</span><span class="op">|</span> <span class="prelude-val">Some</span>(<span class="ident">n</span> <span class="op">/</span> <span class="self">self</span>.<span class="ident">lpf_e</span>[<span class="ident">n</span>].<span class="number">0</span>))
+            .<span class="ident">take_while</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">n</span><span class="op">|</span> <span class="ident">n</span> <span class="op">&gt;</span> <span class="number">1</span>)
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> (<span class="self">self</span>.<span class="ident">lpf_e</span>[<span class="ident">n</span>].<span class="number">0</span> <span class="op">*</span> <span class="self">self</span>.<span class="ident">lpf</span>[<span class="ident">n</span>] <span class="op">-</span> <span class="number">1</span>) <span class="op">/</span> (<span class="self">self</span>.<span class="ident">lpf</span>[<span class="ident">n</span>] <span class="op">-</span> <span class="number">1</span>))
+            .<span class="ident">product</span>()
+    }
+
     <span class="doccomment">/// 素数を列挙する。</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use nekolib::math::LinearSieve;</span>
     <span class="doccomment">///</span>
