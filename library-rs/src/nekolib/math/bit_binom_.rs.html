@@ -128,7 +128,7 @@
 <span class="doccomment">/// ```text</span>
 <span class="doccomment">/// 011001110  // i</span>
 <span class="doccomment">/// 000000010  // x = i &amp; i.wrapping_neg()</span>
-<span class="doccomment">/// 011010000  // y = i + (i &amp; i.wrapping_neg())</span>
+<span class="doccomment">/// 011010000  // y = i + x</span>
 <span class="doccomment">/// 000001110  // i &amp; !y</span>
 <span class="doccomment">/// 000000011  // z = (i &amp; !y) &gt;&gt; (x.trailing_zeros() + 1)</span>
 <span class="doccomment">/// 011010011  // j = y | z</span>

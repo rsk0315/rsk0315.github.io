@@ -47,7 +47,7 @@
 <p>あとは、これらを計算する方法について述べる。</p>
 <pre><code class="language-text">011001110  // i
 000000010  // x = i &amp; i.wrapping_neg()
-011010000  // y = i + (i &amp; i.wrapping_neg())
+011010000  // y = i + x
 000001110  // i &amp; !y
 000000011  // z = (i &amp; !y) &gt;&gt; (x.trailing_zeros() + 1)
 011010011  // j = y | z
