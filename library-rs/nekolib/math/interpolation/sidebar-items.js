@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Interpolation","Lagrange 補間。"]]});
