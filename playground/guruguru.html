@@ -13,7 +13,7 @@
       let circle = (x, y) => `<circle cx="${x}" cy="${y}" r="10"></circle>`;
 
       function fixSize() {
-          x = document.documentElement.scrollWidth / 2;
+          x = document.body.scrollWidth / 2;
           y = document.documentElement.scrollHeight / 2;
           let svg = document.getElementById('svg');
           svg.setAttribute('height', 2 * y);
