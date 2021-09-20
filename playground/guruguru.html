@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8" />
+    <title>マウスをくるくるすると左右に動いてくれる黒丸ちゃん</title>
     <script>
       'use strict';
 
@@ -14,7 +16,7 @@
 
       function fixSize() {
           x = document.body.scrollWidth / 2;
-          y = document.documentElement.scrollHeight / 2;
+          y = document.body.scrollHeight / 2;
           let svg = document.getElementById('svg');
           svg.setAttribute('height', 2 * y);
           svg.setAttribute('width', 2 * x);
@@ -59,7 +61,16 @@
     </script>
   </head>
   <body>
-    <svg id="svg" onload="fixSize()">
-    </svg>
+    <h1>マウスをくるくるすると左右に動いてくれる黒丸ちゃん</h1>
+    <svg id="svg" onload="fixSize()" />
+    <p>
+      <a href="https://twitter.com/rsk0315_h4x/status/1439565849422041092">サンプル動画</a>
+    </p>
+    <p>
+      macOS/Chrome でしか動作確認していません。スマホだとたぶんうまくできません。
+      <!--
+      macOS/Safari で試したところ、開発者ツールを一旦開くと動いてくれるっぽい？
+      -->
+    </p>
   </body>
 </html>
