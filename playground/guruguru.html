@@ -7,12 +7,21 @@
       let cursor = [];
       document.onmousemove = handleMouseMove;
 
-      let x = 500;
-      let y = 300;
+      let x = 0;
+      let y = 0;
 
-      function cross([x1, y1], [x2, y2]) {
-          return x1 * y2 - x2 * y1;
+      let circle = (x, y) => `<circle cx="${x}" cy="${y}" r="10"></circle>`;
+
+      function fixSize() {
+          x = document.documentElement.scrollWidth / 2;
+          y = document.documentElement.scrollHeight / 2;
+          let svg = document.getElementById('svg');
+          svg.setAttribute('height', 2 * y);
+          svg.setAttribute('width', 2 * x);
+          svg.innerHTML = circle(x, y);
       }
+
+      let cross = ([x1, y1], [x2, y2]) => x1 * y2 - x2 * y1;
 
       function ccw([[x1, y1], [x2, y2], [x3, y3]]) {
           x2 -= x1;
@@ -25,13 +34,18 @@
           return 0;
       }
 
-      function len([[x1, y1], [x2, y2], [x3, y3]]) {
-          return (Math.hypot(x2 - x1, y2 - y1) + Math.hypot(x3 - x2, y3 - y2)) / 10;
-      }
+      let len = ([[x1, y1], [x2, y2], [x3, y3]]) =>
+          (Math.hypot(x2 - x1, y2 - y1) + Math.hypot(x3 - x2, y3 - y2)) / 10;
 
       function updateXY([[x1, y1], [x2, y2], [x3, y3]]) {
           let c = ccw([[x1, y1], [x2, y2], [x3, y3]]);
           let d = len([[x1, y1], [x2, y2], [x3, y3]]);
+          // ここ、
+          // ```
+          // x -= cross([x2-x1, y2-y1], [x3-x1, y3-y1]) * smallConstant;
+          // ```
+          // とかでよかったのでは？ ということにしばらくしてから気づきました。
+          // あるいは加速度とかに影響を与えるようにしても面白いかもしれません。
           x -= c * d;
       }
 
@@ -39,15 +53,13 @@
           cursor.push([ev.clientX, -ev.clientY]);
           if (cursor.length > 3) cursor.shift();
           if (cursor.length == 3) updateXY(cursor);
-          
           let svg = document.getElementById('svg');
-          svg.innerHTML = `<circle cx="${x}" cy="${y}" r="10"></circle>`;
+          svg.innerHTML = circle(x, y);
       }
     </script>
   </head>
   <body>
-    <svg id="svg" width="1000" height="480">
-      <circle cx="500" cy="300" r="10"></circle>
+    <svg id="svg" onload="fixSize()">
     </svg>
   </body>
 </html>
