@@ -195,8 +195,6 @@
 <span id="170">170</span>
 <span id="171">171</span>
 <span id="172">172</span>
-<span id="173">173</span>
-<span id="174">174</span>
 </pre><pre class="rust">
 <span class="doccomment">//! Chinese remaindering</span>
 
@@ -226,11 +224,9 @@
 <span class="doccomment">/// よって、$r\_1\\not\\equiv r\_0\\pmod{g}$ であれば解なしとなる。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// 以下、$r\_1\\equiv r\_0\\pmod{g}$ とする。このとき、$r\_1-r\_0$ は $g$ で割り切れ、</span>
-<span class="doccomment">/// $$ (y\\cdot u\_0)\\bmod u\_1 = \\left(\\frac{r\_1-r\_0}{g}\\right)\\bmod u\_1. $$</span>
-<span class="doccomment">/// 法を $u\_1$ として、</span>
 <span class="doccomment">/// $$ \\begin{aligned}</span>
-<span class="doccomment">/// y\\cdot u\_0 &amp;\\equiv \\left(\\frac{r\_1-r\_0}{g}\\right) \\\\</span>
-<span class="doccomment">/// y &amp;\\equiv \\left(\\frac{r\_1-r\_0}{g}\\right)\\cdot u\_0^{-1}</span>
+<span class="doccomment">/// (y\\cdot u\_0)\\bmod u\_1 &amp;= \\left(\\frac{r\_1-r\_0}{g}\\right)\\bmod u\_1 \\\\</span>
+<span class="doccomment">/// y &amp;\\equiv \\left(\\frac{r\_1-r\_0}{g}\\right)\\cdot u\_0^{-1} \\pmod{u\_1}</span>
 <span class="doccomment">/// \\end{aligned} $$</span>
 <span class="doccomment">/// となる。$\\gcd(u\_0, u\_1)=1$ なので $u\_0^{-1}$ は存在する。</span>
 <span class="doccomment">///</span>
