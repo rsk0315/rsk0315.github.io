@@ -1,1 +1,1 @@
-initSidebarItems({"trait":[["EquivMod","Chinese remaindering。"]]});
+initSidebarItems({"trait":[["EquivMod","Chinese remaindering。"],["EquivModIter","Chinese remaindering。"]]});
