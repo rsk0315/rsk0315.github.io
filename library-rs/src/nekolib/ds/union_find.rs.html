@@ -152,6 +152,8 @@
 <span id="127">127</span>
 <span id="128">128</span>
 <span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
 </pre><pre class="rust">
 <span class="doccomment">//! union-find。</span>
 
@@ -231,12 +233,13 @@
         <span class="kw">if</span> <span class="ident">u</span> <span class="op">=</span><span class="op">=</span> <span class="ident">v</span> {
             <span class="kw">return</span> <span class="bool-val">false</span>;
         }
-        <span class="kw">let</span> (<span class="ident">su</span>, <span class="ident">sv</span>) <span class="op">=</span> (<span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow</span>()[<span class="ident">u</span>], <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow</span>()[<span class="ident">v</span>]);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow_mut</span>();
+        <span class="kw">let</span> (<span class="ident">su</span>, <span class="ident">sv</span>) <span class="op">=</span> (<span class="ident">buf</span>[<span class="ident">u</span>], <span class="ident">buf</span>[<span class="ident">v</span>]);
         <span class="kw">match</span> (<span class="ident">su</span>, <span class="ident">sv</span>) {
             (<span class="ident">Item::Size</span>(<span class="ident">su</span>), <span class="ident">Item::Size</span>(<span class="ident">sv</span>)) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">let</span> (<span class="ident">child</span>, <span class="ident">par</span>) <span class="op">=</span> <span class="kw">if</span> <span class="ident">su</span> <span class="op">&lt;</span> <span class="ident">sv</span> { (<span class="ident">u</span>, <span class="ident">v</span>) } <span class="kw">else</span> { (<span class="ident">v</span>, <span class="ident">u</span>) };
-                <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow_mut</span>()[<span class="ident">par</span>] <span class="op">=</span> <span class="ident">Item::Size</span>(<span class="ident">su</span> <span class="op">+</span> <span class="ident">sv</span>);
-                <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow_mut</span>()[<span class="ident">child</span>] <span class="op">=</span> <span class="ident">Item::Parent</span>(<span class="ident">par</span>);
+                <span class="ident">buf</span>[<span class="ident">par</span>] <span class="op">=</span> <span class="ident">Item::Size</span>(<span class="ident">su</span> <span class="op">+</span> <span class="ident">sv</span>);
+                <span class="ident">buf</span>[<span class="ident">child</span>] <span class="op">=</span> <span class="ident">Item::Parent</span>(<span class="ident">par</span>);
             }
             <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">unreachable!</span>(),
         }
@@ -244,15 +247,16 @@
     }
     <span class="kw">fn</span> <span class="ident">repr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">u</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">u</span>;
-        <span class="kw">while</span> <span class="kw">let</span> <span class="ident">Item::Parent</span>(<span class="ident">v</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow</span>()[<span class="ident">res</span>] {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow_mut</span>();
+        <span class="kw">while</span> <span class="kw">let</span> <span class="ident">Item::Parent</span>(<span class="ident">v</span>) <span class="op">=</span> <span class="ident">buf</span>[<span class="ident">res</span>] {
             <span class="ident">res</span> <span class="op">=</span> <span class="ident">v</span>;
         }
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bu</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow</span>()[<span class="ident">u</span>];
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bu</span> <span class="op">=</span> <span class="ident">buf</span>[<span class="ident">u</span>];
         <span class="kw">while</span> <span class="kw">let</span> <span class="ident">Item::Parent</span>(<span class="ident">pu</span>) <span class="op">=</span> <span class="ident">bu</span> {
             <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">pu</span>;
-            <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow_mut</span>()[<span class="ident">u</span>] <span class="op">=</span> <span class="ident">Item::Parent</span>(<span class="ident">res</span>);
+            <span class="ident">buf</span>[<span class="ident">u</span>] <span class="op">=</span> <span class="ident">Item::Parent</span>(<span class="ident">res</span>);
             <span class="ident">u</span> <span class="op">=</span> <span class="ident">tmp</span>;
-            <span class="ident">bu</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow</span>()[<span class="ident">u</span>];
+            <span class="ident">bu</span> <span class="op">=</span> <span class="ident">buf</span>[<span class="ident">u</span>];
         }
         <span class="ident">res</span>
     }
