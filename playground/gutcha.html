@@ -13,7 +13,7 @@
           font-family: 'EB Garamond', serif;
           font-size: 850%;
       }
-      #answer {
+      .answer {
           font-family: monospace;
       }
       .toggle {
@@ -105,7 +105,7 @@
               discloseButton.disabled = true;
           }
           let msg = document.getElementById('msg');
-          msg.innerHTML = `解答: ${guchaed} <button class="toggle" onclick="toggle()">🙈</button>`;
+          msg.innerHTML = `解答: <span class="answer">${guchaed}</span> <button class="toggle" onclick="toggle()">🙈</button>`;
       }
     </script>
   </head>
@@ -148,7 +148,7 @@
     </svg>
 
     <div>
-      <input type="text" placeholder="^[0-9A-Za-z]{12}$" id="answer">
+      <input type="text" placeholder="^[0-9A-Za-z]{12}$" id="answer" class="answer">
       <button onclick="score()">採点</button>
       <button onclick="disclose()">開示</button>
     </div>
