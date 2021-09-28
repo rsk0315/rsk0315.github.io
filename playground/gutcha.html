@@ -59,17 +59,12 @@
       }
 
       function editDistance(s, t) {
-          console.log(s);
-          console.log(t);
           let n = s.length;
           let m = t.length;
           let dp = Array.from(
               {length: n + 1}, _ => Array.from({length: m + 1}, _ => n + m)
           );
           let cost = (i, j) => (s[i] == t[j])? 0: 1;
-
-          console.log(dp.length);
-          console.log(dp[0].length);
 
           for (let i = 0; i <= n; ++i) dp[i][0] = i;
           for (let j = 0; j <= m; ++j) dp[0][j] = j;
@@ -124,9 +119,9 @@
       version="1.1"
       id="svg2"
       xml:space="preserve"
-      width="1983.70667"
+      width="1183.70667"
       height="143.30667"
-      viewBox="0 0 1983.70667 143.30667"
+      viewBox="0 0 1183.70667 143.30667"
       sodipodi:docname="tmp.pdf"
       xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
       xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
