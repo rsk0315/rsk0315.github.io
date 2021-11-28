@@ -143,6 +143,51 @@
 <span id="118">118</span>
 <span id="119">119</span>
 <span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
 </pre><pre class="rust"><code><span class="doccomment">//! 木。</span>
 
 <span class="kw">use</span> <span class="ident">std::collections::VecDeque</span>;
@@ -206,6 +251,51 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Debug</span><span class="op">&gt;</span> <span class="ident">Tree</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="doccomment">/// 全方位木 DP。</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// `empty` と `map` と `fold` で作られる catamorphism を考える。</span>
+    <span class="doccomment">/// 頂点 $i$ ($0\\le i\\lt n$) を根としたときの catamorphism をそれぞれ求める。</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Idea</span>
+    <span class="doccomment">/// `todo!()`</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Implementation notes</span>
+    <span class="doccomment">/// `empty` は本来 2 種類必要なはずだが、共通であることが多いのでまとめている。</span>
+    <span class="doccomment">/// 半群からモノイドを機械的に作るのと同様に必要に応じて対処できるはず。</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Complexity</span>
+    <span class="doccomment">/// $O(n)$ time.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// use nekolib::graph::Tree;</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// let n = 6;</span>
+    <span class="doccomment">/// let es = vec![(0, 1), (0, 2), (1, 3), (1, 4), (1, 5)];</span>
+    <span class="doccomment">/// let g = {</span>
+    <span class="doccomment">///     let mut g = vec![vec![]; n];</span>
+    <span class="doccomment">///     for &amp;(u, v) in &amp;es {</span>
+    <span class="doccomment">///         g[u].push((v, ()));</span>
+    <span class="doccomment">///         g[v].push((u, ()));</span>
+    <span class="doccomment">///     }</span>
+    <span class="doccomment">///     g</span>
+    <span class="doccomment">/// };</span>
+    <span class="doccomment">/// let tree: Tree&lt;_&gt; = g.into();</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// // max distance</span>
+    <span class="doccomment">/// let empty = 0;</span>
+    <span class="doccomment">/// let map = |&amp;x: &amp;usize, _: &amp;()| x + 1;</span>
+    <span class="doccomment">/// let fold = |&amp;x: &amp;usize, &amp;y: &amp;usize| x.max(y);</span>
+    <span class="doccomment">/// assert_eq!(tree.cata(empty, map, fold), [2, 2, 3, 3, 3, 3]);</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// // sum of distance</span>
+    <span class="doccomment">/// let empty = (0, 0);</span>
+    <span class="doccomment">/// let map = |&amp;(d, c): &amp;(usize, usize), _: &amp;()| (d + c + 1, c + 1);</span>
+    <span class="doccomment">/// let fold = |&amp;x: &amp;(usize, usize), &amp;y: &amp;(usize, usize)| (x.0 + y.0, x.1 + y.1);</span>
+    <span class="doccomment">/// assert_eq!(</span>
+    <span class="doccomment">///     tree.cata(empty, map, fold).into_iter().map(|x| x.0).collect::&lt;Vec&lt;_&gt;&gt;(),</span>
+    <span class="doccomment">///     [8, 6, 12, 10, 10, 10]</span>
+    <span class="doccomment">/// );</span>
+    <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">cata</span><span class="op">&lt;</span><span class="ident">U</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">Debug</span><span class="op">&gt;</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">empty</span>: <span class="ident">U</span>,
