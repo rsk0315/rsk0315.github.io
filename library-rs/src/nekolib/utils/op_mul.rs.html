@@ -124,19 +124,19 @@
     <span class="ident">T</span>: <span class="ident">Mul</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">T</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Sized</span>,
 {
     <span class="kw">type</span> <span class="ident">Set</span> <span class="op">=</span> <span class="ident">T</span>;
-    <span class="kw">fn</span> <span class="ident">op</span>(<span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>, <span class="ident">y</span>: <span class="ident"><span class="self">Self</span>::Set</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::Set</span> { <span class="ident">x</span> <span class="op">*</span> <span class="ident">y</span> }
+    <span class="kw">fn</span> <span class="ident">op</span>(<span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>, <span class="ident">y</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> { <span class="ident">x</span> <span class="op">*</span> <span class="ident">y</span> }
 }
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Identity</span> <span class="kw">for</span> <span class="ident">OpMul</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">T</span>: <span class="ident">Mul</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">T</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Sized</span> <span class="op">+</span> <span class="ident">One</span>,
 {
-    <span class="kw">fn</span> <span class="ident">id</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::Set</span> { <span class="ident"><span class="self">Self</span>::Set::one</span>() }
+    <span class="kw">fn</span> <span class="ident">id</span>() -&gt; <span class="ident"><span class="self">Self</span>::Set</span> { <span class="ident"><span class="self">Self</span>::Set::one</span>() }
 }
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">PartialRecip</span> <span class="kw">for</span> <span class="ident">OpMul</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">T</span>: <span class="ident">Mul</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">T</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Sized</span> <span class="op">+</span> <span class="ident">MulRecip</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">T</span><span class="op">&gt;</span>,
 {
-    <span class="kw">fn</span> <span class="ident">partial_recip</span>(<span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Set</span><span class="op">&gt;</span> { <span class="prelude-val">Some</span>(<span class="ident">x</span>.<span class="ident">mul_recip</span>()) }
+    <span class="kw">fn</span> <span class="ident">partial_recip</span>(<span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Set</span><span class="op">&gt;</span> { <span class="prelude-val">Some</span>(<span class="ident">x</span>.<span class="ident">mul_recip</span>()) }
 }
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Recip</span> <span class="kw">for</span> <span class="ident">OpMul</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="kw">where</span>
     <span class="ident">T</span>: <span class="ident">Mul</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">T</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Sized</span> <span class="op">+</span> <span class="ident">MulRecip</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">T</span><span class="op">&gt;</span>
@@ -149,10 +149,10 @@
 <span class="kw">use</span> <span class="ident">op_add::OpAdd</span>;
 
 <span class="macro">macro_rules!</span> <span class="ident">impl_distributive</span> {
-    ( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">T</span>:<span class="ident">ty</span> ) <span class="op">=</span><span class="op">&gt;</span> {
+    ( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">T</span>:<span class="ident">ty</span> ) =&gt; {
         <span class="kw">impl</span> <span class="ident">binop::Distributive</span><span class="op">&lt;</span><span class="ident">OpAdd</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">T</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">OpMul</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">T</span><span class="op">&gt;</span> {}
     };
-    ( $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">T</span>:<span class="ident">ty</span>, )<span class="op">*</span> ) <span class="op">=</span><span class="op">&gt;</span> { $( <span class="macro">impl_distributive!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">T</span>); )<span class="op">*</span> };
+    ( $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">T</span>:<span class="ident">ty</span>, )<span class="op">*</span> ) =&gt; { $( <span class="macro">impl_distributive!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">T</span>); )<span class="op">*</span> };
 }
 
 <span class="macro">impl_distributive!</span> {

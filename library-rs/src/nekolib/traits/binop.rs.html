@@ -255,7 +255,7 @@
     <span class="doccomment">/// 集合 $M$ に対応する型。</span>
     <span class="kw">type</span> <span class="ident">Set</span>: <span class="ident">Eq</span>;
     <span class="doccomment">/// $x \\circ y$ を返す。</span>
-    <span class="kw">fn</span> <span class="ident">op</span>(<span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>, <span class="ident">y</span>: <span class="ident"><span class="self">Self</span>::Set</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::Set</span>;
+    <span class="kw">fn</span> <span class="ident">op</span>(<span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>, <span class="ident">y</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span>;
 }
 
 <span class="doccomment">/// 結合法則を満たす。</span>
@@ -291,7 +291,7 @@
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Identity</span>: <span class="ident">Magma</span> {
     <span class="doccomment">/// 単位元を返す。</span>
-    <span class="kw">fn</span> <span class="ident">id</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::Set</span>;
+    <span class="kw">fn</span> <span class="ident">id</span>() -&gt; <span class="ident"><span class="self">Self</span>::Set</span>;
 }
 
 <span class="doccomment">/// 交換法則を満たす。</span>
@@ -317,7 +317,7 @@
 <span class="doccomment">/// 体の乗法においては $0$ を除いて逆元を持つことが要請されるため必要かなと思った。</span>
 <span class="doccomment">/// もっといい設計はある気がする。</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">PartialRecip</span>: <span class="ident">Magma</span> {
-    <span class="kw">fn</span> <span class="ident">partial_recip</span>(<span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Set</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">partial_recip</span>(<span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Set</span><span class="op">&gt;</span>;
 }
 
 <span class="doccomment">/// 逆元が常に存在する。</span>
@@ -336,7 +336,7 @@
 <span class="doccomment">/// assert_eq!(OpAdd::op(x, y), 0);</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Recip</span>: <span class="ident">PartialRecip</span> {
-    <span class="kw">fn</span> <span class="ident">recip</span>(<span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::Set</span> { <span class="ident"><span class="self">Self</span>::partial_recip</span>(<span class="ident">x</span>).<span class="ident">unwrap</span>() }
+    <span class="kw">fn</span> <span class="ident">recip</span>(<span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> { <span class="ident"><span class="self">Self</span>::partial_recip</span>(<span class="ident">x</span>).<span class="ident">unwrap</span>() }
 }
 
 <span class="doccomment">/// 分配法則を満たす。</span>
@@ -407,19 +407,19 @@
     <span class="kw">type</span> <span class="ident">Multiplicative</span>: <span class="ident">Monoid</span><span class="op">&lt;</span><span class="ident">Set</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::Set</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Distributive</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Additive</span><span class="op">&gt;</span>;
 
     <span class="doccomment">/// 和 $x \\circ y$ を返す。</span>
-    <span class="kw">fn</span> <span class="ident">add</span>(<span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>, <span class="ident">y</span>: <span class="ident"><span class="self">Self</span>::Set</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::Set</span> { <span class="ident"><span class="self">Self</span>::Additive::op</span>(<span class="ident">x</span>, <span class="ident">y</span>) }
+    <span class="kw">fn</span> <span class="ident">add</span>(<span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>, <span class="ident">y</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> { <span class="ident"><span class="self">Self</span>::Additive::op</span>(<span class="ident">x</span>, <span class="ident">y</span>) }
     <span class="doccomment">/// 加法 $\\circ$ の単位元 $0$ を返す。</span>
     <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">fn</span> <span class="ident">zero</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::Set</span> { <span class="ident"><span class="self">Self</span>::Additive::id</span>() }
+    <span class="kw">fn</span> <span class="ident">zero</span>() -&gt; <span class="ident"><span class="self">Self</span>::Set</span> { <span class="ident"><span class="self">Self</span>::Additive::id</span>() }
     <span class="doccomment">/// 加法 $\\circ$ に関する $x$ の逆元 $-x$ を返す。</span>
-    <span class="kw">fn</span> <span class="ident">neg</span>(<span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::Set</span> { <span class="ident"><span class="self">Self</span>::Additive::recip</span>(<span class="ident">x</span>) }
+    <span class="kw">fn</span> <span class="ident">neg</span>(<span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> { <span class="ident"><span class="self">Self</span>::Additive::recip</span>(<span class="ident">x</span>) }
     <span class="doccomment">/// 積 $x \\ast y$ を返す。</span>
-    <span class="kw">fn</span> <span class="ident">mul</span>(<span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>, <span class="ident">y</span>: <span class="ident"><span class="self">Self</span>::Set</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::Set</span> {
+    <span class="kw">fn</span> <span class="ident">mul</span>(<span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>, <span class="ident">y</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> {
         <span class="ident"><span class="self">Self</span>::Multiplicative::op</span>(<span class="ident">x</span>, <span class="ident">y</span>)
     }
     <span class="doccomment">/// 乗法 $\\ast$ の単位元 $1$ を返す。</span>
     <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">fn</span> <span class="ident">one</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::Set</span> { <span class="ident"><span class="self">Self</span>::Multiplicative::id</span>() }
+    <span class="kw">fn</span> <span class="ident">one</span>() -&gt; <span class="ident"><span class="self">Self</span>::Set</span> { <span class="ident"><span class="self">Self</span>::Multiplicative::id</span>() }
 }
 
 <span class="doccomment">/// 可換環。</span>
@@ -439,8 +439,8 @@
     <span class="ident"><span class="self">Self</span>::Multiplicative</span>: <span class="ident">PartialRecip</span>,
 {
     <span class="doccomment">/// 乗法 $\\ast$ における関する $x$ の逆元 $x^{-1}$ を返す。</span>
-    <span class="kw">fn</span> <span class="ident">recip</span>(<span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::Set</span> {
-        <span class="kw">if</span> <span class="ident">x</span> <span class="op">=</span><span class="op">=</span> <span class="ident"><span class="self">Self</span>::Additive::id</span>() {
+    <span class="kw">fn</span> <span class="ident">recip</span>(<span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> {
+        <span class="kw">if</span> <span class="ident">x</span> <span class="op">==</span> <span class="ident"><span class="self">Self</span>::Additive::id</span>() {
             <span class="macro">panic!</span>(<span class="string">&quot;zero element does not have multiplicative inverse&quot;</span>);
         } <span class="kw">else</span> {
             <span class="ident"><span class="self">Self</span>::Multiplicative::partial_recip</span>(<span class="ident">x</span>).<span class="ident">unwrap</span>()

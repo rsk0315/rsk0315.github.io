@@ -313,17 +313,17 @@
 <span class="doccomment">/// ## See also</span>
 <span class="doccomment">/// - &lt;https://rsk0315.hatenablog.com/entry/2021/01/18/065720#crt&gt;</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">EquivMod</span>: <span class="ident">Sized</span> {
-    <span class="kw">fn</span> <span class="ident">equiv_mod</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">equiv_mod</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>;
 }
 
 <span class="macro">macro_rules!</span> <span class="ident">impl_uint</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) <span class="op">=</span><span class="op">&gt;</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) =&gt; {
         <span class="kw">impl</span> <span class="ident">EquivMod</span> <span class="kw">for</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>) {
-            <span class="kw">fn</span> <span class="ident">equiv_mod</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+            <span class="kw">fn</span> <span class="ident">equiv_mod</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
                 <span class="kw">let</span> ((<span class="ident">r0</span>, <span class="ident">m0</span>), (<span class="ident">r1</span>, <span class="ident">m1</span>))
                     <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="number">1</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">other</span>.<span class="number">1</span> { (<span class="self">self</span>, <span class="ident">other</span>) } <span class="kw">else</span> { (<span class="ident">other</span>, <span class="self">self</span>) };
-                <span class="kw">if</span> <span class="ident">m0</span> <span class="op">%</span> <span class="ident">m1</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
-                    <span class="kw">return</span> <span class="kw">if</span> <span class="ident">r0</span> <span class="op">%</span> <span class="ident">m1</span> <span class="op">=</span><span class="op">=</span> <span class="ident">r1</span> { <span class="prelude-val">Some</span>((<span class="ident">r0</span>, <span class="ident">m0</span>)) } <span class="kw">else</span> { <span class="prelude-val">None</span> }
+                <span class="kw">if</span> <span class="ident">m0</span> <span class="op">%</span> <span class="ident">m1</span> <span class="op">==</span> <span class="number">0</span> {
+                    <span class="kw">return</span> <span class="kw">if</span> <span class="ident">r0</span> <span class="op">%</span> <span class="ident">m1</span> <span class="op">==</span> <span class="ident">r1</span> { <span class="prelude-val">Some</span>((<span class="ident">r0</span>, <span class="ident">m0</span>)) } <span class="kw">else</span> { <span class="prelude-val">None</span> }
                 }
                 <span class="kw">let</span> (<span class="ident">g</span>, <span class="ident">re</span>) <span class="op">=</span> <span class="ident">m0</span>.<span class="ident">gcd_recip</span>(<span class="ident">m1</span>);
                 <span class="kw">let</span> <span class="ident">u1</span> <span class="op">=</span> <span class="ident">m1</span> <span class="op">/</span> <span class="ident">g</span>;
@@ -336,17 +336,17 @@
             }
         }
     };
-    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) <span class="op">=</span><span class="op">&gt;</span> { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
+    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
 }
 
 <span class="macro">macro_rules!</span> <span class="ident">impl_int</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) <span class="op">=</span><span class="op">&gt;</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) =&gt; {
         <span class="kw">impl</span> <span class="ident">EquivMod</span> <span class="kw">for</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>) {
-            <span class="kw">fn</span> <span class="ident">equiv_mod</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+            <span class="kw">fn</span> <span class="ident">equiv_mod</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
                 <span class="kw">let</span> ((<span class="ident">r0</span>, <span class="ident">m0</span>), (<span class="ident">r1</span>, <span class="ident">m1</span>))
                     <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="number">1</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">other</span>.<span class="number">1</span> { (<span class="self">self</span>, <span class="ident">other</span>) } <span class="kw">else</span> { (<span class="ident">other</span>, <span class="self">self</span>) };
-                <span class="kw">if</span> <span class="ident">m0</span> <span class="op">%</span> <span class="ident">m1</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
-                    <span class="kw">return</span> <span class="kw">if</span> <span class="ident">r0</span> <span class="op">%</span> <span class="ident">m1</span> <span class="op">=</span><span class="op">=</span> <span class="ident">r1</span> { <span class="prelude-val">Some</span>((<span class="ident">r0</span>, <span class="ident">m0</span>)) } <span class="kw">else</span> { <span class="prelude-val">None</span> }
+                <span class="kw">if</span> <span class="ident">m0</span> <span class="op">%</span> <span class="ident">m1</span> <span class="op">==</span> <span class="number">0</span> {
+                    <span class="kw">return</span> <span class="kw">if</span> <span class="ident">r0</span> <span class="op">%</span> <span class="ident">m1</span> <span class="op">==</span> <span class="ident">r1</span> { <span class="prelude-val">Some</span>((<span class="ident">r0</span>, <span class="ident">m0</span>)) } <span class="kw">else</span> { <span class="prelude-val">None</span> }
                 }
                 <span class="kw">let</span> (<span class="ident">g</span>, <span class="ident">re</span>) <span class="op">=</span> <span class="ident">m0</span>.<span class="ident">gcd_recip</span>(<span class="ident">m1</span>);
                 <span class="kw">let</span> <span class="ident">u1</span> <span class="op">=</span> <span class="ident">m1</span> <span class="op">/</span> <span class="ident">g</span>;
@@ -358,7 +358,7 @@
             }
         }
     };
-    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) <span class="op">=</span><span class="op">&gt;</span> { $(<span class="macro">impl_int!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
+    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(<span class="macro">impl_int!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
 }
 
 <span class="macro">impl_uint!</span>(<span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span>);
@@ -426,18 +426,18 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// [`EquivMod`] のイテレータ版。</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">EquivModIter</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Sized</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">equiv_mod</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">I</span>, <span class="ident">I</span>)<span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">equiv_mod</span>(<span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">I</span>, <span class="ident">I</span>)<span class="op">&gt;</span>;
 }
 
 <span class="macro">macro_rules!</span> <span class="ident">impl_iter</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) <span class="op">=</span><span class="op">&gt;</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) =&gt; {
         <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>)<span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">EquivModIter</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">I</span> {
-            <span class="kw">fn</span> <span class="ident">equiv_mod</span>(<span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>)<span class="op">&gt;</span> {
+            <span class="kw">fn</span> <span class="ident">equiv_mod</span>(<span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>)<span class="op">&gt;</span> {
                 <span class="self">self</span>.<span class="ident">try_fold</span>((<span class="number">0</span>, <span class="number">1</span>), <span class="op">|</span><span class="ident">x</span>, <span class="ident">y</span><span class="op">|</span> <span class="ident">x</span>.<span class="ident">equiv_mod</span>(<span class="ident">y</span>))
             }
         }
     };
-    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) <span class="op">=</span><span class="op">&gt;</span> { $(<span class="macro">impl_iter!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
+    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(<span class="macro">impl_iter!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
 }
 
 <span class="macro">impl_iter!</span>(<span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span> <span class="ident">i8</span> <span class="ident">i16</span> <span class="ident">i32</span> <span class="ident">i64</span> <span class="ident">i128</span> <span class="ident">isize</span>);

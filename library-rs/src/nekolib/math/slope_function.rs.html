@@ -412,7 +412,7 @@
     <span class="doccomment">/// assert_eq!(sf.min(), 0);</span>
     <span class="doccomment">/// assert_eq!(sf.argmin(), (Unbounded, Unbounded));</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> { <span class="ident"><span class="self">Self</span>::default</span>() }
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span> { <span class="ident"><span class="self">Self</span>::default</span>() }
     <span class="doccomment">/// $f(x) \\xleftarrow{+} c$ で更新する。</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
@@ -564,7 +564,7 @@
     <span class="doccomment">/// sf.add_const(1);</span>
     <span class="doccomment">/// assert_eq!(sf.min(), 1);</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">min</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">i128</span> { <span class="self">self</span>.<span class="ident">min</span> }
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">min</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">i128</span> { <span class="self">self</span>.<span class="ident">min</span> }
     <span class="doccomment">/// $\\argmin\_{x\\in\\mathbb{R}} f(x)$ を返す。</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
@@ -577,14 +577,14 @@
     <span class="doccomment">/// sf.add_const(1);</span>
     <span class="doccomment">/// assert_eq!(sf.argmin(), (Included(4), Included(4)));</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">argmin</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">Bound</span><span class="op">&lt;</span><span class="ident">i128</span><span class="op">&gt;</span>, <span class="ident">Bound</span><span class="op">&lt;</span><span class="ident">i128</span><span class="op">&gt;</span>) {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">argmin</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (<span class="ident">Bound</span><span class="op">&lt;</span><span class="ident">i128</span><span class="op">&gt;</span>, <span class="ident">Bound</span><span class="op">&lt;</span><span class="ident">i128</span><span class="op">&gt;</span>) {
         <span class="kw">let</span> <span class="ident">left</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">left</span>.<span class="ident">peek</span>() {
-            <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Bound::Included</span>(<span class="ident">x</span> <span class="op">+</span> <span class="self">self</span>.<span class="ident">shl</span>),
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Bound::Unbounded</span>,
+            <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>) =&gt; <span class="ident">Bound::Included</span>(<span class="ident">x</span> <span class="op">+</span> <span class="self">self</span>.<span class="ident">shl</span>),
+            <span class="prelude-val">None</span> =&gt; <span class="ident">Bound::Unbounded</span>,
         };
         <span class="kw">let</span> <span class="ident">right</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">right</span>.<span class="ident">peek</span>() {
-            <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">Reverse</span>(<span class="ident">x</span>)) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Bound::Included</span>(<span class="ident">x</span> <span class="op">+</span> <span class="self">self</span>.<span class="ident">shr</span>),
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Bound::Unbounded</span>,
+            <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">Reverse</span>(<span class="ident">x</span>)) =&gt; <span class="ident">Bound::Included</span>(<span class="ident">x</span> <span class="op">+</span> <span class="self">self</span>.<span class="ident">shr</span>),
+            <span class="prelude-val">None</span> =&gt; <span class="ident">Bound::Unbounded</span>,
         };
         (<span class="ident">left</span>, <span class="ident">right</span>)
     }

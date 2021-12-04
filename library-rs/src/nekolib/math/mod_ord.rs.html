@@ -152,18 +152,18 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// [`dlog`]: fn.dlog.html</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">ModOrd</span>: <span class="ident">Sized</span> {
-    <span class="kw">fn</span> <span class="ident">mod_ord</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">mod_ord</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>;
 }
 
 <span class="macro">macro_rules!</span> <span class="ident">impl_uint</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) <span class="op">=</span><span class="op">&gt;</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) =&gt; {
         <span class="kw">impl</span> <span class="ident">ModOrd</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">mod_ord</span>(<span class="self">self</span>, <span class="ident">n</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+            <span class="kw">fn</span> <span class="ident">mod_ord</span>(<span class="self">self</span>, <span class="ident">n</span>: <span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
                 <span class="macro">assert_ne!</span>(<span class="ident">n</span>, <span class="number">0</span>, <span class="string">&quot;modulo must be positive&quot;</span>);
                 <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span> {
-                    <span class="number">0</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="prelude-val">None</span>,
-                    <span class="number">1</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="number">1</span>),
-                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>,
+                    <span class="number">0</span> =&gt; <span class="kw">return</span> <span class="prelude-val">None</span>,
+                    <span class="number">1</span> =&gt; <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="number">1</span>),
+                    <span class="kw">_</span> =&gt; <span class="self">self</span>,
                 };
 
                 <span class="kw">let</span> <span class="ident">g</span> <span class="op">=</span> <span class="ident">a</span>.<span class="ident">gcd</span>(<span class="ident">n</span>);
@@ -173,15 +173,15 @@
 
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">q</span> <span class="op">=</span> <span class="ident">n</span>.<span class="ident">carmichael_lambda</span>();
                 <span class="kw">for</span> <span class="ident">e</span> <span class="kw">in</span> <span class="ident">q</span>.<span class="ident">factors_dup</span>() {
-                    <span class="kw">if</span> <span class="ident">a</span>.<span class="ident">mod_pow</span>(<span class="ident">q</span> <span class="op">/</span> <span class="ident">e</span>, <span class="ident">n</span>) <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
+                    <span class="kw">if</span> <span class="ident">a</span>.<span class="ident">mod_pow</span>(<span class="ident">q</span> <span class="op">/</span> <span class="ident">e</span>, <span class="ident">n</span>) <span class="op">==</span> <span class="number">1</span> {
                         <span class="ident">q</span> <span class="op">/</span><span class="op">=</span> <span class="ident">e</span>;
                     }
                 }
-                (<span class="ident">a</span>.<span class="ident">mod_pow</span>(<span class="ident">q</span>, <span class="ident">n</span>) <span class="op">=</span><span class="op">=</span> <span class="number">1</span>).<span class="ident">then</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">q</span>)
+                (<span class="ident">a</span>.<span class="ident">mod_pow</span>(<span class="ident">q</span>, <span class="ident">n</span>) <span class="op">==</span> <span class="number">1</span>).<span class="ident">then</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">q</span>)
             }
         }
     };
-    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) <span class="op">=</span><span class="op">&gt;</span> { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
+    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
 }
 
 <span class="macro">impl_uint!</span>(<span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span>);
@@ -196,7 +196,7 @@
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x</span> <span class="op">=</span> <span class="number">1</span>;
             <span class="kw">let</span> <span class="ident">expected</span> <span class="op">=</span> (<span class="number">1</span>..<span class="op">=</span><span class="ident">n</span>).<span class="ident">find_map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> {
                 <span class="ident">x</span> <span class="op">=</span> <span class="ident">x</span> <span class="op">*</span> <span class="ident">a</span> <span class="op">%</span> <span class="ident">n</span>;
-                <span class="kw">if</span> <span class="ident">x</span> <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
+                <span class="kw">if</span> <span class="ident">x</span> <span class="op">==</span> <span class="number">1</span> {
                     <span class="prelude-val">Some</span>(<span class="ident">i</span>)
                 } <span class="kw">else</span> {
                     <span class="prelude-val">None</span>

@@ -69,7 +69,7 @@
 <span class="doccomment">/// 加法の単位元 $0$ を定義する。</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Zero</span>: <span class="ident">Add</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Sized</span> {
     <span class="doccomment">/// 加法の単位元 $0$ を返す。</span>
-    <span class="kw">fn</span> <span class="ident">zero</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>;
+    <span class="kw">fn</span> <span class="ident">zero</span>() -&gt; <span class="self">Self</span>;
 }
 <span class="doccomment">/// 加法が結合法則を満たすことを示す。</span>
 <span class="doccomment">///</span>
@@ -83,14 +83,14 @@
 <span class="macro">macro_rules!</span> <span class="ident">impl_trait</span> {
     (
         $( <span class="kw">impl</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">T</span>:<span class="ident">ty</span>) <span class="kw">for</span> { $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">U</span>:<span class="ident">ty</span> ),<span class="op">*</span> } <span class="macro-nonterminal">$</span><span class="macro-nonterminal">S</span>:<span class="ident">tt</span> )<span class="op">*</span>
-    ) <span class="op">=</span><span class="op">&gt;</span> {
+    ) =&gt; {
         $( $( <span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">T</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">U</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">S</span> )<span class="op">*</span> )<span class="op">*</span>
     };
 }
 
 <span class="macro">impl_trait!</span> {
     <span class="kw">impl</span> (<span class="ident">Zero</span>) <span class="kw">for</span> {<span class="ident">i8</span>, <span class="ident">i16</span>, <span class="ident">i32</span>, <span class="ident">i64</span>, <span class="ident">i128</span>, <span class="ident">isize</span>, <span class="ident">u8</span>, <span class="ident">u16</span>, <span class="ident">u32</span>, <span class="ident">u64</span>, <span class="ident">u128</span>, <span class="ident">usize</span>} {
-        <span class="kw">fn</span> <span class="ident">zero</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> { <span class="number">0</span> }
+        <span class="kw">fn</span> <span class="ident">zero</span>() -&gt; <span class="self">Self</span> { <span class="number">0</span> }
     }
     <span class="kw">impl</span> (<span class="ident">AddAssoc</span>) <span class="kw">for</span> {<span class="ident">i8</span>, <span class="ident">i16</span>, <span class="ident">i32</span>, <span class="ident">i64</span>, <span class="ident">i128</span>, <span class="ident">isize</span>, <span class="ident">u8</span>, <span class="ident">u16</span>, <span class="ident">u32</span>, <span class="ident">u64</span>, <span class="ident">u128</span>, <span class="ident">usize</span>} {}
     <span class="kw">impl</span> (<span class="ident">AddComm</span>) <span class="kw">for</span> {<span class="ident">i8</span>, <span class="ident">i16</span>, <span class="ident">i32</span>, <span class="ident">i64</span>, <span class="ident">i128</span>, <span class="ident">isize</span>, <span class="ident">u8</span>, <span class="ident">u16</span>, <span class="ident">u32</span>, <span class="ident">u64</span>, <span class="ident">u128</span>, <span class="ident">usize</span>} {}

@@ -73,16 +73,16 @@
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Min</span>: <span class="ident">Ord</span> {
     <span class="doccomment">/// 最小元を返す。</span>
-    <span class="kw">fn</span> <span class="ident">min</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>;
+    <span class="kw">fn</span> <span class="ident">min</span>() -&gt; <span class="self">Self</span>;
 }
 
 <span class="macro">macro_rules!</span> <span class="ident">impl_min</span> {
     (
         $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ident</span> ),<span class="op">*</span>
-    ) <span class="op">=</span><span class="op">&gt;</span> {
+    ) =&gt; {
         $(
             <span class="kw">impl</span> <span class="ident">Min</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-                <span class="kw">fn</span> <span class="ident">min</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+                <span class="kw">fn</span> <span class="ident">min</span>() -&gt; <span class="self">Self</span> {
                     <span class="ident">std</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t::MIN</span>
                 }
             }

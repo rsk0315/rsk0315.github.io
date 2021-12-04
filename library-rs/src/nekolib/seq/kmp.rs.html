@@ -268,7 +268,7 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Eq</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">KmpSearcher</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">pat</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">pat</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">pat</span>.<span class="ident">len</span>();
         <span class="kw">let</span> <span class="ident">fail1</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">1_usize</span>.<span class="ident">wrapping_neg</span>(); <span class="ident">len</span> <span class="op">+</span> <span class="number">1</span>];
         <span class="kw">let</span> <span class="ident">fail</span> <span class="op">=</span> <span class="ident">fail1</span>.<span class="ident">clone</span>();
@@ -283,7 +283,7 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Eq</span><span class="op">&gt;</span> <span class="ident">KmpSearcher</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">calc_fail</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">usize</span>, <span class="ident">usize</span>) {
+    <span class="kw">fn</span> <span class="ident">calc_fail</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; (<span class="ident">usize</span>, <span class="ident">usize</span>) {
         <span class="kw">let</span> <span class="ident">pat_i</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">pat</span>[<span class="ident">i</span>];
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">j</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">fail1</span>[<span class="ident">i</span>];
         <span class="kw">while</span> <span class="ident">j</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">pat</span>.<span class="ident">len</span>() <span class="op">&amp;&amp;</span> <span class="ident">pat_i</span> <span class="op">!</span><span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">pat</span>[<span class="ident">j</span>] {
@@ -291,12 +291,12 @@
         }
         <span class="ident">j</span> <span class="op">=</span> <span class="ident">j</span>.<span class="ident">wrapping_add</span>(<span class="number">1</span>);
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">pat</span>.<span class="ident">get</span>(<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>) {
-            <span class="prelude-val">Some</span>(<span class="ident">pat_ni</span>) <span class="kw">if</span> <span class="ident">pat_ni</span> <span class="op">=</span><span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">pat</span>[<span class="ident">j</span>] <span class="op">=</span><span class="op">&gt;</span> (<span class="self">self</span>.<span class="ident">fail</span>[<span class="ident">j</span>], <span class="ident">j</span>),
-            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> (<span class="ident">j</span>, <span class="ident">j</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">pat_ni</span>) <span class="kw">if</span> <span class="ident">pat_ni</span> <span class="op">==</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">pat</span>[<span class="ident">j</span>] =&gt; (<span class="self">self</span>.<span class="ident">fail</span>[<span class="ident">j</span>], <span class="ident">j</span>),
+            <span class="kw">_</span> =&gt; (<span class="ident">j</span>, <span class="ident">j</span>),
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">occurrences</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>, <span class="ident">s</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">T</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Occurrences</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">occurrences</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>, <span class="ident">s</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">T</span>]) -&gt; <span class="ident">Occurrences</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span> {
         <span class="ident">Occurrences</span> {
             <span class="ident">text_index</span>: <span class="number">0</span>,
             <span class="ident">pat_index</span>: <span class="number">0</span>,
@@ -315,7 +315,7 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Eq</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">Occurrences</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span> {
     <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>;
-    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">text</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">text</span>;
         <span class="kw">let</span> <span class="ident">pat</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">kmp</span>.<span class="ident">pat</span>;
 
@@ -336,7 +336,7 @@
                 <span class="ident">j</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">kmp</span>.<span class="ident">fail</span>[<span class="ident">j</span>];
             }
             <span class="ident">j</span> <span class="op">=</span> <span class="ident">j</span>.<span class="ident">wrapping_add</span>(<span class="number">1</span>);
-            <span class="kw">if</span> <span class="ident">j</span> <span class="op">=</span><span class="op">=</span> <span class="ident">pat</span>.<span class="ident">len</span>() {
+            <span class="kw">if</span> <span class="ident">j</span> <span class="op">==</span> <span class="ident">pat</span>.<span class="ident">len</span>() {
                 <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>;
                 <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">e</span> <span class="op">-</span> <span class="ident">pat</span>.<span class="ident">len</span>()..<span class="ident">e</span>;
                 <span class="self">self</span>.<span class="ident">text_index</span> <span class="op">=</span> <span class="ident">e</span>;
@@ -355,7 +355,7 @@
         <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">pat</span>.<span class="ident">len</span>();
         <span class="kw">if</span> <span class="ident">len</span> <span class="op">&gt;</span> <span class="number">0</span> {
             <span class="kw">let</span> <span class="ident">j</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">fail1</span>[<span class="ident">len</span>];
-            <span class="kw">if</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">pat</span>[<span class="ident">j</span>] <span class="op">=</span><span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">x</span> {
+            <span class="kw">if</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">pat</span>[<span class="ident">j</span>] <span class="op">==</span> <span class="kw-2">&amp;</span><span class="ident">x</span> {
                 <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">fail</span>[<span class="ident">j</span>];
                 <span class="self">self</span>.<span class="ident">fail</span>[<span class="ident">len</span>] <span class="op">=</span> <span class="ident">tmp</span>;
             }
@@ -369,7 +369,7 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Eq</span><span class="op">&gt;</span> <span class="ident">PopBack</span> <span class="kw">for</span> <span class="ident">KmpSearcher</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">usize</span>;
-    <span class="kw">fn</span> <span class="ident">pop_back</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">pop_back</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">pat</span>.<span class="ident">is_empty</span>() {
             <span class="prelude-val">None</span>
         } <span class="kw">else</span> {

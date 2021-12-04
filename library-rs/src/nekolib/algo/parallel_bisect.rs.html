@@ -209,7 +209,7 @@
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">parallel_bisect</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">StatefulPred</span><span class="op">&gt;</span>(
     <span class="kw-2">mut</span> <span class="ident">s</span>: <span class="ident">S</span>,
     <span class="ident">q</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">S::Input</span><span class="op">&gt;</span>,
-) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
+) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">sn</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">count</span>();
     <span class="kw">let</span> <span class="ident">qn</span> <span class="op">=</span> <span class="ident">q</span>.<span class="ident">len</span>();
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ok</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">qn</span>];

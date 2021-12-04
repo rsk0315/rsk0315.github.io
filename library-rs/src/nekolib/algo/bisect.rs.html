@@ -148,7 +148,7 @@
 <span class="doccomment">/// assert_eq!(bisect_slice(&amp;[2, 4, 7], |&amp;_| false), 0);</span>
 <span class="doccomment">/// assert_eq!(bisect_slice(&amp;[2, 4, 7], |&amp;_| true), 3);</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bisect_slice</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;</span>[<span class="ident">T</span>], <span class="kw-2">mut</span> <span class="ident">pred</span>: <span class="kw">impl</span> <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bisect_slice</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;</span>[<span class="ident">T</span>], <span class="kw-2">mut</span> <span class="ident">pred</span>: <span class="kw">impl</span> <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="ident">T</span>) -&gt; <span class="ident">bool</span>) -&gt; <span class="ident">usize</span> {
     <span class="ident">bisect</span>(<span class="number">0</span>..<span class="ident">buf</span>.<span class="ident">len</span>(), <span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">buf</span>[<span class="ident">i</span>]))
 }
 
@@ -184,9 +184,9 @@
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bisect</span>(
     <span class="ident">Range</span> { <span class="ident">start</span>, <span class="ident">end</span> }: <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-    <span class="kw-2">mut</span> <span class="ident">pred</span>: <span class="kw">impl</span> <span class="ident">FnMut</span>(<span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span>,
-) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
-    <span class="kw">if</span> <span class="ident">start</span> <span class="op">=</span><span class="op">=</span> <span class="ident">end</span> {
+    <span class="kw-2">mut</span> <span class="ident">pred</span>: <span class="kw">impl</span> <span class="ident">FnMut</span>(<span class="ident">usize</span>) -&gt; <span class="ident">bool</span>,
+) -&gt; <span class="ident">usize</span> {
+    <span class="kw">if</span> <span class="ident">start</span> <span class="op">==</span> <span class="ident">end</span> {
         <span class="kw">return</span> <span class="ident">start</span>;
     }
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ok</span> <span class="op">=</span> <span class="ident">start</span>;
@@ -199,7 +199,7 @@
             <span class="ident">bad</span> <span class="op">=</span> <span class="ident">mid</span>;
         }
     }
-    <span class="kw">if</span> <span class="ident">ok</span> <span class="op">=</span><span class="op">=</span> <span class="ident">start</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">pred</span>(<span class="ident">start</span>) {
+    <span class="kw">if</span> <span class="ident">ok</span> <span class="op">==</span> <span class="ident">start</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">pred</span>(<span class="ident">start</span>) {
         <span class="ident">start</span>
     } <span class="kw">else</span> {
         <span class="ident">bad</span>

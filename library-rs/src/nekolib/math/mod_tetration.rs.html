@@ -359,51 +359,51 @@
 <span class="doccomment">/// ${}^b a$ は $a\\uparrow\\uparrow b$ (Knuth&#39;s up-arrow notation) や</span>
 <span class="doccomment">/// $a\\to b\\to 2$ (Conway chained arrow notation) などとも表記される。</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">ModTetration</span> {
-    <span class="kw">fn</span> <span class="ident">mod_tetration</span>(<span class="self">self</span>, <span class="ident">b</span>: <span class="self">Self</span>, <span class="ident">n</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>;
+    <span class="kw">fn</span> <span class="ident">mod_tetration</span>(<span class="self">self</span>, <span class="ident">b</span>: <span class="self">Self</span>, <span class="ident">n</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
 }
 
 <span class="kw">trait</span> <span class="ident">ModTetrationInternal</span> {
-    <span class="kw">fn</span> <span class="ident">rec</span>(<span class="self">self</span>, <span class="ident">b</span>: <span class="self">Self</span>, <span class="ident">n</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>;
-    <span class="kw">fn</span> <span class="ident">mod_pow</span>(<span class="self">self</span>, <span class="ident">b</span>: <span class="self">Self</span>, <span class="ident">n</span>: <span class="self">Self</span>, <span class="ident">large</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>;
+    <span class="kw">fn</span> <span class="ident">rec</span>(<span class="self">self</span>, <span class="ident">b</span>: <span class="self">Self</span>, <span class="ident">n</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
+    <span class="kw">fn</span> <span class="ident">mod_pow</span>(<span class="self">self</span>, <span class="ident">b</span>: <span class="self">Self</span>, <span class="ident">n</span>: <span class="self">Self</span>, <span class="ident">large</span>: <span class="ident">bool</span>) -&gt; <span class="self">Self</span>;
 }
 
 <span class="macro">macro_rules!</span> <span class="ident">impl_uint</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) <span class="op">=</span><span class="op">&gt;</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) =&gt; {
         <span class="kw">impl</span> <span class="ident">ModTetration</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">mod_tetration</span>(<span class="self">self</span>, <span class="ident">b</span>: <span class="self">Self</span>, <span class="ident">n</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+            <span class="kw">fn</span> <span class="ident">mod_tetration</span>(<span class="self">self</span>, <span class="ident">b</span>: <span class="self">Self</span>, <span class="ident">n</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
                 <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="self">self</span>;
                 <span class="kw">match</span> (<span class="ident">a</span>, <span class="ident">b</span>, <span class="ident">n</span>) {
-                    (.., <span class="number">1</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="number">0</span>,
-                    (<span class="kw">_</span>, <span class="number">0</span>, <span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="number">1</span>,
-                    (<span class="kw">_</span>, <span class="number">1</span>, <span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="ident">a</span> <span class="op">%</span> <span class="ident">n</span>,
-                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">a</span>.<span class="ident">rec</span>(<span class="ident">b</span>, <span class="ident">n</span>) {
-                        <span class="ident">z</span> <span class="kw">if</span> <span class="ident">z</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">n</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">z</span> <span class="op">-</span> <span class="ident">n</span>,
-                        <span class="ident">z</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">z</span>,
+                    (.., <span class="number">1</span>) =&gt; <span class="kw">return</span> <span class="number">0</span>,
+                    (<span class="kw">_</span>, <span class="number">0</span>, <span class="kw">_</span>) =&gt; <span class="kw">return</span> <span class="number">1</span>,
+                    (<span class="kw">_</span>, <span class="number">1</span>, <span class="kw">_</span>) =&gt; <span class="kw">return</span> <span class="ident">a</span> <span class="op">%</span> <span class="ident">n</span>,
+                    <span class="kw">_</span> =&gt; <span class="kw">match</span> <span class="ident">a</span>.<span class="ident">rec</span>(<span class="ident">b</span>, <span class="ident">n</span>) {
+                        <span class="ident">z</span> <span class="kw">if</span> <span class="ident">z</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">n</span> =&gt; <span class="ident">z</span> <span class="op">-</span> <span class="ident">n</span>,
+                        <span class="ident">z</span> =&gt; <span class="ident">z</span>,
                     }
                 }
             }
         }
         <span class="kw">impl</span> <span class="ident">ModTetrationInternal</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">rec</span>(<span class="self">self</span>, <span class="ident">b</span>: <span class="self">Self</span>, <span class="ident">n</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+            <span class="kw">fn</span> <span class="ident">rec</span>(<span class="self">self</span>, <span class="ident">b</span>: <span class="self">Self</span>, <span class="ident">n</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
                 <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="self">self</span>;
                 <span class="kw">match</span> (<span class="ident">a</span>, <span class="ident">b</span>, <span class="ident">n</span>) {
-                    (<span class="number">0</span>, ..) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="number">1</span> <span class="op">-</span> <span class="ident">b</span> <span class="op">%</span> <span class="number">2</span>,
-                    (<span class="number">1</span>, ..) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="number">1</span>,
-                    (.., <span class="number">1</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="number">1</span>,
-                    (<span class="kw">_</span>, <span class="number">1</span>, <span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="ident">a</span>,
-                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> {
+                    (<span class="number">0</span>, ..) =&gt; <span class="kw">return</span> <span class="number">1</span> <span class="op">-</span> <span class="ident">b</span> <span class="op">%</span> <span class="number">2</span>,
+                    (<span class="number">1</span>, ..) =&gt; <span class="kw">return</span> <span class="number">1</span>,
+                    (.., <span class="number">1</span>) =&gt; <span class="kw">return</span> <span class="number">1</span>,
+                    (<span class="kw">_</span>, <span class="number">1</span>, <span class="kw">_</span>) =&gt; <span class="kw">return</span> <span class="ident">a</span>,
+                    <span class="kw">_</span> =&gt; {
                         <span class="kw">let</span> <span class="ident">phi</span> <span class="op">=</span> <span class="ident">n</span>.<span class="ident">euler_phi</span>();
                         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">a</span>.<span class="ident">rec</span>(<span class="ident">b</span> <span class="op">-</span> <span class="number">1</span>, <span class="ident">phi</span>);
                         (<span class="ident">a</span> <span class="op">%</span> <span class="ident">n</span>).<span class="ident">mod_pow</span>(<span class="ident">res</span>, <span class="ident">n</span>, <span class="ident">res</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">phi</span> <span class="op">|</span><span class="op">|</span> <span class="ident">a</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">phi</span>)
                     }
                 }
             }
-            <span class="kw">fn</span> <span class="ident">mod_pow</span>(<span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">b</span>: <span class="self">Self</span>, <span class="ident">n</span>: <span class="self">Self</span>, <span class="kw-2">mut</span> <span class="ident">large</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+            <span class="kw">fn</span> <span class="ident">mod_pow</span>(<span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">b</span>: <span class="self">Self</span>, <span class="ident">n</span>: <span class="self">Self</span>, <span class="kw-2">mut</span> <span class="ident">large</span>: <span class="ident">bool</span>) -&gt; <span class="self">Self</span> {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">a</span> <span class="op">=</span> <span class="self">self</span>;
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="number">1</span>;
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">large_buf</span> <span class="op">=</span> <span class="bool-val">false</span>;
                 <span class="kw">while</span> <span class="ident">b</span> <span class="op">&gt;</span> <span class="number">0</span> {
-                    <span class="kw">if</span> <span class="ident">b</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
+                    <span class="kw">if</span> <span class="ident">b</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">==</span> <span class="number">1</span> {
                         <span class="ident">res</span> <span class="kw-2">*</span><span class="op">=</span> <span class="ident">a</span>;
                         <span class="ident">large</span> <span class="op">|</span><span class="op">=</span> <span class="ident">large_buf</span>;
                         <span class="kw">if</span> <span class="ident">res</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">n</span> {
@@ -422,7 +422,7 @@
             }
         }
     };
-    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) <span class="op">=</span><span class="op">&gt;</span> { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
+    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
 }
 
 <span class="macro">impl_uint!</span>(<span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span>);

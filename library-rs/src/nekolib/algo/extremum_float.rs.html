@@ -143,8 +143,8 @@
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extremum_float</span>(
     <span class="ident">range</span>: <span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
     <span class="ident">eps</span>: <span class="ident">f64</span>,
-    <span class="kw-2">mut</span> <span class="ident">f</span>: <span class="kw">impl</span> <span class="ident">FnMut</span>(<span class="ident">f64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">f64</span>,
-) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">f64</span>, <span class="ident">f64</span>) {
+    <span class="kw-2">mut</span> <span class="ident">f</span>: <span class="kw">impl</span> <span class="ident">FnMut</span>(<span class="ident">f64</span>) -&gt; <span class="ident">f64</span>,
+) -&gt; (<span class="ident">f64</span>, <span class="ident">f64</span>) {
     <span class="kw">let</span> <span class="ident">phi</span>: <span class="ident">f64</span> <span class="op">=</span> (<span class="number">1.0</span> <span class="op">+</span> <span class="number">5.0_f64</span>.<span class="ident">sqrt</span>()) <span class="op">/</span> <span class="number">2.0</span>;
     <span class="kw">let</span> <span class="ident">phi_p1</span> <span class="op">=</span> <span class="ident">phi</span> <span class="op">+</span> <span class="number">1.0</span>;
 

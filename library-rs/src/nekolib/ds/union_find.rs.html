@@ -222,29 +222,29 @@
 }
 
 <span class="kw">impl</span> <span class="ident">DisjointSet</span> <span class="kw">for</span> <span class="ident">UnionFind</span> {
-    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span> {
         <span class="self">Self</span> { <span class="ident">n</span>, <span class="ident">buf</span>: <span class="ident">RefCell::new</span>(<span class="macro">vec!</span>[<span class="ident">Item::Size</span>(<span class="number">1</span>); <span class="ident">n</span>]) }
     }
-    <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">n</span> }
-    <span class="kw">fn</span> <span class="ident">unite</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">u</span>: <span class="ident">usize</span>, <span class="ident">v</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">n</span> }
+    <span class="kw">fn</span> <span class="ident">unite</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">u</span>: <span class="ident">usize</span>, <span class="ident">v</span>: <span class="ident">usize</span>) -&gt; <span class="ident">bool</span> {
         <span class="kw">let</span> <span class="ident">u</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">repr</span>(<span class="ident">u</span>);
         <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">repr</span>(<span class="ident">v</span>);
-        <span class="kw">if</span> <span class="ident">u</span> <span class="op">=</span><span class="op">=</span> <span class="ident">v</span> {
+        <span class="kw">if</span> <span class="ident">u</span> <span class="op">==</span> <span class="ident">v</span> {
             <span class="kw">return</span> <span class="bool-val">false</span>;
         }
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow_mut</span>();
         <span class="kw">let</span> (<span class="ident">su</span>, <span class="ident">sv</span>) <span class="op">=</span> (<span class="ident">buf</span>[<span class="ident">u</span>], <span class="ident">buf</span>[<span class="ident">v</span>]);
         <span class="kw">match</span> (<span class="ident">su</span>, <span class="ident">sv</span>) {
-            (<span class="ident">Item::Size</span>(<span class="ident">su</span>), <span class="ident">Item::Size</span>(<span class="ident">sv</span>)) <span class="op">=</span><span class="op">&gt;</span> {
+            (<span class="ident">Item::Size</span>(<span class="ident">su</span>), <span class="ident">Item::Size</span>(<span class="ident">sv</span>)) =&gt; {
                 <span class="kw">let</span> (<span class="ident">child</span>, <span class="ident">par</span>) <span class="op">=</span> <span class="kw">if</span> <span class="ident">su</span> <span class="op">&lt;</span> <span class="ident">sv</span> { (<span class="ident">u</span>, <span class="ident">v</span>) } <span class="kw">else</span> { (<span class="ident">v</span>, <span class="ident">u</span>) };
                 <span class="ident">buf</span>[<span class="ident">par</span>] <span class="op">=</span> <span class="ident">Item::Size</span>(<span class="ident">su</span> <span class="op">+</span> <span class="ident">sv</span>);
                 <span class="ident">buf</span>[<span class="ident">child</span>] <span class="op">=</span> <span class="ident">Item::Parent</span>(<span class="ident">par</span>);
             }
-            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">unreachable!</span>(),
+            <span class="kw">_</span> =&gt; <span class="macro">unreachable!</span>(),
         }
         <span class="bool-val">true</span>
     }
-    <span class="kw">fn</span> <span class="ident">repr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">u</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+    <span class="kw">fn</span> <span class="ident">repr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">u</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">u</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow_mut</span>();
         <span class="kw">while</span> <span class="kw">let</span> <span class="ident">Item::Parent</span>(<span class="ident">v</span>) <span class="op">=</span> <span class="ident">buf</span>[<span class="ident">res</span>] {
@@ -259,7 +259,7 @@
         }
         <span class="ident">res</span>
     }
-    <span class="kw">fn</span> <span class="ident">count</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">u</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+    <span class="kw">fn</span> <span class="ident">count</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">u</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> {
         <span class="kw">let</span> <span class="ident">u</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">repr</span>(<span class="ident">u</span>);
         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Item::Size</span>(<span class="ident">res</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow</span>()[<span class="ident">u</span>] {
             <span class="ident">res</span>

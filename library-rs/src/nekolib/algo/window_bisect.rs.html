@@ -250,11 +250,11 @@
 <span class="doccomment">///     vec![0, 2, 2, 4, 5, 8, 9, 9, 9]</span>
 <span class="doccomment">/// );</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">window_bisect</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">P</span><span class="op">&gt;</span>(<span class="kw-2">mut</span> <span class="ident">slice</span>: <span class="ident">S</span>, <span class="ident">pred</span>: <span class="ident">P</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">window_bisect</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">P</span><span class="op">&gt;</span>(<span class="kw-2">mut</span> <span class="ident">slice</span>: <span class="ident">S</span>, <span class="ident">pred</span>: <span class="ident">P</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">S</span>: <span class="ident">ElasticSlice</span> <span class="op">+</span> <span class="ident">ExpandBack</span> <span class="op">+</span> <span class="ident">ShrinkFront</span> <span class="op">+</span> <span class="ident">SliceHash</span><span class="op">&lt;</span><span class="ident">Salt</span> <span class="op">=</span> ()<span class="op">&gt;</span>,
     <span class="ident">S::Hashed</span>: <span class="ident">Clone</span>,
-    <span class="ident">P</span>: <span class="ident">Fn</span>(<span class="ident">S::Hashed</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span>,
+    <span class="ident">P</span>: <span class="ident">Fn</span>(<span class="ident">S::Hashed</span>) -&gt; <span class="ident">bool</span>,
 {
     <span class="ident">slice</span>.<span class="ident">reset</span>();
     <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">slice</span>.<span class="ident">full_len</span>();
@@ -266,7 +266,7 @@
                 <span class="ident">res</span>[<span class="ident">l</span>] <span class="op">=</span> <span class="ident">slice</span>.<span class="ident">end</span>() <span class="op">-</span> <span class="number">1</span>;
                 <span class="kw">break</span>;
             }
-            <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">end</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">n</span> {
+            <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">end</span>() <span class="op">==</span> <span class="ident">n</span> {
                 <span class="kw">return</span> <span class="ident">res</span>;
             }
             <span class="ident">slice</span>.<span class="ident">expand_back</span>();

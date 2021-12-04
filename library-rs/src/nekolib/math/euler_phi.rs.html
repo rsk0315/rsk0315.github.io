@@ -102,18 +102,18 @@
 <span class="doccomment">/// assert_eq!(60_u64.euler_phi(), 16);</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">EulerPhi</span> {
-    <span class="kw">fn</span> <span class="ident">euler_phi</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>;
+    <span class="kw">fn</span> <span class="ident">euler_phi</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
 }
 
 <span class="macro">macro_rules!</span> <span class="ident">impl_uint</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) <span class="op">=</span><span class="op">&gt;</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) =&gt; {
         <span class="kw">impl</span> <span class="ident">EulerPhi</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">euler_phi</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+            <span class="kw">fn</span> <span class="ident">euler_phi</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> {
                 <span class="self">self</span>.<span class="ident">factors</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">p</span>, <span class="ident">e</span>)<span class="op">|</span> <span class="ident">p</span>.<span class="ident">pow</span>(<span class="ident">e</span> <span class="op">-</span> <span class="number">1</span>) <span class="op">*</span> (<span class="ident">p</span> <span class="op">-</span> <span class="number">1</span>)).<span class="ident">product</span>()
             }
         }
     };
-    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) <span class="op">=</span><span class="op">&gt;</span> { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
+    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
 }
 
 <span class="macro">impl_uint!</span>(<span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span>);
@@ -123,7 +123,7 @@
     <span class="kw">use</span> <span class="ident">gcd::Gcd</span>;
     <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="number">100_usize</span>;
     <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">1</span>..<span class="op">=</span><span class="ident">n</span> {
-        <span class="kw">let</span> <span class="ident">phi</span> <span class="op">=</span> (<span class="number">1</span>..<span class="op">=</span><span class="ident">i</span>).<span class="ident">filter</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">j</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">gcd</span>(<span class="ident">j</span>) <span class="op">=</span><span class="op">=</span> <span class="number">1</span>).<span class="ident">count</span>();
+        <span class="kw">let</span> <span class="ident">phi</span> <span class="op">=</span> (<span class="number">1</span>..<span class="op">=</span><span class="ident">i</span>).<span class="ident">filter</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">j</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">gcd</span>(<span class="ident">j</span>) <span class="op">==</span> <span class="number">1</span>).<span class="ident">count</span>();
         <span class="macro">assert_eq!</span>(<span class="ident">i</span>.<span class="ident">euler_phi</span>(), <span class="ident">phi</span>);
     }
 }

@@ -139,7 +139,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Interpolation</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with</span>(<span class="ident">first</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>, <span class="ident">modulo</span>: <span class="ident">u64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with</span>(<span class="ident">first</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>, <span class="ident">modulo</span>: <span class="ident">u64</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">first</span>.<span class="ident">len</span>();
         <span class="kw">let</span> <span class="ident">cd</span> <span class="op">=</span> <span class="ident">ConstDiv::new</span>(<span class="ident">modulo</span>);
         <span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> (<span class="number">2</span>..<span class="ident">n</span> <span class="kw">as</span> <span class="ident">u64</span>).<span class="ident">reduce</span>(<span class="op">|</span><span class="ident">x</span>, <span class="ident">y</span><span class="op">|</span> <span class="ident">cd</span>.<span class="ident">rem</span>(<span class="ident">x</span> <span class="op">*</span> <span class="ident">y</span>)).<span class="ident">unwrap_or</span>(<span class="number">1</span>);
@@ -150,7 +150,7 @@
         }
         <span class="self">Self</span> { <span class="ident">first</span>, <span class="ident">fact_recip</span>, <span class="ident">cd</span>, <span class="ident">modulo</span> }
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">interpolate</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">x</span>: <span class="ident">u64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u64</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">interpolate</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">x</span>: <span class="ident">u64</span>) -&gt; <span class="ident">u64</span> {
         <span class="kw">if</span> (<span class="ident">x</span> <span class="kw">as</span> <span class="ident">usize</span>) <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">first</span>.<span class="ident">len</span>() {
             <span class="kw">return</span> <span class="self">self</span>.<span class="ident">first</span>[<span class="ident">x</span> <span class="kw">as</span> <span class="ident">usize</span>];
         }

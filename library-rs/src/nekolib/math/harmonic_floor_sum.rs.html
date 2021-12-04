@@ -294,7 +294,7 @@
     <span class="doccomment">/// let m = 100;</span>
     <span class="doccomment">/// let hs = HarmonicFloorSum::new(m);</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">m</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">m</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">q</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>];
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="macro">vec!</span>[];
         <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> (<span class="number">1</span>..).<span class="ident">take_while</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span> <span class="op">*</span> <span class="ident">i</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">m</span>) {
@@ -316,7 +316,7 @@
         }
         <span class="self">Self</span> { <span class="ident">m</span>, <span class="ident">q</span>, <span class="ident">qsum</span>, <span class="ident">rsum</span> }
     }
-    <span class="kw">fn</span> <span class="ident">search</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+    <span class="kw">fn</span> <span class="ident">search</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> {
         <span class="kw">if</span> <span class="ident">n</span> <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">m</span> {
             <span class="self">self</span>.<span class="ident">q</span>.<span class="ident">len</span>()
         } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">n</span> <span class="op">*</span> <span class="ident">n</span> <span class="op">&lt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">m</span> {
@@ -325,14 +325,14 @@
             <span class="self">self</span>.<span class="ident">q</span>.<span class="ident">len</span>() <span class="op">-</span> (<span class="self">self</span>.<span class="ident">m</span> <span class="op">/</span> <span class="ident">n</span>)
         }
     }
-    <span class="kw">fn</span> <span class="ident">quot_internal</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+    <span class="kw">fn</span> <span class="ident">quot_internal</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> {
         <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">0</span> {
             <span class="kw">return</span> <span class="number">0</span>;
         }
         <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">search</span>(<span class="ident">n</span>);
-        <span class="kw">if</span> <span class="ident">i</span> <span class="op">=</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">q</span>.<span class="ident">len</span>() {
+        <span class="kw">if</span> <span class="ident">i</span> <span class="op">==</span> <span class="self">self</span>.<span class="ident">q</span>.<span class="ident">len</span>() {
             <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">qsum</span>.<span class="ident">last</span>().<span class="ident">unwrap</span>()
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">q</span>[<span class="ident">i</span>] <span class="op">=</span><span class="op">=</span> <span class="ident">n</span> {
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">q</span>[<span class="ident">i</span>] <span class="op">==</span> <span class="ident">n</span> {
             <span class="self">self</span>.<span class="ident">qsum</span>[<span class="ident">i</span>]
         } <span class="kw">else</span> {
             <span class="self">self</span>.<span class="ident">qsum</span>[<span class="ident">i</span> <span class="op">-</span> <span class="number">1</span>] <span class="op">+</span> (<span class="ident">n</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">q</span>[<span class="ident">i</span> <span class="op">-</span> <span class="number">1</span>]) <span class="op">*</span> (<span class="self">self</span>.<span class="ident">m</span> <span class="op">/</span> <span class="ident">n</span>)
@@ -354,27 +354,27 @@
     <span class="doccomment">/// assert_eq!(hs.quot(..), (1..=m).map(|i| m / i).sum());</span>
     <span class="doccomment">/// assert_eq!(hs.quot(1..=m), hs.quot(1..=m + 1));</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">quot</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">r</span>: <span class="kw">impl</span> <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">quot</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">r</span>: <span class="kw">impl</span> <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) -&gt; <span class="ident">usize</span> {
         <span class="kw">let</span> <span class="ident">end</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">r</span>.<span class="ident">end_bound</span>() {
-            <span class="ident">Included</span>(<span class="kw-2">&amp;</span><span class="ident">e</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">quot_internal</span>(<span class="ident">e</span>),
-            <span class="ident">Excluded</span>(<span class="kw-2">&amp;</span><span class="ident">e</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">quot_internal</span>(<span class="ident">e</span> <span class="op">-</span> <span class="number">1</span>),
-            <span class="ident">Unbounded</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">qsum</span>.<span class="ident">last</span>().<span class="ident">unwrap</span>(),
+            <span class="ident">Included</span>(<span class="kw-2">&amp;</span><span class="ident">e</span>) =&gt; <span class="self">self</span>.<span class="ident">quot_internal</span>(<span class="ident">e</span>),
+            <span class="ident">Excluded</span>(<span class="kw-2">&amp;</span><span class="ident">e</span>) =&gt; <span class="self">self</span>.<span class="ident">quot_internal</span>(<span class="ident">e</span> <span class="op">-</span> <span class="number">1</span>),
+            <span class="ident">Unbounded</span> =&gt; <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">qsum</span>.<span class="ident">last</span>().<span class="ident">unwrap</span>(),
         };
         <span class="kw">let</span> <span class="ident">start</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">r</span>.<span class="ident">start_bound</span>() {
-            <span class="ident">Included</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">quot_internal</span>(<span class="ident">s</span> <span class="op">-</span> <span class="number">1</span>),
-            <span class="ident">Excluded</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">quot_internal</span>(<span class="ident">s</span>),
-            <span class="ident">Unbounded</span> <span class="op">=</span><span class="op">&gt;</span> <span class="number">0</span>,
+            <span class="ident">Included</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>) =&gt; <span class="self">self</span>.<span class="ident">quot_internal</span>(<span class="ident">s</span> <span class="op">-</span> <span class="number">1</span>),
+            <span class="ident">Excluded</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>) =&gt; <span class="self">self</span>.<span class="ident">quot_internal</span>(<span class="ident">s</span>),
+            <span class="ident">Unbounded</span> =&gt; <span class="number">0</span>,
         };
         <span class="ident">end</span> <span class="op">-</span> <span class="ident">start</span>
     }
-    <span class="kw">fn</span> <span class="ident">rem_internal</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+    <span class="kw">fn</span> <span class="ident">rem_internal</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> {
         <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">0</span> {
             <span class="kw">return</span> <span class="number">0</span>;
         }
         <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">search</span>(<span class="ident">n</span>);
-        <span class="kw">if</span> <span class="ident">i</span> <span class="op">=</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">q</span>.<span class="ident">len</span>() {
+        <span class="kw">if</span> <span class="ident">i</span> <span class="op">==</span> <span class="self">self</span>.<span class="ident">q</span>.<span class="ident">len</span>() {
             <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">rsum</span>.<span class="ident">last</span>().<span class="ident">unwrap</span>() <span class="op">+</span> (<span class="ident">n</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">m</span>) <span class="op">*</span> <span class="self">self</span>.<span class="ident">m</span>
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">q</span>[<span class="ident">i</span>] <span class="op">=</span><span class="op">=</span> <span class="ident">n</span> {
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">q</span>[<span class="ident">i</span>] <span class="op">==</span> <span class="ident">n</span> {
             <span class="self">self</span>.<span class="ident">rsum</span>[<span class="ident">i</span>]
         } <span class="kw">else</span> {
             <span class="kw">let</span> <span class="ident">ql</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">q</span>[<span class="ident">i</span> <span class="op">-</span> <span class="number">1</span>] <span class="op">+</span> <span class="number">1</span>;
@@ -407,16 +407,16 @@
     <span class="doccomment">/// let hs = HarmonicFloorSum::new(m);</span>
     <span class="doccomment">/// let infty = hs.rem(1..); // diverges</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rem</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">r</span>: <span class="kw">impl</span> <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rem</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">r</span>: <span class="kw">impl</span> <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) -&gt; <span class="ident">usize</span> {
         <span class="kw">let</span> <span class="ident">end</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">r</span>.<span class="ident">end_bound</span>() {
-            <span class="ident">Included</span>(<span class="kw-2">&amp;</span><span class="ident">e</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">rem_internal</span>(<span class="ident">e</span>),
-            <span class="ident">Excluded</span>(<span class="kw-2">&amp;</span><span class="ident">e</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">rem_internal</span>(<span class="ident">e</span> <span class="op">-</span> <span class="number">1</span>),
-            <span class="ident">Unbounded</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">panic!</span>(<span class="string">&quot;the infinite sum does not converge&quot;</span>),
+            <span class="ident">Included</span>(<span class="kw-2">&amp;</span><span class="ident">e</span>) =&gt; <span class="self">self</span>.<span class="ident">rem_internal</span>(<span class="ident">e</span>),
+            <span class="ident">Excluded</span>(<span class="kw-2">&amp;</span><span class="ident">e</span>) =&gt; <span class="self">self</span>.<span class="ident">rem_internal</span>(<span class="ident">e</span> <span class="op">-</span> <span class="number">1</span>),
+            <span class="ident">Unbounded</span> =&gt; <span class="macro">panic!</span>(<span class="string">&quot;the infinite sum does not converge&quot;</span>),
         };
         <span class="kw">let</span> <span class="ident">start</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">r</span>.<span class="ident">start_bound</span>() {
-            <span class="ident">Included</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">rem_internal</span>(<span class="ident">s</span> <span class="op">-</span> <span class="number">1</span>),
-            <span class="ident">Excluded</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">rem_internal</span>(<span class="ident">s</span>),
-            <span class="ident">Unbounded</span> <span class="op">=</span><span class="op">&gt;</span> <span class="number">0</span>,
+            <span class="ident">Included</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>) =&gt; <span class="self">self</span>.<span class="ident">rem_internal</span>(<span class="ident">s</span> <span class="op">-</span> <span class="number">1</span>),
+            <span class="ident">Excluded</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>) =&gt; <span class="self">self</span>.<span class="ident">rem_internal</span>(<span class="ident">s</span>),
+            <span class="ident">Unbounded</span> =&gt; <span class="number">0</span>,
         };
         <span class="ident">end</span> <span class="op">-</span> <span class="ident">start</span>
     }

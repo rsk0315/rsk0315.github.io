@@ -149,9 +149,9 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// # References</span>
 <span class="doccomment">/// - 蟻本 p.144</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bit_binom</span>(<span class="ident">n</span>: <span class="ident">usize</span>, <span class="ident">k</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">usize</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bit_binom</span>(<span class="ident">n</span>: <span class="ident">usize</span>, <span class="ident">k</span>: <span class="ident">usize</span>) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">usize</span><span class="op">&gt;</span> {
     <span class="ident">std::iter::successors</span>(<span class="prelude-val">Some</span>(<span class="op">!</span>(<span class="op">!</span><span class="number">0_usize</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">k</span>)), <span class="kw">move</span> <span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">i</span><span class="op">|</span> {
-        <span class="kw">if</span> <span class="ident">k</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+        <span class="kw">if</span> <span class="ident">k</span> <span class="op">==</span> <span class="number">0</span> {
             <span class="kw">return</span> <span class="prelude-val">None</span>;
         }
         <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">&amp;</span> <span class="ident">i</span>.<span class="ident">wrapping_neg</span>();

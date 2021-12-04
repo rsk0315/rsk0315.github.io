@@ -202,11 +202,11 @@
 <span class="doccomment">/// - &lt;https://judge.yosupo.jp/submission/7976&gt;</span>
 <span class="doccomment">/// - &lt;https://math314.hateblo.jp/entry/2016/06/05/004332&gt;</span>
 <span class="doccomment">/// - &lt;https://projecteuler.net/thread=10;page=5#111677&gt;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">prime_pi</span>(<span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">prime_pi</span>(<span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> {
     <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">1</span> {
         <span class="kw">return</span> <span class="number">0</span>;
     }
-    <span class="kw">if</span> <span class="ident">n</span> <span class="op">=</span><span class="op">=</span> <span class="number">2</span> {
+    <span class="kw">if</span> <span class="ident">n</span> <span class="op">==</span> <span class="number">2</span> {
         <span class="kw">return</span> <span class="number">1</span>;
     }
 
@@ -280,7 +280,7 @@
     <span class="ident">larges</span>[<span class="number">0</span>] <span class="op">+</span> <span class="number">1</span>
 }
 
-<span class="kw">fn</span> <span class="ident">floor_sqrt</span>(<span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+<span class="kw">fn</span> <span class="ident">floor_sqrt</span>(<span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> {
     <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">1</span> {
         <span class="kw">return</span> <span class="ident">n</span>;
     }
@@ -289,8 +289,8 @@
     <span class="kw">while</span> <span class="ident">hi</span> <span class="op">-</span> <span class="ident">lo</span> <span class="op">&gt;</span> <span class="number">1</span> {
         <span class="kw">let</span> <span class="ident">mid</span> <span class="op">=</span> <span class="ident">lo</span> <span class="op">+</span> (<span class="ident">hi</span> <span class="op">-</span> <span class="ident">lo</span>) <span class="op">/</span> <span class="number">2</span>;
         <span class="kw">match</span> <span class="ident">mid</span>.<span class="ident">overflowing_mul</span>(<span class="ident">mid</span>) {
-            (<span class="ident">mid2</span>, <span class="bool-val">false</span>) <span class="kw">if</span> <span class="ident">mid2</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">n</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">lo</span> <span class="op">=</span> <span class="ident">mid</span>,
-            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">hi</span> <span class="op">=</span> <span class="ident">mid</span>,
+            (<span class="ident">mid2</span>, <span class="bool-val">false</span>) <span class="kw">if</span> <span class="ident">mid2</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">n</span> =&gt; <span class="ident">lo</span> <span class="op">=</span> <span class="ident">mid</span>,
+            <span class="kw">_</span> =&gt; <span class="ident">hi</span> <span class="op">=</span> <span class="ident">mid</span>,
         }
     }
     <span class="ident">lo</span>

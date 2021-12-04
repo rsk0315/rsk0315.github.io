@@ -157,9 +157,9 @@
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">l</span>: <span class="ident">usize</span>,
         <span class="ident">pred</span>: <span class="ident">F</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">usize</span>, <span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Output</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>)
+    ) -&gt; (<span class="ident">usize</span>, <span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Output</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>)
     <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Output</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span>;
+        <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Output</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>) -&gt; <span class="ident">bool</span>;
 }
 
 <span class="doccomment">/// 右端を固定したときの境界を求める。</span>
@@ -195,9 +195,9 @@
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">r</span>: <span class="ident">usize</span>,
         <span class="ident">pred</span>: <span class="ident">F</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">usize</span>, <span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Output</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>)
+    ) -&gt; (<span class="ident">usize</span>, <span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Output</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>)
     <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Output</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span>;
+        <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Output</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>) -&gt; <span class="ident">bool</span>;
 }
 </code></pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div>

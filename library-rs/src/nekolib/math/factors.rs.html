@@ -148,15 +148,15 @@
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Factors</span>: <span class="ident">Sized</span> {
     <span class="comment">// impl Iterator&lt;Item = (Self, u32)&gt;</span>
-    <span class="kw">fn</span> <span class="ident">factors</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std::vec::IntoIter</span><span class="op">&lt;</span>(<span class="self">Self</span>, <span class="ident">u32</span>)<span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">factors</span>(<span class="self">self</span>) -&gt; <span class="ident">std::vec::IntoIter</span><span class="op">&lt;</span>(<span class="self">Self</span>, <span class="ident">u32</span>)<span class="op">&gt;</span>;
     <span class="comment">// impl Iterator&lt;Item = Self&gt;</span>
-    <span class="kw">fn</span> <span class="ident">factors_dup</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std::vec::IntoIter</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">factors_dup</span>(<span class="self">self</span>) -&gt; <span class="ident">std::vec::IntoIter</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>;
 }
 
 <span class="macro">macro_rules!</span> <span class="ident">impl_uint</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) <span class="op">=</span><span class="op">&gt;</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) =&gt; {
         <span class="kw">impl</span> <span class="ident">Factors</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">factors</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std::vec::IntoIter</span><span class="op">&lt;</span>(<span class="self">Self</span>, <span class="ident">u32</span>)<span class="op">&gt;</span> {
+            <span class="kw">fn</span> <span class="ident">factors</span>(<span class="self">self</span>) -&gt; <span class="ident">std::vec::IntoIter</span><span class="op">&lt;</span>(<span class="self">Self</span>, <span class="ident">u32</span>)<span class="op">&gt;</span> {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec!</span>[];
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">n</span> <span class="op">=</span> <span class="self">self</span>;
                 <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="ident">std::iter::once</span>(<span class="number">2</span>).<span class="ident">chain</span>((<span class="number">3</span>..).<span class="ident">step_by</span>(<span class="number">2</span>)) {
@@ -167,7 +167,7 @@
                         <span class="kw">continue</span>;
                     }
                     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">e</span> <span class="op">=</span> <span class="number">0</span>;
-                    <span class="kw">while</span> <span class="ident">n</span> <span class="op">%</span> <span class="ident">i</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+                    <span class="kw">while</span> <span class="ident">n</span> <span class="op">%</span> <span class="ident">i</span> <span class="op">==</span> <span class="number">0</span> {
                         <span class="ident">n</span> <span class="op">/</span><span class="op">=</span> <span class="ident">i</span>;
                         <span class="ident">e</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
                     }
@@ -178,14 +178,14 @@
                 }
                 <span class="ident">res</span>.<span class="ident">into_iter</span>()
             }
-            <span class="kw">fn</span> <span class="ident">factors_dup</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std::vec::IntoIter</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+            <span class="kw">fn</span> <span class="ident">factors_dup</span>(<span class="self">self</span>) -&gt; <span class="ident">std::vec::IntoIter</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
                 <span class="self">self</span>.<span class="ident">factors</span>().<span class="ident">flat_map</span>(<span class="op">|</span>(<span class="ident">p</span>, <span class="ident">e</span>)<span class="op">|</span> {
                     <span class="ident">std::iter::repeat</span>(<span class="ident">p</span>).<span class="ident">take</span>(<span class="ident">e</span> <span class="kw">as</span> <span class="ident">usize</span>)
                 }).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>().<span class="ident">into_iter</span>()
             }
         }
     };
-    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) <span class="op">=</span><span class="op">&gt;</span> { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
+    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
 }
 
 <span class="macro">impl_uint!</span>(<span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span>);

@@ -159,16 +159,16 @@
 <span class="doccomment">/// assert_eq!((27 * r) % 30, g);</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">GcdRecip</span>: <span class="ident">Sized</span> {
-    <span class="kw">fn</span> <span class="ident">gcd_recip</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="self">Self</span>, <span class="self">Self</span>);
+    <span class="kw">fn</span> <span class="ident">gcd_recip</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; (<span class="self">Self</span>, <span class="self">Self</span>);
 }
 
 <span class="macro">macro_rules!</span> <span class="ident">impl_uint</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) <span class="op">=</span><span class="op">&gt;</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) =&gt; {
         <span class="kw">impl</span> <span class="ident">GcdRecip</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">gcd_recip</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="self">Self</span>, <span class="self">Self</span>) {
+            <span class="kw">fn</span> <span class="ident">gcd_recip</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; (<span class="self">Self</span>, <span class="self">Self</span>) {
                 <span class="macro">assert!</span>(<span class="ident">other</span> <span class="op">&gt;</span> <span class="number">0</span>);
                 <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="self">self</span> <span class="op">%</span> <span class="ident">other</span>;
-                <span class="kw">if</span> <span class="ident">a</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+                <span class="kw">if</span> <span class="ident">a</span> <span class="op">==</span> <span class="number">0</span> {
                     <span class="kw">return</span> (<span class="ident">other</span>, <span class="number">0</span>);
                 }
 
@@ -189,16 +189,16 @@
             }
         }
     };
-    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) <span class="op">=</span><span class="op">&gt;</span> { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
+    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
 }
 
 <span class="macro">macro_rules!</span> <span class="ident">impl_int</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) <span class="op">=</span><span class="op">&gt;</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) =&gt; {
         <span class="kw">impl</span> <span class="ident">GcdRecip</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">gcd_recip</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="self">Self</span>, <span class="self">Self</span>) {
+            <span class="kw">fn</span> <span class="ident">gcd_recip</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; (<span class="self">Self</span>, <span class="self">Self</span>) {
                 <span class="macro">assert!</span>(<span class="ident">other</span> <span class="op">&gt;</span> <span class="number">0</span>);
                 <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">rem_euclid</span>(<span class="ident">other</span>);
-                <span class="kw">if</span> <span class="ident">a</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+                <span class="kw">if</span> <span class="ident">a</span> <span class="op">==</span> <span class="number">0</span> {
                     <span class="kw">return</span> (<span class="ident">other</span>, <span class="number">0</span>);
                 }
 
@@ -220,7 +220,7 @@
             }
         }
     };
-    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) <span class="op">=</span><span class="op">&gt;</span> { $(<span class="macro">impl_int!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
+    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(<span class="macro">impl_int!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
 }
 
 <span class="macro">impl_uint!</span>(<span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span>);
