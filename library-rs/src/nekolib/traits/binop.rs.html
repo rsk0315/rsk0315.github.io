@@ -235,6 +235,20 @@
 <span id="210">210</span>
 <span id="211">211</span>
 <span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
 </pre><pre class="rust"><code><span class="doccomment">//! 代数的構造に関するトレイトたちです。</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! データ構造を実装する際に使うことを目的とします。</span>
@@ -249,13 +263,14 @@
 <span class="doccomment">/// use nekolib::traits::Magma;</span>
 <span class="doccomment">/// use nekolib::utils::OpMin;</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(3, OpMin::op(3, 4));</span>
+<span class="doccomment">/// let op_min = OpMin::default();</span>
+<span class="doccomment">/// assert_eq!(3, op_min.op(3, 4));</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Magma</span> {
     <span class="doccomment">/// 集合 $M$ に対応する型。</span>
     <span class="kw">type</span> <span class="ident">Set</span>: <span class="ident">Eq</span>;
     <span class="doccomment">/// $x \\circ y$ を返す。</span>
-    <span class="kw">fn</span> <span class="ident">op</span>(<span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>, <span class="ident">y</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span>;
+    <span class="kw">fn</span> <span class="ident">op</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>, <span class="ident">y</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span>;
 }
 
 <span class="doccomment">/// 結合法則を満たす。</span>
@@ -268,9 +283,10 @@
 <span class="doccomment">/// use nekolib::utils::OpMin;</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// let (x, y, z) = (2, 3, 4);</span>
+<span class="doccomment">/// let op_min = OpMin::default();</span>
 <span class="doccomment">/// assert_eq!(</span>
-<span class="doccomment">///     OpMin::op(OpMin::op(x, y), z),</span>
-<span class="doccomment">///     OpMin::op(x, OpMin::op(y, z)),</span>
+<span class="doccomment">///     op_min.op(op_min.op(x, y), z),</span>
+<span class="doccomment">///     op_min.op(x, op_min.op(y, z)),</span>
 <span class="doccomment">/// );</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Associative</span>: <span class="ident">Magma</span> {}
@@ -285,13 +301,14 @@
 <span class="doccomment">/// use nekolib::traits::{Identity, Magma};</span>
 <span class="doccomment">/// use nekolib::utils::OpMin;</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// let op_min = OpMin::default();</span>
 <span class="doccomment">/// let x = 3;</span>
-<span class="doccomment">/// assert_eq!(OpMin::&lt;i32&gt;::id(), std::i32::MAX);</span>
-<span class="doccomment">/// assert_eq!(OpMin::op(x, OpMin::id()), x);</span>
+<span class="doccomment">/// assert_eq!(op_min.id(), std::i32::MAX);</span>
+<span class="doccomment">/// assert_eq!(op_min.op(x, op_min.id()), x);</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Identity</span>: <span class="ident">Magma</span> {
     <span class="doccomment">/// 単位元を返す。</span>
-    <span class="kw">fn</span> <span class="ident">id</span>() -&gt; <span class="ident"><span class="self">Self</span>::Set</span>;
+    <span class="kw">fn</span> <span class="ident">id</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span>;
 }
 
 <span class="doccomment">/// 交換法則を満たす。</span>
@@ -305,8 +322,9 @@
 <span class="doccomment">/// use nekolib::traits::{Commutative, Magma};</span>
 <span class="doccomment">/// use nekolib::utils::OpMin;</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// let op_min = OpMin::default();</span>
 <span class="doccomment">/// let (x, y) = (3, 4);</span>
-<span class="doccomment">/// assert_eq!(OpMin::op(x, y), OpMin::op(y, x));</span>
+<span class="doccomment">/// assert_eq!(op_min.op(x, y), op_min.op(y, x));</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Commutative</span>: <span class="ident">Magma</span> {}
 
@@ -317,7 +335,7 @@
 <span class="doccomment">/// 体の乗法においては $0$ を除いて逆元を持つことが要請されるため必要かなと思った。</span>
 <span class="doccomment">/// もっといい設計はある気がする。</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">PartialRecip</span>: <span class="ident">Magma</span> {
-    <span class="kw">fn</span> <span class="ident">partial_recip</span>(<span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Set</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">partial_recip</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Set</span><span class="op">&gt;</span>;
 }
 
 <span class="doccomment">/// 逆元が常に存在する。</span>
@@ -331,12 +349,15 @@
 <span class="doccomment">/// use nekolib::traits::{Magma, Monoid, Recip};</span>
 <span class="doccomment">/// use nekolib::utils::OpAdd;</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// let op_add = OpAdd::default();</span>
 <span class="doccomment">/// let x = 3;</span>
-<span class="doccomment">/// let y = OpAdd::recip(x);</span>
-<span class="doccomment">/// assert_eq!(OpAdd::op(x, y), 0);</span>
+<span class="doccomment">/// let y = op_add.recip(x);</span>
+<span class="doccomment">/// assert_eq!(op_add.op(x, y), 0);</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Recip</span>: <span class="ident">PartialRecip</span> {
-    <span class="kw">fn</span> <span class="ident">recip</span>(<span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> { <span class="ident"><span class="self">Self</span>::partial_recip</span>(<span class="ident">x</span>).<span class="ident">unwrap</span>() }
+    <span class="kw">fn</span> <span class="ident">recip</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> {
+        <span class="self">self</span>.<span class="ident">partial_recip</span>(<span class="ident">x</span>).<span class="ident">unwrap</span>()
+    }
 }
 
 <span class="doccomment">/// 分配法則を満たす。</span>
@@ -354,10 +375,12 @@
 <span class="doccomment">/// use nekolib::traits::{Commutative, Magma};</span>
 <span class="doccomment">/// use nekolib::utils::{OpAdd, OpMul};</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// let op_add = OpAdd::default();</span>
+<span class="doccomment">/// let op_mul = OpMul::default();</span>
 <span class="doccomment">/// let (x, y, z) = (3, 4, 5);</span>
 <span class="doccomment">/// assert_eq!(</span>
-<span class="doccomment">///     OpMul::op(x, OpAdd::op(y, z)),</span>
-<span class="doccomment">///     OpAdd::op(OpMul::op(x, y), OpMul::op(x, z))</span>
+<span class="doccomment">///     op_mul.op(x, op_add.op(y, z)),</span>
+<span class="doccomment">///     op_add.op(op_mul.op(x, y), op_mul.op(x, z))</span>
 <span class="doccomment">/// );</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Distributive</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Magma</span><span class="op">&gt;</span> {}
@@ -406,20 +429,25 @@
     <span class="doccomment">/// モノイド $(R, \\ast, 1)$ に対応する型。</span>
     <span class="kw">type</span> <span class="ident">Multiplicative</span>: <span class="ident">Monoid</span><span class="op">&lt;</span><span class="ident">Set</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::Set</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Distributive</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Additive</span><span class="op">&gt;</span>;
 
+    <span class="kw">fn</span> <span class="ident">additive</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::Additive</span>;
+    <span class="kw">fn</span> <span class="ident">multiplicative</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::Multiplicative</span>;
+
     <span class="doccomment">/// 和 $x \\circ y$ を返す。</span>
-    <span class="kw">fn</span> <span class="ident">add</span>(<span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>, <span class="ident">y</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> { <span class="ident"><span class="self">Self</span>::Additive::op</span>(<span class="ident">x</span>, <span class="ident">y</span>) }
+    <span class="kw">fn</span> <span class="ident">add</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>, <span class="ident">y</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> {
+        <span class="self">self</span>.<span class="ident">additive</span>().<span class="ident">op</span>(<span class="ident">x</span>, <span class="ident">y</span>)
+    }
     <span class="doccomment">/// 加法 $\\circ$ の単位元 $0$ を返す。</span>
     <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">fn</span> <span class="ident">zero</span>() -&gt; <span class="ident"><span class="self">Self</span>::Set</span> { <span class="ident"><span class="self">Self</span>::Additive::id</span>() }
+    <span class="kw">fn</span> <span class="ident">zero</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> { <span class="self">self</span>.<span class="ident">additive</span>().<span class="ident">id</span>() }
     <span class="doccomment">/// 加法 $\\circ$ に関する $x$ の逆元 $-x$ を返す。</span>
-    <span class="kw">fn</span> <span class="ident">neg</span>(<span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> { <span class="ident"><span class="self">Self</span>::Additive::recip</span>(<span class="ident">x</span>) }
+    <span class="kw">fn</span> <span class="ident">neg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> { <span class="self">self</span>.<span class="ident">additive</span>().<span class="ident">recip</span>(<span class="ident">x</span>) }
     <span class="doccomment">/// 積 $x \\ast y$ を返す。</span>
-    <span class="kw">fn</span> <span class="ident">mul</span>(<span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>, <span class="ident">y</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> {
-        <span class="ident"><span class="self">Self</span>::Multiplicative::op</span>(<span class="ident">x</span>, <span class="ident">y</span>)
+    <span class="kw">fn</span> <span class="ident">mul</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>, <span class="ident">y</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> {
+        <span class="self">self</span>.<span class="ident">multiplicative</span>().<span class="ident">op</span>(<span class="ident">x</span>, <span class="ident">y</span>)
     }
     <span class="doccomment">/// 乗法 $\\ast$ の単位元 $1$ を返す。</span>
     <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">fn</span> <span class="ident">one</span>() -&gt; <span class="ident"><span class="self">Self</span>::Set</span> { <span class="ident"><span class="self">Self</span>::Multiplicative::id</span>() }
+    <span class="kw">fn</span> <span class="ident">one</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> { <span class="self">self</span>.<span class="ident">multiplicative</span>().<span class="ident">id</span>() }
 }
 
 <span class="doccomment">/// 可換環。</span>
@@ -439,11 +467,11 @@
     <span class="ident"><span class="self">Self</span>::Multiplicative</span>: <span class="ident">PartialRecip</span>,
 {
     <span class="doccomment">/// 乗法 $\\ast$ における関する $x$ の逆元 $x^{-1}$ を返す。</span>
-    <span class="kw">fn</span> <span class="ident">recip</span>(<span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> {
-        <span class="kw">if</span> <span class="ident">x</span> <span class="op">==</span> <span class="ident"><span class="self">Self</span>::Additive::id</span>() {
+    <span class="kw">fn</span> <span class="ident">recip</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> {
+        <span class="kw">if</span> <span class="ident">x</span> <span class="op">==</span> <span class="self">self</span>.<span class="ident">additive</span>().<span class="ident">id</span>() {
             <span class="macro">panic!</span>(<span class="string">&quot;zero element does not have multiplicative inverse&quot;</span>);
         } <span class="kw">else</span> {
-            <span class="ident"><span class="self">Self</span>::Multiplicative::partial_recip</span>(<span class="ident">x</span>).<span class="ident">unwrap</span>()
+            <span class="self">self</span>.<span class="ident">multiplicative</span>().<span class="ident">partial_recip</span>(<span class="ident">x</span>).<span class="ident">unwrap</span>()
         }
     }
 }

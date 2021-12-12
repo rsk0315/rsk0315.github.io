@@ -189,6 +189,16 @@
 <span id="164">164</span>
 <span id="165">165</span>
 <span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
 </pre><pre class="rust"><code><span class="doccomment">//! fold 可能キュー。</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::binop</span>;
@@ -258,6 +268,7 @@
     <span class="ident">buf_folded_front</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">M::Set</span><span class="op">&gt;</span>,
     <span class="ident">buf_back</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">M::Set</span><span class="op">&gt;</span>,
     <span class="ident">folded_back</span>: <span class="ident">M::Set</span>,
+    <span class="ident">monoid</span>: <span class="ident">M</span>,
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">Monoid</span><span class="op">&gt;</span> <span class="ident">FoldableQueue</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
@@ -265,12 +276,20 @@
     <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
 {
     <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span>
+    <span class="kw">where</span>
+        <span class="ident">M</span>: <span class="ident">Default</span>,
+    {
+        <span class="ident"><span class="self">Self</span>::with</span>(<span class="ident">M::default</span>())
+    }
+    <span class="attribute">#[<span class="ident">must_use</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with</span>(<span class="ident">monoid</span>: <span class="ident">M</span>) -&gt; <span class="self">Self</span> {
         <span class="self">Self</span> {
             <span class="ident">buf_front</span>: <span class="macro">vec!</span>[],
-            <span class="ident">buf_folded_front</span>: <span class="macro">vec!</span>[<span class="ident">M::id</span>()],
+            <span class="ident">buf_folded_front</span>: <span class="macro">vec!</span>[<span class="ident">monoid</span>.<span class="ident">id</span>()],
             <span class="ident">buf_back</span>: <span class="macro">vec!</span>[],
-            <span class="ident">folded_back</span>: <span class="ident">M::id</span>(),
+            <span class="ident">folded_back</span>: <span class="ident">monoid</span>.<span class="ident">id</span>(),
+            <span class="ident">monoid</span>,
         }
     }
     <span class="kw">fn</span> <span class="ident">rotate</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
@@ -281,14 +300,12 @@
         }
     }
     <span class="kw">fn</span> <span class="ident">build_folded</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
-        <span class="self">self</span>.<span class="ident">folded_back</span> <span class="op">=</span> <span class="self">self</span>
-            .<span class="ident">buf_back</span>
-            .<span class="ident">iter</span>()
-            .<span class="ident">fold</span>(<span class="ident">M::id</span>(), <span class="op">|</span><span class="ident">acc</span>, <span class="ident">x</span><span class="op">|</span> <span class="ident">M::op</span>(<span class="ident">acc</span>, <span class="ident">x</span>.<span class="ident">clone</span>()));
+        <span class="self">self</span>.<span class="ident">folded_back</span> <span class="op">=</span> (<span class="self">self</span>.<span class="ident">buf_back</span>.<span class="ident">iter</span>())
+            .<span class="ident">fold</span>(<span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">id</span>(), <span class="op">|</span><span class="ident">acc</span>, <span class="ident">x</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">op</span>(<span class="ident">acc</span>, <span class="ident">x</span>.<span class="ident">clone</span>()));
         <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf_front</span>.<span class="ident">len</span>();
-        <span class="self">self</span>.<span class="ident">buf_folded_front</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">M::id</span>(); <span class="ident">n</span> <span class="op">+</span> <span class="number">1</span>];
+        <span class="self">self</span>.<span class="ident">buf_folded_front</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">id</span>(); <span class="ident">n</span> <span class="op">+</span> <span class="number">1</span>];
         <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span> {
-            <span class="self">self</span>.<span class="ident">buf_folded_front</span>[<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>] <span class="op">=</span> <span class="ident">M::op</span>(
+            <span class="self">self</span>.<span class="ident">buf_folded_front</span>[<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>] <span class="op">=</span> <span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">op</span>(
                 <span class="self">self</span>.<span class="ident">buf_folded_front</span>[<span class="ident">i</span>].<span class="ident">clone</span>(),
                 <span class="self">self</span>.<span class="ident">buf_front</span>[<span class="ident">i</span>].<span class="ident">clone</span>(),
             );
@@ -302,8 +319,10 @@
 {
     <span class="kw">type</span> <span class="ident">Input</span> <span class="op">=</span> <span class="ident">M::Set</span>;
     <span class="kw">fn</span> <span class="ident">push_back</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Input</span>) {
-        <span class="self">self</span>.<span class="ident">folded_back</span> <span class="op">=</span>
-            <span class="ident">M::op</span>(<span class="ident">std::mem::replace</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">folded_back</span>, <span class="ident">M::id</span>()), <span class="ident">x</span>.<span class="ident">clone</span>());
+        <span class="self">self</span>.<span class="ident">folded_back</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">op</span>(
+            <span class="ident">std::mem::replace</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">folded_back</span>, <span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">id</span>()),
+            <span class="ident">x</span>.<span class="ident">clone</span>(),
+        );
         <span class="self">self</span>.<span class="ident">buf_back</span>.<span class="ident">push</span>(<span class="ident">x</span>);
     }
 }
@@ -345,12 +364,13 @@
     <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">M</span>;
     <span class="kw">fn</span> <span class="ident">fold</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="ident">RangeFull</span>) -&gt; <span class="ident">M::Set</span> {
         <span class="kw">let</span> <span class="ident">front</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf_folded_front</span>.<span class="ident">last</span>().<span class="ident">unwrap</span>().<span class="ident">clone</span>();
-        <span class="ident">M::op</span>(<span class="ident">front</span>, <span class="self">self</span>.<span class="ident">folded_back</span>.<span class="ident">clone</span>())
+        <span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">op</span>(<span class="ident">front</span>, <span class="self">self</span>.<span class="ident">folded_back</span>.<span class="ident">clone</span>())
     }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">Monoid</span><span class="op">&gt;</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">FoldableQueue</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
 <span class="kw">where</span>
+    <span class="ident">M</span>: <span class="ident">Default</span>,
     <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
 {
     <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> { <span class="ident"><span class="self">Self</span>::new</span>() }

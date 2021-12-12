@@ -351,6 +351,37 @@
 <span id="326">326</span>
 <span id="327">327</span>
 <span id="328">328</span>
+<span id="329">329</span>
+<span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
+<span id="356">356</span>
+<span id="357">357</span>
+<span id="358">358</span>
+<span id="359">359</span>
 </pre><pre class="rust"><code><span class="doccomment">//! `Vec` ベースの区間作用セグ木。</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::act</span>;
@@ -380,6 +411,7 @@
     <span class="ident">buf</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="ident">def</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="ident">A::Operator</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="ident">len</span>: <span class="ident">usize</span>,
+    <span class="ident">action</span>: <span class="ident">A</span>,
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> <span class="ident">VecActSegtree</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
@@ -388,11 +420,17 @@
     <span class="op">&lt;</span><span class="ident">A::Operator</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
     <span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
 {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">len</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span> {
+    <span class="attribute">#[<span class="ident">must_use</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">len</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span>
+    <span class="kw">where</span>
+        <span class="ident">A</span>: <span class="ident">Default</span>,
+    {
+        <span class="kw">let</span> <span class="ident">action</span> <span class="op">=</span> <span class="ident">A::default</span>();
         <span class="self">Self</span> {
             <span class="ident">len</span>,
-            <span class="ident">buf</span>: <span class="ident">RefCell::new</span>(<span class="macro">vec!</span>[<span class="ident">A::Operand::id</span>(); <span class="ident">len</span> <span class="op">+</span> <span class="ident">len</span>]),
-            <span class="ident">def</span>: <span class="ident">RefCell::new</span>(<span class="macro">vec!</span>[<span class="ident">A::Operator::id</span>(); <span class="ident">len</span>]),
+            <span class="ident">buf</span>: <span class="ident">RefCell::new</span>(<span class="macro">vec!</span>[<span class="ident">action</span>.<span class="ident">operand</span>().<span class="ident">id</span>(); <span class="ident">len</span> <span class="op">+</span> <span class="ident">len</span>]),
+            <span class="ident">def</span>: <span class="ident">RefCell::new</span>(<span class="macro">vec!</span>[<span class="ident">action</span>.<span class="ident">operator</span>().<span class="ident">id</span>(); <span class="ident">len</span>]),
+            <span class="ident">action</span>,
         }
     }
 
@@ -431,23 +469,25 @@
         <span class="kw">let</span> <span class="ident">def</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">def</span>.<span class="ident">borrow</span>();
         <span class="kw">while</span> <span class="ident">i</span> <span class="op">&gt;</span> <span class="number">1</span> {
             <span class="ident">i</span> <span class="op">&gt;</span><span class="op">&gt;</span><span class="op">=</span> <span class="number">1</span>;
-            <span class="ident">buf</span>[<span class="ident">i</span>] <span class="op">=</span>
-                <span class="ident">A::Operand::op</span>(<span class="ident">buf</span>[<span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span>].<span class="ident">clone</span>(), <span class="ident">buf</span>[<span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span> <span class="op">|</span> <span class="number">1</span>].<span class="ident">clone</span>());
-            <span class="ident">A::act</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>[<span class="ident">i</span>], <span class="ident">def</span>[<span class="ident">i</span>].<span class="ident">clone</span>());
+            <span class="ident">buf</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="self">self</span>
+                .<span class="ident">action</span>
+                .<span class="ident">operand</span>()
+                .<span class="ident">op</span>(<span class="ident">buf</span>[<span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span>].<span class="ident">clone</span>(), <span class="ident">buf</span>[<span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span> <span class="op">|</span> <span class="number">1</span>].<span class="ident">clone</span>());
+            <span class="self">self</span>.<span class="ident">action</span>.<span class="ident">act</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>[<span class="ident">i</span>], <span class="ident">def</span>[<span class="ident">i</span>].<span class="ident">clone</span>());
         }
     }
 
     <span class="kw">fn</span> <span class="ident">apply</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>, <span class="ident">op</span>: <span class="op">&lt;</span><span class="ident">A::Operator</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>) {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow_mut</span>();
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">def</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">def</span>.<span class="ident">borrow_mut</span>();
-        <span class="ident">A::act</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>[<span class="ident">i</span>], <span class="ident">op</span>.<span class="ident">clone</span>());
+        <span class="self">self</span>.<span class="ident">action</span>.<span class="ident">act</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>[<span class="ident">i</span>], <span class="ident">op</span>.<span class="ident">clone</span>());
         <span class="kw">if</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">len</span> {
-            <span class="ident">def</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">A::Operator::op</span>(<span class="ident">def</span>[<span class="ident">i</span>].<span class="ident">clone</span>(), <span class="ident">op</span>);
+            <span class="ident">def</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="self">self</span>.<span class="ident">action</span>.<span class="ident">operator</span>().<span class="ident">op</span>(<span class="ident">def</span>[<span class="ident">i</span>].<span class="ident">clone</span>(), <span class="ident">op</span>);
         }
     }
 
     <span class="kw">fn</span> <span class="ident">push_down</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) {
-        <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="ident">A::Operator::id</span>();
+        <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">action</span>.<span class="ident">operator</span>().<span class="ident">id</span>();
         <span class="kw">let</span> <span class="ident">d</span> <span class="op">=</span> <span class="ident">std::mem::replace</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">def</span>.<span class="ident">borrow_mut</span>()[<span class="ident">i</span>], <span class="ident">e</span>.<span class="ident">clone</span>());
         <span class="kw">if</span> <span class="ident">d</span> <span class="op">!</span><span class="op">=</span> <span class="ident">e</span> {
             <span class="self">self</span>.<span class="ident">apply</span>(<span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span>, <span class="ident">d</span>.<span class="ident">clone</span>());
@@ -462,7 +502,7 @@
     }
 
     <span class="kw">fn</span> <span class="ident">resolve_all</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-        <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="ident">A::Operator::id</span>();
+        <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">action</span>.<span class="ident">operator</span>().<span class="ident">id</span>();
         <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">1</span>..<span class="self">self</span>.<span class="ident">len</span> {
             <span class="kw">let</span> <span class="ident">d</span> <span class="op">=</span> <span class="ident">std::mem::replace</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">def</span>.<span class="ident">borrow_mut</span>()[<span class="ident">i</span>], <span class="ident">e</span>.<span class="ident">clone</span>());
             <span class="self">self</span>.<span class="ident">apply</span>(<span class="ident">i</span>, <span class="ident">d</span>);
@@ -472,21 +512,33 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">VecActSegtree</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
 <span class="kw">where</span>
+    <span class="ident">A</span>: <span class="ident">MonoidAction</span> <span class="op">+</span> <span class="ident">Default</span>,
+    <span class="op">&lt;</span><span class="ident">A::Operator</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
+    <span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
+{
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">v</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
+        <span class="ident"><span class="self">Self</span>::from</span>((<span class="ident">v</span>, <span class="ident">A::default</span>()))
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span><span class="op">&gt;</span>, <span class="ident">A</span>)<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">VecActSegtree</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
+<span class="kw">where</span>
     <span class="ident">A</span>: <span class="ident">MonoidAction</span>,
     <span class="op">&lt;</span><span class="ident">A::Operator</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
     <span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
 {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="kw-2">mut</span> <span class="ident">v</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>((<span class="kw-2">mut</span> <span class="ident">v</span>, <span class="ident">action</span>): (<span class="ident">Vec</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span><span class="op">&gt;</span>, <span class="ident">A</span>)) -&gt; <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">v</span>.<span class="ident">len</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">A::Operand::id</span>(); <span class="ident">len</span>];
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">action</span>.<span class="ident">operand</span>().<span class="ident">id</span>(); <span class="ident">len</span>];
         <span class="ident">buf</span>.<span class="ident">append</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">v</span>);
         <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> (<span class="number">0</span>..<span class="ident">len</span>).<span class="ident">rev</span>() {
-            <span class="ident">buf</span>[<span class="ident">i</span>] <span class="op">=</span>
-                <span class="ident">A::Operand::op</span>(<span class="ident">buf</span>[<span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span>].<span class="ident">clone</span>(), <span class="ident">buf</span>[<span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span> <span class="op">|</span> <span class="number">1</span>].<span class="ident">clone</span>());
+            <span class="ident">buf</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">action</span>
+                .<span class="ident">operand</span>()
+                .<span class="ident">op</span>(<span class="ident">buf</span>[<span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span>].<span class="ident">clone</span>(), <span class="ident">buf</span>[<span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span> <span class="op">|</span> <span class="number">1</span>].<span class="ident">clone</span>());
         }
         <span class="kw">let</span> <span class="ident">buf</span> <span class="op">=</span> <span class="ident">RefCell::new</span>(<span class="ident">buf</span>);
-        <span class="kw">let</span> <span class="ident">def</span> <span class="op">=</span> <span class="ident">RefCell::new</span>(<span class="macro">vec!</span>[<span class="ident">A::Operator::id</span>(); <span class="ident">len</span>]);
-        <span class="self">Self</span> { <span class="ident">buf</span>, <span class="ident">def</span>, <span class="ident">len</span> }
+        <span class="kw">let</span> <span class="ident">def</span> <span class="op">=</span> <span class="ident">RefCell::new</span>(<span class="macro">vec!</span>[<span class="ident">action</span>.<span class="ident">operator</span>().<span class="ident">id</span>(); <span class="ident">len</span>]);
+        <span class="self">Self</span> { <span class="ident">buf</span>, <span class="ident">def</span>, <span class="ident">len</span>, <span class="ident">action</span> }
     }
 }
 
@@ -515,28 +567,28 @@
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">il</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span> <span class="op">+</span> <span class="ident">start</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ir</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span> <span class="op">+</span> <span class="ident">end</span>;
         <span class="kw">if</span> <span class="ident">il</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">ir</span> {
-            <span class="kw">return</span> <span class="ident">A::Operand::id</span>();
+            <span class="kw">return</span> <span class="self">self</span>.<span class="ident">action</span>.<span class="ident">operand</span>().<span class="ident">id</span>();
         }
         <span class="self">self</span>.<span class="ident">resolve</span>(<span class="ident">il</span>);
         <span class="self">self</span>.<span class="ident">resolve</span>(<span class="ident">ir</span> <span class="op">-</span> <span class="number">1</span>);
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res_l</span> <span class="op">=</span> <span class="ident">A::Operand::id</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res_r</span> <span class="op">=</span> <span class="ident">A::Operand::id</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res_l</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">action</span>.<span class="ident">operand</span>().<span class="ident">id</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res_r</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">action</span>.<span class="ident">operand</span>().<span class="ident">id</span>();
         <span class="kw">let</span> <span class="ident">buf</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow</span>();
         <span class="kw">while</span> <span class="ident">il</span> <span class="op">&lt;</span> <span class="ident">ir</span> {
             <span class="kw">if</span> <span class="ident">il</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">==</span> <span class="number">1</span> {
                 <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">buf</span>[<span class="ident">il</span>].<span class="ident">clone</span>();
-                <span class="ident">res_l</span> <span class="op">=</span> <span class="ident">A::Operand::op</span>(<span class="ident">res_l</span>, <span class="ident">tmp</span>);
+                <span class="ident">res_l</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">action</span>.<span class="ident">operand</span>().<span class="ident">op</span>(<span class="ident">res_l</span>, <span class="ident">tmp</span>);
                 <span class="ident">il</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
             }
             <span class="kw">if</span> <span class="ident">ir</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">==</span> <span class="number">1</span> {
                 <span class="ident">ir</span> <span class="op">-</span><span class="op">=</span> <span class="number">1</span>;
                 <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">buf</span>[<span class="ident">ir</span>].<span class="ident">clone</span>();
-                <span class="ident">res_r</span> <span class="op">=</span> <span class="ident">A::Operand::op</span>(<span class="ident">tmp</span>, <span class="ident">res_r</span>);
+                <span class="ident">res_r</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">action</span>.<span class="ident">operand</span>().<span class="ident">op</span>(<span class="ident">tmp</span>, <span class="ident">res_r</span>);
             }
             <span class="ident">il</span> <span class="op">&gt;</span><span class="op">&gt;</span><span class="op">=</span> <span class="number">1</span>;
             <span class="ident">ir</span> <span class="op">&gt;</span><span class="op">&gt;</span><span class="op">=</span> <span class="number">1</span>;
         }
-        <span class="ident">A::Operand::op</span>(<span class="ident">res_l</span>, <span class="ident">res_r</span>)
+        <span class="self">self</span>.<span class="ident">action</span>.<span class="ident">operand</span>().<span class="ident">op</span>(<span class="ident">res_l</span>, <span class="ident">res_r</span>)
     }
 }
 
@@ -594,7 +646,7 @@
             <span class="self">self</span>.<span class="ident">len</span>, <span class="ident">l</span>, <span class="self">self</span>.<span class="ident">len</span>
         );
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">A::Operand::id</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">action</span>.<span class="ident">operand</span>().<span class="ident">id</span>();
         <span class="macro">assert!</span>(<span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>), <span class="string">&quot;`pred(id)` must hold&quot;</span>);
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">fold</span>(<span class="ident">l</span>..) {
             <span class="ident">x</span> <span class="kw">if</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>) =&gt; <span class="kw">return</span> (<span class="self">self</span>.<span class="ident">len</span>, <span class="ident">x</span>),
@@ -605,7 +657,10 @@
         <span class="self">self</span>.<span class="ident">resolve</span>(<span class="self">self</span>.<span class="ident">len</span> <span class="op">+</span> <span class="self">self</span>.<span class="ident">len</span> <span class="op">-</span> <span class="number">1</span>);
 
         <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">nodes</span>(<span class="ident">l</span>, <span class="self">self</span>.<span class="ident">len</span>) {
-            <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">A::Operand::op</span>(<span class="ident">x</span>.<span class="ident">clone</span>(), <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow</span>()[<span class="ident">v</span>].<span class="ident">clone</span>());
+            <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="self">self</span>
+                .<span class="ident">action</span>
+                .<span class="ident">operand</span>()
+                .<span class="ident">op</span>(<span class="ident">x</span>.<span class="ident">clone</span>(), <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow</span>()[<span class="ident">v</span>].<span class="ident">clone</span>());
             <span class="kw">if</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">tmp</span>) {
                 <span class="ident">x</span> <span class="op">=</span> <span class="ident">tmp</span>;
                 <span class="kw">continue</span>;
@@ -614,8 +669,10 @@
             <span class="kw">while</span> <span class="ident">v</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">len</span> {
                 <span class="self">self</span>.<span class="ident">push_down</span>(<span class="ident">v</span>);
                 <span class="ident">v</span> <span class="op">&lt;</span><span class="op">&lt;</span><span class="op">=</span> <span class="number">1</span>;
-                <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span>
-                    <span class="ident">A::Operand::op</span>(<span class="ident">x</span>.<span class="ident">clone</span>(), <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow</span>()[<span class="ident">v</span>].<span class="ident">clone</span>());
+                <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="self">self</span>
+                    .<span class="ident">action</span>
+                    .<span class="ident">operand</span>()
+                    .<span class="ident">op</span>(<span class="ident">x</span>.<span class="ident">clone</span>(), <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow</span>()[<span class="ident">v</span>].<span class="ident">clone</span>());
                 <span class="kw">if</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>) {
                     <span class="ident">x</span> <span class="op">=</span> <span class="ident">tmp</span>;
                     <span class="ident">v</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
@@ -647,7 +704,7 @@
             <span class="self">self</span>.<span class="ident">len</span>, <span class="ident">r</span>, <span class="self">self</span>.<span class="ident">len</span>
         );
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">A::Operand::id</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">action</span>.<span class="ident">operand</span>().<span class="ident">id</span>();
         <span class="macro">assert!</span>(<span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>), <span class="string">&quot;`pred(id)` must hold&quot;</span>);
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">fold</span>(..<span class="ident">r</span>) {
             <span class="ident">x</span> <span class="kw">if</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>) =&gt; <span class="kw">return</span> (<span class="number">0</span>, <span class="ident">x</span>),
@@ -658,7 +715,10 @@
         <span class="self">self</span>.<span class="ident">resolve</span>(<span class="self">self</span>.<span class="ident">len</span> <span class="op">+</span> <span class="ident">r</span> <span class="op">-</span> <span class="number">1</span>);
 
         <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">nodes_rev</span>(<span class="number">0</span>, <span class="ident">r</span>) {
-            <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">A::Operand::op</span>(<span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow</span>()[<span class="ident">v</span>].<span class="ident">clone</span>(), <span class="ident">x</span>.<span class="ident">clone</span>());
+            <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="self">self</span>
+                .<span class="ident">action</span>
+                .<span class="ident">operand</span>()
+                .<span class="ident">op</span>(<span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow</span>()[<span class="ident">v</span>].<span class="ident">clone</span>(), <span class="ident">x</span>.<span class="ident">clone</span>());
             <span class="kw">if</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">tmp</span>) {
                 <span class="ident">x</span> <span class="op">=</span> <span class="ident">tmp</span>;
                 <span class="kw">continue</span>;
@@ -667,8 +727,10 @@
             <span class="kw">while</span> <span class="ident">v</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">len</span> {
                 <span class="self">self</span>.<span class="ident">push_down</span>(<span class="ident">v</span>);
                 <span class="ident">v</span> <span class="op">=</span> <span class="ident">v</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span> <span class="op">|</span> <span class="number">1</span>;
-                <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span>
-                    <span class="ident">A::Operand::op</span>(<span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow</span>()[<span class="ident">v</span>].<span class="ident">clone</span>(), <span class="ident">x</span>.<span class="ident">clone</span>());
+                <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="self">self</span>
+                    .<span class="ident">action</span>
+                    .<span class="ident">operand</span>()
+                    .<span class="ident">op</span>(<span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow</span>()[<span class="ident">v</span>].<span class="ident">clone</span>(), <span class="ident">x</span>.<span class="ident">clone</span>());
                 <span class="kw">if</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">tmp</span>) {
                     <span class="ident">x</span> <span class="op">=</span> <span class="ident">tmp</span>;
                     <span class="ident">v</span> <span class="op">-</span><span class="op">=</span> <span class="number">1</span>;

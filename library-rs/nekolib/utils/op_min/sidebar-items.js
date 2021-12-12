@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["OpMin","最小値を返す演算を持つ。"]]});
+initSidebarItems({"enum":[["OpMin","最小値を返す演算を持つ。"]]});
