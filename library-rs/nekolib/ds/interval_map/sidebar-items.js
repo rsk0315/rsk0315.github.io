@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["Interval",""],["IntervalMap","区間から値への対応づけ。"]]});
+initSidebarItems({"struct":[["Interval",""],["IntervalMap",""]]});
