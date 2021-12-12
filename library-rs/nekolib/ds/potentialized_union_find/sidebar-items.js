@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["PotentializedUnionFind","ポテンシャルつき union-find。"]]});
