@@ -168,6 +168,12 @@
 <span id="143">143</span>
 <span id="144">144</span>
 <span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
 </pre><pre class="rust"><code><span class="doccomment">//! 周期検出。</span>
 
 <span class="doccomment">/// 周期検出を行う。</span>
@@ -200,6 +206,12 @@
 <span class="doccomment">/// assert_eq!(cycle_mu_lambda(3, |x| x * x % 14), (1, 2));</span>
 <span class="doccomment">/// // 2, 6, 4, 5, 1, 3, 2, ...</span>
 <span class="doccomment">/// assert_eq!(cycle_mu_lambda(2, |x| x * 3 % 7), (0, 6));</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// use nekolib::algo::cycle_mu_lambda;</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// assert_eq!(cycle_mu_lambda(0, |x| x), (0, 1));</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">cycle_mu_lambda</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span><span class="op">&gt;</span>(<span class="ident">x0</span>: <span class="ident">T</span>, <span class="ident">f</span>: <span class="ident">F</span>) -&gt; (<span class="ident">usize</span>, <span class="ident">usize</span>)
 <span class="kw">where</span>
