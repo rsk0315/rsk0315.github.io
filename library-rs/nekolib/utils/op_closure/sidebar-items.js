@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["OpClosure","任意の結合的な演算を持つ。"]]});

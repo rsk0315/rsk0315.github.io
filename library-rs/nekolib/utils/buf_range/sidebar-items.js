@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["bounds_within","区間を配列サイズに収まるように丸める。"]]});
+initSidebarItems({"fn":[["bounds_within","区間を配列サイズに収まるように丸める。"],["check_bounds","境界チェックを行う。"],["check_bounds_range","境界チェックを行う。"]]});
