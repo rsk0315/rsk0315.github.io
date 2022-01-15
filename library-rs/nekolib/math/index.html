@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="数学関連のアルゴリズムたち。"><meta name="keywords" content="rust, rustlang, rust-lang, math"><title>nekolib::math - Rust</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"><!-- For newer version of KaTeX, see https://katex.org/docs/browser.html -->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="数学関連のアルゴリズムたち。"><meta name="keywords" content="rust, rustlang, rust-lang, math"><title>nekolib::math - Rust</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script>
+    <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"><!-- For newer version of KaTeX, see https://katex.org/docs/browser.html -->
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
 
@@ -23,11 +24,66 @@
 </script>
 
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet">
-<style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../nekolib/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a><h2 class="location">Module math</h2><div class="sidebar-elems"><div class="block items"><ul><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li></ul></div><div id="sidebar-vars" data-name="math" data-ty="mod" data-relpath="./"></div><script defer src="./sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main" class="content"><h1 class="fqn"><span class="in-band">Module <a href="../index.html">nekolib</a>::<wbr><a class="mod" href="#">math</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span><span class="out-of-band"><span id="render-detail"><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span><a class="srclink" href="../../src/nekolib/math.rs.html#1-105" title="goto source code">[src]</a></span></h1><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>数学関連のアルゴリズムたち。</p>
+
+<style>
+  .ferris-container {
+      position: absolute;
+      z-index: 9999;
+      width: 4.5em;
+      right: 5px;
+      top: 10px;
+  }
+</style>
+
+<script>
+  let ferrisTypes = [
+      {
+          attr: 'compile_fail',
+          title: 'This code does not compile!',
+          src: 'https://raw.githubusercontent.com/rust-lang/book/b54090a99ec7c4b46a5203a9c927fdbc311bb1f5/2018-edition/src/img/ferris/does_not_compile.svg',
+      },
+      {
+          attr: 'should_panic',
+          title: 'This code panics!',
+          src: 'https://raw.githubusercontent.com/rust-lang/book/b54090a99ec7c4b46a5203a9c927fdbc311bb1f5/2018-edition/src/img/ferris/panics.svg',
+      },
+  ];  
+
+  document.addEventListener('DOMContentLoaded', () => {
+      for (let ferrisType of ferrisTypes) {
+          attachFerrises(ferrisType);
+      }
+  });
+
+  function attachFerrises(type) {
+      let elements = document.getElementsByClassName(type.attr);
+      for (let codeBlock of elements) {
+          if (codeBlock.tagName === 'PRE') {
+              attachFerris(codeBlock, type);
+          }
+      }
+  }
+
+  function attachFerris(element, type) {
+      let div = document.createElement('div');
+      div.className = 'ferris-container';
+
+      let img = document.createElement('img');
+      img.setAttribute('src', type.src);
+      img.setAttribute('title', type.title);
+      img.className = 'ferris';
+
+      div.appendChild(img);
+
+      element.parentElement.insertBefore(div, element);
+  }
+</script>
+
+<style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../nekolib/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a><h2 class="location">Module math</h2><div class="sidebar-elems"><div class="block items"><ul><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li></ul></div><div id="sidebar-vars" data-name="math" data-ty="mod" data-relpath="./"></div><script defer src="./sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main" class="content"><h1 class="fqn"><span class="in-band">Module <a href="../index.html">nekolib</a>::<wbr><a class="mod" href="#">math</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span><span class="out-of-band"><span id="render-detail"><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span><a class="srclink" href="../../src/nekolib/math.rs.html#1-105" title="goto source code">[src]</a></span></h1><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>数学関連のアルゴリズムたち。</p>
 <p>基本的な数学関数。
 直線の集合を管理するクラスなど、抽象化しにくいものは <a href="../ds/index.html"><code>ds</code></a> ではなくこちらに含めた。
 計算機科学自体 mathematics では？とも思うが…</p>
-</div></details><h2 id="modules" class="section-header"><a href="#modules">Modules</a></h2>
+</div></details><h2 id="modules" class="small-section-header"><a href="#modules">Modules</a></h2>
 <div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="mod" href="bit_binom_/index.html" title="nekolib::math::bit_binom_ mod">bit_binom_</a></div><div class="item-right docblock-short"><p>組合せのビット表現。</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="mod" href="carmichael_lambda/index.html" title="nekolib::math::carmichael_lambda mod">carmichael_lambda</a></div><div class="item-right docblock-short"><p>Carmichael の $\lambda$ 関数。</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="mod" href="compact_sieve/index.html" title="nekolib::math::compact_sieve mod">compact_sieve</a></div><div class="item-right docblock-short"><p>篩。</p>
@@ -60,7 +116,7 @@
 </div></div><div class="item-row"><div class="item-left module-item"><a class="mod" href="sqrt_fraction_/index.html" title="nekolib::math::sqrt_fraction_ mod">sqrt_fraction_</a></div><div class="item-right docblock-short"><p>平方根の連分数展開。</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="mod" href="stern_brocot_/index.html" title="nekolib::math::stern_brocot_ mod">stern_brocot_</a></div><div class="item-right docblock-short"><p>Stern–Brocot tree</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="mod" href="two_sat/index.html" title="nekolib::math::two_sat mod">two_sat</a></div><div class="item-right docblock-short"><p>2-SAT。</p>
-</div></div></div><h2 id="structs" class="section-header"><a href="#structs">Structs</a></h2>
+</div></div></div><h2 id="structs" class="small-section-header"><a href="#structs">Structs</a></h2>
 <div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.CompactSieve.html" title="nekolib::math::CompactSieve struct">CompactSieve</a></div><div class="item-right docblock-short"><p>篩。</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.ConstDiv.html" title="nekolib::math::ConstDiv struct">ConstDiv</a></div><div class="item-right docblock-short"><p>定数除算。</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.ConstDiv2.html" title="nekolib::math::ConstDiv2 struct">ConstDiv2</a></div><div class="item-right docblock-short"><p>定数除算。</p>
@@ -72,7 +128,7 @@
 </div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.SieveN2PlusNPlus1.html" title="nekolib::math::SieveN2PlusNPlus1 struct">SieveN2PlusNPlus1</a></div><div class="item-right docblock-short"><p>$n^2+n+1$ 型素数の篩。</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.SlopeFunction.html" title="nekolib::math::SlopeFunction struct">SlopeFunction</a></div><div class="item-right docblock-short"><p>区分線形凸関数。</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.TwoSat.html" title="nekolib::math::TwoSat struct">TwoSat</a></div><div class="item-right docblock-short"><p>2-SAT。</p>
-</div></div></div><h2 id="traits" class="section-header"><a href="#traits">Traits</a></h2>
+</div></div></div><h2 id="traits" class="small-section-header"><a href="#traits">Traits</a></h2>
 <div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.CarmichaelLambda.html" title="nekolib::math::CarmichaelLambda trait">CarmichaelLambda</a></div><div class="item-right docblock-short"><p>Carmichael の $\lambda$ 関数。</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.DLog.html" title="nekolib::math::DLog trait">DLog</a></div><div class="item-right docblock-short"><p>離散対数。</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.DigitSum.html" title="nekolib::math::DigitSum trait">DigitSum</a></div><div class="item-right docblock-short"><p>桁和。</p>
@@ -90,7 +146,7 @@
 </div></div><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.ModPow.html" title="nekolib::math::ModPow trait">ModPow</a></div><div class="item-right docblock-short"><p>冪乗。</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.ModTetration.html" title="nekolib::math::ModTetration trait">ModTetration</a></div><div class="item-right docblock-short"><p>tetration。</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.Sqrt.html" title="nekolib::math::Sqrt trait">Sqrt</a></div><div class="item-right docblock-short"><p>平方根。</p>
-</div></div></div><h2 id="functions" class="section-header"><a href="#functions">Functions</a></h2>
+</div></div></div><h2 id="functions" class="small-section-header"><a href="#functions">Functions</a></h2>
 <div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.bit_binom.html" title="nekolib::math::bit_binom fn">bit_binom</a></div><div class="item-right docblock-short"><p>組合せのビット表現。</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.continued_fraction.html" title="nekolib::math::continued_fraction fn">continued_fraction</a></div><div class="item-right docblock-short"><p>連分数展開。</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.prime_pi.html" title="nekolib::math::prime_pi fn">prime_pi</a></div><div class="item-right docblock-short"><p>素数の数え上げ。</p>
@@ -98,5 +154,4 @@
 </div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.sqrt_fraction_fn.html" title="nekolib::math::sqrt_fraction_fn fn">sqrt_fraction_fn</a></div><div class="item-right docblock-short"><p>平方根の連分数展開。</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.stern_brocot.html" title="nekolib::math::stern_brocot fn">stern_brocot</a></div><div class="item-right docblock-short"><p>Stern–Brocot tree</p>
 </div></div></div></section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nekolib" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>
-    <script src="../../main.js"></script>
 </body></html>
