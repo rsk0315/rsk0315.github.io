@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <title>Seaweed Matrix</title>
+    <script>
+      window.onload = function() {
+          render();
+      }
+
+      function render() {
+          let input = document.getElementById('input');
+          let a = ('\n' + input.value.trim() + '\n').split('\n');
+          let w = a.map(x => x.length).reduce((x, y) => Math.max(x, y));
+          let i = 0;
+          let unit = 40;
+          let svg = '';
+          let drawn = false;
+          let s = 'stroke-width="2"';
+          for (let ai of a) {
+              let empty = ai.length == 0;
+              let bold = !drawn && empty || drawn;
+              if (!drawn) {
+                  svg += `<line x1="0" x2="${unit * w}" y1="${unit * i}" y2="${unit * i}" stroke="${bold? 'black': '#BFBFFA'}" stroke-width="${bold? 2: 1}" />`;
+              }
+              if (empty) {
+                  if (drawn) i += 1;
+                  drawn = !drawn;
+                  continue;
+              }
+              drawn = false;
+
+              for (let j = 0; j <= w; ++j) {
+                  let ends = j == 0 || j == w;
+                  svg += `<line x1="${unit * j}" x2="${unit * j}" y1="${unit * i}" y2="${unit * (i + 1)}" stroke="${ends? 'black': '#BFBFFA'}" stroke-width="${ends? 2: 1}" />`;
+              }
+
+              for (let j = 0; j < ai.length; ++j) {
+                  switch (ai[j]) {
+                  case '-':
+                      svg += `<line x1="${unit * j}" x2="${unit * (j + 1)}" y1="${unit * (i + 0.5)}" y2="${unit * (i + 0.5)}" stroke="#75FB4C" ${s} />`;
+                      break;
+                  case '|':
+                      svg += `<line x1="${unit * (j + 0.5)}" x2="${unit * (j + 0.5)}" y1="${unit * i}" y2="${unit * (i + 1)}" stroke="#75FB4C" ${s} />`;
+                      break;
+                  case '+':
+                      svg += `<line x1="${unit * j}" x2="${unit * (j + 1)}" y1="${unit * (i + 0.5)}" y2="${unit * (i + 0.5)}" stroke="#75FB4C" ${s} />`;
+                      svg += `<line x1="${unit * (j + 0.5)}" x2="${unit * (j + 0.5)}" y1="${unit * i}" y2="${unit * (i + 1)}" stroke="#75FB4C" ${s} />`;
+                      break;                      
+                  case '*':
+                      svg += `<line x1="${unit * j}" x2="${unit * (j + 1)}" y1="${unit * i}" y2="${unit * (i + 1)}" stroke="#EA3323" ${s} />`;
+                      // fallthrough
+                  case '\\':
+                      svg += `<path d="M ${unit * (j + 0.5)},${unit * i} A ${0.5 * unit} ${0.5 * unit} 0 0 0 ${unit * (j + 1)},${unit * (i + 0.5)}" fill="none" stroke="#75FB4C" ${s} />`;
+                      svg += `<path d="M ${unit * j},${unit * (i + 0.5)} A ${0.5 * unit} ${0.5 * unit} 0 0 1 ${unit * (j + 0.5)},${unit * (i + 1)}" fill="none" stroke="#75FB4C" ${s} />`;
+                      break;
+                  }
+              }
+
+              i += 1;
+          }
+
+          let output = document.getElementById('output');
+          output.innerHTML = svg;
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Seaweed Matrix ちゃんを眺める</h1>
+
+    <p>
+      <a href="https://arxiv.org/abs/0707.3619">arXiv:0707.3619</a> に出てくる seaweed matrix のデバッグ用に作ったやつ。与えた順列に対して自動で生成してくれたら楽しそう。
+    </p>
+
+    <textarea id="input" rows="15" cols="30" style="font-family: monospace;">
+-+-*-++-
+-+-+-+*-
+-+-+-*\-
+-*-\-\+-
+
+*-+-+--+
++-*-+--+
++-+-+--*
++-+-*--\
+
+
+
++++*++++
+++++++*+
++++++*\+
++*+\+\++
+*\++++++
+++*\+\++
++++++++*
+++++*\+\
+    </textarea>
+    <button onclick="render()">描画</button>
+    <svg id="output" width="1000" height="1000" viewBox="-10 -10 990 990"></svg>
+  </body>
+</html>
