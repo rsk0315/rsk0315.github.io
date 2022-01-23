@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <title>Range LIS Query</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" integrity="sha384-R4558gYOUz8mP9YWpZJjofhk+zx0AS11p36HnD2ZKj/6JR5z27gSSULCNHIRReVs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js" integrity="sha384-z1fJDqw8ZApjGO3/unPWUPsIymfsJmyrDVWC8Tv/a1HeOtGmkwNd/7xUS0Xcnvsx" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.css" integrity="sha384-WsHMgfkABRyG494OmuiNmkAOk8nhO1qE+Y6wns6v+EoNoTNxrWxYpl5ZYWFOLPCM" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.js" integrity="sha384-lhN3C1JSmmvbT89RGOy6nC8qFBS8X/PLsBWIqiNdD4WGNsYOWpS2Il0x4TBrK8E2" crossorigin="anonymous"></script>
+
+    <script>
+      window.WebFontConfig = {
+          custom: {
+              families: [
+                  'KaTeX_AMS', 'KaTeX_Caligraphic:n4,n7', 'KaTeX_Fraktur:n4,n7',
+                  'KaTeX_Main:n4,n7,i4,i7', 'KaTeX_Math:i4,i7', 'KaTeX_Script',
+                  'KaTeX_SansSerif:n4,n7,i4', 'KaTeX_Size1', 'KaTeX_Size2', 'KaTeX_Size3',
+                  'KaTeX_Size4', 'KaTeX_Typewriter'
+              ],
+          },
+      };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.js" integrity="sha256-4O4pS1SH31ZqrSO2A/2QJTVjTPqVe+jnYgOWUVr7EEc=" crossorigin="anonymous">
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital@0;1&display=swap" rel="stylesheet">
+
+    <script src="js/seaweed.js"></script>
+    <style>
+      body {
+          font-family: Lato, sans-serif;
+      }
+      .tt {
+          font-family: monospace;
+      }
+      .table-text {
+          font-family: Lato, sans-serif;
+      }
+      .table-index {
+          font-size: small;
+          font-family: Lato, sans-serif;
+      }
+    </style>
+
+    <script>
+      function clearPermutation() {
+          let seaweed = document.getElementById('seaweed');
+          let table = document.getElementById('table');
+          [seaweed, table].forEach(e => e.innerHTML = '');
+
+          let message = document.getElementById('message');
+          message.innerHTML = '<p>順列以外はだめです。</p>';
+      }
+
+      function render() {
+          let permutation =
+              parsePermutation(document.getElementById('permutation').value);
+          let range = parseRange(
+              document.getElementById('rangeStart').value,
+              document.getElementById('rangeEnd').value);
+
+          if (permutation === null) return clearPermutation();
+
+          let [grid, pos] = permutationToEncodedSeaweed(permutation);
+          let seaweedSvg = document.getElementById('seaweed');
+          seaweedSvg.innerHTML = gridToSvg(permutation, grid, pos);
+
+          let naive = naiveLisTable(permutation);
+          let tableSvg = document.getElementById('table');
+          tableSvg.innerHTML = tableToSvg(naive, range);
+
+          let message = document.getElementById('message');
+          message.innerHTML = `<p>${getMessage(permutation, range, naive)}</p>`;
+          renderMathInElement(message);
+      }
+
+      function setBounds() {
+          let permutation =
+              parsePermutation(document.getElementById('permutation').value);
+
+          let rangeStart = document.getElementById('rangeStart');
+          let rangeEnd = document.getElementById('rangeEnd');
+
+          if (permutation === null) {
+              rangeStart.max = null;
+              rangeEnd.max = null;
+          } else {
+              let n = permutation.length;
+              rangeStart.max = n;
+              rangeEnd.max = n;
+
+              let rangeStartValue = parseInt(rangeStart.value);
+              let rangeEndValue = parseInt(rangeEnd.value);
+              if (!isNaN(rangeStartValue) && rangeStartValue > n)
+                  rangeStart.value = n;
+              if (!isNaN(rangeEndValue) && rangeEndValue > n)
+                  rangeEnd.value = n;
+          }
+      }
+
+      window.onload = function() {
+          let permutation = document.getElementById('permutation');
+          let rangeStart = document.getElementById('rangeStart');
+          let rangeEnd = document.getElementById('rangeEnd');
+
+          [permutation, rangeStart, rangeEnd].forEach(e => {
+              e.addEventListener('change', function() {
+                  setBounds();
+                  render();
+              })
+          });
+
+          setBounds();
+          render();
+          permutation.focus();
+      };
+    </script>
+  </head>
+  <body>
+    <h1>Range LIS Query</h1>
+    <div>
+      説明は <a href="range_lis_description.html">ここ</a> に書きました。
+    </div>
+    <div>
+      順列：<input type="text" placeholder="4 3 5 0 7 2 1 6" class="tt" id="permutation" value="4 3 5 0 7 2 1 6">
+    </div>
+    <div>
+      区間：[
+      <input type="number" min="0" style="width: 3em;" placeholder="2" id="rangeStart" value="2">,
+      <input type="number" min="0" style="width: 3em;" placeholder="5" id="rangeEnd" value="5">
+      )
+    </div>
+    <svg id="seaweed" viewBox="-60 -60 440 440" width="500" height="500" />
+    <svg id="table" viewBox="-60 -60 440 440" width="500" height="500" />
+
+    <div id="message" />
+  </body>
+</html>

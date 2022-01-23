@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <title>Range LIS Query</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" integrity="sha384-R4558gYOUz8mP9YWpZJjofhk+zx0AS11p36HnD2ZKj/6JR5z27gSSULCNHIRReVs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js" integrity="sha384-z1fJDqw8ZApjGO3/unPWUPsIymfsJmyrDVWC8Tv/a1HeOtGmkwNd/7xUS0Xcnvsx" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.css" integrity="sha384-WsHMgfkABRyG494OmuiNmkAOk8nhO1qE+Y6wns6v+EoNoTNxrWxYpl5ZYWFOLPCM" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.js" integrity="sha384-lhN3C1JSmmvbT89RGOy6nC8qFBS8X/PLsBWIqiNdD4WGNsYOWpS2Il0x4TBrK8E2" crossorigin="anonymous"></script>
+
+    <script>
+      window.WebFontConfig = {
+          custom: {
+              families: [
+                  'KaTeX_AMS', 'KaTeX_Caligraphic:n4,n7', 'KaTeX_Fraktur:n4,n7',
+                  'KaTeX_Main:n4,n7,i4,i7', 'KaTeX_Math:i4,i7', 'KaTeX_Script',
+                  'KaTeX_SansSerif:n4,n7,i4', 'KaTeX_Size1', 'KaTeX_Size2', 'KaTeX_Size3',
+                  'KaTeX_Size4', 'KaTeX_Typewriter'
+              ],
+          },
+      };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.js" integrity="sha256-4O4pS1SH31ZqrSO2A/2QJTVjTPqVe+jnYgOWUVr7EEc=" crossorigin="anonymous">
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital@0;1&display=swap" rel="stylesheet">
+
+    <script src="js/seaweed.js"></script>
+    <style>
+      body {
+          font-family: Lato, sans-serif;
+      }
+      .tt {
+          font-family: monospace;
+      }
+      .table-text {
+          font-family: Lato, sans-serif;
+      }
+      .table-index {
+          font-size: small;
+          font-family: Lato, sans-serif;
+      }
+    </style>
+
+    <script>
+      function clearPermutation() {
+          let seaweed = document.getElementById('seaweed');
+          let table = document.getElementById('table');
+          [seaweed, table].forEach(e => e.innerHTML = '');
+      }
+
+      function render() {
+          let permutation =
+              parsePermutation(document.getElementById('permutation').value);
+          let range = parseRange(
+              document.getElementById('rangeStart').value,
+              document.getElementById('rangeEnd').value);
+
+          if (permutation === null) return clearPermutation();
+
+          let [grid, pos] = permutationToEncodedSeaweed(permutation);
+          let seaweedSvg = document.getElementById('seaweed');
+          seaweedSvg.innerHTML = gridToSvg(permutation, grid, pos);
+
+          let naive = naiveLisTable(permutation);
+          let tableSvg = document.getElementById('table');
+          tableSvg.innerHTML = tableToSvg(naive, range);
+
+          let message = document.getElementById('message');
+          message.innerHTML = (
+              getMessage(permutation, range, naive)
+              + '<br><a href="range_lis_description.html">より詳しい説明</a>'
+          );
+          renderMathInElement(message);
+      }
+
+      function setBounds() {
+          let permutation =
+              parsePermutation(document.getElementById('permutation').value);
+
+          let rangeStart = document.getElementById('rangeStart');
+          let rangeEnd = document.getElementById('rangeEnd');
+
+          if (permutation === null) {
+              rangeStart.max = null;
+              rangeEnd.max = null;
+          } else {
+              let n = permutation.length;
+              rangeStart.max = n;
+              rangeEnd.max = n;
+
+              let rangeStartValue = parseInt(rangeStart.value);
+              let rangeEndValue = parseInt(rangeEnd.value);
+              if (!isNaN(rangeStartValue) && rangeStartValue > n)
+                  rangeStart.value = n;
+              if (!isNaN(rangeEndValue) && rangeEndValue > n)
+                  rangeEnd.value = n;
+          }
+      }
+
+      window.onload = function() {
+          let description = document.getElementById('description');
+
+          let permutation = [2, 0, 3, 1];
+          let range = [0, 2];
+          let [grid, pos] = permutationToEncodedSeaweed(permutation);
+
+          let naive = naiveLisTable(permutation);
+          let seaweedSvg = gridToSvg(permutation, grid, pos);
+          let tableSvg = tableToSvg(naive, range);
+          description.innerHTML = `
+<p><a href="range_lis.html">インタラクティブなコンテンツへのリンク</a></p>
+<h1>導入</h1>
+<h2>LIS score の表を眺める</h2>
+<p>
+  順列 \\(a = (2, 0, 3, 1)\\) を例にとって考えます。\\((i, j)\\) 要素が \\([i, j)\\) の
+  LIS の長さ (<em>LIS score</em>) に対応する行列を考えます。ただし、\\(i\\ge j\\)
+  の場合の LIS score は \\(0\\) ではなく \\(j - i \\le 0\\) と定義します。
+</p>
+<svg width="200" height="200" viewBox="10 -60 100 240">${tableSvg}</svg>
+<p>
+  \\(i\\) 行 \\(j\\) 列目のマスは区間 \\([i, j)\\) に対応し、そのマスに書かれた値が
+  該当の LIS score です。さて、隣り合うマスの値の差は高々 \\(1\\) であることがわかります。
+  青の境界は差が \\(0\\) であることを、赤の境界は \\(1\\) であることを表します。
+  境界線が交差する点のうち、左下 2 本が赤、右上 2 本が青のものを緑の点でマークします。
+  上記の例では、各列の緑点の位置は \\((\\bot, 0, \\bot, 2)\\) 行目です。ただし
+  \\(\\bot\\) は緑点がないことを意味します。
+</p>
+<p>
+  このとき、区間 \\([i, j)\\) の LIS score は \\((j-i) - P^{\\Sigma}_{i, j}\\)
+  と表すことができます。ここで \\(P\^{\\Sigma}_{i, j}\\) は、上図において \\(i\\) 行
+  \\(j\\) 列目のマスより左下（紫の網掛け部分）にある緑の点の個数を意味します。
+  なお、\\(j-i\\) は区間長に対応しています。
+  たとえば、上図の丸で囲まれた \\(0\\) 行 \\(2\\) 列目の値 \\(1\\)
+  に対して、区間 \\([0, 2)\\) の LIS score が \\((2-0) - 1 = 1\\) であることがわかります。
+</p>
+<p>
+  なお、緑の点は各行各列に高々 1 つしか現れません。
+</p>
+
+<h2>見慣れない図を眺める</h2>
+<p>
+  さて、同じく順列 \\(a = (2, 0, 3, 1)\\) に対して下記のような図を考えます。
+</p>
+<svg width="200" height="200" viewBox="-60 -30 240 210">${seaweedSvg}</svg>
+<p>
+  上から \\(i\\) 行目、左から \\(j\\) 列目のマス \\((i, j)\\) に対して、\\(a_j = i\\)
+  のとき、赤の斜線を引きます。
+  その行の左に書かれた値と、その列の上に書かれた値が同じ部分に引かれることになります。
+</p>
+<p>
+  また、緑線は左端および上端から出発し、右端および下端に到着します。
+  この線は、以下のいずれかの条件でカーブします。
+  <ul>
+    <li>赤の斜線のあるマスに来たとき</li>
+    <li>一度交わったことのある別の緑線と、再度同じマスに来たとき</li>
+  </ul>
+  たとえば、\\(0\\) 行目の左端から出発した緑線は、赤の斜線のあるマス \\((0, 1)\\)
+  でカーブします。
+  また、\\(0\\) 行目の左端と \\(1\\) 行目の左端から出発した緑線は、マス \\((1, 1)\\) 
+  で一度交わった後マス \\((2, 3)\\) で再び遭遇し、各々避けるようにカーブします。
+</p>
+<p>
+  ここでは、こうして作った緑線のうち、上端から出発し下端に到着したもののみに着目します。
+  下端に到着した各々の緑線は、それぞれ上端の \\((\\bot, 0, \\bot, 2)\\)
+  列目から出発していたとわかります。ここで、\\(\\bot\\)
+  は該当なし（左端から来た）を表すとします。
+  この \\((\\bot, 0, \\bot, 2)\\)
+  が、最初の図における緑点の座標と一致していることがわかります。
+  このことは一般に成り立つので、この緑線の位置関係を求めれば十分となります。
+</p>
+
+<h2>解法の方針</h2>
+<p>
+  分割統治法に基づいて解きます。長さ \\(n\\)
+  の順列に対して上記の図を考えたとき、斜線は上 \\(\\lfloor n/2\\rfloor\\)
+  行には \\(\\lfloor n/2\\rfloor\\) 本、下 \\(\\lceil n/2\\rceil\\)
+  行には \\(\\lceil n/2\\rceil\\) 本あることが順列の定義から言えます。
+  よって、（適切に座標圧縮などをした上で）\\(\\lfloor n/2\\rfloor\\)-サイズの問題と
+  \\(\\lceil n/2\\rceil\\)-サイズの問題に分けて再帰的に解きます。
+  そうして解いた部分問題から、（座標圧縮を復元した上で）以下で紹介する演算 \\(\\boxdot\\)
+  を駆使することで元問題の解を得られます。\\(\\boxdot\\) の計算に \\(O(n\\log(n))\\)
+  時間かかるため、全体で \\(O(n\\log(n)^2)\\) 時間となります。
+</p>
+
+<h1>演算の定義</h1>
+<h2>定義：\\(\\Sigma\\) と \\(\\square\\)</h2>
+<p>
+  各行各列に高々 1 つの \\(1\\) があり、残りは \\(0\\) である行列 \\(P\\) を考えます。
+  この行列の左下累積和、すなわち各境界から見た \\(1\\) の個数に対応する行列を
+  \\(P^{\\Sigma}\\) と書きます。たとえば次のようになります。
+  \\[
+  \\left(\\begin{matrix}
+    0 & 1 & 0 \\\\
+    1 & 0 & 0 \\\\
+    0 & 0 & 1
+  \\end{matrix}\\right)^{\\Sigma} = \\left(\\begin{matrix}
+    0 & 1 & 2 & 3 \\\\
+    0 & 1 & 1 & 2 \\\\
+    0 & 0 & 0 & 1 \\\\
+    0 & 0 & 0 & 0
+  \\end{matrix}\\right).
+  \\]
+  また、\\(\\bullet^{\\Sigma}\\) の逆演算を \\(\\bullet^{\\square}\\) と書きます。
+  \\[
+  \\left(\\begin{matrix}
+    0 & 1 & 2 & 3 \\\\
+    0 & 1 & 1 & 2 \\\\
+    0 & 0 & 0 & 1 \\\\
+    0 & 0 & 0 & 0
+  \\end{matrix}\\right)^{\\square} = \\left(\\begin{matrix}
+    0 & 1 & 0 \\\\
+    1 & 0 & 0 \\\\
+    0 & 0 & 1
+  \\end{matrix}\\right).
+  \\]
+</p>
+
+<h2>定義：\\(\\odot\\)</h2>
+<p>
+  さらに、\\(n\\times n\\) 行列 \\(A, B\\) に対して演算 \\(A\\odot B\\) を導入します。
+  \\(n\\times n\\) 行列 \\(A\\odot B\\) の \\((i, k)\\) 成分は次のように表されます。
+  \\[
+  (A\\odot B)_{i, k} = \\min_{j\\in[0, n)} (A_{i, j} + B_{j, k}).
+  \\]
+  ただし、ここでは便宜上、行列も 0-indexed ということにしておきます。
+  \\(\\odot\\) は、普通の行列積が \\((+, \\times)\\) で定義されるのに対し、
+  \\((\\min, +)\\) で定義された行列積と見ることができます。
+</p>
+
+<h2>定義：\\(\\boxdot\\)</h2>
+<p>
+  さて、\\(P, Q\\) を各行各列に高々 1 つの \\(1\\) があり、残りは \\(0\\)
+  である行列とします。これらに対し、\\((P^{\\Sigma}\\odot Q^{\\Sigma})^{\\square}\\)
+  も各行各列に高々 1 つの \\(1\\) があり、残りは \\(0\\) である行列であることが示せます。
+  そこで、\\(\\boxdot\\) を以下のように定義します。
+  \\[
+  P\\boxdot Q = (P^{\\Sigma}\\odot Q^{\\Sigma})^{\\square}.
+  \\]
+</p>
+<p>
+  順列の形（どこの行・列に \\(1\\) があるかを表す）で与えられた \\(P, Q\\) から、
+  \\(P\\boxdot Q\\) を（行列の演算を介さずに）順列の形で得るアルゴリズムがあります。
+  上記の分割統治法と似たように、順列を半々に分けて座標圧縮するなどを繰り返すもので、
+  \\(O(n\\log(n))\\) 時間です。
+</p>
+
+<h1>元問題の解法の概要</h1>
+<p>
+  さて、\\(\\boxdot\\) の紹介を終えたので、話を緑線や赤線のところに戻します。
+  ざっくりのイメージだけ書きます。順列 \\(P, Q\\)
+  が「上半分の緑線がどこから来てどこに行くか」
+  「下半分の緑線がどこから来てどこに行くか」に対応し、\\(P\\boxdot Q\\)
+  は「それらを合わせたとき上半分のどこから来て下半分のどこに行くか」に対応します。
+  カーブの二つ目の条件「一度交わった緑線とは交わらないように動く」を \\(\\boxdot\\)
+  がうまく処理しているらしいです。
+</p>
+<p>
+  さて、緑線の位置関係がわかったことで緑点の座標もわかりました。
+  なので、あとはクエリごとに「この座標より左下にある点の個数は？」というのを答えるだけです。
+  これは wavelet matrix などを使って求めることができます。
+</p>
+
+<h1>参考文献</h1>
+<ul>
+  <li>
+    Tiskin, Alexander. "Semi-local string comparison: Algorithmic techniques and applications." <em>Mathematics in Computer Science</em> 1, no. 4 (2008): 571-603.
+  </li>
+  <ul>
+    <li><a href="https://arxiv.org/abs/0707.3619">arXiv</a></li>
+  </ul>
+</ul>
+
+<h2>ジャッジ</h2>
+<ul>
+  <li>
+    <a href="https://judge.yosupo.jp/problem/static_range_lis_query">Library Checker :: Static Range LIS Query</a>
+  </li>
+</ul>
+`;
+          renderMathInElement(description);
+      };
+    </script>
+  </head>
+  <body>
+    <h1>Range LIS Query の概要説明</h1>
+    <div id="description" />
+  </body>
+</html>
+B
