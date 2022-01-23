@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="三分探索で極値を探す。"><meta name="keywords" content="rust, rustlang, rust-lang, extremum"><title>extremum in nekolib::algo::extremum - Rust</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><!-- For newer version of KaTeX, see https://katex.org/docs/browser.html -->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="三分探索で極値を探す。"><meta name="keywords" content="rust, rustlang, rust-lang, extremum"><title>extremum in nekolib::algo::extremum - Rust</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script>
+    <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"><!-- For newer version of KaTeX, see https://katex.org/docs/browser.html -->
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
 
@@ -23,16 +24,71 @@
 </script>
 
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet">
-<style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc fn"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../nekolib/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a><div class="sidebar-elems"><h2 class="location">Other items in<br><a href="../../index.html">nekolib</a>::<wbr><a href="../index.html">algo</a>::<wbr><a href="index.html">extremum</a></h2><div id="sidebar-vars" data-name="extremum" data-ty="fn" data-relpath=""></div><script defer src="sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input"name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main" class="content"><h1 class="fqn"><span class="in-band">Function <a href="../../index.html">nekolib</a>::<wbr><a href="../index.html">algo</a>::<wbr><a href="index.html">extremum</a>::<wbr><a class="fn" href="#">extremum</a><button id="copy-path" onclick="copy_path(this)" title="copy path"><img src="../../../clipboard.svg" width="19" height="18" alt="Copy item import" title="Copy item import to clipboard"></button></span><span class="out-of-band"><span id="render-detail"><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span><a class="srclink" href="../../../src/nekolib/algo/extremum.rs.html#91-139" title="goto source code">[src]</a></span></h1><pre class="rust fn">pub fn extremum&lt;T:&nbsp;<a class="trait" href="https://doc.rust-lang.org/1.55.0/core/cmp/trait.Ord.html" title="trait core::cmp::Ord">Ord</a>&gt;(<br>&nbsp;&nbsp;&nbsp;&nbsp;_: <a class="struct" href="https://doc.rust-lang.org/1.55.0/core/ops/range/struct.Range.html" title="struct core::ops::range::Range">Range</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.55.0/std/primitive.usize.html">usize</a>&gt;, <br>&nbsp;&nbsp;&nbsp;&nbsp;f: impl <a class="trait" href="https://doc.rust-lang.org/1.55.0/core/ops/function/trait.FnMut.html" title="trait core::ops::function::FnMut">FnMut</a>(<a class="primitive" href="https://doc.rust-lang.org/1.55.0/std/primitive.usize.html">usize</a>) -&gt; T<br>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/1.55.0/std/primitive.tuple.html">(</a><a class="primitive" href="https://doc.rust-lang.org/1.55.0/std/primitive.usize.html">usize</a>, T<a class="primitive" href="https://doc.rust-lang.org/1.55.0/std/primitive.tuple.html">)</a></pre><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>三分探索で極値を探す。</p>
+
+<style>
+  .ferris-container {
+      position: absolute;
+      z-index: 9999;
+      width: 4.5em;
+      right: 5px;
+      top: 10px;
+  }
+</style>
+
+<script>
+  let ferrisTypes = [
+      {
+          attr: 'compile_fail',
+          title: 'This code does not compile!',
+          src: 'https://raw.githubusercontent.com/rust-lang/book/b54090a99ec7c4b46a5203a9c927fdbc311bb1f5/2018-edition/src/img/ferris/does_not_compile.svg',
+      },
+      {
+          attr: 'should_panic',
+          title: 'This code panics!',
+          src: 'https://raw.githubusercontent.com/rust-lang/book/b54090a99ec7c4b46a5203a9c927fdbc311bb1f5/2018-edition/src/img/ferris/panics.svg',
+      },
+  ];  
+
+  document.addEventListener('DOMContentLoaded', () => {
+      for (let ferrisType of ferrisTypes) {
+          attachFerrises(ferrisType);
+      }
+  });
+
+  function attachFerrises(type) {
+      let elements = document.getElementsByClassName(type.attr);
+      for (let codeBlock of elements) {
+          if (codeBlock.tagName === 'PRE') {
+              attachFerris(codeBlock, type);
+          }
+      }
+  }
+
+  function attachFerris(element, type) {
+      let div = document.createElement('div');
+      div.className = 'ferris-container';
+
+      let img = document.createElement('img');
+      img.setAttribute('src', type.src);
+      img.setAttribute('title', type.title);
+      img.className = 'ferris';
+
+      div.appendChild(img);
+
+      element.parentElement.insertBefore(div, element);
+  }
+</script>
+
+<style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc fn"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../nekolib/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a><div class="sidebar-elems"><h2 class="location">Other items in<br><a href="../../index.html">nekolib</a>::<wbr><a href="../index.html">algo</a>::<wbr><a href="index.html">extremum</a></h2><div id="sidebar-vars" data-name="extremum" data-ty="fn" data-relpath=""></div><script defer src="sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main" class="content"><h1 class="fqn"><span class="in-band">Function <a href="../../index.html">nekolib</a>::<wbr><a href="../index.html">algo</a>::<wbr><a href="index.html">extremum</a>::<wbr><a class="fn" href="#">extremum</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../../../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span><span class="out-of-band"><span id="render-detail"><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span><a class="srclink" href="../../../src/nekolib/algo/extremum.rs.html#91-139" title="goto source code">[src]</a></span></h1><div class="docblock item-decl"><pre class="rust fn"><code>pub fn extremum&lt;T:&nbsp;<a class="trait" href="https://doc.rust-lang.org/1.58.0/core/cmp/trait.Ord.html" title="trait core::cmp::Ord">Ord</a>&gt;(<br>&nbsp;&nbsp;&nbsp;&nbsp;_: <a class="struct" href="https://doc.rust-lang.org/1.58.0/core/ops/range/struct.Range.html" title="struct core::ops::range::Range">Range</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.58.0/std/primitive.usize.html">usize</a>&gt;, <br>&nbsp;&nbsp;&nbsp;&nbsp;f: impl <a class="trait" href="https://doc.rust-lang.org/1.58.0/core/ops/function/trait.FnMut.html" title="trait core::ops::function::FnMut">FnMut</a>(<a class="primitive" href="https://doc.rust-lang.org/1.58.0/std/primitive.usize.html">usize</a>) -&gt; T<br>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/1.58.0/std/primitive.tuple.html">(</a><a class="primitive" href="https://doc.rust-lang.org/1.58.0/std/primitive.usize.html">usize</a>, T<a class="primitive" href="https://doc.rust-lang.org/1.58.0/std/primitive.tuple.html">)</a></code></pre></div><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>三分探索で極値を探す。</p>
 <p>離散値の区間 $[l, r)$ において、以下を満たす $i$ および $f(i)$ を返す。
 $$ f(i-1) &lt; f(i)\text{ and } f(i) &gt; f(i+1). $$</p>
-<h1 id="requirements" class="section-header"><a href="#requirements">Requirements</a></h1>
+<h2 id="requirements" class="section-header"><a href="#requirements">Requirements</a></h2>
 <p>凸である。すなわち、ある $i$ が存在して以下の二つが成り立つ。</p>
 <ul>
 <li>${}^\forall j \in [l, i)$ に対して $f(j) &lt; f(j+1)$。</li>
 <li>${}^\forall j \in [i, r-1)$ に対して $f(j) &gt; f(j+1)$。</li>
 </ul>
-<h1 id="implementation-notes" class="section-header"><a href="#implementation-notes">Implementation notes</a></h1>
+<h2 id="implementation-notes" class="section-header"><a href="#implementation-notes">Implementation notes</a></h2>
 <p>連続値の場合における黄金比分割のように、Fibonacci
 数列に基づいて区間を分割していくため、関数値を使い回すことができる。</p>
 <p>関数 $f$ の呼び出し回数を、区間を三等分する素直な実装と比較する。
@@ -43,19 +99,18 @@ $\log_{\varphi}(r-l)+O(1)$ 回である。
 $$ \sqrt{3/2} &lt; 1.225 &lt; 1.618 &lt; \varphi $$
 であり、$\log$ の底は大きい方がうれしいので、こちらの実装の方が定数倍が軽い。</p>
 <p>コード長はやや長くなるものの、単純な例での実測では三等分のものよりわずかに高速であった。</p>
-<h1 id="complexity" class="section-header"><a href="#complexity">Complexity</a></h1>
+<h2 id="complexity" class="section-header"><a href="#complexity">Complexity</a></h2>
 <p>$F_0 = 1$, $F_1 = 2$, $F_i = F_{i-1} + F_{i-2}$ ($i \ge 2$) で定義される数列 $\{F_k\}$ を考える。
 区間幅 $n$ がある $k$ に対して $n \le F_k$ と抑えられるとき、$f$ の呼び出しを高々
 $k$ 回、関数値同士の比較を高々 $k-1$ 回行う。
 なお、この $k$ は $\lceil\log_{\varphi}(n)\rceil$ で抑えられる。</p>
-<h1 id="suggestions" class="section-header"><a href="#suggestions">Suggestions</a></h1>
+<h2 id="suggestions" class="section-header"><a href="#suggestions">Suggestions</a></h2>
 <p>引数は <code>Range&lt;usize&gt;</code> を渡すことにしているものの、実際には
 <code>RangeBounds&lt;I: {integer}&gt;</code> を渡せるようにする方がよさそう？
 ただし、両端とも <code>Unbounded</code> であっては困りそう（特に多倍長を視野に入れる場合？）。
 多倍長だと <code>Copy</code> がないから、計算結果自体を使い回せても <code>.clone()</code> でつらい？</p>
-<h1 id="examples" class="section-header"><a href="#examples">Examples</a></h1>
-<div class="example-wrap"><pre class="rust rust-example-rendered">
-<span class="kw">use</span> <span class="ident">nekolib::algo::extremum</span>;
+<h2 id="examples" class="section-header"><a href="#examples">Examples</a></h2>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">nekolib::algo::extremum</span>;
 
 <span class="kw">let</span> <span class="ident">buf</span> <span class="op">=</span> [<span class="number">1</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">5</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">3</span>];
 <span class="comment">//         &lt;------ f ------&gt;</span>
@@ -64,10 +119,9 @@ $k$ 回、関数値同士の比較を高々 $k-1$ 回行う。
 <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="op">|</span><span class="ident">i</span>: <span class="ident">usize</span><span class="op">|</span> <span class="ident">buf</span>[<span class="ident">i</span>] <span class="op">*</span> <span class="ident">buf</span>[<span class="ident">i</span>];
 <span class="macro">assert_eq!</span>(<span class="ident">extremum</span>(<span class="number">0</span>..<span class="number">6</span>, <span class="ident">f</span>), (<span class="number">3_usize</span>, <span class="number">36</span>));
 <span class="kw">let</span> <span class="ident">g</span> <span class="op">=</span> <span class="op">|</span><span class="ident">i</span>: <span class="ident">usize</span><span class="op">|</span> <span class="op">-</span><span class="ident">buf</span>[<span class="ident">i</span>];
-<span class="macro">assert_eq!</span>(<span class="ident">extremum</span>(<span class="number">3</span>..<span class="number">8</span>, <span class="ident">g</span>), (<span class="number">6_usize</span>, <span class="number">0</span>));</pre></div>
+<span class="macro">assert_eq!</span>(<span class="ident">extremum</span>(<span class="number">3</span>..<span class="number">8</span>, <span class="ident">g</span>), (<span class="number">6_usize</span>, <span class="number">0</span>));</code></pre></div>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered">
-<span class="kw">use</span> <span class="ident">nekolib::algo::extremum</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">nekolib::algo::extremum</span>;
 
 <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="number">1500</span>;
 <span class="kw">for</span> <span class="ident">k</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span> {
@@ -75,7 +129,6 @@ $k$ 回、関数値同士の比較を高々 $k-1$ 回行う。
     <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="op">|</span><span class="ident">i</span><span class="op">|</span> { <span class="ident">count</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>; <span class="op">-</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">i32</span> <span class="op">-</span> <span class="ident">k</span> <span class="kw">as</span> <span class="ident">i32</span>).<span class="ident">abs</span>() };
     <span class="macro">assert_eq!</span>(<span class="ident">extremum</span>(<span class="number">0</span>..<span class="ident">n</span>, <span class="ident">f</span>), (<span class="ident">k</span>, <span class="number">0</span>));
     <span class="macro">assert!</span>(<span class="ident">count</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">15</span>);
-}</pre></div>
+}</code></pre></div>
 </div></details></section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div>
-    <script src="../../../main.js"></script>
 </body></html>

@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib&#x2F;src&#x2F;ds&#x2F;wavelet_matrix.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>wavelet_matrix.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><!-- For newer version of KaTeX, see https://katex.org/docs/browser.html -->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib&#x2F;src&#x2F;ds&#x2F;wavelet_matrix.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>wavelet_matrix.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
+    <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"><!-- For newer version of KaTeX, see https://katex.org/docs/browser.html -->
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
 
@@ -23,7 +24,62 @@
 </script>
 
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet">
-<style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../nekolib/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input"name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
+
+<style>
+  .ferris-container {
+      position: absolute;
+      z-index: 9999;
+      width: 4.5em;
+      right: 5px;
+      top: 10px;
+  }
+</style>
+
+<script>
+  let ferrisTypes = [
+      {
+          attr: 'compile_fail',
+          title: 'This code does not compile!',
+          src: 'https://raw.githubusercontent.com/rust-lang/book/b54090a99ec7c4b46a5203a9c927fdbc311bb1f5/2018-edition/src/img/ferris/does_not_compile.svg',
+      },
+      {
+          attr: 'should_panic',
+          title: 'This code panics!',
+          src: 'https://raw.githubusercontent.com/rust-lang/book/b54090a99ec7c4b46a5203a9c927fdbc311bb1f5/2018-edition/src/img/ferris/panics.svg',
+      },
+  ];  
+
+  document.addEventListener('DOMContentLoaded', () => {
+      for (let ferrisType of ferrisTypes) {
+          attachFerrises(ferrisType);
+      }
+  });
+
+  function attachFerrises(type) {
+      let elements = document.getElementsByClassName(type.attr);
+      for (let codeBlock of elements) {
+          if (codeBlock.tagName === 'PRE') {
+              attachFerris(codeBlock, type);
+          }
+      }
+  }
+
+  function attachFerris(element, type) {
+      let div = document.createElement('div');
+      div.className = 'ferris-container';
+
+      let img = document.createElement('img');
+      img.setAttribute('src', type.src);
+      img.setAttribute('title', type.title);
+      img.className = 'ferris';
+
+      div.appendChild(img);
+
+      element.parentElement.insertBefore(div, element);
+  }
+</script>
+
+<style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../nekolib/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -332,14 +388,13 @@
 <span id="307">307</span>
 <span id="308">308</span>
 <span id="309">309</span>
-</pre><pre class="rust">
-<span class="doccomment">//! wavelet matrix。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! wavelet matrix。</span>
 
-<span class="kw">use</span> <span class="kw">super</span><span class="ident">::rs_dict</span>;
-<span class="kw">use</span> <span class="kw">super</span>::<span class="kw">super</span><span class="ident">::traits::count</span>;
-<span class="kw">use</span> <span class="kw">super</span>::<span class="kw">super</span><span class="ident">::traits::find_nth</span>;
-<span class="kw">use</span> <span class="kw">super</span>::<span class="kw">super</span><span class="ident">::traits::quantile</span>;
-<span class="kw">use</span> <span class="kw">super</span>::<span class="kw">super</span><span class="ident">::utils::buf_range</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::rs_dict</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::count</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::find_nth</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::quantile</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::utils::buf_range</span>;
 
 <span class="kw">use</span> <span class="ident">std::ops</span>::{
     <span class="ident">Bound</span>::{<span class="ident">Excluded</span>, <span class="ident">Included</span>, <span class="ident">Unbounded</span>},
@@ -361,7 +416,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u128</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">WaveletMatrix</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">orig</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u128</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">orig</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u128</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">if</span> <span class="ident">orig</span>.<span class="ident">is_empty</span>() {
             <span class="kw">return</span> <span class="self">Self</span> { <span class="ident">len</span>: <span class="number">0</span>, <span class="ident">bitlen</span>: <span class="number">0</span>, <span class="ident">buf</span>: <span class="macro">vec!</span>[], <span class="ident">zeros</span>: <span class="macro">vec!</span>[] };
         }
@@ -381,14 +436,14 @@
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">one</span> <span class="op">=</span> <span class="macro">vec!</span>[];
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vb</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="bool-val">false</span>; <span class="ident">len</span>];
             <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">len</span> {
-                (<span class="kw">if</span> <span class="ident">whole</span>[<span class="ident">j</span>] <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">i</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> { <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">zero</span> } <span class="kw">else</span> { <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">one</span> })
+                (<span class="kw">if</span> <span class="ident">whole</span>[<span class="ident">j</span>] <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">i</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">==</span> <span class="number">0</span> { <span class="kw-2">&amp;mut</span> <span class="ident">zero</span> } <span class="kw">else</span> { <span class="kw-2">&amp;mut</span> <span class="ident">one</span> })
                     .<span class="ident">push</span>(<span class="ident">whole</span>[<span class="ident">j</span>]);
                 <span class="ident">vb</span>[<span class="ident">j</span>] <span class="op">=</span> <span class="ident">whole</span>[<span class="ident">j</span>] <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">i</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>;
             }
             <span class="ident">zeros</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">zero</span>.<span class="ident">len</span>();
             <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">vb</span>.<span class="ident">into</span>());
             <span class="ident">whole</span> <span class="op">=</span> <span class="ident">zero</span>;
-            <span class="ident">whole</span>.<span class="ident">append</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">one</span>);
+            <span class="ident">whole</span>.<span class="ident">append</span>(<span class="kw-2">&amp;mut</span> <span class="ident">one</span>);
         }
         <span class="ident">buf</span>.<span class="ident">reverse</span>();
         <span class="self">Self</span> { <span class="ident">len</span>, <span class="ident">bitlen</span>, <span class="ident">buf</span>, <span class="ident">zeros</span> }
@@ -396,7 +451,7 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">u128</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">Count</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">WaveletMatrix</span> {
-    <span class="kw">fn</span> <span class="ident">count</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">range</span>: <span class="kw">impl</span> <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>, <span class="ident">value</span>: <span class="ident">R</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+    <span class="kw">fn</span> <span class="ident">count</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">range</span>: <span class="kw">impl</span> <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>, <span class="ident">value</span>: <span class="ident">R</span>) -&gt; <span class="ident">usize</span> {
         <span class="self">self</span>.<span class="ident">count_3way</span>(<span class="ident">range</span>, <span class="ident">value</span>).<span class="ident">eq</span>()
     }
 }
@@ -406,20 +461,20 @@
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">range</span>: <span class="kw">impl</span> <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
         <span class="ident">value</span>: <span class="ident">R</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Count3wayResult</span> {
+    ) -&gt; <span class="ident">Count3wayResult</span> {
         <span class="kw">let</span> <span class="ident">Range</span> { <span class="ident">start</span>, <span class="ident">end</span> } <span class="op">=</span> <span class="ident">bounds_within</span>(<span class="ident">range</span>, <span class="self">self</span>.<span class="ident">len</span>);
         <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">end</span> <span class="op">-</span> <span class="ident">start</span>;
         <span class="kw">let</span> <span class="ident">lt</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">value</span>.<span class="ident">start_bound</span>() {
-            <span class="ident">Included</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">count_3way_internal</span>(<span class="ident">start</span>..<span class="ident">end</span>, <span class="ident">x</span>).<span class="number">0</span>,
-            <span class="ident">Excluded</span>(<span class="kw-2">&amp;</span><span class="ident">std::u128::MAX</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">len</span>,
-            <span class="ident">Excluded</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">count_3way_internal</span>(<span class="ident">start</span>..<span class="ident">end</span>, <span class="ident">x</span> <span class="op">+</span> <span class="number">1</span>).<span class="number">0</span>,
-            <span class="ident">Unbounded</span> <span class="op">=</span><span class="op">&gt;</span> <span class="number">0</span>,
+            <span class="ident">Included</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>) =&gt; <span class="self">self</span>.<span class="ident">count_3way_internal</span>(<span class="ident">start</span>..<span class="ident">end</span>, <span class="ident">x</span>).<span class="number">0</span>,
+            <span class="ident">Excluded</span>(<span class="kw-2">&amp;</span><span class="ident">std::u128::MAX</span>) =&gt; <span class="ident">len</span>,
+            <span class="ident">Excluded</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>) =&gt; <span class="self">self</span>.<span class="ident">count_3way_internal</span>(<span class="ident">start</span>..<span class="ident">end</span>, <span class="ident">x</span> <span class="op">+</span> <span class="number">1</span>).<span class="number">0</span>,
+            <span class="ident">Unbounded</span> =&gt; <span class="number">0</span>,
         };
         <span class="kw">let</span> <span class="ident">gt</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">value</span>.<span class="ident">end_bound</span>() {
-            <span class="ident">Included</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">count_3way_internal</span>(<span class="ident">start</span>..<span class="ident">end</span>, <span class="ident">x</span>).<span class="number">1</span>,
-            <span class="ident">Excluded</span>(<span class="kw-2">&amp;</span><span class="number">0</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">len</span>,
-            <span class="ident">Excluded</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">count_3way_internal</span>(<span class="ident">start</span>..<span class="ident">end</span>, <span class="ident">x</span> <span class="op">-</span> <span class="number">1</span>).<span class="number">1</span>,
-            <span class="ident">Unbounded</span> <span class="op">=</span><span class="op">&gt;</span> <span class="number">0</span>,
+            <span class="ident">Included</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>) =&gt; <span class="self">self</span>.<span class="ident">count_3way_internal</span>(<span class="ident">start</span>..<span class="ident">end</span>, <span class="ident">x</span>).<span class="number">1</span>,
+            <span class="ident">Excluded</span>(<span class="kw-2">&amp;</span><span class="number">0</span>) =&gt; <span class="ident">len</span>,
+            <span class="ident">Excluded</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>) =&gt; <span class="self">self</span>.<span class="ident">count_3way_internal</span>(<span class="ident">start</span>..<span class="ident">end</span>, <span class="ident">x</span> <span class="op">-</span> <span class="number">1</span>).<span class="number">1</span>,
+            <span class="ident">Unbounded</span> =&gt; <span class="number">0</span>,
         };
         <span class="kw">let</span> <span class="ident">eq</span> <span class="op">=</span> <span class="ident">len</span> <span class="op">-</span> (<span class="ident">lt</span> <span class="op">+</span> <span class="ident">gt</span>);
         <span class="ident">Count3wayResult::new</span>(<span class="ident">lt</span>, <span class="ident">eq</span>, <span class="ident">gt</span>)
@@ -431,22 +486,22 @@
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">Range</span> { <span class="kw-2">mut</span> <span class="ident">start</span>, <span class="kw-2">mut</span> <span class="ident">end</span> }: <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
         <span class="ident">value</span>: <span class="ident">u128</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">usize</span>, <span class="ident">usize</span>) {
-        <span class="kw">if</span> <span class="ident">start</span> <span class="op">=</span><span class="op">=</span> <span class="ident">end</span> {
+    ) -&gt; (<span class="ident">usize</span>, <span class="ident">usize</span>) {
+        <span class="kw">if</span> <span class="ident">start</span> <span class="op">==</span> <span class="ident">end</span> {
             <span class="kw">return</span> (<span class="number">0</span>, <span class="number">0</span>);
         }
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">lt</span> <span class="op">=</span> <span class="number">0</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">gt</span> <span class="op">=</span> <span class="number">0</span>;
         <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> (<span class="number">0</span>..<span class="self">self</span>.<span class="ident">bitlen</span>).<span class="ident">rev</span>() {
             <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">end</span> <span class="op">-</span> <span class="ident">start</span>;
-            <span class="kw">if</span> <span class="ident">value</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">i</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+            <span class="kw">if</span> <span class="ident">value</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">i</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">==</span> <span class="number">0</span> {
                 <span class="ident">start</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">start</span>, <span class="number">0</span>);
                 <span class="ident">end</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">end</span>, <span class="number">0</span>);
             } <span class="kw">else</span> {
                 <span class="ident">start</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">zeros</span>[<span class="ident">i</span>] <span class="op">+</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">start</span>, <span class="number">1</span>);
                 <span class="ident">end</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">zeros</span>[<span class="ident">i</span>] <span class="op">+</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">end</span>, <span class="number">1</span>);
             }
-            <span class="kw-2">*</span>(<span class="kw">if</span> <span class="ident">value</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">i</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> { <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">gt</span> } <span class="kw">else</span> { <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">lt</span> }) <span class="op">+</span><span class="op">=</span>
+            <span class="kw-2">*</span>(<span class="kw">if</span> <span class="ident">value</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">i</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">==</span> <span class="number">0</span> { <span class="kw-2">&amp;mut</span> <span class="ident">gt</span> } <span class="kw">else</span> { <span class="kw-2">&amp;mut</span> <span class="ident">lt</span> }) <span class="op">+</span><span class="op">=</span>
                 <span class="ident">tmp</span> <span class="op">-</span> (<span class="ident">end</span> <span class="op">-</span> <span class="ident">start</span>);
         }
         (<span class="ident">lt</span>, <span class="ident">gt</span>)
@@ -459,7 +514,7 @@
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">range</span>: <span class="kw">impl</span> <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
         <span class="kw-2">mut</span> <span class="ident">n</span>: <span class="ident">usize</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u128</span><span class="op">&gt;</span> {
+    ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u128</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">Range</span> { <span class="kw-2">mut</span> <span class="ident">start</span>, <span class="kw-2">mut</span> <span class="ident">end</span> } <span class="op">=</span> <span class="ident">bounds_within</span>(<span class="ident">range</span>, <span class="self">self</span>.<span class="ident">len</span>);
         <span class="kw">if</span> <span class="ident">end</span> <span class="op">-</span> <span class="ident">start</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">n</span> {
             <span class="kw">return</span> <span class="prelude-val">None</span>;
@@ -487,7 +542,7 @@
         <span class="ident">range</span>: <span class="kw">impl</span> <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
         <span class="kw-2">mut</span> <span class="ident">n</span>: <span class="ident">usize</span>,
         <span class="ident">x</span>: <span class="ident">u128</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u128</span><span class="op">&gt;</span> {
+    ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u128</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">Range</span> { <span class="kw-2">mut</span> <span class="ident">start</span>, <span class="kw-2">mut</span> <span class="ident">end</span> } <span class="op">=</span> <span class="ident">bounds_within</span>(<span class="ident">range</span>, <span class="self">self</span>.<span class="ident">len</span>);
         <span class="kw">if</span> <span class="ident">end</span> <span class="op">-</span> <span class="ident">start</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">n</span> {
             <span class="kw">return</span> <span class="prelude-val">None</span>;
@@ -495,7 +550,7 @@
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="number">0</span>;
         <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> (<span class="number">0</span>..<span class="self">self</span>.<span class="ident">bitlen</span>).<span class="ident">rev</span>() {
             <span class="kw">let</span> <span class="ident">z</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">count</span>(<span class="ident">start</span>..<span class="ident">end</span>, <span class="number">0</span>);
-            <span class="kw">if</span> <span class="ident">x</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">i</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+            <span class="kw">if</span> <span class="ident">x</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">i</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">==</span> <span class="number">0</span> {
                 <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span> <span class="ident">z</span> {
                     <span class="ident">start</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">start</span>, <span class="number">0</span>);
                     <span class="ident">end</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">end</span>, <span class="number">0</span>);
@@ -528,7 +583,7 @@
         <span class="ident">range</span>: <span class="kw">impl</span> <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
         <span class="ident">value</span>: <span class="ident">u128</span>,
         <span class="ident">n</span>: <span class="ident">usize</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
+    ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">start</span> <span class="op">=</span> <span class="ident">bounds_within</span>(<span class="ident">range</span>, <span class="self">self</span>.<span class="ident">len</span>).<span class="ident">start</span>;
         <span class="kw">let</span> (<span class="ident">lt</span>, <span class="ident">gt</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">count_3way_internal</span>(<span class="number">0</span>..<span class="ident">start</span>, <span class="ident">value</span>);
         <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="ident">start</span> <span class="op">-</span> (<span class="ident">lt</span> <span class="op">+</span> <span class="ident">gt</span>);
@@ -537,11 +592,11 @@
 }
 
 <span class="kw">impl</span> <span class="ident">WaveletMatrix</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rank</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">end</span>: <span class="ident">usize</span>, <span class="ident">value</span>: <span class="ident">u128</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rank</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">end</span>: <span class="ident">usize</span>, <span class="ident">value</span>: <span class="ident">u128</span>) -&gt; <span class="ident">usize</span> {
         <span class="self">self</span>.<span class="ident">count</span>(<span class="number">0</span>..<span class="ident">end</span>, <span class="ident">value</span>..<span class="op">=</span><span class="ident">value</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">select</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">value</span>: <span class="ident">u128</span>, <span class="kw-2">mut</span> <span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="ident">n</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">select</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">value</span>: <span class="ident">u128</span>, <span class="kw-2">mut</span> <span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="ident">n</span> <span class="op">==</span> <span class="number">0</span> {
             <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="number">0</span>);
         }
         <span class="kw">let</span> (<span class="ident">lt</span>, <span class="ident">gt</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">count_3way_internal</span>(<span class="number">0</span>..<span class="self">self</span>.<span class="ident">len</span>, <span class="ident">value</span>);
@@ -555,7 +610,7 @@
         <span class="ident">n</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="number">0</span>].<span class="ident">select</span>(<span class="ident">value0</span>, <span class="ident">n</span>).<span class="ident">unwrap</span>();
 
         <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">1</span>..<span class="self">self</span>.<span class="ident">bitlen</span> {
-            <span class="kw">if</span> <span class="ident">value</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">i</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+            <span class="kw">if</span> <span class="ident">value</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">i</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">==</span> <span class="number">0</span> {
                 <span class="ident">n</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">select</span>(<span class="number">0</span>, <span class="ident">n</span>).<span class="ident">unwrap</span>();
             } <span class="kw">else</span> {
                 <span class="ident">n</span> <span class="op">-</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">zeros</span>[<span class="ident">i</span>];
@@ -564,11 +619,11 @@
         }
         <span class="prelude-val">Some</span>(<span class="ident">n</span>)
     }
-    <span class="kw">fn</span> <span class="ident">start_pos</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">value</span>: <span class="ident">u128</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+    <span class="kw">fn</span> <span class="ident">start_pos</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">value</span>: <span class="ident">u128</span>) -&gt; <span class="ident">usize</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">start</span> <span class="op">=</span> <span class="number">0</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">end</span> <span class="op">=</span> <span class="number">0</span>;
         <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> (<span class="number">1</span>..<span class="self">self</span>.<span class="ident">bitlen</span>).<span class="ident">rev</span>() {
-            <span class="kw">if</span> <span class="ident">value</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">i</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+            <span class="kw">if</span> <span class="ident">value</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">i</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">==</span> <span class="number">0</span> {
                 <span class="ident">start</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">start</span>, <span class="number">0</span>);
                 <span class="ident">end</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">end</span>, <span class="number">0</span>);
             } <span class="kw">else</span> {
@@ -642,7 +697,6 @@
         }
     }
 }
-</pre></div>
+</code></pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div>
-    <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script>
 </body></html>

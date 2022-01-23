@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["OpMax","最大値を返す演算を持つ。"]]});
+initSidebarItems({"enum":[["OpMax","最大値を返す演算を持つ。"]]});
