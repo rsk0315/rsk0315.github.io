@@ -388,6 +388,12 @@
 <span id="307">307</span>
 <span id="308">308</span>
 <span id="309">309</span>
+<span id="310">310</span>
+<span id="311">311</span>
+<span id="312">312</span>
+<span id="313">313</span>
+<span id="314">314</span>
+<span id="315">315</span>
 </pre><pre class="rust"><code><span class="doccomment">//! wavelet matrix。</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::rs_dict</span>;
@@ -489,6 +495,9 @@
     ) -&gt; (<span class="ident">usize</span>, <span class="ident">usize</span>) {
         <span class="kw">if</span> <span class="ident">start</span> <span class="op">==</span> <span class="ident">end</span> {
             <span class="kw">return</span> (<span class="number">0</span>, <span class="number">0</span>);
+        }
+        <span class="kw">if</span> (<span class="ident">value</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">bitlen</span>) <span class="op">&gt;</span> <span class="number">0</span> {
+            <span class="kw">return</span> (<span class="ident">end</span> <span class="op">-</span> <span class="ident">start</span>, <span class="number">0</span>);
         }
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">lt</span> <span class="op">=</span> <span class="number">0</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">gt</span> <span class="op">=</span> <span class="number">0</span>;
@@ -592,6 +601,9 @@
 }
 
 <span class="kw">impl</span> <span class="ident">WaveletMatrix</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">len</span> }
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> { <span class="self">self</span>.<span class="ident">len</span> <span class="op">==</span> <span class="number">0</span> }
+
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rank</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">end</span>: <span class="ident">usize</span>, <span class="ident">value</span>: <span class="ident">u128</span>) -&gt; <span class="ident">usize</span> {
         <span class="self">self</span>.<span class="ident">count</span>(<span class="number">0</span>..<span class="ident">end</span>, <span class="ident">value</span>..<span class="op">=</span><span class="ident">value</span>)
     }
