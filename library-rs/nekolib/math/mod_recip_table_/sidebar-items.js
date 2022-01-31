@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["mod_recip_table_prime","素数 $m$ を法とした逆元のテーブル。"]]});

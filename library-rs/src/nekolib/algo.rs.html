@@ -119,6 +119,12 @@
 <span id="38">38</span>
 <span id="39">39</span>
 <span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
 </pre><pre class="rust"><code><span class="doccomment">//! アルゴリズムたち。</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ここに何かを書く。</span>
@@ -126,10 +132,12 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">exact_cover</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">extremum</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">extremum_float</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">index_order</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">karatsuba</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">majority_</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">minmax</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">mo</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">ordered_hash_</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">parallel_bisect</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">permutation</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">tortoise_hare</span>;
@@ -144,6 +152,8 @@
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">extremum_float::extremum_float</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">index_order</span>::{<span class="ident">index_order_by</span>, <span class="ident">index_order_by_key</span>};
+<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">karatsuba::convolve</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">majority_::majority</span>;
@@ -151,6 +161,8 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">minmax</span>::{<span class="ident">minmax</span>, <span class="ident">minmax_by</span>, <span class="ident">minmax_by_key</span>};
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">mo::mo</span>;
+<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">ordered_hash_::ordered_hash</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">parallel_bisect::parallel_bisect</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
