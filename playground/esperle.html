@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital@0;1&display=swap" rel="stylesheet">
+
+    <style>
+      body, button {
+          /* font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif; */
+          font-family: Lato, sans-serif;
+      }
+      .tt {
+          font-family: monospace;
+      }
+      .err {
+          font-size: 80%;
+          color: #a11;
+      }
+      .tile {
+          display: block;
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          /* font-size: 2rem; */
+          /* line-height: 2rem; */
+          font-weight: bold;
+          /* vertical-align: middle; */
+          box-sizing: border-box;
+          color: white;
+          background-color: #6aaa64;
+          text-transform: uppercase;
+          user-select: none;
+      }
+      .share-closed {
+          opacity: 0;
+      }
+      .share-open {
+          /* transition: opacity 1s ease-out; */
+          opacity: 1;
+      }
+    </style>
+
+    <script src="js/esperle.js"></script>
+
+    <script>
+      window.twttr = (function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0],
+              t = window.twttr || {};
+          if (d.getElementById(id)) return t;
+          js = d.createElement(s);
+          js.id = id;
+          js.src = "https://platform.twitter.com/widgets.js";
+          fjs.parentNode.insertBefore(js, fjs);
+
+          t._e = [];
+          t.ready = function(f) {
+              t._e.push(f);
+          };
+
+          return t;
+      }(document, "script", "twitter-wjs"));
+    </script>
+
+    <script>
+      function green(input) {
+          return Array.from(input).map(
+              c => `<div class="tile">&nbsp;${c}&nbsp;</div>`).join(' ');
+      }
+
+      let done = false;
+
+      function judgeEvent() {
+          if (done) return;
+          let input = document.getElementById('input').value.toUpperCase();
+          let err = document.getElementById('err');
+          if (DICTIONARY.has(input)) {
+              let output = document.getElementById('output');
+              output.innerHTML = green(input);
+              done = true;
+              err.innerHTML = '';
+              let share = document.getElementById('share');
+              share.classList.remove('share-closed');
+              share.classList.add('share-open');
+          } else if (/^[a-z]{5}$/i.test(input)) {
+              err.innerHTML = 'not in the dictionary';
+          } else {
+              err.innerHTML = 'should match <span class="tt">/^[a-z]{5}$/i</span>';
+          }
+      }
+
+      window.onload = function() {
+          let input = document.getElementById('input');
+          let judge = document.getElementById('judge');
+          judge.addEventListener('click', judgeEvent);
+          input.addEventListener('keydown', (ev => {
+              if (ev.code === 'Enter') {
+                  judgeEvent();
+              }
+          }));
+          input.focus();
+      }
+    </script>
+  </head>
+
+  <body>
+    <h1>ESPERLE</h1>
+    <p>
+      エスパーして一発で当てよう！
+    </p>
+    <div>
+      input: <input type="text" id="input" class="tt" placeholder="/^[a-z]{5}$/i"> <button id="judge">enter</button>
+    </div>
+    <div>
+      <span id="err" class="err"></span>
+    </div>
+    output: <span id="output" class="tt"></span>
+
+    <div id="share" style="margin-top: 5px" class="share-closed">
+      <a class="twitter-share-button"
+         href="https://twitter.com/intent/tweet?text=Esperle 1/1%0A🟩🟩🟩🟩🟩"
+         data-size="large">Tweet</a>
+    </div>
+  </body>
+</html>
