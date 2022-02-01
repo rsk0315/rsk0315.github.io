@@ -63,32 +63,6 @@
     </script>
 
     <script>
-      function green(input) {
-          return Array.from(input).map(
-              c => `<div class="tile">&nbsp;${c}&nbsp;</div>`).join(' ');
-      }
-
-      let done = false;
-
-      function judgeEvent() {
-          if (done) return;
-          let input = document.getElementById('input').value.toUpperCase();
-          let err = document.getElementById('err');
-          if (DICTIONARY.has(input)) {
-              let output = document.getElementById('output');
-              output.innerHTML = green(input);
-              done = true;
-              err.innerHTML = '';
-              let share = document.getElementById('share');
-              share.classList.remove('share-closed');
-              share.classList.add('share-open');
-          } else if (/^[a-z]{5}$/i.test(input)) {
-              err.innerHTML = 'not in the dictionary';
-          } else {
-              err.innerHTML = 'should match <span class="tt">/^[a-z]{5}$/i</span>';
-          }
-      }
-
       window.onload = function() {
           let input = document.getElementById('input');
           let judge = document.getElementById('judge');

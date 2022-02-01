@@ -8498,3 +8498,34 @@ const DICTIONARY = new Set([
     "zymic",
     "zymin",
 ].map(e => e.toUpperCase()));
+
+function green(input) {
+    return Array.from(input).map(
+        c => `<div class="tile">&nbsp;${c}&nbsp;</div>`).join(' ');
+}
+
+let done = false;
+let regex = 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions';
+
+function judgeEvent() {
+    if (done) return;
+    let input = document.getElementById('input').value;
+    let inputUpperCase = input.toUpperCase();
+    let err = document.getElementById('err');
+    if (DICTIONARY.has(inputUpperCase)) {
+        let output = document.getElementById('output');
+        output.innerHTML = green(input);
+        done = true;
+        err.innerHTML = '';
+        let share = document.getElementById('share');
+        share.classList.remove('share-closed');
+        share.classList.add('share-open');
+    } else if (input === '/^[a-z]{5}$/i') {
+        err.innerHTML = `See: <a href="${regex}">Regular Expressions</a>`;
+    } else if (/^[a-z]{5}$/i.test(input)) {
+        err.innerHTML = 'not in the dictionary';
+    } else {
+        err.innerHTML = 'should match <span class="tt">/^[a-z]{5}$/i</span>';
+    }
+}
+
