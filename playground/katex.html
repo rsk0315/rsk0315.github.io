@@ -31,19 +31,42 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital@0;1&display=swap" rel="stylesheet">
 
     <script>
+      function modifyMessage(msg, e) {
+          // \u0332 を用いて強調しているが、フォントの関係からあまりうれしくない。
+          return `${msg} + ${e}`
+              .replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/(.)\u0332/g, '<u>$1</u>');
+      }
+
       function render() {
           let input = window.document.getElementById('input');
           let inputText = input.value;
 
-          try {
-              let output = window.document.getElementById('output');
-              output.innerHTML = inputText;
-              renderMathInElement(output);
-              let outputText = katex.renderToString(inputText);
-          } catch (e) {
-              let err = e.toString().split('\n')[0];
-              output.innerHTML = `<span class="error">${modifyMessage(err)}</span>`;
+          let output = window.document.getElementById('output');
+          let err = null;
+          output.innerHTML = inputText;
+          renderMathInElement(output, {
+              delimiters:[
+                  {left: '$$', right: '$$', display: true},
+                  {left: '$', right: '$', display: false},
+                  {left: '\\(', right: '\\)', display: false},
+                  {left: '\\[', right: '\\]', display: true}
+              ],
+              errorCallback: ((msg, e) => {
+                  err = modifyMessage(msg, e);
+              }),
+          });
+
+          if (err !== null) {
+              output.innerHTML += `<div class="error">${err}</div>`;
           }
+      }
+
+      window.onload = function() {
+          let input = window.document.getElementById('input');
+          input.focus();
       }
     </script>
 
