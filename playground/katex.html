@@ -64,8 +64,25 @@
           }
       }
 
+      const CACHE_KEY = 'KaTeXInput';
+      
+      function loadCache() {
+          let input = window.document.getElementById('input');
+          let cache = localStorage.getItem(CACHE_KEY)
+          if (cache !== null) input.value = cache;
+      }
+
+      function storeCache() {
+          let input = window.document.getElementById('input');
+          localStorage.setItem(CACHE_KEY, input.value);
+      }
+
       window.onload = function() {
           let input = window.document.getElementById('input');
+          input.addEventListener('input', function() {
+              storeCache();
+          });
+          loadCache();
           input.focus();
       }
     </script>
