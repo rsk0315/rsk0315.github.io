@@ -830,7 +830,7 @@
     <span class="ident">i</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">iz</span>.<span class="ident">max</span>(<span class="ident">WORD_SIZE</span> <span class="op">-</span> (<span class="ident">i</span> <span class="op">^</span> <span class="ident">j</span>).<span class="ident">leading_zeros</span>())
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">VecActSegtree</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">A</span>: <span class="ident">MonoidAction</span>,
