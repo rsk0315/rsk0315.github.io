@@ -335,20 +335,22 @@
 <span id="254">254</span>
 <span id="255">255</span>
 <span id="256">256</span>
+<span id="257">257</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Exact cover。</span>
 
 <span class="doccomment">/// Exact cover。</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// 0/1 行列 $A$ が与えられたとき、行 $\\{0, 1, \\dots, n-1\\}$ の部分集合であって、</span>
-<span class="doccomment">/// 各列 $0\\le j\\lt m$ に対して $A\_{i, j}=1$ なる $i\\in S$ がちょうど 1</span>
-<span class="doccomment">/// つ存在するものを探す。</span>
+<span class="doccomment">/// $n$ 行 $m$ 列の 0/1 行列 $A$ が与えられたとき、行 $\\{0, 1, \\dots, n-1\\}$</span>
+<span class="doccomment">/// の部分集合 $S$ であって、各列 $0\\le j\\lt m$ に対して $A\_{i, j}=1$ なる</span>
+<span class="doccomment">/// $i\\in S$ がちょうど 1 つ存在するものを探す。</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// $\\gdef\\I{\\textcolor{red}{1}}$</span>
 <span class="doccomment">/// $$ A = \\begin{pmatrix}</span>
-<span class="doccomment">/// 0 &amp; 0 &amp; 1 &amp; 0 &amp; 1 &amp; 1 &amp; 0 \\\\</span>
+<span class="doccomment">/// 0 &amp; 0 &amp; \\I &amp; 0 &amp; \\I &amp; \\I &amp; 0 \\\\</span>
 <span class="doccomment">/// 1 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 1 \\\\</span>
 <span class="doccomment">/// 0 &amp; 1 &amp; 1 &amp; 0 &amp; 0 &amp; 1 &amp; 0 \\\\</span>
-<span class="doccomment">/// 1 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 \\\\</span>
-<span class="doccomment">/// 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 \\\\</span>
+<span class="doccomment">/// \\I &amp; 0 &amp; 0 &amp; \\I &amp; 0 &amp; 0 &amp; 0 \\\\</span>
+<span class="doccomment">/// 0 &amp; \\I &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; \\I \\\\</span>
 <span class="doccomment">/// 0 &amp; 0 &amp; 0 &amp; 1 &amp; 1 &amp; 0 &amp; 1 \\\\</span>
 <span class="doccomment">/// \\end{pmatrix} $$</span>
 <span class="doccomment">/// のような行列 $A$ に対しては、$\\{0, 3, 4\\}$ が解となる。</span>
