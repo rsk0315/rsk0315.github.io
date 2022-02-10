@@ -20,7 +20,12 @@ function colorize(actual, result) {
 }
 
 function colorizeEmoji(result) {
-    return result.map(x => decodeResultEmoji(x)).join('');
+    // ツイートできないので [x]4 [_]19 [ ]41 みたいな形式にしちゃいましょう。
+    // でもそれもう別のゲームのリザルトじゃん。そもそも別のゲームだししかたない。
+    return [CORRECT, PRESENT, ABSENT].map(c => {
+        let count = result.filter(e => e === c).length;
+        return `${decodeResultEmoji(c)}${count}`;
+    }).join(' ');
 }
 
 function toUtf8(str) {
@@ -83,17 +88,18 @@ async function judgeEvent(expected, attempt) {
     share.classList.remove('share-closed');
     share.classList.add('share-open');
 
-    if (positive) {
-        shareText = `passWORDLE ${attempt + 1}/${MAX_ATTEMPT}%0A${shareText}%0A`;
-    } else {
-        shareText = `passWORDLE X/${MAX_ATTEMPT}%0A%0A`;
-    }
-
-    // query parameter max length とググると 2048 characters と出ました。
-    // 実際には 1 回目で当てないとツイートできる長さに収まらないので消しちゃいます。
-    if (/* shareText.length > 2048 */ attempt > 0 && positive) {
-        shareText = `passWORDLE ${attempt + 1}/${MAX_ATTEMPT}%0A`;
-    }
+    shareText = `passWORDLE ${attempt + 1}/${MAX_ATTEMPT}%0A${shareText}%0A`;
+    
+    // if (positive) {
+    //     shareText = `passWORDLE ${attempt + 1}/${MAX_ATTEMPT}%0A${shareText}%0A`;
+    // } else {
+    //     shareText = `passWORDLE X/${MAX_ATTEMPT}%0A%0A`;
+    // }
+    // // query parameter max length とググると 2048 characters と出ました。
+    // // 実際には 1 回目で当てないとツイートできる長さに収まらないので消しちゃいます。
+    // if (/* shareText.length > 2048 */ attempt > 0 && positive) {
+    //     shareText = `passWORDLE ${attempt + 1}/${MAX_ATTEMPT}%0A`;
+    // }
 
     share.innerHTML += `
         <a class="twitter-share-button"
