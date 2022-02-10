@@ -83,26 +83,121 @@
               storeCache();
           });
           loadCache();
+          render();
+
+          for (let io of ['input', 'output']) {
+              let ioEl = window.document.getElementById(io);
+              let ioLabel = window.document.getElementById(`${io}-label`);
+              ioEl.addEventListener('focus', function() {
+                  ioLabel.classList.add('focused');
+              });
+              ioEl.addEventListener('focusout', function() {
+                  ioLabel.classList.remove('focused');
+              });
+          }
+
+          let el = window.document.getElementById('output-label');
+          renderMathInElement(el);
           input.focus();
       }
     </script>
 
     <style>
-      body, button {
+      body {
           font-family: Lato;
+      }
+      button {
+          font-family: Lato;
+          color: #5f6368;
+          background-color: white;
+          border-radius: 4px;
+          border: 1px solid #dadce0;
+      }
+      button:focus {
+          color: white;
+          background-color: #ffadba;
+          border-radius: 4px;
+          border: 1px solid #ffadba;
+          font-weight: bold;
+          outline: 2px solid rgba(255, 173, 186, 0.7);
       }
       .error {
           font-family: monospace;
           color: #a11
       }
+      .frame-wrapper {
+          position: relative;
+      }
+      .frame-wrapper .text-label {
+          background-color: white;
+          box-shadow: 5px 0 0 white,-5px 0 0 white;
+          color: #5f6368;
+          display: inline;
+          font-size: 12px;
+          left: 12px;
+          margin-bottom: 0;
+          max-width: 300px;
+          padding: 0;
+          position: absolute;
+          top: 0px;
+          word-wrap: break-word;
+      }
+      .frame-wrapper .div-label {
+          background-color: white;
+          box-shadow: 5px 0 0 white,-5px 0 0 white;
+          color: #5f6368;
+          display: inline;
+          font-size: 12px;
+          left: 12px;
+          margin-bottom: 0;
+          max-width: 300px;
+          padding: 0;
+          position: absolute;
+          top: -8px;
+          word-wrap: break-word;
+      }
+      .frame-wrapper .text-label.focused, .frame-wrapper .div-label.focused {
+          color: #ffadba;
+      }
+      .frame-wrapper .textinput {
+          border: 1px solid #dadce0;
+          border-radius: 4px;
+          box-sizing: border-box;
+          color: #3c4043;
+          font-size: 14px;
+          margin: 8px 0;
+      }
+      .frame-wrapper input.textinput {
+          padding: 1px 8px;
+          height: 36px;
+      }
+      .frame-wrapper textarea.textinput {
+          padding: 8px;
+          min-height: 36px;
+          width: 100%;
+      }
+      .frame-wrapper div.textinput {
+          padding: 8px;
+          min-height: 30px;
+      }
+      .frame-wrapper .textinput:focus {
+          border: 1px solid #ffadba;
+          outline: 1px solid rgba(255, 173, 186, 0.7);
+      }
     </style>
   </head>
   <body>
-    <textarea id="input" rows="16" cols="96"></textarea>
-    <div style="margin: 10px 0;">
-      <button id="render" onclick="render();">render</button>
+    <div class="frame-wrapper">
+      <label id="input-label" class="text-label" for="input">input</label>
+      <textarea class="textinput" id="input" rows="16" oninput="render();"></textarea>
     </div>
-    <div id="output"></div>
+    <!-- <div style="margin: 0 0 16px 0;"> -->
+    <!--   <button id="render" onclick="render();">render</button> -->
+    <!-- </div> -->
+    <div class="frame-wrapper">
+      <label id="output-label" class="div-label">\(\KaTeX\)'ed output</label>
+      <div id="output" class="textinput" tabindex="0"></div>
+    </div>
   </body>
   <!--
       https://katex.org/docs/browser.html
