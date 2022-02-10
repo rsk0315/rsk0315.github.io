@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>KaTeX PLaYground</title>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" integrity="sha384-R4558gYOUz8mP9YWpZJjofhk+zx0AS11p36HnD2ZKj/6JR5z27gSSULCNHIRReVs" crossorigin="anonymous">
 
     <!-- The loading of KaTeX is deferred to speed up page rendering -->
@@ -31,6 +33,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital@0;1&display=swap" rel="stylesheet">
 
     <script>
+      const LOGO = `
+      \\KaTeX\\,\\text{PL%
+\\hspace{-.36em}\\raisebox{.22em}{\\scriptsize A}\\hspace{-.15em}%
+Y\\hspace{-.23em}\\raisebox{-.215em}G\\hspace{-.065em}round}
+`;
+
       function modifyMessage(msg, e) {
           // \u0332 を用いて強調しているが、フォントの関係からあまりうれしくない。
           return `${msg} + ${e}`
@@ -96,9 +104,13 @@
               });
           }
 
-          for (let kx of ['output-label', 'title']) {
-              let el = window.document.getElementById(kx);
+          {
+              let el = window.document.getElementById('output-label');
               renderMathInElement(el);
+          }
+          {
+              let el = window.document.getElementById('title');
+              el.innerHTML = katex.renderToString(LOGO)
           }
           input.focus();
       }
@@ -189,11 +201,7 @@
     </style>
   </head>
   <body>
-    <h1 class="title">
-      \(\KaTeX\,\text{PL%
-\hspace{-.36em}\raisebox{.22em}{\scriptsize A}\hspace{-.15em}%
-Y\hspace{-.23em}\raisebox{-.215em}G\hspace{-.065em}round}\)
-    </h1>
+    <h1 id="title">KaTeX PlaYground</h1>
     <div class="frame-wrapper">
       <label id="input-label" class="text-label" for="input">input</label>
       <textarea class="textinput" id="input" rows="16" oninput="render();"></textarea>
