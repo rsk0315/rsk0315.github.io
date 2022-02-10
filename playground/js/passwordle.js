@@ -88,7 +88,9 @@ async function judgeEvent(expected, attempt) {
     share.classList.remove('share-closed');
     share.classList.add('share-open');
 
-    shareText = `passWORDLE ${attempt + 1}/${MAX_ATTEMPT}%0A${shareText}%0A`;
+    shareText = (
+        `passWORDLE ${positive? attempt + 1: 'X'}/${MAX_ATTEMPT}%0A${shareText}%0A`
+    );
     
     // if (positive) {
     //     shareText = `passWORDLE ${attempt + 1}/${MAX_ATTEMPT}%0A${shareText}%0A`;
