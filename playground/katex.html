@@ -53,7 +53,7 @@ Y\\hspace{-.23em}\\raisebox{-.215em}G\\hspace{-.065em}round}
           let inputText = input.value;
 
           let output = window.document.getElementById('output');
-          let err = null;
+          let err = '';
           output.innerHTML = inputText;
           renderMathInElement(output, {
               delimiters:[
@@ -63,11 +63,11 @@ Y\\hspace{-.23em}\\raisebox{-.215em}G\\hspace{-.065em}round}
                   {left: '\\[', right: '\\]', display: true}
               ],
               errorCallback: ((msg, e) => {
-                  err = modifyMessage(msg, e);
+                  err += `<p>${modifyMessage(msg, e)}</p>\n`;
               }),
           });
 
-          if (err !== null) {
+          if (err !== '') {
               output.innerHTML += `<div class="error">${err}</div>`;
           }
       }
