@@ -1,0 +1,60 @@
+.frame-wrapper {
+    position: relative;
+}
+.frame-wrapper .text-label {
+    background-color: white;
+    box-shadow: 5px 0 0 white,-5px 0 0 white;
+    color: #5f6368;
+    display: inline;
+    font-size: 12px;
+    left: 12px;
+    margin-bottom: 0;
+    max-width: 300px;
+    padding: 0;
+    position: absolute;
+    top: 0px;
+    word-wrap: break-word;
+    border-radius: 4px;
+}
+.frame-wrapper .div-label {
+    background-color: white;
+    box-shadow: 5px 0 0 white,-5px 0 0 white;
+    color: #5f6368;
+    display: inline;
+    font-size: 12px;
+    left: 12px;
+    margin-bottom: 0;
+    max-width: 300px;
+    padding: 0;
+    position: absolute;
+    top: -8px;
+    word-wrap: break-word;
+}
+.frame-wrapper .text-label.focused, .frame-wrapper .div-label.focused {
+    color: #ffadba;
+}
+.frame-wrapper .textinput {
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    box-sizing: border-box;
+    color: #3c4043;
+    font-size: 14px;
+    margin: 8px 0;
+}
+.frame-wrapper input.textinput {
+    padding: 1px 8px;
+    height: 36px;
+}
+.frame-wrapper textarea.textinput {
+    padding: 8px;
+    min-height: 36px;
+    width: 100%;
+}
+.frame-wrapper div.textinput {
+    padding: 8px;
+    min-height: 30px;
+}
+.frame-wrapper .textinput:focus {
+    border: 1px solid #ffadba;
+    outline: 1px solid rgba(255, 173, 186, 0.7);
+}

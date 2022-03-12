@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rich Terminal</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital@0;1&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/rich-terminal.css">
+    <link rel="stylesheet" href="css/labeled-frame.css">
+
+    <script src="js/rich-terminal.js"></script>
+
+    <script>
+      function render() {
+          let input = document.getElementById('input').value.split('\n');
+          let inputMarker = input[0];
+          let outputMarker = input[1];
+          let text = '';
+          let close = '';
+          for (let i = 2; i < input.length; ++i) {
+              let line = input[i];
+              if (line.startsWith(inputMarker)) {
+                  text += close;
+                  text += `<kbd class="input">${line.slice(inputMarker.length)}`;
+                  close = '</kbd>\n';
+              } else if (line.startsWith(outputMarker)) {
+                  text += close;
+                  text += `<samp class="output">${line.slice(outputMarker.length)}`;
+                  close = '</samp>\n';
+              } else {
+                  text += `${line}`;
+              }
+          }
+          text += close;
+          document.getElementById('terminal').innerHTML = text;
+          setEventListener();
+      }
+    </script>
+  </head>
+  <body>
+    <h1>対話型シェルにコピペしやすいインタフェースの例</h1>
+
+    <p>
+      1 行目に、入力開始のマーカーを入力します。2 行目に、出力開始のマーカーを入力します。
+      これらは、マーカー以外の役割では行頭に出現しない文字列を選ぶ必要があります。
+      通常のケースにおいては、1 行目は <code>% </code>（% 記号とスペース）、2 行目は空行でよいでしょう。
+      3 行目以降に入出力内容を書きます。
+    </p>
+
+    <div class="frame-wrapper">
+      <label id="input-label" class="text-label" for="input">📝 input</label>
+      <textarea class="textinput" id="input" rows="8" oninput="render()">% 
+
+% echo 123
+123
+% echo % 
+%</textarea>
+    </div>
+
+    <p>
+      <kbd><span class="ps1"></span></kbd> をクリックすると、その行のコマンドがコピーされます。
+      <span style="position: relative;">
+        <span class="copy-button-whole" style="position: relative; padding: 2.5px 6px 4px"><span class="copy-button-only-input"></span></span>
+      </span>
+      をクリックすると、一括でコピーされます。特に
+      <span style="font-size: 12px"><span class="copy-button-only-input"></span></span>
+      の部分をクリックすると、コマンドのみが一括でコピーされます。
+      コピー内容は下のクリップボードにも表示されます。
+    </p>
+
+    <div>
+      <div class="terminal-wrapper">
+        <span class="terminal-deco"></span>
+        <span class="copy-button-whole"><span class="copy-button-only-input"></span></span>
+        <span class="terminal-tooltip" data-text=""></span>
+      </div>
+      <pre class="interactive"><div class="terminal" id="terminal"><kbd class="input">echo 123</kbd>
+<samp class="output">123</samp>
+<kbd class="input">echo %</kbd>
+<samp class="output">%</samp>
+</div></pre>
+    </div>
+
+    <div class="frame-wrapper">
+      <label id="input-label" class="text-label" for="clipboard">📋 clipboard</label>
+      <textarea class="textinput" id="clipboard" rows="4" disabled></textarea>
+    </div>
+  </body>
+</html>

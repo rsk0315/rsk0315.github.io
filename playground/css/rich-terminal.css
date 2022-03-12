@@ -1,0 +1,192 @@
+body {
+    font-family: Lato, sans-serif;
+    font-size: 14px;
+}
+pre {
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+}
+pre.interactive {
+    background-color: #2e3436;
+    border-radius: 6px;
+}
+code {
+    padding: 3px 3px 1px;
+    margin: 0;
+    border-width: 0;
+    color: #d72b3f;
+    background-color: #f7f7f9;
+    border: 1px solid #e1e1e8;
+    border-radius: 4px;
+}
+kbd.input {
+    color: #f3f3f3;
+}
+samp.output {
+    color: #d2d2d2;
+}
+.filename-wrapper {
+    position: relative;
+}
+.filename {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0 6px;
+    color: #333;
+    background-color: #e4e4e4;
+    border-radius: 4px 0 4px 0;
+    border-top-color: #ccc;
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-left-color: #ccc;
+    border-left-style: solid;
+    border-left-width: 1px;
+    font-size: 12px;
+    line-height: 20px;
+}
+.copy-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0px 6px;
+    color: #767676;
+    background-color: #fff;
+    border-radius: 0 4px 0 4px;
+    border: 1px solid #ccc;
+    font-size: 12px;
+    line-height: 20px;
+    cursor: pointer;
+}
+.copy-button:before {
+    content: 'Copy';
+}
+.file-content {
+    margin: 1.2em 0 0 0;
+    line-height: 1.28571429;
+}
+.terminal-wrapper {
+    position: relative;
+}
+.terminal-deco {
+    position: absolute;
+    top: 5px;
+    left: 1px;
+    padding: 0 6px;
+    line-height: 20px;
+}
+.terminal {
+    margin: 1.2em 0 0 0;
+    line-height: 1.28571429;
+}
+.ps1::before {
+    color: #767676;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    content: '%';
+    margin: -1px;
+    cursor: pointer;
+}
+.ps1:hover:before, .copy-button:hover {
+    color: #fff3d1;
+    background-color: #563d7c;
+    border: 1px solid #ad79c8;
+}
+.ps1::after {
+    content: ' ';
+    cursor: pointer;
+}
+.ps1-tooltip {
+    position: relative;
+}
+.ps1-tooltip:before {
+    content: 'This line copied.';
+    font-family: Lato, sans-serif;
+    font-size: 80%;
+
+    position: absolute;
+
+    top: 50%;
+    transform: translateY(-50%);
+
+    left: 100%;
+    margin-left: 0px;
+
+    padding: 5px 10px 5px 10px;
+    border-radius: 10px;
+    background-color: #eee;
+    color: #333;
+    text-align: center;
+
+    opacity: 0;
+    transition: .3s opacity;
+}
+.ps1-tooltip.copied:before, .ps1-tooltip.copied:after {
+    opacity: 1;
+}
+
+.copy-button-whole {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0 6px;
+    border: 1px solid #ccc;
+    border-radius: 0 4px 0 4px;
+    color: #767676;
+    background-color: #fff;
+    font-size: 12px;
+    line-height: 20px;
+    cursor: pointer;
+}
+.copy-button-whole:before {
+    content: 'Copy ';
+}
+.copy-button-only-input {
+    padding: 0 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    color: #767676;
+    background-color: #fff;
+    font-size: 90%;
+    cursor: pointer;
+}
+.copy-button-only-input:before {
+    content: 'only input';
+}
+.copy-button-whole:hover, .copy-button-only-input:hover {
+    color: #fff3d1;
+    background-color: #563d7c;
+    border: 1px solid #ad79c8;
+}
+.terminal-tooltip {
+    position: absolute;
+    right: 0px;
+}
+.terminal-tooltip:before {
+    content: attr(data-text);
+    font-family: Lato, sans-serif;
+    font-size: 80%;
+
+    position: absolute;
+
+    top: 1.5em;
+    transform: translateY(50%);
+
+    right: .5em;
+
+    width: 9em;
+    padding: 5px 10px 5px 10px;
+    border-radius: 10px;
+    background-color: #eee;
+    color: #333;
+    text-align: center;
+    opacity: 0;
+    transition: .3s opacity;
+}
+.terminal-tooltip.copied:before {
+    opacity: 1;
+    transition: .3s opacity;
+}
