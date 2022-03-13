@@ -5,3 +5,4 @@
 - [区間 LIS クエリのやつ](range_lis.html)
     - [詳細](range_lis_description.html)
 - [passWORDLE](passwordle.html)
+- [コマンドをコピペする UI のやつ](rich-terminal.html)
