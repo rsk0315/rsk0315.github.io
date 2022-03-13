@@ -101,6 +101,7 @@ samp.output {
     content: ' ';
     cursor: pointer;
 }
+/* See https://blog.logrocket.com/creating-beautiful-tooltips-with-only-css/ */
 .ps1-tooltip {
     position: relative;
 }
