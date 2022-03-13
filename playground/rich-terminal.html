@@ -12,34 +12,7 @@
     <link rel="stylesheet" href="css/labeled-frame.css">
 
     <script src="js/rich-terminal.js"></script>
-
-    <script>
-      function render() {
-          let input = document.getElementById('input').value.split('\n');
-          let inputMarker = input[0];
-          let outputMarker = input[1];
-          let text = '';
-          let close = '';
-          for (let i = 2; i < input.length; ++i) {
-              let line = input[i];
-              if (line.startsWith(inputMarker)) {
-                  text += close;
-                  text += `<kbd class="input">${line.slice(inputMarker.length)}`;
-                  close = '</kbd>\n';
-              } else if (line.startsWith(outputMarker)) {
-                  text += close;
-                  text += `<samp class="output">${line.slice(outputMarker.length)}`;
-                  close = '</samp>\n';
-              } else {
-                  text += `${line}`;
-              }
-          }
-          text += close;
-          document.getElementById('terminal').innerHTML = text;
-          setEventListener();
-      }
-    </script>
-  </head>
+ </head>
   <body>
     <h1>対話型シェルにコピペしやすいインタフェースの例</h1>
 
@@ -47,12 +20,12 @@
       1 行目に、入力開始のマーカーを入力します。2 行目に、出力開始のマーカーを入力します。
       これらは、マーカー以外の役割では行頭に出現しない文字列を選ぶ必要があります。
       通常のケースにおいては、1 行目は <code>% </code>（% 記号とスペース）、2 行目は空行でよいでしょう。
-      3 行目以降に入出力内容を書きます。
+      3 行目以降に入出力内容を書きます。マーカーのについての補足はページ下部にあります。
     </p>
 
     <div class="frame-wrapper">
       <label id="input-label" class="text-label" for="input">📝 input</label>
-      <textarea class="textinput" id="input" rows="8" oninput="render()">% 
+      <textarea class="textinput" id="input" rows="8" oninput="store(); render();">% 
 
 % echo 123
 123
@@ -61,7 +34,7 @@
     </div>
 
     <p>
-      <kbd><span class="ps1"></span></kbd> をクリックすると、その行のコマンドがコピーされます。
+      <kbd><span class="ps1-sample"></span></kbd> をクリックすると、その行のコマンドがコピーされます。
       <span style="position: relative;">
         <span class="copy-button-whole" style="position: relative; padding: 2.5px 6px 4px"><span class="copy-button-only-input"></span></span>
       </span>
@@ -88,5 +61,59 @@
       <label id="input-label" class="text-label" for="clipboard">📋 clipboard</label>
       <textarea class="textinput" id="clipboard" rows="4" disabled></textarea>
     </div>
+
+    <h2>マーカーについて補足</h2>
+
+    <p>
+      複数行に渡る場合は、毎回マーカーを書き直す必要はありません。
+      入力に行継続がない場合は、出力マーカーは空文字列でよいです。
+    </p>
+    <div><pre class="copyable">% 
+
+% echo foo; echo bar
+foo
+bar
+</pre></div>
+
+    <p>
+      入力が複数行に渡る場合は、出力マーカーを空文字列以外にする必要があります。
+    </p>
+    <div><pre class="copyable">%&gt; 
+%&lt; 
+%&gt; echo foo; \
+echo &apos;bar
+baz&apos;
+%&lt; foo
+bar
+baz
+%&gt; cat &lt;&lt;EOS
+qux
+EOS
+%&lt; qux</pre></div>
+
+    <p>
+      出力マーカーが入力マーカーの prefix になっている場合は、入力マーカーが優先されます。
+      特に、入力マーカーを空文字列にすれば、各行に <code>%&nbsp;</code> を書かなくて済みます。
+      出力内容は書かずに、入力をコピーしやすくするときに便利です。
+    </p>
+    <div><pre class="copyable">
+
+
+
+echo foo
+echo bar
+</pre></div>
+    
+    <p>
+      出力に <code>% </code> で始まる行がある場合は、入力マーカーを
+      <code>%% </code> や <code>%&nbsp;&nbsp</code> にするとよいでしょう。
+    </p>
+    <div><pre class="copyable">%%
+
+%% echo '% '
+% 
+</pre></div>
+
   </body>
 </html>
+

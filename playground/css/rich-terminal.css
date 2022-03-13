@@ -59,9 +59,11 @@ samp.output {
     font-size: 12px;
     line-height: 20px;
     cursor: pointer;
+    width: 2.5em;
+    text-align: center;
 }
 .copy-button:before {
-    content: 'Copy';
+    content: attr(data-text);
 }
 .file-content {
     margin: 1.2em 0 0 0;
@@ -187,6 +189,51 @@ samp.output {
     transition: .3s opacity;
 }
 .terminal-tooltip.copied:before {
+    opacity: 1;
+    transition: .3s opacity;
+}
+
+.ps1-sample::before {
+    color: #767676;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    content: '%';
+    margin: -1px;
+    cursor: pointer;
+}
+.ps1-sample:hover:before {
+    color: #fff3d1;
+    background-color: #563d7c;
+    border: 1px solid #ad79c8;
+}
+
+.pre-tooltip {
+    position: absolute;
+    right: 0px;
+}
+.pre-tooltip:before {
+    content: attr(data-text);
+    font-family: Lato, sans-serif;
+    font-size: 80%;
+
+    position: absolute;
+
+    top: 1.5em;
+    transform: translateY(50%);
+
+    right: .5em;
+
+    width: 3em;
+    padding: 5px 10px 5px 10px;
+    border-radius: 10px;
+    background-color: #3f3b3b;
+    color: #f0f0f0;
+    text-align: center;
+    opacity: 0;
+    transition: .3s opacity;
+}
+.pre-tooltip.copied:before {
     opacity: 1;
     transition: .3s opacity;
 }
