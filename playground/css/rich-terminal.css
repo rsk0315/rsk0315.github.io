@@ -94,8 +94,8 @@ samp.output {
 }
 .ps1:hover:before, .copy-button:hover {
     color: #fff3d1;
-    background-color: #563d7c;
-    border: 1px solid #ad79c8;
+    background-color: #ad79c8;
+    border: 1px solid #563d7c;
 }
 .ps1::after {
     content: ' ';
@@ -159,10 +159,15 @@ samp.output {
 .copy-button-only-input:before {
     content: 'only input';
 }
-.copy-button-whole:hover, .copy-button-only-input:hover {
+.copy-button-whole:hover {
     color: #fff3d1;
     background-color: #563d7c;
     border: 1px solid #ad79c8;
+}
+.copy-button-only-input:hover {
+    color: #fff3d1;
+    background-color: #ad79c8;
+    border: 1px solid #8a68a1;
 }
 .terminal-tooltip {
     position: absolute;
