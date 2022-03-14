@@ -121,7 +121,21 @@ echo bar
       それはそうっぽい。ただ、コーナーケースが無限にありそうで自前で構文解析とかはしたくない。
       <code>%&nbsp;</code> と <code></code>&nbsp;のときは指定なしで書ける（必要なときは別途指定）とかにするのが楽そう。
     </p>
-
+    <p>
+      とはいえ、出力がどこで終わりなのかは構文解析ではどうしようもない。
+    </p>
+    <div><pre class="copyable">% yes % echo test$'\n'test | head -$((RANDOM % 10 * 2))
+% echo test
+test
+% echo test
+test
+% echo test
+test
+% echo test
+test
+% echo test
+test</pre></div>
+    のような例があったとき、どれが入力で出力なのかは判定しようがない。こんなのは隅をつつくような例だけど、原理的には同じ。
   </body>
 </html>
 
