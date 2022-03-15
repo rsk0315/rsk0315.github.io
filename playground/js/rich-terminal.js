@@ -119,6 +119,7 @@ function render() {
     let inputMarker = input[0];
     let outputMarker = input[1];
     let text = '';
+    let [closeInput, closeOutput] = ['</kbd>\n', '</samp>\n'];
     let close = '';
     for (let i = 2; i < input.length; ++i) {
         // コピペしたときに改行が入ると嫌なので、末尾の改行は <kbd> や <samp> の外に置きたい。
@@ -128,13 +129,17 @@ function render() {
         if (line.startsWith(inputMarker)) {
             text += close;
             text += `<kbd class="input">${line.slice(inputMarker.length)}`;
-            close = '</kbd>\n';
+            close = closeInput;
         } else if (line.startsWith(outputMarker)) {
             text += close;
             text += `<samp class="output">${line.slice(outputMarker.length)}`;
-            close = '</samp>\n';
-        } else {
+            close = closeOutput;
+        } else if (close === closeInput) {
+            text += `\n<span class="ps2"></span>${line}`;
+        } else if (close === closeOutput) {
             text += `\n${line}`;
+        } else {
+            text += line;  // bad
         }
     }
     text += close;
