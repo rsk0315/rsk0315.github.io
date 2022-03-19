@@ -1,0 +1,207 @@
+/*!
+  Theme: GitHub Dark
+  Description: Dark theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-dark
+  Current colors taken from GitHub's CSS
+*/
+
+.terminal-header {
+    position: relative;
+}
+
+.terminal-deco {
+    position: absolute;
+    top: 5px;
+    left: 1px;
+    padding: 0 6px;
+    line-height: 20px;
+}
+
+.terminal {
+    padding: 1.7em 1em 1em 1em;
+    background-color: #2e3436;
+
+    kbd.input, samp.output {
+        font-family: "Menlo", "Inconsolata", "Consolas", "Roboto Mono", "Ubuntu Mono", "Liberation Mono", "Courier New", monospace;
+        font-size: 0.9375em;
+    }
+
+    .hljs {
+        color: #c9d1d9;
+        background :#2e3436
+    }
+    .hljs-doctag, .hljs-keyword, .hljs-meta .hljs-keyword, .hljs-template-tag, .hljs-template-variable, .hljs-type, .hljs-variable.language_ {
+        color: #ff7b72
+    }
+    .hljs-title, .hljs-title.class_, .hljs-title.class_.inherited__, .hljs-title.function_ {
+        color: #d2a8ff
+    }
+    .hljs-attr, .hljs-attribute, .hljs-literal, .hljs-meta, .hljs-number, .hljs-operator, .hljs-selector-attr, .hljs-selector-class, .hljs-selector-id, .hljs-variable {
+        color: #79c0ff
+    }
+    .hljs-meta .hljs-string, .hljs-regexp, .hljs-string {
+        color: #a5d6ff
+    }
+    .hljs-built_in, .hljs-symbol {
+        color: #ffa657
+    }
+    .hljs-code, .hljs-comment, .hljs-formula {
+        color: #8b949e
+    }
+    .hljs-name, .hljs-quote, .hljs-selector-pseudo, .hljs-selector-tag {
+        color: #7ee787
+    }
+    .hljs-subst {
+        color: #c9d1d9
+    }
+    .hljs-section {
+        color: #1f6feb;
+        font-weight: 700
+    }
+    .hljs-bullet {
+        color: #f2cc60
+    }
+    .hljs-emphasis {
+        color: #c9d1d9;
+        font-style: italic
+    }
+    .hljs-strong {
+        color: #c9d1d9;
+        font-weight: 700
+    }
+    .hljs-addition {
+        color:
+            #aff5b4;
+        background-color: #033a16
+    }
+    .hljs-deletion {
+        color: #ffdcd7;
+        background-color: #67060c
+    }
+
+    .ps1::before {
+        color: #767676;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        content: '%';
+        margin: -1px;
+        cursor: pointer;
+    }
+    .ps1:hover:before {
+        color: #fff3d1;
+        background-color: #ad79c8;
+        border: 1px solid #563d7c;
+    }
+    .ps1::after {
+        content: ' ';
+        cursor: pointer;
+    }
+    /* See https://blog.logrocket.com/creating-beautiful-tooltips-with-only-css/ */
+    .ps1-tooltip {
+        position: relative;
+    }
+    .ps1-tooltip:before {
+        content: 'This line copied.';
+        font-family: Lato, sans-serif;
+        font-size: 80%;
+
+        position: absolute;
+
+        top: 50%;
+        transform: translateY(-50%);
+
+        left: 100%;
+        margin-left: 0px;
+
+        padding: 5px 10px 5px 10px;
+        border-radius: 10px;
+        background-color: #eee;
+        color: #333;
+        text-align: center;
+
+        opacity: 0;
+        transition: .3s opacity;
+    }
+    .ps1-tooltip.copied:before, .ps1-tooltip.copied:after {
+        opacity: 1;
+    }
+
+}
+
+.copy-button-whole {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0 6px;
+    border: 1px solid #ccc;
+    border-radius: 0 4px 0 4px;
+    color: #767676;
+    background-color: #fff;
+    font-size: 12px;
+    line-height: 20px;
+    cursor: pointer;
+}
+.copy-button-whole:before {
+    content: 'Copy ';
+}
+.copy-button-only-input {
+    padding: 0 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    color: #767676;
+    background-color: #fff;
+    font-size: 90%;
+    cursor: pointer;
+}
+.copy-button-only-input:before {
+    content: 'only input';
+}
+.copy-button-whole:hover {
+    color: #fff3d1;
+    background-color: #563d7c;
+    border: 1px solid #ad79c8;
+}
+.copy-button-only-input:hover {
+    color: #fff3d1;
+    background-color: #ad79c8;
+    border: 1px solid #8a68a1;
+}
+.terminal-tooltip {
+    position: absolute;
+    right: 0px;
+}
+.terminal-tooltip:before {
+    content: attr(data-text);
+    font-family: Lato, sans-serif;
+    font-size: 70%;
+
+    position: absolute;
+
+    top: 1.5em;
+    transform: translateY(50%);
+
+    right: .5em;
+
+    width: 9em;
+    padding: 5px 10px 5px 10px;
+    border-radius: 10px;
+    background-color: #eee;
+    color: #333;
+    text-align: center;
+    opacity: 0;
+    transition: .3s opacity;
+}
+.terminal-tooltip.copied:before {
+    opacity: 1;
+    transition: .3s opacity;
+}
+
+.ps2:before {
+    color: #aaa;
+    content: '… ';
+}
