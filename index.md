@@ -7,4 +7,4 @@
 - [Codeforces](https://codeforces.com/profile/rsk0315)
 - [Twitter](https://twitter.com/rsk0315_h4x)
 - [playground](playground)
-- [Jekyll blog](jelyll-blog)
+- [Jekyll blog](jekyll-blog)
