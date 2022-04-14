@@ -274,24 +274,6 @@
 <span id="189">189</span>
 <span id="190">190</span>
 <span id="191">191</span>
-<span id="192">192</span>
-<span id="193">193</span>
-<span id="194">194</span>
-<span id="195">195</span>
-<span id="196">196</span>
-<span id="197">197</span>
-<span id="198">198</span>
-<span id="199">199</span>
-<span id="200">200</span>
-<span id="201">201</span>
-<span id="202">202</span>
-<span id="203">203</span>
-<span id="204">204</span>
-<span id="205">205</span>
-<span id="206">206</span>
-<span id="207">207</span>
-<span id="208">208</span>
-<span id="209">209</span>
 </pre><pre class="rust"><code><span class="doccomment">//! 二分探索。</span>
 
 <span class="kw">use</span> <span class="ident">std::ops</span>::{<span class="ident">Range</span>, <span class="ident">RangeFrom</span>, <span class="ident">RangeTo</span>};
@@ -305,8 +287,9 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// この $x$ を返す。</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// # Implementation notes</span>
-<span class="doccomment">/// `impl Bisect for Range&lt;f64&gt;`（精度を指定しない方）に関して、回数指定が下手そう。</span>
+<span class="doccomment">/// # Idea</span>
+<span class="doccomment">/// - `RangeFrom&lt;u32&gt;` などに関しては [指数探索](https://rsk0315.hatenablog.com/entry/2021/12/19/124017)。</span>
+<span class="doccomment">/// - `Range&lt;f64&gt;` などに関しては [ビット表現を整数と見て二分探索](https://rsk0315.hatenablog.com/entry/2022/04/07/004618)。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">/// ```</span>
@@ -324,8 +307,9 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// let pred = |&amp;x: &amp;f64| 2.0_f64.powf(x) &lt; 3.0;</span>
 <span class="doccomment">/// let lg3 = 3.0_f64.log2();</span>
-<span class="doccomment">/// assert!(((1.0_f64..2.0).bisect(pred) - lg3).abs() &lt;= 5e-324);</span>
-<span class="doccomment">/// assert!(((1.0_f64..2.0, 1e-9).bisect(pred) - lg3).abs() &lt;= 1e-9);</span>
+<span class="doccomment">/// // 1.584962500721156</span>
+<span class="doccomment">/// assert!(((1.0_f64..2.0).bisect(pred) - lg3).abs() &lt;= 1e-16);</span>
+<span class="doccomment">/// assert_eq!((1.0_f64..2.0).bisect(pred), lg3); // !</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Bisect</span> {
     <span class="kw">type</span> <span class="ident">Input</span>;
@@ -389,55 +373,40 @@
 
 <span class="macro">impl_bisect_int!</span> { <span class="ident">i8</span> <span class="ident">i16</span> <span class="ident">i32</span> <span class="ident">i64</span> <span class="ident">i128</span> <span class="ident">isize</span> <span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span> }
 
-<span class="kw">trait</span> <span class="ident">BisectTimes</span> {
-    <span class="kw">type</span> <span class="ident">Input</span>;
-    <span class="kw">type</span> <span class="ident">Output</span>;
-    <span class="kw">fn</span> <span class="ident">bisect_times</span>(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">times</span>: <span class="ident">u32</span>,
-        <span class="ident">pred</span>: <span class="kw">impl</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::Input</span>) -&gt; <span class="ident">bool</span>,
-    ) -&gt; <span class="ident"><span class="self">Self</span>::Output</span>;
-}
-
 <span class="macro">macro_rules!</span> <span class="ident">impl_bisect_float</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span> <span class="ident">Bisect</span> <span class="kw">for</span> <span class="ident">Range</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span> {
-            <span class="kw">type</span> <span class="ident">Input</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>;
-            <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>;
-            <span class="kw">fn</span> <span class="ident">bisect</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">pred</span>: <span class="kw">impl</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>) -&gt; <span class="ident">bool</span>) -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
+    (
+        $(
+            (
+                <span class="macro-nonterminal">$</span><span class="macro-nonterminal">fty</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ity</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">uty</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">w</span>:<span class="ident">literal</span>,
+                <span class="macro-nonterminal">$</span><span class="macro-nonterminal">f2u</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">u2f</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span>:<span class="ident">ident</span>
+            ),
+        )<span class="op">*</span>
+    ) =&gt; { $(
+        <span class="kw">impl</span> <span class="ident">Bisect</span> <span class="kw">for</span> <span class="ident">Range</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">fty</span><span class="op">&gt;</span> {
+            <span class="kw">type</span> <span class="ident">Input</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">fty</span>;
+            <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">fty</span>;
+            <span class="kw">fn</span> <span class="ident">bisect</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">pred</span>: <span class="kw">impl</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">fty</span>) -&gt; <span class="ident">bool</span>) -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">fty</span> {
                 <span class="kw">let</span> <span class="ident">Range</span> { <span class="ident">start</span>, <span class="ident">end</span> } <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span>;
-                <span class="kw">let</span> <span class="ident">times</span> <span class="op">=</span> (<span class="ident">end</span> <span class="op">-</span> <span class="ident">start</span>).<span class="ident">log2</span>().<span class="ident">ceil</span>() <span class="kw">as</span> <span class="ident">u32</span> <span class="op">+</span> <span class="number">64</span> <span class="op">+</span> <span class="number">1</span>;
-                <span class="self">self</span>.<span class="ident">bisect_times</span>(<span class="ident">times</span>, <span class="ident">pred</span>)
+                <span class="kw">let</span> <span class="ident">start</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">f2u</span>(<span class="ident">start</span>);
+                <span class="kw">let</span> <span class="ident">end</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">f2u</span>(<span class="ident">end</span>);
+                <span class="macro-nonterminal">$</span><span class="macro-nonterminal">u2f</span>((<span class="ident">start</span>..<span class="ident">end</span>).<span class="ident">bisect</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">u</span><span class="op">|</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">u2f</span>(<span class="ident">u</span>))))
             }
         }
-
-        <span class="kw">impl</span> <span class="ident">Bisect</span> <span class="kw">for</span> (<span class="ident">Range</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>) {
-            <span class="kw">type</span> <span class="ident">Input</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>;
-            <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>;
-            <span class="kw">fn</span> <span class="ident">bisect</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">pred</span>: <span class="kw">impl</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>) -&gt; <span class="ident">bool</span>) -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-                <span class="kw">let</span> (<span class="ident">Range</span> { <span class="ident">start</span>, <span class="ident">end</span> }, <span class="ident">eps</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span>;
-                <span class="kw">let</span> <span class="ident">times</span> <span class="op">=</span> ((<span class="ident">end</span> <span class="op">-</span> <span class="ident">start</span>) <span class="op">/</span> <span class="ident">eps</span>).<span class="ident">log2</span>().<span class="ident">ceil</span>() <span class="kw">as</span> <span class="ident">u32</span> <span class="op">+</span> <span class="number">1</span>;
-                (<span class="ident">start</span>..<span class="ident">end</span>).<span class="ident">bisect_times</span>(<span class="ident">times</span>, <span class="ident">pred</span>)
-            }
+        <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span>(<span class="ident">u</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">uty</span>) -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">uty</span> {
+            ((<span class="ident">u</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ity</span> <span class="op">&gt;</span><span class="op">&gt;</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">w</span> <span class="op">-</span> <span class="number">1</span>)) <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">uty</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">1</span>) <span class="op">|</span> <span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">w</span> <span class="op">-</span> <span class="number">1</span>)
         }
-
-        <span class="kw">impl</span> <span class="ident">BisectTimes</span> <span class="kw">for</span> <span class="ident">Range</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span> {
-            <span class="kw">type</span> <span class="ident">Input</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>;
-            <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>;
-            <span class="kw">fn</span> <span class="ident">bisect_times</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">times</span>: <span class="ident">u32</span>, <span class="ident">pred</span>: <span class="kw">impl</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>) -&gt; <span class="ident">bool</span>) -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-                <span class="kw">let</span> <span class="ident">Range</span> { <span class="ident">start</span>: <span class="kw-2">mut</span> <span class="ident">ok</span>, <span class="ident">end</span>: <span class="kw-2">mut</span> <span class="ident">bad</span> } <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span>;
-                <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">times</span> {
-                    <span class="kw">let</span> <span class="ident">mid</span> <span class="op">=</span> <span class="number">0.5</span> <span class="op">*</span> (<span class="ident">ok</span> <span class="op">+</span> <span class="ident">bad</span>);
-                    <span class="kw-2">*</span>(<span class="kw">if</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">mid</span>) { <span class="kw-2">&amp;mut</span> <span class="ident">ok</span> } <span class="kw">else</span> { <span class="kw-2">&amp;mut</span> <span class="ident">bad</span> }) <span class="op">=</span> <span class="ident">mid</span>;
-                }
-                <span class="ident">bad</span>
-            }
+        <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">f2u</span>(<span class="ident">f</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">fty</span>) -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">uty</span> {
+            <span class="kw">let</span> <span class="ident">u</span> <span class="op">=</span> <span class="ident">f</span>.<span class="ident">to_bits</span>();
+            <span class="ident">u</span> <span class="op">^</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span>(<span class="ident">u</span>)
         }
-    };
-    ( $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span> )<span class="op">*</span> ) =&gt; { $( <span class="macro">impl_bisect_float!</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> } )<span class="op">*</span> };
+        <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">u2f</span>(<span class="ident">u</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">uty</span>) -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">fty</span> { <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">fty</span><span class="op">&gt;</span><span class="ident">::from_bits</span>(<span class="ident">u</span> <span class="op">^</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">mask</span>(<span class="op">!</span><span class="ident">u</span>)) }
+    )<span class="op">*</span> };
 }
 
-<span class="macro">impl_bisect_float!</span> { <span class="ident">f32</span> <span class="ident">f64</span> }
+<span class="macro">impl_bisect_float!</span> {
+    (<span class="ident">f32</span>, <span class="ident">i32</span>, <span class="ident">u32</span>, <span class="number">32</span>, <span class="ident">f2u32</span>, <span class="ident">u2f32</span>, <span class="ident">mask32</span>),
+    (<span class="ident">f64</span>, <span class="ident">i64</span>, <span class="ident">u64</span>, <span class="number">64</span>, <span class="ident">f2u64</span>, <span class="ident">u2f64</span>, <span class="ident">mask64</span>),
+}
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Bisect</span> <span class="kw">for</span> [<span class="ident">T</span>] {
     <span class="kw">type</span> <span class="ident">Input</span> <span class="op">=</span> <span class="ident">T</span>;
@@ -482,18 +451,13 @@
     {
         <span class="kw">let</span> <span class="ident">pred</span> <span class="op">=</span> <span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">f64</span><span class="op">|</span> <span class="number">2.0_f64</span>.<span class="ident">powf</span>(<span class="ident">x</span>) <span class="op">&lt;</span> <span class="number">3.0</span>;
         <span class="macro">assert!</span>(((<span class="number">1.0_f64</span>..<span class="number">2.0</span>).<span class="ident">bisect</span>(<span class="ident">pred</span>) <span class="op">-</span> <span class="number">3.0_f64</span>.<span class="ident">log2</span>()) <span class="op">&lt;</span><span class="op">=</span> <span class="number">5.0e-324</span>);
-        <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, (<span class="number">1.0_f64</span>..<span class="number">2.0</span>).<span class="ident">bisect</span>(<span class="ident">pred</span>));
+        <span class="comment">// println!(&quot;{:.40}&quot;, 3.0_f64.log2());</span>
+        <span class="comment">// println!(&quot;{:.40}&quot;, (1.0_f64..2.0).bisect(pred));</span>
     }
     {
         <span class="macro">assert_eq!</span>([<span class="number">0</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">9</span>].<span class="ident">bisect</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">i32</span><span class="op">|</span> <span class="ident">x</span> <span class="op">&lt;</span> <span class="number">5</span>), <span class="number">3</span>);
         <span class="macro">assert_eq!</span>((<span class="number">0</span>..<span class="number">100</span>).<span class="ident">bisect</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">i32</span><span class="op">|</span> <span class="ident">x</span> <span class="op">*</span> <span class="ident">x</span> <span class="op">&lt;</span> <span class="number">200</span>), <span class="number">15</span>);
         <span class="macro">assert_eq!</span>((<span class="number">0</span>..).<span class="ident">bisect</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">i32</span><span class="op">|</span> <span class="ident">x</span> <span class="op">*</span> <span class="ident">x</span> <span class="op">&lt;</span> <span class="number">200</span>), <span class="number">15</span>);
-    }
-    {
-        <span class="kw">let</span> <span class="ident">lg3</span> <span class="op">=</span> <span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">f64</span><span class="op">|</span> <span class="number">2.0_f64</span>.<span class="ident">powf</span>(<span class="ident">x</span>) <span class="op">&lt;</span> <span class="number">3.0</span>;
-        <span class="kw">let</span> <span class="ident">range</span> <span class="op">=</span> <span class="number">1.0_f64</span>..<span class="number">2.0</span>;
-        <span class="macro">assert!</span>((<span class="ident">range</span>.<span class="ident">bisect</span>(<span class="ident">lg3</span>) <span class="op">-</span> <span class="number">3.0_f64</span>.<span class="ident">log2</span>()).<span class="ident">abs</span>() <span class="op">&lt;</span><span class="op">=</span> <span class="number">5e-324</span>);
-        <span class="macro">assert!</span>(((<span class="ident">range</span>, <span class="number">1e-9</span>).<span class="ident">bisect</span>(<span class="ident">lg3</span>) <span class="op">-</span> <span class="number">3.0_f64</span>.<span class="ident">log2</span>()).<span class="ident">abs</span>() <span class="op">&lt;</span><span class="op">=</span> <span class="number">1e-9</span>);
     }
     {
         <span class="kw">let</span> <span class="ident">pred</span> <span class="op">=</span> <span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">i32</span><span class="op">|</span> <span class="ident">x</span> <span class="op">*</span> <span class="ident">x</span> <span class="op">&lt;</span> <span class="number">200</span>;
