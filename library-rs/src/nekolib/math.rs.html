@@ -197,6 +197,9 @@
 <span id="112">112</span>
 <span id="113">113</span>
 <span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
 </pre><pre class="rust"><code><span class="doccomment">//! 数学関連のアルゴリズムたち。</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! 基本的な数学関数。</span>
@@ -208,6 +211,7 @@
 <span class="comment">// pub mod polynomial;</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">bit_binom_</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">carmichael_lambda</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">common_quot</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">compact_sieve</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">const_div</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">continued_fraction_</span>;
@@ -245,6 +249,8 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">bit_binom_::bit_binom</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">carmichael_lambda::CarmichaelLambda</span>;
+<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">common_quot::CommonQuot</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">compact_sieve::CompactSieve</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
