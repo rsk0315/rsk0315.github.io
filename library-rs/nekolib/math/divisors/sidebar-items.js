@@ -1,1 +1,1 @@
-initSidebarItems({"trait":[["Divisors","約数列挙。"]]});
+initSidebarItems({"struct":[["DivisorsStruct",""]],"trait":[["Divisors","約数列挙。"]]});

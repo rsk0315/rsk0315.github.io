@@ -1,1 +1,1 @@
-initSidebarItems({"trait":[["Factors","素因数分解。"]]});
+initSidebarItems({"struct":[["FactorsStruct",""]],"trait":[["Factors","素因数分解。"]]});
