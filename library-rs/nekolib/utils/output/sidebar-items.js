@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["PerLine","形式つき出力（改行区切り）。"],["SpaceSep","形式つき出力（スペース区切り）。"]]});
