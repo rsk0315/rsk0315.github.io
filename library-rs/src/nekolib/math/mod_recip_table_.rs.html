@@ -177,6 +177,7 @@
 <span id="92">92</span>
 <span id="93">93</span>
 <span id="94">94</span>
+<span id="95">95</span>
 </pre><pre class="rust"><code><span class="doccomment">//! 素数 $m$ を法とした逆元のテーブル。</span>
 
 <span class="doccomment">/// 素数 $m$ を法とした逆元のテーブル。</span>
@@ -256,10 +257,11 @@
 
 <span class="attribute">#[<span class="ident">test</span>]</span>
 <span class="kw">fn</span> <span class="ident">test</span>() {
-    <span class="kw">use</span> <span class="ident">factors::Factors</span>;
-    <span class="kw">for</span> <span class="ident">m</span> <span class="kw">in</span> (<span class="number">2</span>..<span class="op">=</span><span class="number">100</span>).<span class="ident">filter</span>(<span class="op">|</span><span class="ident">m</span><span class="op">|</span> <span class="ident">m</span>.<span class="ident">factors</span>().<span class="ident">count</span>() <span class="op">==</span> <span class="number">1</span>) {
+    <span class="kw">use</span> <span class="ident">factors_dup::FactorsDup</span>;
+    <span class="kw">use</span> <span class="ident">gcd::Gcd</span>;
+    <span class="kw">for</span> <span class="ident">m</span> <span class="kw">in</span> (<span class="number">2_u64</span>..<span class="op">=</span><span class="number">1000</span>).<span class="ident">filter</span>(<span class="op">|</span><span class="ident">m</span><span class="op">|</span> <span class="ident">m</span>.<span class="ident">factors_dup</span>().<span class="ident">count</span>() <span class="op">==</span> <span class="number">1</span>) {
         <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">m</span> <span class="op">-</span> <span class="number">1</span>;
-        <span class="kw">let</span> <span class="ident">actual</span> <span class="op">=</span> <span class="ident">mod_recip_table</span>(<span class="ident">n</span>, <span class="ident">m</span>);
+        <span class="kw">let</span> <span class="ident">actual</span> <span class="op">=</span> <span class="ident">mod_recip_table_prime</span>(<span class="ident">n</span>, <span class="ident">m</span>);
         <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="op">=</span><span class="ident">n</span> {
             <span class="kw">let</span> <span class="ident">recip</span> <span class="op">=</span> <span class="ident">actual</span>[<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>];
             <span class="kw">if</span> <span class="ident">recip</span> <span class="op">==</span> <span class="number">0</span> {
