@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["SlopeFunction","区分線形凸関数。"]]});
+initSidebarItems({"struct":[["SlopeFunction","区分線形凸関数。"]],"trait":[["SlopeTrickInt",""]]});
