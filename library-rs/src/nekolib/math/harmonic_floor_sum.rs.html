@@ -386,7 +386,7 @@
         }
     }
     <span class="kw">fn</span> <span class="ident">quot_internal</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> {
-        <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">0</span> {
+        <span class="kw">if</span> <span class="ident">n</span> <span class="op">==</span> <span class="number">0</span> {
             <span class="kw">return</span> <span class="number">0</span>;
         }
         <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">search</span>(<span class="ident">n</span>);
@@ -428,7 +428,7 @@
         <span class="ident">end</span> <span class="op">-</span> <span class="ident">start</span>
     }
     <span class="kw">fn</span> <span class="ident">rem_internal</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> {
-        <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">0</span> {
+        <span class="kw">if</span> <span class="ident">n</span> <span class="op">==</span> <span class="number">0</span> {
             <span class="kw">return</span> <span class="number">0</span>;
         }
         <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">search</span>(<span class="ident">n</span>);
