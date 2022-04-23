@@ -136,11 +136,15 @@
 <span id="51">51</span>
 <span id="52">52</span>
 <span id="53">53</span>
+<span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
 </pre><pre class="rust"><code><span class="doccomment">//! 便利ちゃんたち。</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ここに何かを書く。</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">buf_range</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">e_macro</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">make_minmax</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">op_add</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">op_add_count</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">op_add_on_op_add_count</span>;
@@ -159,6 +163,8 @@
 
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">buf_range</span>::{<span class="ident">bounds_within</span>, <span class="ident">check_bounds</span>, <span class="ident">check_bounds_range</span>};
+<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">make_minmax</span>::{<span class="ident">MakeMax</span>, <span class="ident">MakeMin</span>};
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">op_add::OpAdd</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
