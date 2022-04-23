@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["BitSet","bit set。"],["Iter",""]]});
+initSidebarItems({"struct":[["BitSet","bit set。"],["RangeIndex",""],["RangeWord",""]]});
