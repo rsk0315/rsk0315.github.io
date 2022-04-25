@@ -455,6 +455,53 @@
 <span id="370">370</span>
 <span id="371">371</span>
 <span id="372">372</span>
+<span id="373">373</span>
+<span id="374">374</span>
+<span id="375">375</span>
+<span id="376">376</span>
+<span id="377">377</span>
+<span id="378">378</span>
+<span id="379">379</span>
+<span id="380">380</span>
+<span id="381">381</span>
+<span id="382">382</span>
+<span id="383">383</span>
+<span id="384">384</span>
+<span id="385">385</span>
+<span id="386">386</span>
+<span id="387">387</span>
+<span id="388">388</span>
+<span id="389">389</span>
+<span id="390">390</span>
+<span id="391">391</span>
+<span id="392">392</span>
+<span id="393">393</span>
+<span id="394">394</span>
+<span id="395">395</span>
+<span id="396">396</span>
+<span id="397">397</span>
+<span id="398">398</span>
+<span id="399">399</span>
+<span id="400">400</span>
+<span id="401">401</span>
+<span id="402">402</span>
+<span id="403">403</span>
+<span id="404">404</span>
+<span id="405">405</span>
+<span id="406">406</span>
+<span id="407">407</span>
+<span id="408">408</span>
+<span id="409">409</span>
+<span id="410">410</span>
+<span id="411">411</span>
+<span id="412">412</span>
+<span id="413">413</span>
+<span id="414">414</span>
+<span id="415">415</span>
+<span id="416">416</span>
+<span id="417">417</span>
+<span id="418">418</span>
+<span id="419">419</span>
 </pre><pre class="rust"><code><span class="doccomment">//! 全方位木 DP。</span>
 
 <span class="kw">use</span> <span class="ident">std::collections::VecDeque</span>;
@@ -570,6 +617,53 @@
 <span class="doccomment">///     &quot;((( 2 ) 0 )( 3 )( 5 ) 1 )&quot;,</span>
 <span class="doccomment">///     &quot;((( 2 ) 0 )( 3 )( 4 ) 1 )&quot;,</span>
 <span class="doccomment">/// ]);</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ## Applications</span>
+<span class="doccomment">/// ```ignore</span>
+<span class="doccomment">/// // typical90_am</span>
+<span class="doccomment">/// let empty = (0, 0);</span>
+<span class="doccomment">/// let map = |&amp;x: &amp;(usize, usize), _: &amp;()| (x.0 + x.1 + 1, x.1 + 1);</span>
+<span class="doccomment">/// let fold =</span>
+<span class="doccomment">///     |&amp;x: &amp;(usize, usize), &amp;y: &amp;(usize, usize)| (x.0 + y.0, x.1 + y.1);</span>
+<span class="doccomment">/// let res: usize =</span>
+<span class="doccomment">///     tc.each_root(empty, map, fold).into_iter().map(|x| x.0).sum();</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// ```ignore</span>
+<span class="doccomment">/// // abc220_f</span>
+<span class="doccomment">/// let empty = (0, 0);</span>
+<span class="doccomment">/// let map = |&amp;(x1, x0): &amp;(usize, usize), _: &amp;()| (x1 + x0 + 1, x0 + 1);</span>
+<span class="doccomment">/// let fold = |&amp;(x1, x0): &amp;(usize, usize), &amp;(y1, y0): &amp;(usize, usize)| {</span>
+<span class="doccomment">///     (x1 + y1, x0 + y0)</span>
+<span class="doccomment">/// };</span>
+<span class="doccomment">/// let res: Vec&lt;_&gt; =</span>
+<span class="doccomment">///     tc.each_root(empty, map, fold).into_iter().map(|(x1, _)| x1).collect();</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// ```ignore</span>
+<span class="doccomment">/// // abc222_f</span>
+<span class="doccomment">/// let empty = 0;</span>
+<span class="doccomment">/// let map = |&amp;x: &amp;i64, &amp;(d, w): &amp;(i64, i64)| x.max(d) + w;</span>
+<span class="doccomment">/// let fold = |&amp;x: &amp;i64, &amp;y: &amp;i64| x.max(y);</span>
+<span class="doccomment">/// let res = tc.each_root(empty, map, fold);</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// ```ignore</span>
+<span class="doccomment">/// // abc223_g</span>
+<span class="doccomment">/// let empty = false;</span>
+<span class="doccomment">/// let map = |&amp;x: &amp;bool, _: &amp;()| !x;</span>
+<span class="doccomment">/// let fold = |&amp;x: &amp;bool, &amp;y: &amp;bool| x | y;</span>
+<span class="doccomment">/// let res =</span>
+<span class="doccomment">///     tc.each_root(empty, map, fold).into_iter().filter(|&amp;x| !x).count();</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// ```ignore</span>
+<span class="doccomment">/// // s8pc_4_d</span>
+<span class="doccomment">/// let empty = (0.0, 0);</span>
+<span class="doccomment">/// let map = |&amp;x: &amp;(f64, usize), _: &amp;()| (x.0 + 1.0, 1);</span>
+<span class="doccomment">/// let fold = |&amp;x: &amp;(f64, usize), &amp;y: &amp;(f64, usize)| {</span>
+<span class="doccomment">///     let v = x.0 * x.1 as f64 + y.0 * y.1 as f64;</span>
+<span class="doccomment">///     let d = x.1 + y.1;</span>
+<span class="doccomment">///     (v / 1.0_f64.max(d as f64), d)</span>
+<span class="doccomment">/// };</span>
+<span class="doccomment">/// let res = tc.each_root(empty, map, fold);</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # References</span>
