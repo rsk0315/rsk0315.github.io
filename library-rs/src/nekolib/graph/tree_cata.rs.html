@@ -528,6 +528,36 @@
 <span id="443">443</span>
 <span id="444">444</span>
 <span id="445">445</span>
+<span id="446">446</span>
+<span id="447">447</span>
+<span id="448">448</span>
+<span id="449">449</span>
+<span id="450">450</span>
+<span id="451">451</span>
+<span id="452">452</span>
+<span id="453">453</span>
+<span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
+<span id="464">464</span>
+<span id="465">465</span>
+<span id="466">466</span>
+<span id="467">467</span>
+<span id="468">468</span>
+<span id="469">469</span>
+<span id="470">470</span>
+<span id="471">471</span>
+<span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
 </pre><pre class="rust"><code><span class="doccomment">//! 全方位木 DP。</span>
 
 <span class="kw">use</span> <span class="ident">std::collections::VecDeque</span>;
@@ -541,6 +571,11 @@
 <span class="doccomment">/// 式とかを書く。`todo!()`</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// 前処理パートは `map` `fold` に依らないので使い回しできる。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// `empty` は葉での値（頂点数 1 の木での値）と `fold` の単位元に対応している。</span>
+<span class="doccomment">/// 葉の値を特別扱いしたいときは、セグ木に半群を乗せるときのように、</span>
+<span class="doccomment">/// フラグを持たせれば対応できる（下記 Examples 参照）。</span>
+<span class="doccomment">/// 全体の頂点数が 1 だったときの処理を最後に分ける必要があるので注意。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Complexity</span>
 <span class="doccomment">/// $O(n)$ time.</span>
@@ -585,6 +620,24 @@
 <span class="doccomment">///     [8, 6, 12, 10, 10, 10]</span>
 <span class="doccomment">/// );</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// // (sum of root-leaf distance, # of leaves)</span>
+<span class="doccomment">/// let empty = ((0, 0), false);</span>
+<span class="doccomment">/// let map = |&amp;(x, inner): &amp;((usize, usize), bool), _: &amp;()| {</span>
+<span class="doccomment">///     let (x1, x0) = if inner { x } else { (0, 1) };</span>
+<span class="doccomment">///     ((x1 + 1 * x0, x0), true)</span>
+<span class="doccomment">/// };</span>
+<span class="doccomment">/// let fold = |&amp;x: &amp;((usize, usize), bool), &amp;y: &amp;((usize, usize), bool)| {</span>
+<span class="doccomment">///     let (x1, x0) = x.0;</span>
+<span class="doccomment">///     let (y1, y0) = y.0;</span>
+<span class="doccomment">///     ((x1 + y1, x0 + y0), x.1 | y.1)</span>
+<span class="doccomment">/// };</span>
+<span class="doccomment">/// assert_eq!(</span>
+<span class="doccomment">///     tc.each_root(empty, map, fold)</span>
+<span class="doccomment">///         .into_iter()</span>
+<span class="doccomment">///         .map(|x| if x.1 { x.0 } else { (0, 1) })</span>
+<span class="doccomment">///         .collect::&lt;Vec&lt;_&gt;&gt;(),</span>
+<span class="doccomment">///     [(7, 4), (5, 4), (9, 3), (7, 3), (7, 3), (7, 3)]</span>
+<span class="doccomment">/// );</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
@@ -692,6 +745,13 @@
 <span class="doccomment">///     let d = x.1 + y.1;</span>
 <span class="doccomment">///     (v / 1.0_f64.max(d as f64), d)</span>
 <span class="doccomment">/// };</span>
+<span class="doccomment">/// let res = tc.each_root(empty, map, fold);</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// ```ignore</span>
+<span class="doccomment">/// // dp_v</span>
+<span class="doccomment">/// let empty = 1;</span>
+<span class="doccomment">/// let map = |&amp;x: &amp;u64, _: &amp;()| (x + 1) % m;</span>
+<span class="doccomment">/// let fold = |&amp;x: &amp;u64, &amp;y: &amp;u64| x * y % m;</span>
 <span class="doccomment">/// let res = tc.each_root(empty, map, fold);</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// ```ignore</span>
