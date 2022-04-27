@@ -505,6 +505,29 @@
 <span id="420">420</span>
 <span id="421">421</span>
 <span id="422">422</span>
+<span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
+<span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
+<span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
+<span id="445">445</span>
 </pre><pre class="rust"><code><span class="doccomment">//! 全方位木 DP。</span>
 
 <span class="kw">use</span> <span class="ident">std::collections::VecDeque</span>;
@@ -670,6 +693,29 @@
 <span class="doccomment">///     (v / 1.0_f64.max(d as f64), d)</span>
 <span class="doccomment">/// };</span>
 <span class="doccomment">/// let res = tc.each_root(empty, map, fold);</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// ```ignore</span>
+<span class="doccomment">/// // abc160_f</span>
+<span class="doccomment">/// let mfb = ModFactorialBinom::new(n, MOD);</span>
+<span class="doccomment">/// let f = |i| mfb.factorial(i);</span>
+<span class="doccomment">/// let fr = |i| mfb.factorial_recip(i);</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// let empty = (0, 1, 1);</span>
+<span class="doccomment">/// let map = |&amp;x: &amp;(usize, u64, u64), _: &amp;()| {</span>
+<span class="doccomment">///     (x.0 + 1, fr(x.0 + 1), x.1 * x.2 % MOD * f(x.0) % MOD)</span>
+<span class="doccomment">/// };</span>
+<span class="doccomment">/// let fold = |&amp;x: &amp;(usize, u64, u64), &amp;y: &amp;(usize, u64, u64)| {</span>
+<span class="doccomment">///     (x.0 + y.0, (x.1 * y.1) % MOD, (x.2 * y.2) % MOD)</span>
+<span class="doccomment">/// };</span>
+<span class="doccomment">/// let res: Vec&lt;_&gt; = tc</span>
+<span class="doccomment">///     .each_root(empty, map, fold)</span>
+<span class="doccomment">///     .into_iter()</span>
+<span class="doccomment">///     .map(|x| map(&amp;x, &amp;()).2)</span>
+<span class="doccomment">///     .collect();</span>
+<span class="doccomment">///     </span>
+<span class="doccomment">/// // tdpc_tree</span>
+<span class="doccomment">/// let res =</span>
+<span class="doccomment">///     res.into_iter().fold(0_u64, |x, y| (x + y) % MOD) * mfb.recip(2) % MOD;</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # References</span>
