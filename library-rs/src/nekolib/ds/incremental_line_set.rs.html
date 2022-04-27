@@ -559,7 +559,7 @@
 <span class="doccomment">/// # References</span>
 <span class="doccomment">/// - &lt;https://noshi91.hatenablog.com/entry/2021/03/23/200810&gt;</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">IncrementalLineSet</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">IncrementalLineSet</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Ord</span><span class="op">&gt;</span> {
     <span class="ident">f</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">I</span><span class="op">&gt;</span>,
     <span class="ident">range</span>: <span class="ident">BTreeBimap</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">I</span><span class="op">&gt;</span>,
 }

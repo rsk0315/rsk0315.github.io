@@ -193,7 +193,7 @@
 <span class="doccomment">/// assert!(bimap.is_empty());</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BTreeBimap</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">R</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BTreeBimap</span><span class="op">&lt;</span><span class="ident">L</span>: <span class="ident">Ord</span>, <span class="ident">R</span>: <span class="ident">Ord</span><span class="op">&gt;</span> {
     <span class="ident">left</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">R</span><span class="op">&gt;</span>,
     <span class="ident">right</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">R</span>, <span class="ident">L</span><span class="op">&gt;</span>,
 }
