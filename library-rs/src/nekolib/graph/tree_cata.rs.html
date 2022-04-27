@@ -558,6 +558,19 @@
 <span id="473">473</span>
 <span id="474">474</span>
 <span id="475">475</span>
+<span id="476">476</span>
+<span id="477">477</span>
+<span id="478">478</span>
+<span id="479">479</span>
+<span id="480">480</span>
+<span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
+<span id="485">485</span>
+<span id="486">486</span>
+<span id="487">487</span>
+<span id="488">488</span>
 </pre><pre class="rust"><code><span class="doccomment">//! 全方位木 DP。</span>
 
 <span class="kw">use</span> <span class="ident">std::collections::VecDeque</span>;
@@ -753,6 +766,19 @@
 <span class="doccomment">/// let map = |&amp;x: &amp;u64, _: &amp;()| (x + 1) % m;</span>
 <span class="doccomment">/// let fold = |&amp;x: &amp;u64, &amp;y: &amp;u64| x * y % m;</span>
 <span class="doccomment">/// let res = tc.each_root(empty, map, fold);</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// ```ignore</span>
+<span class="doccomment">/// // dp_p</span>
+<span class="doccomment">/// let empty = (1, 1);</span>
+<span class="doccomment">/// let map = |&amp;x: &amp;(u64, u64), _: &amp;()| ((x.0 + x.1) % MOD, x.0);</span>
+<span class="doccomment">/// let fold =</span>
+<span class="doccomment">///     |&amp;x: &amp;(u64, u64), &amp;y: &amp;(u64, u64)| (x.0 * y.0 % MOD, x.1 * y.1 % MOD);</span>
+<span class="doccomment">/// let res: Vec&lt;_&gt; = tc</span>
+<span class="doccomment">///     .each_root(empty, map, fold)</span>
+<span class="doccomment">///     .into_iter()</span>
+<span class="doccomment">///     .map(|x| (x.0 + x.1) % MOD)</span>
+<span class="doccomment">///     .collect();</span>
+<span class="doccomment">/// assert!(res.iter().all(|&amp;x| x == res[0]));</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// ```ignore</span>
 <span class="doccomment">/// // abc160_f</span>
