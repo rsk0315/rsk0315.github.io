@@ -2,7 +2,7 @@
 - [ブログ](https://rsk0315.hatenablog.com/)
 - ライブラリ
     - [C++](https://rsk0315.github.io/library/) (deprecated)
-    - [Rust](https://rsk0315.github.io/library-rs/)
+    - [Rust](https://rsk0315.github.io/library-rs/nekolib/)
 - [AtCoder](https://atcoder.jp/users/rsk0315)
 - [Codeforces](https://codeforces.com/profile/rsk0315)
 - [Twitter](https://twitter.com/rsk0315_h4x)
