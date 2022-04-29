@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rich Terminal</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital@0;1&display=swap" rel="stylesheet">
+
+    <style>
+      body, input, textarea {
+          font-family: Lato;
+      }
+      * {
+          -webkit-box-sizing: border-box;
+          -moz-box-sizing: border-box;
+          /* box-sizing: border-box; */
+      }
+      .input-group-wrapper {
+          position: relative;
+          width: 16em;
+      }
+      .input-group {
+          width: 100%;
+          /* position: relative; */
+          display: table;
+          border-collapse: separate;
+          margin-top: 1em;
+          margin-bottom: 1em;
+      }
+      .input-prefix:not(:last-child) {
+          border-right: 0;
+          border-bottom-right-radius: 0;
+          border-top-right-radius: 0;
+      }
+      .input-prefix {   
+          padding: 6px 12px;
+          font-size: 14px;
+          font-weight: normal;
+          line-height: 1;
+          color: #555;
+          text-align: center;
+          background-color: #eee;
+          border: 1px solid #ccc;
+          border-radius: 3px;
+
+          width: 2.5em;
+          white-space: nowrap;
+          vertical-align: middle;
+
+          display: table-cell;
+
+          box-sizing: border-box;
+
+          border-collapse: separate;
+      }
+      .input-prefix:before {
+          font-family: Lato;
+          content: attr(data-text);
+      }
+      .input-body:not(:last-child) {
+          border-bottom-right-radius: 0;
+          border-top-right-radius: 0;
+      }
+      .input-body:not(:first-child) {
+          border-bottom-left-radius: 0;
+          border-top-left-radius: 0;
+      }
+      .input-body {
+          display: table-cell;
+          /* position: relative; */
+          /* z-index: 2; */
+          width: 100%;
+          margin-bottom: 0;
+
+          /* height: 34px; */
+          padding: 6px 12px;
+          font-size: 14px;
+          line-height: 1.42857143;
+          color: #555;
+          background-color: #fff;
+          background-image: none;
+          border: 1px solid #ccc;
+          border-radius: 3px;
+          box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%);
+          transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+      }
+      .input-body:focus {
+          border-color: #66afe9;
+          outline: 0;
+          box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%), 0 0 8px rgb(102 175 233 / 60%);
+      }
+      .input-suffix:not(:first-child) {
+          border-left: 0;
+          border-bottom-left-radius: 0;
+          border-top-left-radius: 0;
+      }
+      .input-suffix {
+          padding: 6px 12px;
+          font-size: 14px;
+          font-weight: normal;
+          line-height: 1;
+          color: #555;
+          text-align: center;
+          background-color: #eee;
+          border: 1px solid #ccc;
+          border-radius: 3px;
+
+          width: 2.5em;
+          white-space: nowrap;
+          vertical-align: middle;
+
+          display: table-cell;
+
+          box-sizing: border-box;
+
+          border-collapse: separate;
+      }
+      .input-suffix:before {
+          font-family: Lato;
+          content: attr(data-text);
+      }
+
+      /* --- */
+      .textarea-group-wrapper {
+          position: relative;
+      }
+      .textarea-group {
+          width: 100%;
+          /* position: relative; */
+          display: grid;
+          border-collapse: separate;
+          margin-top: 1em;
+          margin-bottom: 1em;
+      }
+      .textarea-prefix:not(last-child) {
+          border-bottom: 0;
+          border-bottom-left-radius: 0;
+          border-bottom-right-radius: 0;
+      }
+      .textarea-prefix {
+          width: 100%;
+          padding: 6px 12px;
+          font-size: 14px;
+          font-weight: normal;
+          line-height: 1;
+          color: #555;
+          text-align: left;
+          background-color: #eee;
+          border: 1px solid #ccc;
+          border-radius: 3px;
+
+          white-space: nowrap;
+          vertical-align: middle;
+
+          display: table-cell;
+
+          box-sizing: border-box;
+
+          border-collapse: separate;
+      }
+      .textarea-prefix:before {
+          font-family: Lato;
+          content: attr(data-text);
+      }
+      .textarea-body:not(:last-child) {
+          border-bottom-right-radius: 0;
+          border-bottom-left-radius: 0;
+      }
+      .textarea-body:not(:first-child) {
+          border-top-right-radius: 0;
+          border-top-left-radius: 0;
+      }
+      .textarea-body {
+          display: table-cell;
+          /* position: relative; */
+          z-index: 2;
+          margin-bottom: 0;
+          resize: vertical;
+
+          /* height: 34px; */
+          padding: 6px 12px;
+          font-size: 14px;
+          line-height: 1.42857143;
+          color: #555;
+          background-color: #fff;
+          background-image: none;
+          border: 1px solid #ccc;
+          border-radius: 3px;
+          box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%);
+          transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+      }
+      .textarea-body:focus {
+          border-color: #66afe9;
+          outline: 0;
+          box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%), 0 0 8px rgb(102 175 233 / 60%);
+      }
+      .textarea-suffix:not(:first-child) {
+          border-top: 0;
+          border-top-left-radius: 0;
+          border-top-right-radius: 0;
+      }
+      .textarea-suffix {
+          width: 100%;
+          padding: 6px 12px;
+          font-size: 14px;
+          font-weight: normal;
+          line-height: 1;
+          color: #555;
+          text-align: left;
+          background-color: #eee;
+          border: 1px solid #ccc;
+          border-radius: 3px;
+
+          white-space: nowrap;
+          vertical-align: middle;
+
+          display: table-cell;
+
+          box-sizing: border-box;
+
+          border-collapse: separate;
+      }
+      .textarea-suffix:before {
+          font-family: Lato;
+          content: attr(data-text);
+      }
+
+      .code-textarea {
+          font-family: monospace;
+      }
+
+      /* https://stackoverflow.com/questions/13126917/can-i-style-the-resize-grabber-of-textarea */
+      /* ::-webkit-resizer { */
+      /*     border: 2px solid black; */
+      /*     background: red; */
+      /*     box-shadow: 0 0 5px 5px blue; */
+      /*     outline: 2px solid yellow; */
+      /* } */
+
+      .tr-input-body {
+          margin-bottom: 0;
+
+          height: 20px;
+          padding: 6px 12px;
+          font-size: 14px;
+          line-height: 1.42857143;
+          color: #555;
+          background-color: #fff;
+          background-image: none;
+          border: 1px solid #ccc;
+          border-radius: 3px;
+          box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%);
+          transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+      }
+      .tr-input-body:focus {
+          border-color: #66afe9;
+          outline: 0;
+          box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%), 0 0 8px rgb(102 175 233 / 60%);
+      }
+      .tr-input-prefix:not(:last-child) {
+          border-right: 0;
+          border-bottom-right-radius: 0;
+          border-top-right-radius: 0;
+      }
+      .tr-input-prefix {
+          height: 20px;
+          padding: 6px 12px;
+          font-size: 14px;
+          font-weight: normal;
+          line-height: 1;
+          color: #555;
+          text-align: center;
+          background-color: #eee;
+          border: 1px solid #ccc;
+          border-radius: 3px;
+
+          width: 2.5em;
+          white-space: nowrap;
+          vertical-align: middle;
+
+          box-sizing: border-box;
+
+          border-collapse: separate;
+      }
+      .tr-input-prefix:before {
+          font-family: Lato;
+          content: attr(data-text);
+      }
+
+      .control-label {
+          color: #5f6368;
+          display: inline;
+          font-size: 12px;
+          /* left: 12px; */
+          /* margin-bottom: 0; */
+          max-width: 300px;
+          /* padding: 0; */
+          position: absolute;
+          top: -1.2em;
+          word-wrap: break-word;
+          border-radius: 4px;
+          font-weight: bold;
+      }
+    </style>
+
+    <script>
+      window.onload = function() {
+          [...document.getElementsByClassName('input-prefix')].forEach(e => {
+              e.addEventListener('click', ev => {
+                  ev.srcElement.parentElement.querySelector('.input-body').focus();
+              });
+          });
+      }
+    </script>
+ </head>
+  <body>
+
+    <div class="input-group-wrapper">
+      <label class="control-label" for="name">Name</label>
+      <div class="input-group">
+        <input class="input-body" type="text" name="name" id="name">
+      </div>
+    </div>
+
+    <div class="input-group-wrapper">
+      <label class="control-label" for="twitter-id">Twitter ID</label>
+      <div class="input-group">
+        <span class="input-prefix" data-text="@"></span>
+        <input class="input-body" type="text" name="twitter-id" id="twitter-id">
+      </div>
+    </div>
+
+    <div class="input-group-wrapper">
+      <label class="control-label" for="path">Directory</label>
+      <div class="input-group">
+        <input class="input-body" type="text" name="path" id="path">
+        <span class="input-suffix" data-text="/"></span>
+      </div>
+    </div>
+
+    <div class="input-group-wrapper">
+      <label class="control-label" for="command">Command</label>
+      <div class="input-group">
+        <span class="input-prefix" data-text="$("></span>
+        <input class="input-body" type="text" name="command" id="command">
+        <span class="input-suffix" data-text=")"></span>
+      </div>
+    </div>
+
+    <div class="textarea-group-wrapper">
+      <label class="control-label" for="codeblock">Code block</label>
+      <div class="textarea-group">
+        <span class="textarea-prefix" data-text="```"></span>
+        <textarea class="textarea-body code-textarea" id="codeblock"></textarea>
+        <span class="textarea-suffix" data-text="```"></span>
+      </div>
+    </div>
+
+  </body>
+</html>
+
