@@ -15,6 +15,7 @@ Twitter で困っている人がいたときにリンクを貼る手間を少な
   - おまじないの中身を知りたがっている初心者に貼る
 - [bitset のやつ](https://rsk0315.hatenablog.com/entry/2021/06/08/091128)
   - 64 倍高速化の話題になったら貼る
+- [計算量のやつ](https://rsk0315.hatenablog.com/entry/2021/10/13/235627)
 - [セグ木導入](https://rsk0315.hatenablog.com/entry/2020/07/05/184929)
 - [セグ木のスライド](https://hcpc-hokudai.github.io/archive/structure_segtree_001.pdf)
   - セグ木を知りたがっている人に貼る
