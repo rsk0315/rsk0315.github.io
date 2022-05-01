@@ -94,4 +94,8 @@ window.onload = function() {
         if (typeof elt === 'undefined') return;
         elt.click();
     });
+
+    Array.from(document.getElementsByTagName('table')).forEach(e => {
+        e.scrollLeft = 10000; // rightmost
+    });
 };

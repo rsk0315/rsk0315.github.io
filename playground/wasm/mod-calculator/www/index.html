@@ -38,7 +38,7 @@
 
     <style>
       .calculator {
-          width: min(600px, 100%);
+          width: min(566px, 100%);
       }
       .display {
           position: relative;
@@ -80,14 +80,23 @@
           font-family: Lato, sans-serif;
           color: #a11;
       }
-      td {
-          width: 6em;
+      table {
+          display: block;
+          overflow-x: auto;
+          white-space: nowrap;
+      }
+      table tbody {
+          display: table;
       }
       td>div {
+          width: 6em;
           height: 2.1em;
           text-align: center;
           cursor: pointer;
           line-height: 2.1em;
+      }
+      td:last-child>div {
+          width: 3em;
       }
       .int {
           background-color: #f1f3f4;
@@ -96,12 +105,14 @@
           border-radius: 4px;
       }
       #nullary-enter {
+          width: calc(100% - 2px);
           background-color: #4285f4;
           color: #fff;
           border: 1px solid #4285f4;
           border-radius: 4px;
       }
       #nullary-clear {
+          font-family: Lato, sans-serif;
           background-color: #f1bf42;
           color: #fff;
           border: 1px solid #f1bf42;
@@ -170,7 +181,7 @@
             <td><div class="binary" id="binary-ackermann">$A(a, b)$</div></td>
             <td><div class="int" id="int-0">$0$</div></td>
             <td colspan="2"><div id="nullary-enter">$\equiv$</div></td>
-            <td><div id="nullary-clear">clear</div></td>
+            <td><div id="nullary-clear">C</div></td>
           </tr>
         </tbody>
       </table>
