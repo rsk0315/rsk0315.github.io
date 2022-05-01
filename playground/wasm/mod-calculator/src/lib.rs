@@ -84,10 +84,7 @@ impl Operator {
                 if g == 1 {
                     Ok((lhs * r) % m)
                 } else {
-                    Err(format!(
-                        "Since $\\gcd({}, {}) \\ne 1, ${}^{{-1}}$ does not exist$.",
-                        rhs, m, rhs
-                    ))
+                    Err("It does not exist.".to_owned())
                 }
             }
             Operator::Pow => Ok(lhs.mod_pow(rhs, m)),

@@ -5,6 +5,10 @@
     <meta charset="utf-8">
     <title>mod $m$ calculator</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital@0;1&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
 
     <script src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
@@ -32,52 +36,144 @@
       
     </script>
 
+    <style>
+      .calculator {
+          width: min(600px, 100%);
+      }
+      .display {
+          position: relative;
+          margin-left: 3px;
+          margin-right: 3px;
+          padding-left: 3px;
+          padding-right: 3px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          height: 2em;
+      }
+      .message {
+          margin-top: 2px;
+          margin-left: 3px;
+          margin-right: 3px;
+          padding-left: 3px;
+          padding-right: 3px;
+          font-size: 11px;
+          height: 2em;
+      }
+      #mod {
+          margin-left: 3px;
+          margin-bottom: 3px;
+      }
+      #lhs {
+          position: absolute;
+          left: 8px;
+          top: 2px;
+          font-size: 12px;
+          color: #777;
+      }
+      #rhs {
+          position: absolute;
+          right: 8px;
+          bottom: 2px;
+          font-size: 20px;
+      }
+      #err {
+          font-family: Lato, sans-serif;
+          color: #a11;
+      }
+      td {
+          width: 6em;
+      }
+      td>div {
+          height: 2.1em;
+          text-align: center;
+          cursor: pointer;
+          line-height: 2em;
+      }
+      .int {
+          background-color: #f1f3f4;
+          color: #202124;
+          border: 1px solid #f1f3f4;
+          border-radius: 4px;
+      }
+      #nullary-enter {
+          background-color: #4285f4;
+          color: #fff;
+          border: 1px solid #4285f4;
+          border-radius: 4px;
+      }
+      #nullary-clear {
+          background-color: #f1bf42;
+          color: #fff;
+          border: 1px solid #f1bf42;
+          border-radius: 4px;
+      }
+      .unary, .binary {
+          background-color: #dadce0;
+          color: #202124;
+          border: 1px solid #dadce0;
+          border-radius: 4px;
+      }
+    </style>
   </head>
   <body>
     <h1>$\text{calculator}\pmod{m}$</h1>
-    <span id="mod">Please reload.</span>
 
     <script src="./bootstrap.js"></script>
 
-    <div>
-      <label for="lhs">lhs: </label>
-      <span id="lhs"></span>
-    </div>
-    <div>
-      <label for="rhs">rhs: </label>
-      <span id="rhs"></span>
-    </div>
-    <div>
-      <label for="err">err: </label>
-      <span id="err"></span>
-    </div>
+    <div class="calculator">
+      <div id="mod">Something went wrong. Please reload.</div>
 
-    <div>
-      <button id="int-0">$0$</button>
-      <button id="int-1">$1$</button>
-      <button id="int-2">$2$</button>
-      <button id="int-3">$3$</button>
-      <button id="int-4">$4$</button>
-      <button id="int-5">$5$</button>
-      <button id="int-6">$6$</button>
-      <button id="int-7">$7$</button>
-      <button id="int-8">$8$</button>
-      <button id="int-9">$9$</button>
-      <button id="binary-add">$+$</button>
-      <button id="binary-sub">$-$</button>
-      <button id="binary-mul">$\times$</button>
-      <button id="binary-div">$\div$</button>
-      <button id="unary-sqrt">$\sqrt{a}$</button>
-      <button id="binary-dlog">$\operatorname{dlog}_{a}(b)$</button>
-      <button id="binary-ackermann">$A(a, b)$</button>
-      <button id="binary-binom">${}_{a} C_{b}$</button>
-      <button id="binary-perm">${}_{a} P_{b}$</button>
-      <button id="binary-pow">${a}^{b}$</button>
-      <button id="binary-tetration">${}^{b} {a}$</button>
-      <button id="unary-factorial">${a}!$</button>
-      <button id="unary-reciprocal">${a}^{-1}$</button>
-      <button id="nullary-enter">$\equiv$</button>
-      <button id="nullary-clear">Clear</button>
+      <div class="display">
+        <span id="lhs"></span>
+        <span id="rhs"></span>
+      </div>
+      <div class="message">
+        <span id="err"></span>
+      </div>
+
+      <table>
+        <tbody>
+          <tr>
+            <td><div class="binary" id="binary-tetration">${}^{b} {a}$</div></td>
+            <td><div class="binary" id="binary-perm">${}_{a} P_{b}$</div></td>
+            <td><div class="unary" id="unary-reciprocal">$a^{-1}$</div></td>
+            <td><div class="unary" id="unary-factorial">$a!$</div></td>
+            <td><div class="binary" id="binary-pow">$a^b$</div></td>
+            <td><div class="binary" id="binary-div">$\div$</div></td>
+          </tr>
+          <tr>
+            <td><div class="binary"><code>todo!()</code></div></td>
+            <td><div class="binary" id="binary-binom">${}_{a} C_{b}$</div></td>
+            <td><div class="int" id="int-7">$7$</div></td>
+            <td><div class="int" id="int-8">$8$</div></td>
+            <td><div class="int" id="int-9">$9$</div></td>
+            <td><div class="binary" id="binary-mul">$\times$</div></td>
+          </tr>
+          <tr>
+            <td><div class="binary"><code>todo!()</code></div></td>
+            <td><div class="unary" id="unary-sqrt">$\sqrt{a}$</div></td>
+            <td><div class="int" id="int-4">$4$</div></td>
+            <td><div class="int" id="int-5">$5$</div></td>
+            <td><div class="int" id="int-6">$6$</div></td>
+            <td><div class="binary" id="binary-sub">$-$</div></td>
+          </tr>
+          <tr>
+            <td><div class="binary"><code>todo!()</code></div></td>
+            <td><div class="binary" id="binary-dlog">$\operatorname{dlog}_{a}(b)$</div></td>
+            <td><div class="int" id="int-1">$1$</div></td>
+            <td><div class="int" id="int-2">$2$</div></td>
+            <td><div class="int" id="int-3">$3$</div></td>
+            <td><div class="binary" id="binary-add">$+$</div></td>
+          </tr>
+          <tr>
+            <td><div class="binary"><code>todo!()</code></div></td>
+            <td><div class="binary" id="binary-ackermann">$A(a, b)$</div></td>
+            <td><div class="int" id="int-0">$0$</div></td>
+            <td colspan="2"><div id="nullary-enter">$\equiv$</div></td>
+            <td><div id="nullary-clear">clear</div></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </body>
 </html>

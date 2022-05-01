@@ -29,7 +29,7 @@ const eventListeners = {
     'binary-ackermann': [['A', 'a'], Operator.Ackermann],
     'binary-binom': [['C', 'c'], Operator.Binom],
     'binary-perm': [['P', 'p'], Operator.Perm],
-    'binary-tetration': [[], Operator.Tetration],
+    'binary-tetration': [['t'], Operator.Tetration],
 
     'nullary-enter': [
         ['=', 'Enter'],
@@ -89,6 +89,7 @@ window.onload = function() {
     }
 
     document.addEventListener('keydown', ev => {
+        if (ev.metaKey) return;
         let elt = keyToElt[ev.key];
         if (typeof elt === 'undefined') return;
         elt.click();
