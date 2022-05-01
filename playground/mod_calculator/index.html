@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8">
+    <title>mod $m$ calculator</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js"                  integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/auto-render.min.js"    integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+    <script>
+      const KaTeXOptions = {
+          delimiters: [
+              {left: "$$", right: "$$", display: true},
+              {left: "\\[", right: "\\]", display: true},
+              {left: "$", right: "$", display: false},
+              {left: "\\(", right: "\\)", display: false},
+          ],
+          macros: {
+              "\\halfopen": "[#1, #2)",
+              "\\floor": "\\lfloor#1\\rfloor",
+              "\\ceil": "\\lceil#1\\rceil",
+              "\\Floor": "\\left\\lfloor#1\\right\\rfloor",
+              "\\Ceil": "\\left\\lceil#1\\right\\rceil",
+          },
+      };
+      document.addEventListener("DOMContentLoaded", function() {
+          renderMathInElement(document.body, KaTeXOptions);
+      });
+    </script>
+
+  </head>
+  <body>
+    <h1>$\text{calculator}\pmod{m}$</h1>
+    <span id="mod"></span>
+
+    <script src="./bootstrap.js"></script>
+
+    <div>
+      <label for="lhs">lhs: </label>
+      <span id="lhs"></span>
+    </div>
+    <div>
+      <label for="rhs">rhs: </label>
+      <span id="rhs"></span>
+    </div>
+    <div>
+      <label for="err">err: </label>
+      <span id="err"></span>
+    </div>
+
+    <div>
+      <button id="int-0">0</button>
+      <button id="int-1">1</button>
+      <button id="int-2">2</button>
+      <button id="int-3">3</button>
+      <button id="int-4">4</button>
+      <button id="int-5">5</button>
+      <button id="int-6">6</button>
+      <button id="int-7">7</button>
+      <button id="int-8">8</button>
+      <button id="int-9">9</button>
+      <button id="unary-square">^2</button>
+      <button id="binary-plus">+</button>
+      <button id="nullary-enter">&#x2261;</button>
+      <button id="nullary-clear">Clear</button>
+    </div>
+  </body>
+</html>
