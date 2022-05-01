@@ -15,8 +15,21 @@ const eventListeners = {
     'int-7': [['7'], 7n],
     'int-8': [['8'], 8n],
     'int-9': [['9'], 9n],
-    'unary-square': [[], Operator.Square],
-    'binary-plus': [['+'], Operator.Plus],
+
+    'unary-sqrt': [['v'], Operator.Sqrt],
+    'unary-factorial': [['!'], Operator.Factorial],
+    'unary-reciprocal': [['r', 'i'], Operator.Reciprocal],
+
+    'binary-add': [['+'], Operator.Add],
+    'binary-sub': [['-'], Operator.Sub],
+    'binary-mul': [['*'], Operator.Mul],
+    'binary-div': [['/'], Operator.Div],
+    'binary-pow': [['^'], Operator.Pow],
+    'binary-dlog': [['d', 'l'], Operator.DLog],
+    'binary-ackermann': [['A'], Operator.Ackermann],
+    'binary-binom': [['C', 'c'], Operator.Binom],
+    'binary-perm': [['P', 'p'], Operator.Perm],
+    'binary-tetration': [[], Operator.Tetration],
 
     'nullary-enter': [
         ['=', 'Enter'],
@@ -30,8 +43,12 @@ const eventListeners = {
 
 window.onload = function() {
     const modElt = document.getElementById('mod');
-    modElt.innerText = `($m = ${mod}$${calcStack.prime_mod()? ', prime': ''})`;
-    renderMathInElement(modElt, KaTeXOptions);
+    const modMessage = calcStack.mod_message();
+    modElt.innerHTML = (
+        katex.renderToString(`m = ${mod}`)
+            + (modMessage? `, ${modMessage}`: '')
+    );
+    const r = e => renderMathInElement(e, KaTeXOptions);
 
     const keyToElt = {};
     const lhsElt = document.getElementById('lhs');
@@ -58,9 +75,13 @@ window.onload = function() {
             default:
                 console.log(id.split('-', 1)[0]);
             }
-            lhsElt.innerText = res.lhs();
-            rhsElt.innerText = calcStack.get();
-            errElt.innerText = res.err();
+            lhsElt.innerHTML = `$${res.lhs()}$`;
+            rhsElt.innerHTML = `$${calcStack.get()}$`;
+            errElt.innerHTML = res.err();
+
+            r(lhsElt);
+            r(rhsElt);
+            r(errElt);
         });
         for (let key of keyList) {
             keyToElt[key] = elt;

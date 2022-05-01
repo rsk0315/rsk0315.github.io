@@ -5,9 +5,11 @@
     <meta charset="utf-8">
     <title>mod $m$ calculator</title>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js"                  integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/auto-render.min.js"    integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
     <script>
       const KaTeXOptions = {
           delimiters: [
@@ -27,12 +29,13 @@
       document.addEventListener("DOMContentLoaded", function() {
           renderMathInElement(document.body, KaTeXOptions);
       });
+      
     </script>
 
   </head>
   <body>
     <h1>$\text{calculator}\pmod{m}$</h1>
-    <span id="mod"></span>
+    <span id="mod">Please reload.</span>
 
     <script src="./bootstrap.js"></script>
 
@@ -50,19 +53,30 @@
     </div>
 
     <div>
-      <button id="int-0">0</button>
-      <button id="int-1">1</button>
-      <button id="int-2">2</button>
-      <button id="int-3">3</button>
-      <button id="int-4">4</button>
-      <button id="int-5">5</button>
-      <button id="int-6">6</button>
-      <button id="int-7">7</button>
-      <button id="int-8">8</button>
-      <button id="int-9">9</button>
-      <button id="unary-square">^2</button>
-      <button id="binary-plus">+</button>
-      <button id="nullary-enter">&#x2261;</button>
+      <button id="int-0">$0$</button>
+      <button id="int-1">$1$</button>
+      <button id="int-2">$2$</button>
+      <button id="int-3">$3$</button>
+      <button id="int-4">$4$</button>
+      <button id="int-5">$5$</button>
+      <button id="int-6">$6$</button>
+      <button id="int-7">$7$</button>
+      <button id="int-8">$8$</button>
+      <button id="int-9">$9$</button>
+      <button id="binary-add">$+$</button>
+      <button id="binary-sub">$-$</button>
+      <button id="binary-mul">$\times$</button>
+      <button id="binary-div">$\div$</button>
+      <button id="unary-sqrt">$\sqrt{a}$</button>
+      <button id="binary-dlog">$\operatorname{dlog}_{a}(b)$</button>
+      <button id="binary-ackermann">$A(a, b)$</button>
+      <button id="binary-binom">${}_{a} C_{b}$</button>
+      <button id="binary-perm">${}_{a} P_{b}$</button>
+      <button id="binary-pow">${a}^{b}$</button>
+      <button id="binary-tetration">${}^{b} {a}$</button>
+      <button id="unary-factorial">${a}!$</button>
+      <button id="unary-reciprocal">${a}^{-1}$</button>
+      <button id="nullary-enter">$\equiv$</button>
       <button id="nullary-clear">Clear</button>
     </div>
   </body>
