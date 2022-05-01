@@ -37,7 +37,7 @@ const eventListeners = {
     ],
 };
 
-window.onload = () => {
+function init() {
     const qmod = location.search.match(/\bmod=(\d+)\b/);
     const mod = (qmod != null)? BigInt(qmod[1]): 998244353n;
     const calcStack = CalcStack.new(mod);
@@ -99,3 +99,5 @@ window.onload = () => {
         e.scrollLeft = 10000; // rightmost
     });
 }
+
+init();
