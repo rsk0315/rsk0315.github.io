@@ -59,7 +59,7 @@ impl Operator {
         let n = arg1 as u128;
         let m = m as u128;
         let res = match self {
-            Operator::Sqrt => m.mod_sqrt(m),
+            Operator::Sqrt => n.mod_sqrt(m),
             Operator::Factorial => Ok(n.mod_factorial(m)),
             Operator::Reciprocal => n.mod_reciprocal(m),
             _ => Err("bad".to_string()),
@@ -95,7 +95,7 @@ impl Operator {
                 lhs.dlog(rhs, m).ok_or_else(|| "It does not exist.".to_owned())
             }
             Operator::Ackermann => Ok(lhs.mod_ackermann(rhs, m)),
-            Operator::Binom => Ok(lhs.mod_binom(rhs, m)),
+            Operator::Binom => lhs.mod_binom(rhs, m),
             Operator::Perm => Ok(lhs.mod_perm(rhs, m)),
             Operator::Tetration => Ok(lhs.mod_tetration(rhs, m)),
             _ => panic!(),
@@ -157,10 +157,10 @@ impl CalcStack {
     }
     pub fn unary(&mut self, op: Operator) -> CalcResult {
         let n = self.int;
+        self.int_mode = false;
         match op.unary(n, self.m) {
             (lhs, Ok(rhs)) => {
                 self.int = rhs;
-                self.int_mode = false;
                 CalcResult { lhs, err: "".to_owned() }
             }
             (lhs, Err(err)) => CalcResult { lhs, err },
@@ -170,6 +170,7 @@ impl CalcStack {
         let lhs = self.int;
         self.op = Some((op, self.int));
         self.int = 0;
+        self.int_mode = false;
         CalcResult {
             lhs: op.display_binary_wip(lhs, None),
             err: "".to_owned(),
@@ -188,6 +189,7 @@ impl CalcStack {
                         }
                         (lhs, Err(err)) => {
                             self.int = 0;
+                            self.int_mode = false;
                             (lhs, err)
                         }
                     }

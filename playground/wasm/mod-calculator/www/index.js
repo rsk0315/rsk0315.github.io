@@ -26,7 +26,7 @@ const eventListeners = {
     'binary-div': [['/'], Operator.Div],
     'binary-pow': [['^'], Operator.Pow],
     'binary-dlog': [['d', 'l'], Operator.DLog],
-    'binary-ackermann': [['A'], Operator.Ackermann],
+    'binary-ackermann': [['A', 'a'], Operator.Ackermann],
     'binary-binom': [['C', 'c'], Operator.Binom],
     'binary-perm': [['P', 'p'], Operator.Perm],
     'binary-tetration': [[], Operator.Tetration],
