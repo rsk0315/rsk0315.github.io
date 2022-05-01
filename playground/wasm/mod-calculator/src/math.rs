@@ -65,6 +65,6 @@ impl Calc for u128 {
         if m == 1 || lhs < rhs || rhs >= m {
             return 0;
         }
-        (lhs - rhs + 1..=rhs).fold(1, |x, y| x * y % m)
+        (lhs - rhs + 1..=lhs).fold(1, |x, y| x * y % m)
     }
 }

@@ -96,7 +96,7 @@ impl Operator {
             }
             Operator::Ackermann => Ok(lhs.mod_ackermann(rhs, m)),
             Operator::Binom => Ok(lhs.mod_binom(rhs, m)),
-            Operator::Perm => todo!(),
+            Operator::Perm => Ok(lhs.mod_perm(rhs, m)),
             Operator::Tetration => Ok(lhs.mod_tetration(rhs, m)),
             _ => panic!(),
         };
