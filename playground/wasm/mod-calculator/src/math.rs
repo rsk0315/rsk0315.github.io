@@ -148,14 +148,7 @@ impl Calc for u128 {
     fn mod_reciprocal(self, m: u128) -> Result<u128, String> {
         let n = self;
         let (g, r) = n.gcd_recip(m);
-        if g == 1 {
-            Ok(r)
-        } else {
-            Err(format!(
-                "${}^{{-1}}$ does not exist, since $\\gcd({}, {}) \\ne 1$.",
-                n, n, m
-            ))
-        }
+        if g == 1 { Ok(r) } else { Err("It does not exist.".to_owned()) }
     }
     fn mod_binom(self, rhs: u128, m: u128) -> Result<u128, String> {
         if !(m as u64).is_prime() {
