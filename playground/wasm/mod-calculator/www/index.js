@@ -50,6 +50,12 @@ window.onload = function() {
     );
     const r = e => renderMathInElement(e, KaTeXOptions);
 
+    // XXX .latex-mathml があると overflow: scroll で隠しているあたりの
+    // 余白が body かなにかに影響して表示が変になる？ よくわかんない
+    Array.from(document.getElementsByClassName('katex-mathml')).forEach(e => {
+        e.remove()
+    });
+
     const keyToElt = {};
     const lhsElt = document.getElementById('lhs');
     const rhsElt = document.getElementById('rhs');

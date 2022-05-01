@@ -80,23 +80,33 @@
           font-family: Lato, sans-serif;
           color: #a11;
       }
+      .table-wrapper {
+          width: 100%;
+          overflow: hidden;
+      }
       table {
+          width: 100%;
           display: block;
           overflow-x: auto;
+          overflow-y: hidden;
           white-space: nowrap;
       }
       table tbody {
           display: table;
       }
-      td>div {
+      td {
           width: 6em;
+          min-width: 6em;
+      }
+      td>div {
           height: 2.1em;
           text-align: center;
           cursor: pointer;
           line-height: 2.1em;
       }
-      td:last-child>div {
+      td:last-child {
           width: 3em;
+          min-width: 3em;
       }
       .int {
           background-color: #f1f3f4;
@@ -142,6 +152,7 @@
         <span id="err"></span>
       </div>
 
+      <div class="table-wrapper">
       <table>
         <tbody>
           <tr>
@@ -185,6 +196,7 @@
           </tr>
         </tbody>
       </table>
+      </div>
     </div>
   </body>
 </html>
