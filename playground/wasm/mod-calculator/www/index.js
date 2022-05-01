@@ -37,19 +37,10 @@ const eventListeners = {
     ],
 };
 
-console.log('out');
 window.onload = () => {
     const qmod = location.search.match(/\bmod=(\d+)\b/);
     const mod = (qmod != null)? BigInt(qmod[1]): 998244353n;
-
-    let count = 0;
-    setInterval(() => {
-        console.log(++count);
-        console.log(`${CalcStack}`.substr(0, 10));
-    }, 300);
-
     const calcStack = CalcStack.new(mod);
-    console.log(`${calcStack}`);
 
     const modElt = document.getElementById('mod');
     const modMessage = calcStack.mod_message();
