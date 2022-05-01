@@ -1,8 +1,4 @@
-import { succ, CalcStack, Operator } from "mod-calculator";
-
-const qmod = location.search.match(/\bmod=(\d+)\b/);
-const mod = (qmod != null)? BigInt(qmod[1]): 998244353n;
-const calcStack = CalcStack.new(mod);
+import { CalcStack, Operator } from "mod-calculator";
 
 const eventListeners = {
     'int-0': [['0'], 0n],
@@ -41,7 +37,20 @@ const eventListeners = {
     ],
 };
 
-window.onload = function() {
+console.log('out');
+window.onload = () => {
+    const qmod = location.search.match(/\bmod=(\d+)\b/);
+    const mod = (qmod != null)? BigInt(qmod[1]): 998244353n;
+
+    let count = 0;
+    setInterval(() => {
+        console.log(++count);
+        console.log(`${CalcStack}`.substr(0, 10));
+    }, 300);
+
+    const calcStack = CalcStack.new(mod);
+    console.log(`${calcStack}`);
+
     const modElt = document.getElementById('mod');
     const modMessage = calcStack.mod_message();
     modElt.innerHTML = (
@@ -49,12 +58,6 @@ window.onload = function() {
             + (modMessage? `, ${modMessage}`: '')
     );
     const r = e => renderMathInElement(e, KaTeXOptions);
-
-    // XXX .latex-mathml があると overflow: scroll で隠しているあたりの
-    // 余白が body かなにかに影響して表示が変になる？ よくわかんない
-    Array.from(document.getElementsByClassName('katex-mathml')).forEach(e => {
-        e.remove()
-    });
 
     const keyToElt = {};
     const lhsElt = document.getElementById('lhs');
@@ -104,4 +107,4 @@ window.onload = function() {
     Array.from(document.getElementsByTagName('table')).forEach(e => {
         e.scrollLeft = 10000; // rightmost
     });
-};
+}
