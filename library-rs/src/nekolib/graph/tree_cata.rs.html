@@ -571,6 +571,49 @@
 <span id="486">486</span>
 <span id="487">487</span>
 <span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
+<span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
+<span id="514">514</span>
+<span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
+<span id="518">518</span>
+<span id="519">519</span>
+<span id="520">520</span>
+<span id="521">521</span>
+<span id="522">522</span>
+<span id="523">523</span>
+<span id="524">524</span>
+<span id="525">525</span>
+<span id="526">526</span>
+<span id="527">527</span>
+<span id="528">528</span>
+<span id="529">529</span>
+<span id="530">530</span>
+<span id="531">531</span>
 </pre><pre class="rust"><code><span class="doccomment">//! 全方位木 DP。</span>
 
 <span class="kw">use</span> <span class="ident">std::collections::VecDeque</span>;
@@ -580,15 +623,54 @@
 <span class="doccomment">/// 木の catamorphism。</span>
 <span class="doccomment">/// 各頂点を根としたときのものをまとめて求める。</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// 子での値を辺の値を使って `map` したものたちを、`fold` するのを繰り返す。</span>
-<span class="doccomment">/// 式とかを書く。`todo!()`</span>
+<span class="doccomment">/// 二項演算 $\circ: S\\times S\\to S$ と $\star: S\\times T\\to S$ を考える。</span>
+<span class="doccomment">/// $(S, \\circ)$ は単位元 $\\mathrm{id}\_{\\circ}$ を持つとする。</span>
+<span class="doccomment">/// 木の各辺は一つずつ $T$ の値を持っているとし、辺 $(v, u)$ の値を $e\_{v, u}$</span>
+<span class="doccomment">/// とする。</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// 前処理パートは `map` `fold` に依らないので使い回しできる。</span>
+<span class="doccomment">/// 頂点 $v$ が葉のとき、$f(v) = \\mathrm{id}\_{\\circ}$ とする[^1]。</span>
+<span class="doccomment">/// そうでないとき、$v$ に隣接する頂点を順に</span>
+<span class="doccomment">/// $\\langle u\_1, u\_2, \\dots, u\_k\\rangle$ とする。$v$ が根のとき、</span>
+<span class="doccomment">/// $$ f(v) = (f\_v(u\_1)\\star e\_{u\_1, v})\\circ\\dots\\circ(f\_v(u\_k)\\star e\_{u\_k, v}) $$</span>
+<span class="doccomment">/// で定める。ただし、$f\_v(u)$ は、「$v$ を取り除いた森において $u$ を含む木で</span>
+<span class="doccomment">/// $u$ を根としたもの」における $f(u)$ とする。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// [^1]: すなわち、頂点数 1 の木における $f$ の値が $\\mathrm{id}\_{\\circ}$ となる。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// &lt;img src=&quot;../../../../images/tree_cata.png&quot; width=&quot;300&quot; alt=&quot;&quot;&gt;&lt;img src=&quot;../../../../../images/tree_cata.png&quot; width=&quot;300&quot; alt=&quot;&quot;&gt;</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// 上図グラフにおいて、頂点 $1$ に隣接する頂点のうち、$0$ が最後に来るものとすれば</span>
+<span class="doccomment">/// $$ \\begin{aligned}</span>
+<span class="doccomment">/// f(1) &amp;= f\_0(1)\\circ(f\_1(0)\\star e\_{0, 1}) \\\\</span>
+<span class="doccomment">/// &amp;= f\_0(1) \\circ ((f\_0(2)\\star e\_{2, 0})\\star e\_{0, 1})</span>
+<span class="doccomment">/// \\end{aligned} $$</span>
+<span class="doccomment">/// のようになる。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// このように定められる $f$ に対し、$f(0), f(1), \\dots, f(n-1)$ を求める。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Idea</span>
+<span class="doccomment">/// まず、根を $0$ として木をトポロジカルソートしておく。</span>
+<span class="doccomment">/// これにより、ボトムアップの DP を単にループで行うことができ、$f(0)$</span>
+<span class="doccomment">/// が求まる。次に、上で $f(1)$ を求めたときのように、トップダウンに DP</span>
+<span class="doccomment">/// をしながら（ボトムアップの DP での結果を利用して）残りの頂点について求める。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ## Implementation notes</span>
+<span class="doccomment">/// トポロジカルソートの前処理パートは、木が同じであれば $(\\circ, \\star)$</span>
+<span class="doccomment">/// に依らないので使い回しできる。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// 実装においては、$\\circ: S\\times S\\to S$ を `fold`、$\\mathrm{id}\_{\\circ}$</span>
+<span class="doccomment">/// を `empty`、$\\star: S\\times T\\to S$ を `map` と呼んでいる。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// `empty` は葉での値（頂点数 1 の木での値）と `fold` の単位元に対応している。</span>
 <span class="doccomment">/// 葉の値を特別扱いしたいときは、セグ木に半群を乗せるときのように、</span>
-<span class="doccomment">/// フラグを持たせれば対応できる（下記 Examples 参照）。</span>
+<span class="doccomment">/// フラグを持たせれば対応できる（下記の root-leaf の距離の総和の例を参照）。</span>
 <span class="doccomment">/// 全体の頂点数が 1 だったときの処理を最後に分ける必要があるので注意。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// 各頂点における頂点の順序を気にした実装になっているため、「各頂点を根として</span>
+<span class="doccomment">/// DFS したときの post-order で各頂点を並べ、その列に基数 $b$・法 $m$ の</span>
+<span class="doccomment">/// rolling hash を適用したときの値を求めよ」といった問題も処理できるはず。</span>
+<span class="doccomment">/// ハッシュ値 $h$ と、部分木サイズ $k$ に対して $(h, b^k\\bmod m)$</span>
+<span class="doccomment">/// とかを管理すればよさそう。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Complexity</span>
 <span class="doccomment">/// $O(n)$ time.</span>
@@ -715,6 +797,10 @@
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ## Applications</span>
+<span class="doccomment">/// AtCoder における利用例。$(S, \\circ, \\mathrm{id}\_{\\circ}, T, \\star)$</span>
+<span class="doccomment">/// の定義と、$\\langle f(0), f(1), \\dots, f(n-1)\\rangle$</span>
+<span class="doccomment">/// を用いて答えを得る部分のみ載せている。</span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// ```ignore</span>
 <span class="doccomment">/// // typical90_am</span>
 <span class="doccomment">/// let empty = (0, 0);</span>
@@ -806,7 +892,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// # References</span>
 <span class="doccomment">/// - &lt;https://qiita.com/Kiri8128/items/a011c90d25911bdb3ed3&gt;</span>
-<span class="doccomment">///     - Efficient and easy 全方位木 DP。</span>
+<span class="doccomment">///     - トポロジカルソートで求める話が書かれている。</span>
 <span class="doccomment">/// - &lt;https://fsharpforfunandprofit.com/posts/recursive-types-and-folds-1b/&gt;</span>
 <span class="doccomment">///     - catamorphism の話が載っている。</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TreeCata</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
