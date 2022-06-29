@@ -8,3 +8,4 @@
 - [Twitter](https://twitter.com/rsk0315_h4x)
 - [playground](playground)
 - [Jekyll blog](jekyll-blog)
+- [勉強会スライド](slides)
