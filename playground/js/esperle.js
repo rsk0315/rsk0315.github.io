@@ -8499,13 +8499,23 @@ const DICTIONARY = new Set([
     "zymin",
 ].map(e => e.toUpperCase()));
 
-function green(input) {
-    return Array.from(input).map(
-        c => `<div class="tile">&nbsp;${c}&nbsp;</div>`).join(' ');
+function colorize(actual, result) {
+    return actual.split('')
+        .map((c, i) => `<div class="tile tile-${decodeResult(result[i])}">${c}</div>`)
+        .join('');
+}
+
+function colorizeEmoji(result) {
+    return result.map(e => decodeResultEmoji(e)).join('');
 }
 
 let done = false;
 let regex = 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions';
+
+function today() {
+    // local date ではない
+    return Math.floor(new Date() / 86400000);
+}
 
 function judgeEvent() {
     if (done) return;
@@ -8513,13 +8523,28 @@ function judgeEvent() {
     let inputUpperCase = input.toUpperCase();
     let err = document.getElementById('err');
     if (DICTIONARY.has(inputUpperCase)) {
+        // その日の最初の推測を正解にする。
+        let ts = today();
+        let answer = localStorage.getItem(ts) ?? inputUpperCase;
+        localStorage.setItem(ts, answer);
+
         let output = document.getElementById('output');
-        output.innerHTML = green(input);
+        let result = judge(inputUpperCase, answer);
+        output.innerHTML = colorize(inputUpperCase, result);
+        shareText += colorizeEmoji(result) + '%0A';
         done = true;
         err.innerHTML = '';
+
+        let correct = result.every(e => e === CORRECT);
         let share = document.getElementById('share');
         share.classList.remove('share-closed');
         share.classList.add('share-open');
+        shareText = `esperle ${correct? 1: 'X'}/1%0A${shareText}%0A`;
+        share.innerHTML += `
+        <a class="twitter-share-button"
+           href="https://twitter.com/intent/tweet?text=${shareText}"
+           data-size="large">Tweet</a>`;
+        loadTwttr();
     } else if (input === '/^[a-z]{5}$/i') {
         err.innerHTML = `See: <a href="${regex}">Regular Expressions</a>`;
     } else if (/^[a-z]{5}$/i.test(input)) {
@@ -8527,5 +8552,69 @@ function judgeEvent() {
     } else {
         err.innerHTML = 'should match <span class="tt">/^[a-z]{5}$/i</span>';
     }
+}
+
+const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const [CORRECT, PRESENT, ABSENT, EMPTY] = [0, 1, 2, 3];
+
+let shareText = '';
+
+function decodeResult(x) {
+    return ['correct', 'present', 'absent', 'empty'][x];
+}
+
+function decodeResultEmoji(x) {
+    return ['%F0%9F%9F%A9', '%F0%9F%9F%A8', '%E2%AC%9C%EF%B8%8F'][x];
+}
+
+function colorize(actual, result) {
+    return actual.split('')
+        .map((c, i) => `<div class="tile tile-${decodeResult(result[i])}">${c}</div>`)
+        .join('');
+}
+
+function judge(actual, expected) {
+    let n = expected.length;
+    let result = Array.from({length: n}, (() => ABSENT));
+    let count = {};
+    for (let c of ALPHABET) {
+        count[c] = 0;
+    }
+    for (let c of expected) {
+        count[c] += 1;
+    }
+    for (let i = 0; i < n; ++i) {
+        if (actual[i] === expected[i]) {
+            result[i] = CORRECT;
+            count[actual[i]] -= 1;
+        }
+    }
+    for (let i = 0; i < n; ++i) {
+        if (result[i] === CORRECT) continue;
+        if (count[actual[i]] > 0) {
+            count[actual[i]] -= 1;
+            result[i] = PRESENT;
+        }
+    }
+    return result;
+}
+
+function loadTwttr() {
+      window.twttr = (function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0],
+              t = window.twttr || {};
+          if (d.getElementById(id)) return t;
+          js = d.createElement(s);
+          js.id = id;
+          js.src = "https://platform.twitter.com/widgets.js";
+          fjs.parentNode.insertBefore(js, fjs);
+
+          t._e = [];
+          t.ready = function(f) {
+              t._e.push(f);
+          };
+
+          return t;
+      }(document, "script", "twitter-wjs"));
 }
 

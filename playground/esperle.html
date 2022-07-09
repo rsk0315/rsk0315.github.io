@@ -28,9 +28,22 @@
           /* vertical-align: middle; */
           box-sizing: border-box;
           color: white;
-          background-color: #6aaa64;
           text-transform: uppercase;
           user-select: none;
+          margin: 1px;
+          padding: 2px;
+      }
+      .tile-correct {
+          background-color: #6aaa64;
+      }
+      .tile-present {
+          background-color: #c9b458;
+      }
+      .tile-absent {
+          background-color: #787c7e;
+      }
+      .tile-empty {
+          box-shadow:inset 0px 0px 0px 1px #d3d6da;
       }
       .share-closed {
           opacity: 0;
@@ -42,26 +55,6 @@
     </style>
 
     <script src="js/esperle.js"></script>
-
-    <script>
-      window.twttr = (function(d, s, id) {
-          var js, fjs = d.getElementsByTagName(s)[0],
-              t = window.twttr || {};
-          if (d.getElementById(id)) return t;
-          js = d.createElement(s);
-          js.id = id;
-          js.src = "https://platform.twitter.com/widgets.js";
-          fjs.parentNode.insertBefore(js, fjs);
-
-          t._e = [];
-          t.ready = function(f) {
-              t._e.push(f);
-          };
-
-          return t;
-      }(document, "script", "twitter-wjs"));
-    </script>
-
     <script>
       window.onload = function() {
           let input = document.getElementById('input');
@@ -90,10 +83,6 @@
     </div>
     output: <span id="output" class="tt"></span>
 
-    <div id="share" style="margin-top: 5px" class="share-closed">
-      <a class="twitter-share-button"
-         href="https://twitter.com/intent/tweet?text=Esperle 1/1%0A🟩🟩🟩🟩🟩%0A%0A"
-         data-size="large">Tweet</a>
-    </div>
+    <div id="share" style="margin-top: 5px" class="share-closed"></div>
   </body>
 </html>
