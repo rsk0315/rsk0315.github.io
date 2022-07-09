@@ -8617,4 +8617,3 @@ function loadTwttr() {
           return t;
       }(document, "script", "twitter-wjs"));
 }
-
