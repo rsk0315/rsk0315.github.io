@@ -8501,8 +8501,8 @@ const DICTIONARY = new Set([
 
 function colorize(actual, result) {
     return actual.split('')
-        .map((c, i) => `<div class="tile tile-${decodeResult(result[i])}">${c}</div>`)
-        .join('');
+        .map((c, i) => `<div class="tile tile-${decodeResult(result[i])}">&nbsp;${c}&nbsp;</div>`)
+        .join(' ');
 }
 
 function colorizeEmoji(result) {
@@ -8565,12 +8565,6 @@ function decodeResult(x) {
 
 function decodeResultEmoji(x) {
     return ['%F0%9F%9F%A9', '%F0%9F%9F%A8', '%E2%AC%9C%EF%B8%8F'][x];
-}
-
-function colorize(actual, result) {
-    return actual.split('')
-        .map((c, i) => `<div class="tile tile-${decodeResult(result[i])}">${c}</div>`)
-        .join('');
 }
 
 function judge(actual, expected) {
