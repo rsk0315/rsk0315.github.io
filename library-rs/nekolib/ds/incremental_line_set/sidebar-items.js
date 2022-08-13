@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["IncrementalLineSet","直線の集合。"]],"trait":[["ChtInt",""]]});
+window.SIDEBAR_ITEMS = {"struct":[["IncrementalLineSet","直線の集合。"]],"trait":[["ChtInt",""]]};

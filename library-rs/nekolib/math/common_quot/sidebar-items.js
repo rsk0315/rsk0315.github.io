@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["CommonQuotStruct",""]],"trait":[["CommonQuot","商が共通の区間の列挙。"]]});
+window.SIDEBAR_ITEMS = {"struct":[["CommonQuotStruct",""]],"trait":[["CommonQuot","商が共通の区間の列挙。"]]};

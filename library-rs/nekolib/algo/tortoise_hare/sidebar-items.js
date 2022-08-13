@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["cycle_mu_lambda","周期検出を行う。"],["cycle_nth","$n$ 項目を求める。"]]});
+window.SIDEBAR_ITEMS = {"fn":[["cycle_mu_lambda","周期検出を行う。"],["cycle_nth","$n$ 項目を求める。"]]};

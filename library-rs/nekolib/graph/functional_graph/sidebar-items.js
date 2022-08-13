@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["FunctionalGraph","function graph。"]]});
+window.SIDEBAR_ITEMS = {"struct":[["FunctionalGraph","function graph。"]]};

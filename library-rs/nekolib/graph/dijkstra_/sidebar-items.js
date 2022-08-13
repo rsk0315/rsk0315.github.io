@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["dijkstra","Dijkstra 法に基づく最短距離。"]]});
+window.SIDEBAR_ITEMS = {"fn":[["dijkstra","Dijkstra 法に基づく最短距離。"]]};

@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["CompactSieve","篩。"]]});
+window.SIDEBAR_ITEMS = {"struct":[["CompactSieve","篩。"]]};

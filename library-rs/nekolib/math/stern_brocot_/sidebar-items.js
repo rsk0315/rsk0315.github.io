@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["stern_brocot","Stern–Brocot tree"]]});
+window.SIDEBAR_ITEMS = {"fn":[["stern_brocot","Stern–Brocot tree"]]};

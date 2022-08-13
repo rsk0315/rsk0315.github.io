@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["mo","Mo’s algorithm。"]]});
+window.SIDEBAR_ITEMS = {"fn":[["mo","Mo’s algorithm。"]]};

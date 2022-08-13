@@ -1,1 +1,1 @@
-initSidebarItems({"trait":[["MonoidAction","作用モノイド。"]]});
+window.SIDEBAR_ITEMS = {"trait":[["MonoidAction","作用モノイド。"]]};

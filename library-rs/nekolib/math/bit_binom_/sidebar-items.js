@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["bit_binom","組合せのビット表現。"]]});
+window.SIDEBAR_ITEMS = {"fn":[["bit_binom","組合せのビット表現。"]]};

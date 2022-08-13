@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["DecrementalUsizeSet","`usize` の decremental set。"]]});
+window.SIDEBAR_ITEMS = {"struct":[["DecrementalUsizeSet","`usize` の decremental set。"]]};

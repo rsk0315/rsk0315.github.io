@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["BTreeMultiset","多重集合。"],["Iter",""]]});
+window.SIDEBAR_ITEMS = {"struct":[["BTreeMultiset","多重集合。"],["Iter",""]]};

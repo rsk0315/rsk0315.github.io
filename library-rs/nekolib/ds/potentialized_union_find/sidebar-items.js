@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["PotentializedUnionFind","ポテンシャルつき union-find。"]]});
+window.SIDEBAR_ITEMS = {"struct":[["PotentializedUnionFind","ポテンシャルつき union-find。"]]};

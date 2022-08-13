@@ -1,1 +1,1 @@
-initSidebarItems({"trait":[["Min","最小元を持つ。"]]});
+window.SIDEBAR_ITEMS = {"trait":[["Min","最小元を持つ。"]]};

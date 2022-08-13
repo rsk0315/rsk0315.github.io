@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["OpAddOnOpMin",""]]});
+window.SIDEBAR_ITEMS = {"struct":[["OpAddOnOpMin",""]]};

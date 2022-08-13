@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["OpGcd",""]]});
+window.SIDEBAR_ITEMS = {"enum":[["OpGcd",""]]};

@@ -1,1 +1,1 @@
-initSidebarItems({"trait":[["GetMut",""]]});
+window.SIDEBAR_ITEMS = {"trait":[["GetMut",""]]};

@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["SuffixArray","接尾辞配列。"]]});
+window.SIDEBAR_ITEMS = {"struct":[["SuffixArray","接尾辞配列。"]]};

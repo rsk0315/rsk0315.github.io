@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["continued_fraction","連分数展開。"]]});
+window.SIDEBAR_ITEMS = {"fn":[["continued_fraction","連分数展開。"]]};

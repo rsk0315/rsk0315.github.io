@@ -1,1 +1,1 @@
-initSidebarItems({"trait":[["UsizeGroupBy","イテレータのグルーピング。"]]});
+window.SIDEBAR_ITEMS = {"trait":[["UsizeGroupBy","イテレータのグルーピング。"]]};

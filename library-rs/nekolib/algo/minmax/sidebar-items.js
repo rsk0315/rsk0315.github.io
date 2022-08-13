@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["minmax","スライスの最小値および最大値を求める。"],["minmax_by","比較関数 `compare` におけるスライスの最小値および最大値を求める。"],["minmax_by_key","キー `key` におけるスライスの最小値および最大値を求める。"]]});
+window.SIDEBAR_ITEMS = {"fn":[["minmax","スライスの最小値および最大値を求める。"],["minmax_by","比較関数 `compare` におけるスライスの最小値および最大値を求める。"],["minmax_by_key","キー `key` におけるスライスの最小値および最大値を求める。"]]};

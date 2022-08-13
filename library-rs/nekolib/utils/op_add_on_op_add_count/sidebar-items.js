@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["OpAddOnOpAddCount",""]]});
+window.SIDEBAR_ITEMS = {"struct":[["OpAddOnOpAddCount",""]]};

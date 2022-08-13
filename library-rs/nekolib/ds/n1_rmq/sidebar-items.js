@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["N1Rmq","$\\langle O(n), O(1)\\rangle$ RMQ。"]]});
+window.SIDEBAR_ITEMS = {"struct":[["N1Rmq","$\\langle O(n), O(1)\\rangle$ RMQ。"]]};

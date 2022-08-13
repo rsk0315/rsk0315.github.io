@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["LinearSieve","線形篩。"]]});
+window.SIDEBAR_ITEMS = {"struct":[["LinearSieve","線形篩。"]]};

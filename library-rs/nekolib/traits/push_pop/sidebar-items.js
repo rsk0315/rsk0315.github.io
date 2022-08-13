@@ -1,1 +1,1 @@
-initSidebarItems({"trait":[["Pop",""],["PopBack",""],["PopFront",""],["Push",""],["PushBack",""],["PushFront",""]]});
+window.SIDEBAR_ITEMS = {"trait":[["Pop",""],["PopBack",""],["PopFront",""],["Push",""],["PushBack",""],["PushFront",""]]};

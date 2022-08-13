@@ -1,1 +1,1 @@
-initSidebarItems({"trait":[["PotentialFunction","ポテンシャル関数。"]]});
+window.SIDEBAR_ITEMS = {"trait":[["PotentialFunction","ポテンシャル関数。"]]};

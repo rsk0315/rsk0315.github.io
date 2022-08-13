@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["OpAffine",""]]});
+window.SIDEBAR_ITEMS = {"enum":[["OpAffine",""]]};

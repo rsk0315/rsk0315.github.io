@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["OpAdd","和を返す演算を持つ。"]]});
+window.SIDEBAR_ITEMS = {"enum":[["OpAdd","和を返す演算を持つ。"]]};

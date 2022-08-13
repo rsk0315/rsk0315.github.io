@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["Occurrences",""],["ZSearcher","Z algorithm。"]]});
+window.SIDEBAR_ITEMS = {"struct":[["Occurrences",""],["ZSearcher","Z algorithm。"]]};

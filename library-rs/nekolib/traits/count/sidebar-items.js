@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["Count3wayResult",""]],"trait":[["Count","計数クエリ。"],["Count3way","三方向計数クエリ。"]]});
+window.SIDEBAR_ITEMS = {"struct":[["Count3wayResult",""]],"trait":[["Count","計数クエリ。"],["Count3way","三方向計数クエリ。"]]};

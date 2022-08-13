@@ -1,1 +1,1 @@
-initSidebarItems({"trait":[["ElasticSlice",""],["ExpandBack",""],["ExpandFront",""],["ShrinkBack",""],["ShrinkFront",""],["SliceHash",""]]});
+window.SIDEBAR_ITEMS = {"trait":[["ElasticSlice",""],["ExpandBack",""],["ExpandFront",""],["ShrinkBack",""],["ShrinkFront",""],["SliceHash",""]]};

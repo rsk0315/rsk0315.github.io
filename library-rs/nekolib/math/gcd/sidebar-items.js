@@ -1,1 +1,1 @@
-initSidebarItems({"trait":[["Gcd","最大公約数。"]]});
+window.SIDEBAR_ITEMS = {"trait":[["Gcd","最大公約数。"]]};

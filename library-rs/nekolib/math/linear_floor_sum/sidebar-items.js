@@ -1,1 +1,1 @@
-initSidebarItems({"trait":[["LinearFloorSum","$ \\sum_{i=0}^{n-1} \\left\\lfloor\\frac{ai+b}{m}\\right\\rfloor. $"]]});
+window.SIDEBAR_ITEMS = {"trait":[["LinearFloorSum","$ \\sum_{i=0}^{n-1} \\left\\lfloor\\frac{ai+b}{m}\\right\\rfloor. $"]]};

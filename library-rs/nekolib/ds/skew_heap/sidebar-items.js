@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["IntoIter",""],["PeekMut",""],["SkewHeap",""]]});
+window.SIDEBAR_ITEMS = {"struct":[["IntoIter",""],["PeekMut",""],["SkewHeap",""]]};

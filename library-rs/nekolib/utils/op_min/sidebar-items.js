@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["OpMin","最小値を返す演算を持つ。"]]});
+window.SIDEBAR_ITEMS = {"enum":[["OpMin","最小値を返す演算を持つ。"]]};

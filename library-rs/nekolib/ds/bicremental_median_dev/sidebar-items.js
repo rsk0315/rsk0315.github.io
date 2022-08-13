@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["BicrementalMedianDev","中央値と偏差の管理。"]]});
+window.SIDEBAR_ITEMS = {"struct":[["BicrementalMedianDev","中央値と偏差の管理。"]]};

@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["CuckooHashSet","`CuckooHashMap<K, ()>` の wrapper。"]]});
+window.SIDEBAR_ITEMS = {"struct":[["CuckooHashSet","`CuckooHashMap<K, ()>` の wrapper。"]]};

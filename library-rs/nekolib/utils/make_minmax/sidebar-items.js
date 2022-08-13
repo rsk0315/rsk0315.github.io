@@ -1,1 +1,1 @@
-initSidebarItems({"trait":[["MakeMax",""],["MakeMin",""]]});
+window.SIDEBAR_ITEMS = {"trait":[["MakeMax",""],["MakeMin",""]]};

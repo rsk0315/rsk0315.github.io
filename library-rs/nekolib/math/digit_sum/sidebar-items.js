@@ -1,1 +1,1 @@
-initSidebarItems({"trait":[["DigitSum","桁和。"]]});
+window.SIDEBAR_ITEMS = {"trait":[["DigitSum","桁和。"]]};

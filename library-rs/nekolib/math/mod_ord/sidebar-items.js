@@ -1,1 +1,1 @@
-initSidebarItems({"trait":[["ModOrd","位数。"]]});
+window.SIDEBAR_ITEMS = {"trait":[["ModOrd","位数。"]]};

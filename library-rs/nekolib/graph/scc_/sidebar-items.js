@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["scc","lowlink に基づく強連結成分分解。"]]});
+window.SIDEBAR_ITEMS = {"fn":[["scc","lowlink に基づく強連結成分分解。"]]};

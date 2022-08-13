@@ -1,1 +1,1 @@
-initSidebarItems({"trait":[["EulerPhi","Euler の $\\varphi$ 関数。"]]});
+window.SIDEBAR_ITEMS = {"trait":[["EulerPhi","Euler の $\\varphi$ 関数。"]]};

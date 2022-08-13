@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["UnionFind","union-find。"]]});
+window.SIDEBAR_ITEMS = {"struct":[["UnionFind","union-find。"]]};

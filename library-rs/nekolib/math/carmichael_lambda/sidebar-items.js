@@ -1,1 +1,1 @@
-initSidebarItems({"trait":[["CarmichaelLambda","Carmichael の $\\lambda$ 関数。"]]});
+window.SIDEBAR_ITEMS = {"trait":[["CarmichaelLambda","Carmichael の $\\lambda$ 関数。"]]};

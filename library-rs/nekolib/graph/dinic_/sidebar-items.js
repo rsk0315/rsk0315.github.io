@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["dinic","Dinic 法に基づく最大流。"]]});
+window.SIDEBAR_ITEMS = {"fn":[["dinic","Dinic 法に基づく最大流。"]]};

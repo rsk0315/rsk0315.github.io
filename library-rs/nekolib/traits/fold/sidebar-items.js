@@ -1,1 +1,1 @@
-initSidebarItems({"trait":[["Fold","区間和を求める。"]]});
+window.SIDEBAR_ITEMS = {"trait":[["Fold","区間和を求める。"]]};

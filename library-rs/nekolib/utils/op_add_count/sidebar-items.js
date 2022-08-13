@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["OpAddCount",""]]});
+window.SIDEBAR_ITEMS = {"enum":[["OpAddCount",""]]};

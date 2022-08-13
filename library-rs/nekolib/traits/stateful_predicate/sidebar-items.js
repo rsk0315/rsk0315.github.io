@@ -1,1 +1,1 @@
-initSidebarItems({"trait":[["StatefulPred",""]]});
+window.SIDEBAR_ITEMS = {"trait":[["StatefulPred",""]]};

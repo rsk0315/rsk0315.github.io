@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["ordered_hash","座標圧縮。"]]});
+window.SIDEBAR_ITEMS = {"fn":[["ordered_hash","座標圧縮。"]]};

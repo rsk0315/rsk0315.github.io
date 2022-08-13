@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["Interpolation","Lagrange 補間。"]]});
+window.SIDEBAR_ITEMS = {"struct":[["Interpolation","Lagrange 補間。"]]};

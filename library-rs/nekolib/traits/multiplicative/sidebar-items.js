@@ -1,1 +1,1 @@
-initSidebarItems({"trait":[["MulAssoc","乗法が結合法則を満たすことを示す。"],["MulComm","乗法が交換法則を満たすことを示す。"],["MulRecip","乗法の逆元を定義する。"],["One","乗法の単位元 $1$ を定義する。"]]});
+window.SIDEBAR_ITEMS = {"trait":[["MulAssoc","乗法が結合法則を満たすことを示す。"],["MulComm","乗法が交換法則を満たすことを示す。"],["MulRecip","乗法の逆元を定義する。"],["One","乗法の単位元 $1$ を定義する。"]]};

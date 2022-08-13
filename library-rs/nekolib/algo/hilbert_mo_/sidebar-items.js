@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["hilbert_mo","Hilbert curve に基づく Mo’s algorithm。"]]});
+window.SIDEBAR_ITEMS = {"fn":[["hilbert_mo","Hilbert curve に基づく Mo’s algorithm。"]]};

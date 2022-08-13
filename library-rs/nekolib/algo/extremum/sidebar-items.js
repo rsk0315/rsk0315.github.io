@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["extremum","三分探索で極値を探す。"],["extremum_slice","三分探索で極値を探す。"]]});
+window.SIDEBAR_ITEMS = {"fn":[["extremum","三分探索で極値を探す。"],["extremum_slice","三分探索で極値を探す。"]]};

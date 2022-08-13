@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["convolve","Karatsuba 法。Карацуба 法？"]]});
+window.SIDEBAR_ITEMS = {"fn":[["convolve","Karatsuba 法。Карацуба 法？"]]};
