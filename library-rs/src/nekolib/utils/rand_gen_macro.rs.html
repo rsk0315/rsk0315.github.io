@@ -544,6 +544,96 @@
 <span id="458">458</span>
 <span id="459">459</span>
 <span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
+<span id="464">464</span>
+<span id="465">465</span>
+<span id="466">466</span>
+<span id="467">467</span>
+<span id="468">468</span>
+<span id="469">469</span>
+<span id="470">470</span>
+<span id="471">471</span>
+<span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
+<span id="477">477</span>
+<span id="478">478</span>
+<span id="479">479</span>
+<span id="480">480</span>
+<span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
+<span id="485">485</span>
+<span id="486">486</span>
+<span id="487">487</span>
+<span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
+<span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
+<span id="514">514</span>
+<span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
+<span id="518">518</span>
+<span id="519">519</span>
+<span id="520">520</span>
+<span id="521">521</span>
+<span id="522">522</span>
+<span id="523">523</span>
+<span id="524">524</span>
+<span id="525">525</span>
+<span id="526">526</span>
+<span id="527">527</span>
+<span id="528">528</span>
+<span id="529">529</span>
+<span id="530">530</span>
+<span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
+<span id="534">534</span>
+<span id="535">535</span>
+<span id="536">536</span>
+<span id="537">537</span>
+<span id="538">538</span>
+<span id="539">539</span>
+<span id="540">540</span>
+<span id="541">541</span>
+<span id="542">542</span>
+<span id="543">543</span>
+<span id="544">544</span>
+<span id="545">545</span>
+<span id="546">546</span>
+<span id="547">547</span>
+<span id="548">548</span>
+<span id="549">549</span>
+<span id="550">550</span>
 </pre><pre class="rust"><code><span class="doccomment">//! 乱数生成マクロ。</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::bitop</span>;
@@ -662,10 +752,12 @@
 <span class="doccomment">///             (charset(b&quot;~!@#$%+?|()^*_-=[]{};:,./&quot;), 5),</span>
 <span class="doccomment">///         ],</span>
 <span class="doccomment">///     };</span>
+<span class="doccomment">///     b in [[[1_u8..100; 3]; 2]; 2];</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// assert_eq!(a, [32, 86, 41, 68, 66, 46, 56, 82, 40, 1]);</span>
 <span class="doccomment">/// assert_eq!(s, &quot;X52dhjDk%i6)p1F9&quot;);</span>
+<span class="doccomment">/// assert_eq!(b, [[[75, 20, 23], [63, 21, 58]], [[12, 6, 57], [51, 95, 70]]]);</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules!</span> <span class="ident">rand_gen</span> {
@@ -855,6 +947,7 @@ rand_gen! {{
 
 <span class="macro">impl_range!</span> { <span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span> <span class="ident">i8</span> <span class="ident">i16</span> <span class="ident">i32</span> <span class="ident">i64</span> <span class="ident">i128</span> <span class="ident">isize</span> }
 
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="ident">inner</span>: <span class="ident">T</span>,
     <span class="ident">len</span>: <span class="ident">usize</span>,
@@ -892,17 +985,104 @@ rand_gen! {{
     }
 }
 
-<span class="kw">impl</span> <span class="ident">RandomGenerator</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ChaCha20Rng</span> {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;</span>;
-    <span class="kw">fn</span> <span class="ident">generate</span>(
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-        <span class="ident">subject</span>: <span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    ) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">VecMarker</span> { <span class="ident">inner</span>, <span class="ident">len</span> } <span class="op">=</span> <span class="ident">subject</span>;
-        <span class="kw">let</span> <span class="ident">between</span> <span class="op">=</span> <span class="ident">Uniform::from</span>(<span class="ident">inner</span>);
-        (<span class="number">0</span>..<span class="ident">len</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">between</span>.<span class="ident">sample</span>(<span class="self">self</span>)).<span class="ident">collect</span>()
-    }
+<span class="comment">// impl&lt;T&gt; U&lt;Vec&lt;T&gt;&gt; for S where S implements U&lt;T&gt; { ... }</span>
+<span class="comment">// みたいなのってもしかしてできない？</span>
+<span class="comment">// マクロで定数段だけやればとりあえずいいか。</span>
+
+<span class="macro">macro_rules!</span> <span class="ident">impl_vec_range</span> {
+    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(
+        <span class="kw">impl</span> <span class="ident">RandomGenerator</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ChaCha20Rng</span> {
+            <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span>;
+            <span class="kw">fn</span> <span class="ident">generate</span>(
+                <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
+                <span class="ident">s</span>: <span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span>
+            ) -&gt; <span class="ident"><span class="self">Self</span>::Output</span> {
+                <span class="kw">let</span> <span class="ident">VecMarker</span> { <span class="ident">inner</span>, <span class="ident">len</span> } <span class="op">=</span> <span class="ident">s</span>;
+                <span class="kw">let</span> <span class="ident">between</span> <span class="op">=</span> <span class="ident">Uniform::from</span>(<span class="ident">inner</span>);
+                (<span class="number">0</span>..<span class="ident">len</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">between</span>.<span class="ident">sample</span>(<span class="self">self</span>)).<span class="ident">collect</span>()
+            }
+        }
+        <span class="kw">impl</span> <span class="ident">RandomGenerator</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">Range</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ChaCha20Rng</span> {
+            <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span>;
+            <span class="kw">fn</span> <span class="ident">generate</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">s</span>: <span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">Range</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span> {
+                <span class="kw">let</span> <span class="ident">VecMarker</span> { <span class="ident">inner</span>, <span class="ident">len</span> } <span class="op">=</span> <span class="ident">s</span>;
+                <span class="kw">let</span> <span class="ident">between</span> <span class="op">=</span> <span class="ident">Uniform::from</span>(<span class="ident">inner</span>);
+                (<span class="number">0</span>..<span class="ident">len</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">between</span>.<span class="ident">sample</span>(<span class="self">self</span>)).<span class="ident">collect</span>()
+            }
+        }
+    )<span class="op">*</span> }
 }
+
+<span class="macro">impl_vec_range!</span> { <span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span> <span class="ident">i8</span> <span class="ident">i16</span> <span class="ident">i32</span> <span class="ident">i64</span> <span class="ident">i128</span> <span class="ident">isize</span> }
+
+<span class="comment">// macro_rules! impl_vec2_range {</span>
+<span class="comment">//     ( $($t:ty)* ) =&gt; { $(</span>
+<span class="comment">//         impl RandomGenerator&lt;VecMarker&lt;VecMarker&lt;RangeInclusive&lt;$t&gt;&gt;&gt;&gt;</span>
+<span class="comment">//             for ChaCha20Rng</span>
+<span class="comment">//         {</span>
+<span class="comment">//             type Output = Vec&lt;Vec&lt;$t&gt;&gt;;</span>
+<span class="comment">//             fn generate(</span>
+<span class="comment">//                 &amp;mut self,</span>
+<span class="comment">//                 s: VecMarker&lt;VecMarker&lt;RangeInclusive&lt;$t&gt;&gt;&gt;</span>
+<span class="comment">//             ) -&gt; Self::Output{</span>
+<span class="comment">//                 let VecMarker { inner, len } = s;</span>
+<span class="comment">//                 (0..len).map(|_| self.generate(inner.clone())).collect()</span>
+<span class="comment">//             }</span>
+<span class="comment">//         }</span>
+<span class="comment">//         impl RandomGenerator&lt;VecMarker&lt;VecMarker&lt;Range&lt;$t&gt;&gt;&gt;&gt;</span>
+<span class="comment">//             for ChaCha20Rng</span>
+<span class="comment">//         {</span>
+<span class="comment">//             type Output = Vec&lt;Vec&lt;$t&gt;&gt;;</span>
+<span class="comment">//             fn generate(</span>
+<span class="comment">//                 &amp;mut self,</span>
+<span class="comment">//                 s: VecMarker&lt;VecMarker&lt;Range&lt;$t&gt;&gt;&gt;</span>
+<span class="comment">//             ) -&gt; Self::Output {</span>
+<span class="comment">//                 let VecMarker { inner, len } = s;</span>
+<span class="comment">//                 (0..len).map(|_| self.generate(inner.clone())).collect()</span>
+<span class="comment">//             }</span>
+<span class="comment">//         }</span>
+<span class="comment">//     )* }</span>
+<span class="comment">// }</span>
+
+<span class="comment">// impl_vec2_range! { u8 u16 u32 u64 u128 usize i8 i16 i32 i64 i128 isize }</span>
+
+<span class="macro">macro_rules!</span> <span class="ident">impl_vecvec_range</span> {
+    ( $( (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">marker</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vec</span>:<span class="ident">ty</span>), )<span class="op">*</span> ) =&gt; { $(
+        <span class="kw">impl</span> <span class="ident">RandomGenerator</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">marker</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ChaCha20Rng</span> {
+            <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vec</span>;
+            <span class="kw">fn</span> <span class="ident">generate</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">s</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">marker</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span> {
+                <span class="kw">let</span> <span class="ident">VecMarker</span> { <span class="ident">inner</span>, <span class="ident">len</span> } <span class="op">=</span> <span class="ident">s</span>;
+                (<span class="number">0</span>..<span class="ident">len</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">generate</span>(<span class="ident">inner</span>.<span class="ident">clone</span>())).<span class="ident">collect</span>()
+            }
+        }
+    )<span class="op">*</span> };
+    ( $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span> )<span class="op">*</span> ) =&gt; { $(
+        <span class="macro">impl_vecvec_range!</span> {
+            <span class="comment">// 2</span>
+            (<span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span>),
+            (<span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">Range</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span>),
+
+            <span class="comment">// 3</span>
+            (
+                <span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+                <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>
+            ),
+            (<span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">Range</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>),
+
+            <span class="comment">// 4</span>
+            (
+                <span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+                <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>
+            ),
+            (
+                <span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">Range</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+                <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>
+            ),
+        }
+    )<span class="op">*</span> }
+}
+
+<span class="macro">impl_vecvec_range!</span> { <span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span> <span class="ident">i8</span> <span class="ident">i16</span> <span class="ident">i32</span> <span class="ident">i64</span> <span class="ident">i128</span> <span class="ident">isize</span> }
 
 <span class="kw">impl</span> <span class="ident">RandomGenerator</span><span class="op">&lt;</span><span class="ident">VecOptionsMarker</span><span class="op">&lt;</span><span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ChaCha20Rng</span> {
     <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;</span>;
