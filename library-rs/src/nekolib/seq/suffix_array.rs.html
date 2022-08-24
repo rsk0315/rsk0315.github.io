@@ -835,6 +835,9 @@
 <span id="749">749</span>
 <span id="750">750</span>
 <span id="751">751</span>
+<span id="752">752</span>
+<span id="753">753</span>
+<span id="754">754</span>
 </pre><pre class="rust"><code><span class="doccomment">//! 接尾辞配列。</span>
 
 <span class="kw">use</span> <span class="ident">std::cmp::Ordering</span>::{<span class="ident">Equal</span>, <span class="ident">Greater</span>, <span class="ident">Less</span>};
@@ -1145,8 +1148,8 @@
 <span class="doccomment">/// 再帰の base case は、列の各要素が distinct な場合で、逆順列が接尾辞配列となる。</span>
 <span class="doccomment">/// 連続して LMS suffix が現れないことと、先頭位置は LMS にならないことから、</span>
 <span class="doccomment">/// reduced string は元の文字列の半分以下の長さになることがわかる。</span>
-<span class="doccomment">/// よって、長さ $n$ での計算量を $T(n)$ とおくと、次のようになる。</span>
-<span class="doccomment">/// $$ T(n) \\le T(n/2) + T(n/4) + \\dots + T(1) + O(n) \\in O(n). $$</span>
+<span class="doccomment">/// よって、長さ $n$ での計算量を $T(n)$ とおくと、$T(1) \\in O(1)$ より次のようになる。</span>
+<span class="doccomment">/// $$ T(n) \\le T(n/2) + O(n) \\in O(n). $$</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ## パターン検索</span>
 <span class="doccomment">///</span>
@@ -1159,6 +1162,9 @@
 <span class="doccomment">/// # Complexity</span>
 <span class="doccomment">/// 入力中の文字の種類を $\\sigma$、文字列長を $n$ とする。</span>
 <span class="doccomment">/// SA-IS を用いて構築するため、前処理は $O(\\sigma\\log(\\sigma)+n)$ 時間。</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ↑ `todo!()` `String` なら $O(\\sigma+n)$、`[T]` なら mapping に時間がかかって $O(n\\log(\\sigma))$</span>
+<span class="doccomment">/// っぽそう。値の範囲が `0..n` に収まるような `[usize]` に対しては $O(n)$ でできるから、追記かも。</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// 検索は、パターン長を $m$ として $O(m\\log(n))$ 時間。</span>
 <span class="doccomment">///</span>
