@@ -2,4 +2,4 @@
 
 ## 予定
 - SMAWK + LARSCH
-    - Monge や (concave|convex) (QI|TM) の説明も書く
+    - Monge や (concave\|convex) (QI\|TM) の説明も書く
