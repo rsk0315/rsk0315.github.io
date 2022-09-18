@@ -156,6 +156,9 @@
 <span id="70">70</span>
 <span id="71">71</span>
 <span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
 </pre><pre class="rust"><code><span class="doccomment">//! 便利ちゃんたち。</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ここに何かを書く。</span>
@@ -189,7 +192,10 @@
     <span class="ident">ASCII_PUNCTUATION</span>, <span class="ident">ASCII_UPPERCASE</span>, <span class="ident">ASCII_WHITESPACE</span>,
 };
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">bitop</span>::{<span class="ident">Pdep</span>, <span class="ident">Pext</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">bitop</span>::{
+    <span class="ident">Pdep</span>, <span class="ident">PdepPextMaskU128</span>, <span class="ident">PdepPextMaskU16</span>, <span class="ident">PdepPextMaskU32</span>, <span class="ident">PdepPextMaskU64</span>,
+    <span class="ident">PdepPextMaskU8</span>, <span class="ident">Pext</span>,
+};
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">buf_range</span>::{<span class="ident">bounds_within</span>, <span class="ident">check_bounds</span>, <span class="ident">check_bounds_range</span>};
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
