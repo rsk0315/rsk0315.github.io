@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["Ascii",""],["AsciiGen",""],["AsciiString",""],["AsciiStringOfCharset",""],["AsciiStringOfDistribution",""],["VecMarker",""],["VecOptionsMarker",""]],"trait":[["GenOptions",""],["RandomGenerator",""],["SeedableRngInspect",""]]};
+window.SIDEBAR_ITEMS = {"struct":[["Ascii",""],["AsciiGen",""],["AsciiString",""],["AsciiStringOfCharset",""],["AsciiStringOfDistribution",""],["Permutation",""],["VecMarker",""],["VecOptionsMarker",""]],"trait":[["GenOptions",""],["RandomGenerator",""],["SeedableRngInspect",""]]};
