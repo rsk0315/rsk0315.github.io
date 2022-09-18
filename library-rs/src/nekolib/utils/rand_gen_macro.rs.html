@@ -659,6 +659,16 @@
 <span id="573">573</span>
 <span id="574">574</span>
 <span id="575">575</span>
+<span id="576">576</span>
+<span id="577">577</span>
+<span id="578">578</span>
+<span id="579">579</span>
+<span id="580">580</span>
+<span id="581">581</span>
+<span id="582">582</span>
+<span id="583">583</span>
+<span id="584">584</span>
+<span id="585">585</span>
 </pre><pre class="rust"><code><span class="doccomment">//! 乱数生成マクロ。</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::bitop</span>;
@@ -779,12 +789,15 @@
 <span class="doccomment">///     };</span>
 <span class="doccomment">///     b in [[[1_u8..100; 3]; 2]; 2];</span>
 <span class="doccomment">///     p in Permutation(5);</span>
+<span class="doccomment">///     mut x in 1_i64..10;</span>
 <span class="doccomment">/// }</span>
+<span class="doccomment">/// x += 1;</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// assert_eq!(a, [32, 86, 41, 68, 66, 46, 56, 82, 40, 1]);</span>
 <span class="doccomment">/// assert_eq!(s, &quot;X52dhjDk%i6)p1F9&quot;);</span>
 <span class="doccomment">/// assert_eq!(b, [[[75, 20, 23], [63, 21, 58]], [[12, 6, 57], [51, 95, 70]]]);</span>
 <span class="doccomment">/// assert_eq!(p, [3, 1, 0, 4, 2]);</span>
+<span class="doccomment">/// assert_eq!(x, 5);</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// `oj` を用いて、hack をするのに使うとよい。</span>
@@ -795,11 +808,18 @@
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules!</span> <span class="ident">rand_gen</span> {
+    ( @<span class="ident">seed</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span>:<span class="ident">ident</span> { <span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span>:<span class="ident">ident</span> <span class="kw">in</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">r</span>:<span class="ident">tt</span>)<span class="op">*</span> } @<span class="ident">rest</span> ) =&gt; {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span>.<span class="ident">generate</span>(<span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">gen</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">r</span>)<span class="op">*</span> }));
+    };
     ( @<span class="ident">seed</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span>:<span class="ident">ident</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span>:<span class="ident">ident</span> <span class="kw">in</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">r</span>:<span class="ident">tt</span>)<span class="op">*</span> } @<span class="ident">rest</span> ) =&gt; {
         <span class="kw">let</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span>.<span class="ident">generate</span>(<span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">gen</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">r</span>)<span class="op">*</span> }));
     };
     ( @<span class="ident">seed</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span>:<span class="ident">ident</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span>:<span class="ident">ident</span> <span class="kw">in</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">r</span>:<span class="ident">tt</span>)<span class="op">*</span> } @<span class="ident">rest</span> ; $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>:<span class="ident">tt</span>)<span class="op">*</span> ) =&gt; {
         <span class="macro">rand_gen!</span>(@<span class="ident">seed</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span> <span class="kw">in</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">r</span>)<span class="op">*</span> } @<span class="ident">rest</span>);
+        <span class="macro">rand_gen!</span>(@<span class="ident">seed</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span> {} @<span class="ident">rest</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="kw-2">*</span>);
+    };
+    ( @<span class="ident">seed</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span>:<span class="ident">ident</span> { <span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span>:<span class="ident">ident</span> <span class="kw">in</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">r</span>:<span class="ident">tt</span>)<span class="op">*</span> } @<span class="ident">rest</span> ; $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>:<span class="ident">tt</span>)<span class="op">*</span> ) =&gt; {
+        <span class="macro">rand_gen!</span>(@<span class="ident">seed</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span> { <span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span> <span class="kw">in</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">r</span>)<span class="op">*</span> } @<span class="ident">rest</span>);
         <span class="macro">rand_gen!</span>(@<span class="ident">seed</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span> {} @<span class="ident">rest</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="kw-2">*</span>);
     };
     ( @<span class="ident">seed</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span>:<span class="ident">ident</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">cur</span>:<span class="ident">tt</span>)<span class="op">*</span> } @<span class="ident">rest</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tt</span>:<span class="ident">tt</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>:<span class="ident">tt</span>)<span class="op">*</span> ) =&gt; {
