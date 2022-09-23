@@ -78,13 +78,7 @@
   }
 </script>
 
-</head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../nekolib/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../../nekolib/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../nekolib/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+</head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../nekolib/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../nekolib/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../nekolib/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -646,29 +640,6 @@
 <span id="560">560</span>
 <span id="561">561</span>
 <span id="562">562</span>
-<span id="563">563</span>
-<span id="564">564</span>
-<span id="565">565</span>
-<span id="566">566</span>
-<span id="567">567</span>
-<span id="568">568</span>
-<span id="569">569</span>
-<span id="570">570</span>
-<span id="571">571</span>
-<span id="572">572</span>
-<span id="573">573</span>
-<span id="574">574</span>
-<span id="575">575</span>
-<span id="576">576</span>
-<span id="577">577</span>
-<span id="578">578</span>
-<span id="579">579</span>
-<span id="580">580</span>
-<span id="581">581</span>
-<span id="582">582</span>
-<span id="583">583</span>
-<span id="584">584</span>
-<span id="585">585</span>
 </pre><pre class="rust"><code><span class="doccomment">//! 乱数生成マクロ。</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::bitop</span>;
@@ -1069,37 +1040,6 @@ rand_gen! {{
 
 <span class="macro">impl_vec_range!</span> { <span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span> <span class="ident">i8</span> <span class="ident">i16</span> <span class="ident">i32</span> <span class="ident">i64</span> <span class="ident">i128</span> <span class="ident">isize</span> }
 
-<span class="comment">// macro_rules! impl_vec2_range {</span>
-<span class="comment">//     ( $($t:ty)* ) =&gt; { $(</span>
-<span class="comment">//         impl RandomGenerator&lt;VecMarker&lt;VecMarker&lt;RangeInclusive&lt;$t&gt;&gt;&gt;&gt;</span>
-<span class="comment">//             for ChaCha20Rng</span>
-<span class="comment">//         {</span>
-<span class="comment">//             type Output = Vec&lt;Vec&lt;$t&gt;&gt;;</span>
-<span class="comment">//             fn generate(</span>
-<span class="comment">//                 &amp;mut self,</span>
-<span class="comment">//                 s: VecMarker&lt;VecMarker&lt;RangeInclusive&lt;$t&gt;&gt;&gt;</span>
-<span class="comment">//             ) -&gt; Self::Output{</span>
-<span class="comment">//                 let VecMarker { inner, len } = s;</span>
-<span class="comment">//                 (0..len).map(|_| self.generate(inner.clone())).collect()</span>
-<span class="comment">//             }</span>
-<span class="comment">//         }</span>
-<span class="comment">//         impl RandomGenerator&lt;VecMarker&lt;VecMarker&lt;Range&lt;$t&gt;&gt;&gt;&gt;</span>
-<span class="comment">//             for ChaCha20Rng</span>
-<span class="comment">//         {</span>
-<span class="comment">//             type Output = Vec&lt;Vec&lt;$t&gt;&gt;;</span>
-<span class="comment">//             fn generate(</span>
-<span class="comment">//                 &amp;mut self,</span>
-<span class="comment">//                 s: VecMarker&lt;VecMarker&lt;Range&lt;$t&gt;&gt;&gt;</span>
-<span class="comment">//             ) -&gt; Self::Output {</span>
-<span class="comment">//                 let VecMarker { inner, len } = s;</span>
-<span class="comment">//                 (0..len).map(|_| self.generate(inner.clone())).collect()</span>
-<span class="comment">//             }</span>
-<span class="comment">//         }</span>
-<span class="comment">//     )* }</span>
-<span class="comment">// }</span>
-
-<span class="comment">// impl_vec2_range! { u8 u16 u32 u64 u128 usize i8 i16 i32 i64 i128 isize }</span>
-
 <span class="macro">macro_rules!</span> <span class="ident">impl_vecvec_range</span> {
     ( $( (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">marker</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vec</span>:<span class="ident">ty</span>), )<span class="op">*</span> ) =&gt; { $(
         <span class="kw">impl</span> <span class="ident">RandomGenerator</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">marker</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ChaCha20Rng</span> {
@@ -1137,6 +1077,14 @@ rand_gen! {{
 }
 
 <span class="macro">impl_vecvec_range!</span> { <span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span> <span class="ident">i8</span> <span class="ident">i16</span> <span class="ident">i32</span> <span class="ident">i64</span> <span class="ident">i128</span> <span class="ident">isize</span> }
+
+<span class="kw">impl</span> <span class="ident">RandomGenerator</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">Permutation</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ChaCha20Rng</span> {
+    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">generate</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">s</span>: <span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">Permutation</span><span class="op">&gt;</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span> {
+        <span class="kw">let</span> <span class="ident">VecMarker</span> { <span class="ident">inner</span>, <span class="ident">len</span> } <span class="op">=</span> <span class="ident">s</span>;
+        (<span class="number">0</span>..<span class="ident">len</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">generate</span>(<span class="ident">inner</span>)).<span class="ident">collect</span>()
+    }
+}
 
 <span class="kw">impl</span> <span class="ident">RandomGenerator</span><span class="op">&lt;</span><span class="ident">VecOptionsMarker</span><span class="op">&lt;</span><span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ChaCha20Rng</span> {
     <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;</span>;
@@ -1255,5 +1203,4 @@ rand_gen! {{
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0 (4b91a6ea7 2022-08-08)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
