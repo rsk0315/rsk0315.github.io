@@ -1,0 +1,92 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="`nekolib` に入れにくい形のメモたち。考察の方針関連など。"><meta name="keywords" content="rust, rustlang, rust-lang, nekolib_notes"><title>nekolib_notes - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../dark.css" disabled><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../storage.js"></script><script defer src="../crates.js"></script><script defer src="../main.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\[", right: "\\]", display: true},
+                {left: "$", right: "$", display: false},
+                {left: "\\(", right: "\\)", display: false},
+            ],
+            macros: {
+                "\\halfco": "[#1, #2)",
+                "\\floor": "\\lfloor#1\\rfloor",
+                "\\ceil": "\\lceil#1\\rceil",
+                "\\Floor": "\\left\\lfloor#1\\right\\rfloor",
+                "\\Ceil": "\\left\\lceil#1\\right\\rceil",
+                "\\arsinh": "\\operatorname{arsinh}",
+                "\\arcosh": "\\operatorname{arcosh}",
+                "\\artanh": "\\operatorname{artanh}",
+                "\\sgn": "\\operatorname{sgn}",
+                "\\erf": "\\operatorname{erf}",
+                "\\round": "\\lfloor#1\\rceil",
+                "\\Round": "\\left\\lfloor#1\\right\\rceil",
+                "\\DP": "\\mathrm{dp}",
+                "\\xgets": "\\xleftarrow{#1}",
+                "\\For": "\\text{\\textbf{for} }#1\\text{ \\textbf{do}}",
+            },
+        });
+    });
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet">
+
+<style>
+  .ferris-container {
+      position: absolute;
+      z-index: 9999;
+      width: 4.5em;
+      right: 5px;
+      top: 10px;
+  }
+</style>
+
+<script>
+  let ferrisTypes = [
+      {
+          attr: 'compile_fail',
+          title: 'This code does not compile!',
+          src: 'https://raw.githubusercontent.com/rust-lang/book/b54090a99ec7c4b46a5203a9c927fdbc311bb1f5/2018-edition/src/img/ferris/does_not_compile.svg',
+      },
+      {
+          attr: 'should_panic',
+          title: 'This code panics!',
+          src: 'https://raw.githubusercontent.com/rust-lang/book/b54090a99ec7c4b46a5203a9c927fdbc311bb1f5/2018-edition/src/img/ferris/panics.svg',
+      },
+  ];  
+
+  document.addEventListener('DOMContentLoaded', () => {
+      for (let ferrisType of ferrisTypes) {
+          attachFerrises(ferrisType);
+      }
+  });
+
+  function attachFerrises(type) {
+      let elements = document.getElementsByClassName(type.attr);
+      for (let codeBlock of elements) {
+          if (codeBlock.tagName === 'PRE') {
+              attachFerris(codeBlock, type);
+          }
+      }
+  }
+
+  function attachFerris(element, type) {
+      let div = document.createElement('div');
+      div.className = 'ferris-container';
+
+      let img = document.createElement('img');
+      img.setAttribute('src', type.src);
+      img.setAttribute('title', type.title);
+      img.className = 'ferris';
+
+      div.appendChild(img);
+
+      element.parentElement.insertBefore(div, element);
+  }
+</script>
+
+</head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../nekolib_notes/index.html"><div class="logo-container"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../nekolib_notes/index.html"><div class="logo-container"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></div></a><h2 class="location"><a href="#">Crate nekolib_notes</a></h2><div class="sidebar-elems"><div class="block"><ul><li class="version">Version 0.1.0</li><li><a id="all-types" href="all.html">All Items</a></li></ul></div><section><div class="block"><ul><li><a href="#modules">Modules</a></li></ul></div></section></div></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../nekolib_notes/index.html"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="main-heading"><h1 class="fqn"><span class="in-band">Crate <a class="mod" href="#">nekolib_notes</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span></h1><span class="out-of-band"><a class="srclink" href="../src/nekolib_notes/lib.rs.html#1-5">source</a> · <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span></div><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p><a href="../nekolib/index.html"><code>nekolib</code></a> に入れにくい形のメモたち。考察の方針関連など。</p>
+</div></details><h2 id="modules" class="small-section-header"><a href="#modules">Modules</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="mod" href="range_add_on_the_fly/index.html" title="nekolib_notes::range_add_on_the_fly mod">range_add_on_the_fly</a></div><div class="item-right docblock-short"><p>区間加算 (imos 法 + on-the-fly で遅延解消)。</p>
+</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="nekolib_notes" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>

@@ -1,0 +1,371 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib-notes/src/range_add_on_the_fly.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>range_add_on_the_fly.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\[", right: "\\]", display: true},
+                {left: "$", right: "$", display: false},
+                {left: "\\(", right: "\\)", display: false},
+            ],
+            macros: {
+                "\\halfco": "[#1, #2)",
+                "\\floor": "\\lfloor#1\\rfloor",
+                "\\ceil": "\\lceil#1\\rceil",
+                "\\Floor": "\\left\\lfloor#1\\right\\rfloor",
+                "\\Ceil": "\\left\\lceil#1\\right\\rceil",
+                "\\arsinh": "\\operatorname{arsinh}",
+                "\\arcosh": "\\operatorname{arcosh}",
+                "\\artanh": "\\operatorname{artanh}",
+                "\\sgn": "\\operatorname{sgn}",
+                "\\erf": "\\operatorname{erf}",
+                "\\round": "\\lfloor#1\\rceil",
+                "\\Round": "\\left\\lfloor#1\\right\\rceil",
+                "\\DP": "\\mathrm{dp}",
+                "\\xgets": "\\xleftarrow{#1}",
+                "\\For": "\\text{\\textbf{for} }#1\\text{ \\textbf{do}}",
+            },
+        });
+    });
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet">
+
+<style>
+  .ferris-container {
+      position: absolute;
+      z-index: 9999;
+      width: 4.5em;
+      right: 5px;
+      top: 10px;
+  }
+</style>
+
+<script>
+  let ferrisTypes = [
+      {
+          attr: 'compile_fail',
+          title: 'This code does not compile!',
+          src: 'https://raw.githubusercontent.com/rust-lang/book/b54090a99ec7c4b46a5203a9c927fdbc311bb1f5/2018-edition/src/img/ferris/does_not_compile.svg',
+      },
+      {
+          attr: 'should_panic',
+          title: 'This code panics!',
+          src: 'https://raw.githubusercontent.com/rust-lang/book/b54090a99ec7c4b46a5203a9c927fdbc311bb1f5/2018-edition/src/img/ferris/panics.svg',
+      },
+  ];  
+
+  document.addEventListener('DOMContentLoaded', () => {
+      for (let ferrisType of ferrisTypes) {
+          attachFerrises(ferrisType);
+      }
+  });
+
+  function attachFerrises(type) {
+      let elements = document.getElementsByClassName(type.attr);
+      for (let codeBlock of elements) {
+          if (codeBlock.tagName === 'PRE') {
+              attachFerris(codeBlock, type);
+          }
+      }
+  }
+
+  function attachFerris(element, type) {
+      let div = document.createElement('div');
+      div.className = 'ferris-container';
+
+      let img = document.createElement('img');
+      img.setAttribute('src', type.src);
+      img.setAttribute('title', type.title);
+      img.className = 'ferris';
+
+      div.appendChild(img);
+
+      element.parentElement.insertBefore(div, element);
+  }
+</script>
+
+</head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../nekolib_notes/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../nekolib_notes/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../nekolib_notes/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<span id="2">2</span>
+<span id="3">3</span>
+<span id="4">4</span>
+<span id="5">5</span>
+<span id="6">6</span>
+<span id="7">7</span>
+<span id="8">8</span>
+<span id="9">9</span>
+<span id="10">10</span>
+<span id="11">11</span>
+<span id="12">12</span>
+<span id="13">13</span>
+<span id="14">14</span>
+<span id="15">15</span>
+<span id="16">16</span>
+<span id="17">17</span>
+<span id="18">18</span>
+<span id="19">19</span>
+<span id="20">20</span>
+<span id="21">21</span>
+<span id="22">22</span>
+<span id="23">23</span>
+<span id="24">24</span>
+<span id="25">25</span>
+<span id="26">26</span>
+<span id="27">27</span>
+<span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
+<span id="47">47</span>
+<span id="48">48</span>
+<span id="49">49</span>
+<span id="50">50</span>
+<span id="51">51</span>
+<span id="52">52</span>
+<span id="53">53</span>
+<span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
+<span id="62">62</span>
+<span id="63">63</span>
+<span id="64">64</span>
+<span id="65">65</span>
+<span id="66">66</span>
+<span id="67">67</span>
+<span id="68">68</span>
+<span id="69">69</span>
+<span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
+<span id="76">76</span>
+<span id="77">77</span>
+<span id="78">78</span>
+<span id="79">79</span>
+<span id="80">80</span>
+<span id="81">81</span>
+<span id="82">82</span>
+<span id="83">83</span>
+<span id="84">84</span>
+<span id="85">85</span>
+<span id="86">86</span>
+<span id="87">87</span>
+<span id="88">88</span>
+<span id="89">89</span>
+<span id="90">90</span>
+<span id="91">91</span>
+<span id="92">92</span>
+<span id="93">93</span>
+<span id="94">94</span>
+<span id="95">95</span>
+<span id="96">96</span>
+<span id="97">97</span>
+<span id="98">98</span>
+<span id="99">99</span>
+<span id="100">100</span>
+<span id="101">101</span>
+<span id="102">102</span>
+<span id="103">103</span>
+<span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 区間加算 (imos 法 + on-the-fly で遅延解消)。</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! 以下のような問題を考える。</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//! use proconio::input;</span>
+<span class="doccomment">//! # use proconio::source::auto::AutoSource;</span>
+<span class="doccomment">//! # let source = AutoSource::from(&quot;4  1 3 2 5&quot;);</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! input! {</span>
+<span class="doccomment">//! #     from source,</span>
+<span class="doccomment">//!     n: usize,</span>
+<span class="doccomment">//!     a: [usize; n],</span>
+<span class="doccomment">//! }</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! let m = (0..n).map(|i| i + a[i]).max().unwrap();</span>
+<span class="doccomment">//! let mut dp = vec![0; m + 1];</span>
+<span class="doccomment">//! dp[0] = 1;</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! for i in 0..n {</span>
+<span class="doccomment">//!     for j in 1..=a[i] {</span>
+<span class="doccomment">//!         dp[i + j] += dp[i] * j as i32;</span>
+<span class="doccomment">//!     }</span>
+<span class="doccomment">//! }</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! // a = [1, 3, 2, 5]</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! // 0: [1, 0, 0, 0, 0, 0, 0, 0, 0]</span>
+<span class="doccomment">//! // 1: [1, 1, 0, 0, 0, 0, 0, 0, 0]</span>
+<span class="doccomment">//! // 2: [1, 1, 1, 2, 3, 0, 0, 0, 0]</span>
+<span class="doccomment">//! // 3: [1, 1, 1, 3, 5, 0, 0, 0, 0]</span>
+<span class="doccomment">//! // 4: [1, 1, 1, 3, 8, 6, 9, 12, 15]</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! assert_eq!(dp, [1, 1, 1, 3, 8, 6, 9, 12, 15]);</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! これを $O(n)$ 時間で行いたい。</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! 1 階差分を考えると、定数の区間加算になるので、基本的な imos 法で処理できる。</span>
+<span class="doccomment">//! $[i+1, i+a\_i]$ に足す値は $\\DP\[i\]$ に依るため、on-the-fly の処理が必要になる。</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! $$</span>
+<span class="doccomment">//! \\begin{aligned}</span>
+<span class="doccomment">//! &amp;\\qquad \\For{i \\gets (0, 1, \\dots, n-1)} \\\\</span>
+<span class="doccomment">//! &amp;\\qquad\\qquad \\For{j \\in \\{1, 2, \\dots, a\_i\\}} \\\\</span>
+<span class="doccomment">//! &amp;\\qquad\\qquad\\qquad \\DP\[i+j\] \\xgets{+} \\DP\[i\] \\cdot j \\\\</span>
+<span class="doccomment">//! \\end{aligned}</span>
+<span class="doccomment">//! $$</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//! # use proconio::input;</span>
+<span class="doccomment">//! # use proconio::source::auto::AutoSource;</span>
+<span class="doccomment">//! # let source = AutoSource::from(&quot;4  1 3 2 5&quot;);</span>
+<span class="doccomment">//! #</span>
+<span class="doccomment">//! # input! {</span>
+<span class="doccomment">//! #     from source,</span>
+<span class="doccomment">//! #     n: usize,</span>
+<span class="doccomment">//! #     a: [usize; n],</span>
+<span class="doccomment">//! # }</span>
+<span class="doccomment">//! #</span>
+<span class="doccomment">//! # let m = (0..n).map(|i| i + a[i]).max().unwrap();</span>
+<span class="doccomment">//! let mut dp0 = vec![0; m + 1];  // dp</span>
+<span class="doccomment">//! let mut dp1 = vec![0; m + 2];  // dp&#39;</span>
+<span class="doccomment">//! let mut dp2 = vec![0; m + 3];  // dp&#39;&#39;</span>
+<span class="doccomment">//! dp2[0] = 1;</span>
+<span class="doccomment">//! dp2[1] = -2;</span>
+<span class="doccomment">//! dp2[2] = 1;</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! for i in 0..n {</span>
+<span class="doccomment">//!     dp1[i] += dp2[i];</span>
+<span class="doccomment">//!     if i &gt; 0 {</span>
+<span class="doccomment">//!         dp1[i] += dp1[i - 1];</span>
+<span class="doccomment">//!     }</span>
+<span class="doccomment">//!     dp0[i] += dp1[i];</span>
+<span class="doccomment">//!     if i &gt; 0 {</span>
+<span class="doccomment">//!         dp0[i] += dp0[i - 1];</span>
+<span class="doccomment">//!     }</span>
+<span class="doccomment">//!     dp2[i + a[i] + 1] -= dp0[i] * a[i] as i32;</span>
+<span class="doccomment">//!     dp2[i + a[i] + 2] += dp0[i] * a[i] as i32;</span>
+<span class="doccomment">//!     dp2[i + 1] += dp0[i];</span>
+<span class="doccomment">//!     dp2[i + a[i] + 1] -= dp0[i];</span>
+<span class="doccomment">//! }</span>
+<span class="doccomment">//! for i in n..=m {</span>
+<span class="doccomment">//!     dp1[i] = dp1[i - 1] + dp2[i];</span>
+<span class="doccomment">//!     dp0[i] = dp0[i - 1] + dp1[i];</span>
+<span class="doccomment">//! }</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! assert_eq!(dp0, [1, 1, 1, 3, 8, 6, 9, 12, 15]);</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! 0 次の加算（一つの値の加算）、1 次の加算（区間への定数の加算）に関して、</span>
+<span class="doccomment">//! 直接 `dp0[_]` や `dp1[_]` に足すと総和の整合性が取れなくなるので、</span>
+<span class="doccomment">//! `dp2[_]` の意味で言い換えるか、別の値として持つ必要がある。</span>
+<span class="doccomment">//! 前者では、無駄に足す個数が増えるので、次数が増えたときにつらそう。</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//! # use proconio::input;</span>
+<span class="doccomment">//! # use proconio::source::auto::AutoSource;</span>
+<span class="doccomment">//! # let source = AutoSource::from(&quot;4  1 3 2 5&quot;);</span>
+<span class="doccomment">//! #</span>
+<span class="doccomment">//! # input! {</span>
+<span class="doccomment">//! #     from source,</span>
+<span class="doccomment">//! #     n: usize,</span>
+<span class="doccomment">//! #     a: [usize; n],</span>
+<span class="doccomment">//! # }</span>
+<span class="doccomment">//! #</span>
+<span class="doccomment">//! # let m = (0..n).map(|i| i + a[i]).max().unwrap();</span>
+<span class="doccomment">//! #</span>
+<span class="doccomment">//! let mut res = vec![0; m + 1];</span>
+<span class="doccomment">//! #[allow(unused)]</span>
+<span class="doccomment">//! let mut dp0 = vec![0; m + 1];</span>
+<span class="doccomment">//! let mut dp1 = vec![0; m + 2];</span>
+<span class="doccomment">//! let mut dp2 = vec![0; m + 2];</span>
+<span class="doccomment">//! let mut acc0 = 1;</span>
+<span class="doccomment">//! let mut acc1 = 0;</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! dp1[1] = -acc0;</span>
+<span class="doccomment">//! for i in 0..n {</span>
+<span class="doccomment">//!     acc1 += dp2[i];</span>
+<span class="doccomment">//!     acc0 += dp1[i] + acc1;</span>
+<span class="doccomment">//!     res[i] = acc0;</span>
+<span class="doccomment">//!     </span>
+<span class="doccomment">//!     dp1[i + a[i] + 1] -= acc0 * a[i] as i32;</span>
+<span class="doccomment">//!     dp2[i + 1] += acc0;</span>
+<span class="doccomment">//!     dp2[i + a[i] + 1] -= acc0;</span>
+<span class="doccomment">//! }</span>
+<span class="doccomment">//! for i in n..=m {</span>
+<span class="doccomment">//!     acc1 += dp2[i];</span>
+<span class="doccomment">//!     acc0 += dp1[i] + acc1;</span>
+<span class="doccomment">//!     res[i] = acc0;</span>
+<span class="doccomment">//! }</span>
+<span class="doccomment">//! assert_eq!(res, [1, 1, 1, 3, 8, 6, 9, 12, 15]);</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ## To-do / Notes</span>
+<span class="doccomment">//! - 数式からの導出をちゃんと書く</span>
+<span class="doccomment">//! - $\\DP\[i+j\] \\xgets{+}\\DP\[i\]\\cdot j^2$ について書いてみる</span>
+<span class="doccomment">//! - よくある累積和とは添字の解釈が異なる？ 明確にしておく</span>
+<span class="doccomment">//! - クエリがオフラインで on-the-fly が不要の場合と比較してみる</span>
+<span class="doccomment">//! - 遅延セグ木で区間 $O(1)$ 次加算と何かしらの fold について考える</span>
+</code></pre></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nekolib_notes" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
