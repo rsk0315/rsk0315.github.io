@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/ds/btree_bimap.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>btree_bimap.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/ds/btree_bimap.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>btree_bimap.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -175,93 +175,93 @@
 <span id="86">86</span>
 <span id="87">87</span>
 <span id="88">88</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 双方向連想配列。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 双方向連想配列。
 
-<span class="kw">use</span> <span class="ident">std::borrow::Borrow</span>;
-<span class="kw">use</span> <span class="ident">std::collections</span>::{<span class="ident">btree_map::Range</span>, <span class="ident">BTreeMap</span>};
-<span class="kw">use</span> <span class="ident">std::fmt::Debug</span>;
-<span class="kw">use</span> <span class="ident">std::ops::RangeBounds</span>;
+</span><span class="kw">use </span>std::borrow::Borrow;
+<span class="kw">use </span>std::collections::{btree_map::Range, BTreeMap};
+<span class="kw">use </span>std::fmt::Debug;
+<span class="kw">use </span>std::ops::RangeBounds;
 
-<span class="doccomment">/// 双方向連想配列。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $k\\mapsto v$ ではなく、全単射となるように $k\_l\\mapsto k\_r$ と</span>
-<span class="doccomment">/// $k\_r\\mapsto k\_l$ を管理する。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::ds::BTreeBimap;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let mut bimap = BTreeBimap::new();</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// bimap.insert(1, &#39;a&#39;);</span>
-<span class="doccomment">/// bimap.insert(2, &#39;b&#39;);</span>
-<span class="doccomment">/// bimap.insert(3, &#39;c&#39;);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// bimap.insert(1, &#39;b&#39;);</span>
-<span class="doccomment">/// assert_eq!(bimap.len(), 2); // {1: &#39;b&#39;, 3, &#39;c&#39;}</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// bimap.remove_left(&amp;1);</span>
-<span class="doccomment">/// bimap.remove_right(&amp;&#39;c&#39;);</span>
-<span class="doccomment">/// assert!(bimap.is_empty());</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BTreeBimap</span><span class="op">&lt;</span><span class="ident">L</span>: <span class="ident">Ord</span>, <span class="ident">R</span>: <span class="ident">Ord</span><span class="op">&gt;</span> {
-    <span class="ident">left</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">R</span><span class="op">&gt;</span>,
-    <span class="ident">right</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">R</span>, <span class="ident">L</span><span class="op">&gt;</span>,
+<span class="doccomment">/// 双方向連想配列。
+///
+/// $k\\mapsto v$ ではなく、全単射となるように $k\_l\\mapsto k\_r$ と
+/// $k\_r\\mapsto k\_l$ を管理する。
+///
+/// # Examples
+/// ```
+/// use nekolib::ds::BTreeBimap;
+///
+/// let mut bimap = BTreeBimap::new();
+///
+/// bimap.insert(1, &#39;a&#39;);
+/// bimap.insert(2, &#39;b&#39;);
+/// bimap.insert(3, &#39;c&#39;);
+///
+/// bimap.insert(1, &#39;b&#39;);
+/// assert_eq!(bimap.len(), 2); // {1: &#39;b&#39;, 3, &#39;c&#39;}
+///
+/// bimap.remove_left(&amp;1);
+/// bimap.remove_right(&amp;&#39;c&#39;);
+/// assert!(bimap.is_empty());
+/// ```
+</span><span class="attribute">#[derive(Clone, Debug, Default)]
+</span><span class="kw">pub struct </span>BTreeBimap&lt;L: Ord, R: Ord&gt; {
+    left: BTreeMap&lt;L, R&gt;,
+    right: BTreeMap&lt;R, L&gt;,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">L</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">Ord</span>, <span class="ident">R</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">BTreeBimap</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">R</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> { <span class="ident">left</span>: <span class="ident">BTreeMap::new</span>(), <span class="ident">right</span>: <span class="ident">BTreeMap::new</span>() }
+<span class="kw">impl</span>&lt;L: Clone + Ord, R: Clone + Ord&gt; BTreeBimap&lt;L, R&gt; {
+    <span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{ left: BTreeMap::new(), right: BTreeMap::new() }
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> { <span class="self">self</span>.<span class="ident">left</span>.<span class="ident">is_empty</span>() }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">left</span>.<span class="ident">len</span>() }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">insert</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">l</span>: <span class="ident">L</span>, <span class="ident">r</span>: <span class="ident">R</span>) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">old_r</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">left</span>.<span class="ident">insert</span>(<span class="ident">l</span>.<span class="ident">clone</span>(), <span class="ident">r</span>.<span class="ident">clone</span>()) {
-            <span class="self">self</span>.<span class="ident">right</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">old_r</span>);
+    <span class="kw">pub fn </span>is_empty(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool { <span class="self">self</span>.left.is_empty() }
+    <span class="kw">pub fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize { <span class="self">self</span>.left.len() }
+    <span class="kw">pub fn </span>insert(<span class="kw-2">&amp;mut </span><span class="self">self</span>, l: L, r: R) {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(old_r) = <span class="self">self</span>.left.insert(l.clone(), r.clone()) {
+            <span class="self">self</span>.right.remove(<span class="kw-2">&amp;</span>old_r);
         }
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">old_l</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">right</span>.<span class="ident">insert</span>(<span class="ident">r</span>, <span class="ident">l</span>) {
-            <span class="self">self</span>.<span class="ident">left</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">old_l</span>);
-        }
-    }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">remove_left</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">l</span>: <span class="kw-2">&amp;</span><span class="ident">L</span>) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">old_r</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">left</span>.<span class="ident">remove</span>(<span class="ident">l</span>) {
-            <span class="self">self</span>.<span class="ident">right</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">old_r</span>);
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(old_l) = <span class="self">self</span>.right.insert(r, l) {
+            <span class="self">self</span>.left.remove(<span class="kw-2">&amp;</span>old_l);
         }
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">remove_right</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">r</span>: <span class="kw-2">&amp;</span><span class="ident">R</span>) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">old_l</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">right</span>.<span class="ident">remove</span>(<span class="ident">r</span>) {
-            <span class="self">self</span>.<span class="ident">left</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">old_l</span>);
+    <span class="kw">pub fn </span>remove_left(<span class="kw-2">&amp;mut </span><span class="self">self</span>, l: <span class="kw-2">&amp;</span>L) {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(old_r) = <span class="self">self</span>.left.remove(l) {
+            <span class="self">self</span>.right.remove(<span class="kw-2">&amp;</span>old_r);
+        }
+    }
+    <span class="kw">pub fn </span>remove_right(<span class="kw-2">&amp;mut </span><span class="self">self</span>, r: <span class="kw-2">&amp;</span>R) {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(old_l) = <span class="self">self</span>.right.remove(r) {
+            <span class="self">self</span>.left.remove(<span class="kw-2">&amp;</span>old_l);
         }
     }
 
-    <span class="comment">// {iter|entry}_{left|right} とかも欲しいよね</span>
-    <span class="comment">// .or_insert() は両方に入れたりする必要があるので注意。</span>
+    <span class="comment">// {iter|entry}_{left|right} とかも欲しいよね
+    // .or_insert() は両方に入れたりする必要があるので注意。
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">range_left</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">B</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">range</span>: <span class="ident">B</span>) -&gt; <span class="ident">Range</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">L</span>, <span class="ident">R</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">T</span>: <span class="ident">Ord</span>,
-        <span class="ident">L</span>: <span class="ident">Borrow</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
-        <span class="ident">B</span>: <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
+    </span><span class="kw">pub fn </span>range_left&lt;T, B&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, range: B) -&gt; Range&lt;<span class="lifetime">&#39;_</span>, L, R&gt;
+    <span class="kw">where
+        </span>T: Ord,
+        L: Borrow&lt;T&gt;,
+        B: RangeBounds&lt;T&gt;,
     {
-        <span class="self">self</span>.<span class="ident">left</span>.<span class="ident">range</span>(<span class="ident">range</span>)
+        <span class="self">self</span>.left.range(range)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">range_right</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">B</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">range</span>: <span class="ident">B</span>) -&gt; <span class="ident">Range</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">R</span>, <span class="ident">L</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">T</span>: <span class="ident">Ord</span>,
-        <span class="ident">R</span>: <span class="ident">Borrow</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
-        <span class="ident">B</span>: <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
+    <span class="kw">pub fn </span>range_right&lt;T, B&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, range: B) -&gt; Range&lt;<span class="lifetime">&#39;_</span>, R, L&gt;
+    <span class="kw">where
+        </span>T: Ord,
+        R: Borrow&lt;T&gt;,
+        B: RangeBounds&lt;T&gt;,
     {
-        <span class="self">self</span>.<span class="ident">right</span>.<span class="ident">range</span>(<span class="ident">range</span>)
+        <span class="self">self</span>.right.range(range)
     }
 }
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test_eq</span>() {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">BTreeBimap::new</span>();
-    <span class="ident">b</span>.<span class="ident">insert</span>(<span class="number">2</span>, <span class="number">20</span>);
-    <span class="ident">b</span>.<span class="ident">insert</span>(<span class="number">2</span>, <span class="number">20</span>);
-    <span class="macro">assert_eq!</span>(<span class="ident">b</span>.<span class="ident">len</span>(), <span class="number">1</span>);
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test_eq() {
+    <span class="kw">let </span><span class="kw-2">mut </span>b = BTreeBimap::new();
+    b.insert(<span class="number">2</span>, <span class="number">20</span>);
+    b.insert(<span class="number">2</span>, <span class="number">20</span>);
+    <span class="macro">assert_eq!</span>(b.len(), <span class="number">1</span>);
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

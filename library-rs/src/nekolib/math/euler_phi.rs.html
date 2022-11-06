@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/euler_phi.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>euler_phi.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/euler_phi.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>euler_phi.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -139,57 +139,57 @@
 <span id="50">50</span>
 <span id="51">51</span>
 <span id="52">52</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Euler の $\\varphi$ 関数。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Euler の $\\varphi$ 関数。
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::factors</span>;
+</span><span class="kw">use </span><span class="kw">super</span>::factors;
 
-<span class="kw">use</span> <span class="ident">factors::Factors</span>;
+<span class="kw">use </span>factors::Factors;
 
-<span class="doccomment">/// Euler の $\\varphi$ 関数。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $n$ 以下の自然数のうち、$n$ と互いに素であるものの個数を返す。$1$</span>
-<span class="doccomment">/// と $1$ は互いに素であることに注意。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Note</span>
-<span class="doccomment">/// 素数冪 $p^k$, $p\&#39;^{k\&#39;}$ ($p\\ne p\&#39;$) について</span>
-<span class="doccomment">/// $\\varphi(p^k p\&#39;^{k\&#39;}) = \\varphi(p^k)\\varphi(p\&#39;^{k\&#39;})$</span>
-<span class="doccomment">/// が成り立つ。また、$\\varphi(p^k) = \\varphi^{k-1}\\cdot(p-1)$ が成り立つ。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// $O(\\sqrt{n})$ time.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::math::EulerPhi;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(1_u64.euler_phi(), 1);</span>
-<span class="doccomment">/// assert_eq!(60_u64.euler_phi(), 16);</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">EulerPhi</span> {
-    <span class="kw">fn</span> <span class="ident">euler_phi</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
+<span class="doccomment">/// Euler の $\\varphi$ 関数。
+///
+/// $n$ 以下の自然数のうち、$n$ と互いに素であるものの個数を返す。$1$
+/// と $1$ は互いに素であることに注意。
+///
+/// # Note
+/// 素数冪 $p^k$, $p\&#39;^{k\&#39;}$ ($p\\ne p\&#39;$) について
+/// $\\varphi(p^k p\&#39;^{k\&#39;}) = \\varphi(p^k)\\varphi(p\&#39;^{k\&#39;})$
+/// が成り立つ。また、$\\varphi(p^k) = \\varphi^{k-1}\\cdot(p-1)$ が成り立つ。
+///
+/// # Complexity
+/// $O(\\sqrt{n})$ time.
+///
+/// # Examples
+/// ```
+/// use nekolib::math::EulerPhi;
+///
+/// assert_eq!(1_u64.euler_phi(), 1);
+/// assert_eq!(60_u64.euler_phi(), 16);
+/// ```
+</span><span class="kw">pub trait </span>EulerPhi {
+    <span class="kw">fn </span>euler_phi(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_uint</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span> <span class="ident">EulerPhi</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">euler_phi</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> {
-                <span class="self">self</span>.<span class="ident">factors</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">p</span>, <span class="ident">e</span>)<span class="op">|</span> <span class="ident">p</span>.<span class="ident">pow</span>(<span class="ident">e</span> <span class="op">-</span> <span class="number">1</span>) <span class="op">*</span> (<span class="ident">p</span> <span class="op">-</span> <span class="number">1</span>)).<span class="ident">product</span>()
+<span class="macro">macro_rules! </span>impl_uint {
+    (<span class="macro-nonterminal">$t</span>:ty) =&gt; {
+        <span class="kw">impl </span>EulerPhi <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
+            <span class="kw">fn </span>euler_phi(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
+                <span class="self">self</span>.factors().map(|(p, e)| p.pow(e - <span class="number">1</span>) * (p - <span class="number">1</span>)).product()
             }
         }
     };
-    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
+    ( $(<span class="macro-nonterminal">$t</span>:ty)* ) =&gt; { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$t</span>);)* };
 }
 
-<span class="macro">impl_uint!</span>(<span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span>);
+<span class="macro">impl_uint!</span>(u8 u16 u32 u64 u128 usize);
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test_naive</span>() {
-    <span class="kw">use</span> <span class="ident">gcd::Gcd</span>;
-    <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="number">100_usize</span>;
-    <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">1</span>..<span class="op">=</span><span class="ident">n</span> {
-        <span class="kw">let</span> <span class="ident">phi</span> <span class="op">=</span> (<span class="number">1</span>..<span class="op">=</span><span class="ident">i</span>).<span class="ident">filter</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">j</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">gcd</span>(<span class="ident">j</span>) <span class="op">==</span> <span class="number">1</span>).<span class="ident">count</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">i</span>.<span class="ident">euler_phi</span>(), <span class="ident">phi</span>);
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test_naive() {
+    <span class="kw">use </span>gcd::Gcd;
+    <span class="kw">let </span>n = <span class="number">100_usize</span>;
+    <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..=n {
+        <span class="kw">let </span>phi = (<span class="number">1</span>..=i).filter(|<span class="kw-2">&amp;</span>j| i.gcd(j) == <span class="number">1</span>).count();
+        <span class="macro">assert_eq!</span>(i.euler_phi(), phi);
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib-notes/src/range_add_on_the_fly.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>range_add_on_the_fly.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib-notes/src/range_add_on_the_fly.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>range_add_on_the_fly.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -324,242 +324,274 @@
 <span id="235">235</span>
 <span id="236">236</span>
 <span id="237">237</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 区間加算 (imos 法 + on-the-fly で遅延解消)。</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! 以下のような問題を考える。</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ```</span>
-<span class="doccomment">//! use proconio::input;</span>
-<span class="doccomment">//! # use proconio::source::auto::AutoSource;</span>
-<span class="doccomment">//! # let source = AutoSource::from(&quot;4  1 3 2 5&quot;);</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! input! {</span>
-<span class="doccomment">//! #     from source,</span>
-<span class="doccomment">//!     n: usize,</span>
-<span class="doccomment">//!     a: [usize; n],</span>
-<span class="doccomment">//! }</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! let m = (0..n).map(|i| i + a[i]).max().unwrap();</span>
-<span class="doccomment">//! let mut dp = vec![0; m + 1];</span>
-<span class="doccomment">//! dp[0] = 1;</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! for i in 0..n {</span>
-<span class="doccomment">//!     for j in 1..=a[i] {</span>
-<span class="doccomment">//!         dp[i + j] += dp[i] * j as i32;</span>
-<span class="doccomment">//!     }</span>
-<span class="doccomment">//! }</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! // a = [1, 3, 2, 5]</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! // 0: [1, 0, 0, 0, 0, 0, 0, 0, 0]</span>
-<span class="doccomment">//! // 1: [1, 1, 0, 0, 0, 0, 0, 0, 0]</span>
-<span class="doccomment">//! // 2: [1, 1, 1, 2, 3, 0, 0, 0, 0]</span>
-<span class="doccomment">//! // 3: [1, 1, 1, 3, 5, 0, 0, 0, 0]</span>
-<span class="doccomment">//! // 4: [1, 1, 1, 3, 8, 6, 9, 12, 15]</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! assert_eq!(dp, [1, 1, 1, 3, 8, 6, 9, 12, 15]);</span>
-<span class="doccomment">//! ```</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! これを $O(n)$ 時間で行いたい。</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! 1 階差分を考えると、定数の区間加算になるので、基本的な imos 法で処理できる。</span>
-<span class="doccomment">//! $[i+1, i+a\_i]$ に足す値は $\\DP\[i\]$ に依るため、on-the-fly の処理が必要になる。</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! $$</span>
-<span class="doccomment">//! \\begin{aligned}</span>
-<span class="doccomment">//! &amp;\\qquad \\For{i \\gets (0, 1, \\dots, n-1)} \\\\</span>
-<span class="doccomment">//! &amp;\\qquad\\qquad \\For{j \\in \\{1, 2, \\dots, a\_i\\}} \\\\</span>
-<span class="doccomment">//! &amp;\\qquad\\qquad\\qquad \\DP\[i+j\] \\xgets{+} \\DP\[i\] \\cdot j \\\\</span>
-<span class="doccomment">//! \\end{aligned}</span>
-<span class="doccomment">//! $$</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ```</span>
-<span class="doccomment">//! # use proconio::input;</span>
-<span class="doccomment">//! # use proconio::source::auto::AutoSource;</span>
-<span class="doccomment">//! # let source = AutoSource::from(&quot;4  1 3 2 5&quot;);</span>
-<span class="doccomment">//! #</span>
-<span class="doccomment">//! # input! {</span>
-<span class="doccomment">//! #     from source,</span>
-<span class="doccomment">//! #     n: usize,</span>
-<span class="doccomment">//! #     a: [usize; n],</span>
-<span class="doccomment">//! # }</span>
-<span class="doccomment">//! #</span>
-<span class="doccomment">//! # let m = (0..n).map(|i| i + a[i]).max().unwrap();</span>
-<span class="doccomment">//! let mut dp0 = vec![0; m + 1];  // dp</span>
-<span class="doccomment">//! let mut dp1 = vec![0; m + 2];  // dp&#39;</span>
-<span class="doccomment">//! let mut dp2 = vec![0; m + 3];  // dp&#39;&#39;</span>
-<span class="doccomment">//! dp2[0] = 1;</span>
-<span class="doccomment">//! dp2[1] = -2;</span>
-<span class="doccomment">//! dp2[2] = 1;</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! for i in 0..n {</span>
-<span class="doccomment">//!     dp1[i] += dp2[i];</span>
-<span class="doccomment">//!     if i &gt; 0 {</span>
-<span class="doccomment">//!         dp1[i] += dp1[i - 1];</span>
-<span class="doccomment">//!     }</span>
-<span class="doccomment">//!     dp0[i] += dp1[i];</span>
-<span class="doccomment">//!     if i &gt; 0 {</span>
-<span class="doccomment">//!         dp0[i] += dp0[i - 1];</span>
-<span class="doccomment">//!     }</span>
-<span class="doccomment">//!     dp2[i + a[i] + 1] -= dp0[i] * a[i] as i32;</span>
-<span class="doccomment">//!     dp2[i + a[i] + 2] += dp0[i] * a[i] as i32;</span>
-<span class="doccomment">//!     dp2[i + 1] += dp0[i];</span>
-<span class="doccomment">//!     dp2[i + a[i] + 1] -= dp0[i];</span>
-<span class="doccomment">//! }</span>
-<span class="doccomment">//! for i in n..=m {</span>
-<span class="doccomment">//!     dp1[i] = dp1[i - 1] + dp2[i];</span>
-<span class="doccomment">//!     dp0[i] = dp0[i - 1] + dp1[i];</span>
-<span class="doccomment">//! }</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! assert_eq!(dp0, [1, 1, 1, 3, 8, 6, 9, 12, 15]);</span>
-<span class="doccomment">//! ```</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! 0 次の加算（一つの値の加算）、1 次の加算（区間への定数の加算）に関して、</span>
-<span class="doccomment">//! 直接 `dp0[_]` や `dp1[_]` に足すと総和の整合性が取れなくなるので、</span>
-<span class="doccomment">//! `dp2[_]` の意味で言い換えるか、別の値として持つ必要がある。</span>
-<span class="doccomment">//! 前者では、無駄に足す個数が増えるので、次数が増えたときにつらそう。</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ```</span>
-<span class="doccomment">//! # use proconio::input;</span>
-<span class="doccomment">//! # use proconio::source::auto::AutoSource;</span>
-<span class="doccomment">//! # let source = AutoSource::from(&quot;4  1 3 2 5&quot;);</span>
-<span class="doccomment">//! #</span>
-<span class="doccomment">//! # input! {</span>
-<span class="doccomment">//! #     from source,</span>
-<span class="doccomment">//! #     n: usize,</span>
-<span class="doccomment">//! #     a: [usize; n],</span>
-<span class="doccomment">//! # }</span>
-<span class="doccomment">//! #</span>
-<span class="doccomment">//! # let m = (0..n).map(|i| i + a[i]).max().unwrap();</span>
-<span class="doccomment">//! #</span>
-<span class="doccomment">//! let mut res = vec![0; m + 1];</span>
-<span class="doccomment">//! #[allow(unused)]</span>
-<span class="doccomment">//! let mut dp0 = vec![0; m + 1];</span>
-<span class="doccomment">//! let mut dp1 = vec![0; m + 2];</span>
-<span class="doccomment">//! let mut dp2 = vec![0; m + 2];</span>
-<span class="doccomment">//! let mut acc0 = 1;</span>
-<span class="doccomment">//! let mut acc1 = 0;</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! dp1[1] = -acc0;</span>
-<span class="doccomment">//! for i in 0..n {</span>
-<span class="doccomment">//!     acc1 += dp2[i];</span>
-<span class="doccomment">//!     acc0 += dp1[i] + acc1;</span>
-<span class="doccomment">//!     res[i] = acc0;</span>
-<span class="doccomment">//!     </span>
-<span class="doccomment">//!     dp1[i + a[i] + 1] -= acc0 * a[i] as i32;</span>
-<span class="doccomment">//!     dp2[i + 1] += acc0;</span>
-<span class="doccomment">//!     dp2[i + a[i] + 1] -= acc0;</span>
-<span class="doccomment">//! }</span>
-<span class="doccomment">//! for i in n..=m {</span>
-<span class="doccomment">//!     acc1 += dp2[i];</span>
-<span class="doccomment">//!     acc0 += dp1[i] + acc1;</span>
-<span class="doccomment">//!     res[i] = acc0;</span>
-<span class="doccomment">//! }</span>
-<span class="doccomment">//! assert_eq!(res, [1, 1, 1, 3, 8, 6, 9, 12, 15]);</span>
-<span class="doccomment">//! ```</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ## To-do / Notes</span>
-<span class="doccomment">//! - 数式からの導出をちゃんと書く</span>
-<span class="doccomment">//! - $\\DP\[i+j\] \\xgets{+}\\DP\[i\]\\cdot j^2$ について書いてみる</span>
-<span class="doccomment">//! - よくある累積和とは添字の解釈が異なる？ 明確にしておく</span>
-<span class="doccomment">//! - クエリがオフラインで on-the-fly が不要の場合と比較してみる</span>
-<span class="doccomment">//! - 遅延セグ木で区間 $O(1)$ 次加算と何かしらの fold について考える</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 区間加算 (imos 法 + on-the-fly で遅延解消)。
+//!
+//! 以下のような問題を考える。
+//!
+//! ```
+//! use proconio::input;
+//! # use proconio::source::auto::AutoSource;
+//! # let source = AutoSource::from(&quot;4  1 3 2 5&quot;);
+//!
+//! input! {
+//! #     from source,
+//!     n: usize,
+//!     a: [usize; n],
+//! }
+//!
+//! let m = (0..n).map(|i| i + a[i]).max().unwrap();
+//! let mut dp = vec![0; m + 1];
+//! dp[0] = 1;
+//!
+//! for i in 0..n {
+//!     for j in 1..=a[i] {
+//!         dp[i + j] += dp[i] * j as i32;
+//!     }
+//! }
+//!
+//! // a = [1, 3, 2, 5]
+//!
+//! // 0: [1, 0, 0, 0, 0, 0, 0, 0, 0]
+//! // 1: [1, 1, 0, 0, 0, 0, 0, 0, 0]
+//! // 2: [1, 1, 1, 2, 3, 0, 0, 0, 0]
+//! // 3: [1, 1, 1, 3, 5, 0, 0, 0, 0]
+//! // 4: [1, 1, 1, 3, 8, 6, 9, 12, 15]
+//!
+//! assert_eq!(dp, [1, 1, 1, 3, 8, 6, 9, 12, 15]);
+//! ```
+//!
+//! これを $O(n)$ 時間で行いたい。
+//!
+//! 1 階差分を考えると、定数の区間加算になるので、基本的な imos 法で処理できる。
+//! $[i+1, i+a\_i]$ に足す値は $\\DP\[i\]$ に依るため、on-the-fly の処理が必要になる。
+//!
+//! $$
+//! \\begin{aligned}
+//! &amp;\\qquad \\For{i \\gets (0, 1, \\dots, n-1)} \\\\
+//! &amp;\\qquad\\qquad \\For{j \\in \\{1, 2, \\dots, a\_i\\}} \\\\
+//! &amp;\\qquad\\qquad\\qquad \\DP\[i+j\] \\xgets{+} \\DP\[i\] \\cdot j \\\\
+//! \\end{aligned}
+//! $$
+//!
+//! ```
+//! # use proconio::input;
+//! # use proconio::source::auto::AutoSource;
+//! # let source = AutoSource::from(&quot;4  1 3 2 5&quot;);
+//! #
+//! # input! {
+//! #     from source,
+//! #     n: usize,
+//! #     a: [usize; n],
+//! # }
+//! #
+//! # let m = (0..n).map(|i| i + a[i]).max().unwrap();
+//! let mut dp0 = vec![0; m + 1];  // dp
+//! let mut dp1 = vec![0; m + 2];  // dp&#39;
+//! let mut dp2 = vec![0; m + 3];  // dp&#39;&#39;
+//! dp2[0] = 1;
+//! dp2[1] = -2;
+//! dp2[2] = 1;
+//!
+//! for i in 0..n {
+//!     dp1[i] += dp2[i];
+//!     if i &gt; 0 {
+//!         dp1[i] += dp1[i - 1];
+//!     }
+//!     dp0[i] += dp1[i];
+//!     if i &gt; 0 {
+//!         dp0[i] += dp0[i - 1];
+//!     }
+//!     dp2[i + a[i] + 1] -= dp0[i] * a[i] as i32;
+//!     dp2[i + a[i] + 2] += dp0[i] * a[i] as i32;
+//!     dp2[i + 1] += dp0[i];
+//!     dp2[i + a[i] + 1] -= dp0[i];
+//! }
+//! for i in n..=m {
+//!     dp1[i] = dp1[i - 1] + dp2[i];
+//!     dp0[i] = dp0[i - 1] + dp1[i];
+//! }
+//!
+//! assert_eq!(dp0, [1, 1, 1, 3, 8, 6, 9, 12, 15]);
+//! ```
+//!
+//! 0 次の加算（一つの値の加算）、1 次の加算（区間への定数の加算）に関して、
+//! 直接 `dp0[_]` や `dp1[_]` に足すと総和の整合性が取れなくなるので、
+//! `dp2[_]` の意味で言い換えるか、別の値として持つ必要がある。
+//! 前者では、無駄に足す個数が増えるので、次数が増えたときにつらそう。
+//!
+//! ```
+//! # use proconio::input;
+//! # use proconio::source::auto::AutoSource;
+//! # let source = AutoSource::from(&quot;4  1 3 2 5&quot;);
+//! #
+//! # input! {
+//! #     from source,
+//! #     n: usize,
+//! #     a: [usize; n],
+//! # }
+//! #
+//! # let m = (0..n).map(|i| i + a[i]).max().unwrap();
+//! #
+//! let mut res = vec![0; m + 1];
+//! #[allow(unused)]
+//! let mut dp0 = vec![0; m + 1];
+//! let mut dp1 = vec![0; m + 2];
+//! let mut dp2 = vec![0; m + 2];
+//! let mut acc0 = 1;
+//! let mut acc1 = 0;
+//!
+//! dp1[1] = -acc0;
+//! for i in 0..n {
+//!     acc1 += dp2[i];
+//!     acc0 += dp1[i] + acc1;
+//!     res[i] = acc0;
+//!     
+//!     dp1[i + a[i] + 1] -= acc0 * a[i] as i32;
+//!     dp2[i + 1] += acc0;
+//!     dp2[i + a[i] + 1] -= acc0;
+//! }
+//! for i in n..=m {
+//!     acc1 += dp2[i];
+//!     acc0 += dp1[i] + acc1;
+//!     res[i] = acc0;
+//! }
+//! assert_eq!(res, [1, 1, 1, 3, 8, 6, 9, 12, 15]);
+//! ```
+//!
+//! ## To-do / Notes
+//! - 数式からの導出をちゃんと書く
+//! - $\\DP\[i+j\] \\xgets{+}\\DP\[i\]\\cdot j^2$ について書いてみる
+//! - よくある累積和とは添字の解釈が異なる？ 明確にしておく
+//! - クエリがオフラインで on-the-fly が不要の場合と比較してみる
+//! - 遅延セグ木で区間 $O(1)$ 次加算と何かしらの fold について考える
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">linear</span>() {
-    <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">7</span>];
+</span><span class="attribute">#[test]
+</span><span class="kw">fn </span>linear() {
+    <span class="kw">let </span>a = <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">7</span>];
 
-    <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">a</span>.<span class="ident">len</span>();
-    <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">n</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span> <span class="op">+</span> <span class="ident">a</span>[<span class="ident">i</span>]).<span class="ident">max</span>().<span class="ident">unwrap</span>();
-    <span class="kw">let</span> <span class="ident">expected</span> <span class="op">=</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dp</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">m</span> <span class="op">+</span> <span class="number">1</span>];
-        <span class="ident">dp</span>[<span class="number">0</span>] <span class="op">=</span> <span class="number">1</span>;
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span> {
-            <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">1</span>..<span class="op">=</span><span class="ident">a</span>[<span class="ident">i</span>] {
-                <span class="ident">dp</span>[<span class="ident">i</span> <span class="op">+</span> <span class="ident">j</span>] <span class="op">+</span><span class="op">=</span> <span class="ident">dp</span>[<span class="ident">i</span>] <span class="op">*</span> <span class="ident">j</span> <span class="kw">as</span> <span class="ident">i32</span>;
+    <span class="kw">let </span>n = a.len();
+    <span class="kw">let </span>m = (<span class="number">0</span>..n).map(|i| i + a[i]).max().unwrap();
+    <span class="kw">let </span>expected = {
+        <span class="kw">let </span><span class="kw-2">mut </span>dp = <span class="macro">vec!</span>[<span class="number">0</span>; m + <span class="number">1</span>];
+        dp[<span class="number">0</span>] = <span class="number">1</span>;
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..n {
+            <span class="kw">for </span>j <span class="kw">in </span><span class="number">1</span>..=a[i] {
+                dp[i + j] += dp[i] * j <span class="kw">as </span>i32;
             }
         }
-        <span class="ident">dp</span>
+        dp
     };
 
-    <span class="kw">let</span> <span class="ident">actual</span> <span class="op">=</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">m</span> <span class="op">+</span> <span class="number">1</span>];
-        <span class="kw">let</span> <span class="ident">dp0</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">m</span> <span class="op">+</span> <span class="number">1</span>];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dp1</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">m</span> <span class="op">+</span> <span class="number">2</span>];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dp2</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">m</span> <span class="op">+</span> <span class="number">2</span>];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">acc0</span> <span class="op">=</span> <span class="number">1</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">acc1</span> <span class="op">=</span> <span class="number">0</span>;
+    <span class="kw">let </span>actual = {
+        <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="macro">vec!</span>[<span class="number">0</span>; m + <span class="number">1</span>];
+        <span class="kw">let </span>dp0 = <span class="macro">vec!</span>[<span class="number">0</span>; m + <span class="number">1</span>];
+        <span class="kw">let </span><span class="kw-2">mut </span>dp1 = <span class="macro">vec!</span>[<span class="number">0</span>; m + <span class="number">2</span>];
+        <span class="kw">let </span><span class="kw-2">mut </span>dp2 = <span class="macro">vec!</span>[<span class="number">0</span>; m + <span class="number">2</span>];
+        <span class="kw">let </span><span class="kw-2">mut </span>acc0 = <span class="number">1</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>acc1 = <span class="number">0</span>;
 
-        <span class="ident">dp1</span>[<span class="number">1</span>] <span class="op">=</span> <span class="op">-</span><span class="ident">acc0</span>;
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span> {
-            <span class="ident">acc1</span> <span class="op">+</span><span class="op">=</span> <span class="ident">dp2</span>[<span class="ident">i</span>];
-            <span class="ident">acc0</span> <span class="op">+</span><span class="op">=</span> <span class="ident">dp1</span>[<span class="ident">i</span>] <span class="op">+</span> <span class="ident">acc1</span>;
-            <span class="ident">res</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">dp0</span>[<span class="ident">i</span>] <span class="op">+</span> <span class="ident">acc0</span>;
+        dp1[<span class="number">1</span>] = -acc0;
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..n {
+            acc1 += dp2[i];
+            acc0 += dp1[i] + acc1;
+            res[i] = dp0[i] + acc0;
 
-            <span class="ident">dp1</span>[<span class="ident">i</span> <span class="op">+</span> <span class="ident">a</span>[<span class="ident">i</span>] <span class="op">+</span> <span class="number">1</span>] <span class="op">-</span><span class="op">=</span> <span class="ident">acc0</span> <span class="op">*</span> <span class="ident">a</span>[<span class="ident">i</span>] <span class="kw">as</span> <span class="ident">i32</span>;
-            <span class="ident">dp2</span>[<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>] <span class="op">+</span><span class="op">=</span> <span class="ident">acc0</span>;
-            <span class="ident">dp2</span>[<span class="ident">i</span> <span class="op">+</span> <span class="ident">a</span>[<span class="ident">i</span>] <span class="op">+</span> <span class="number">1</span>] <span class="op">-</span><span class="op">=</span> <span class="ident">acc0</span>;
+            dp1[i + a[i] + <span class="number">1</span>] -= acc0 * a[i] <span class="kw">as </span>i32;
+            dp2[i + <span class="number">1</span>] += acc0;
+            dp2[i + a[i] + <span class="number">1</span>] -= acc0;
         }
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="ident">n</span>..<span class="op">=</span><span class="ident">m</span> {
-            <span class="ident">acc1</span> <span class="op">+</span><span class="op">=</span> <span class="ident">dp2</span>[<span class="ident">i</span>];
-            <span class="ident">acc0</span> <span class="op">+</span><span class="op">=</span> <span class="ident">dp1</span>[<span class="ident">i</span>] <span class="op">+</span> <span class="ident">acc1</span>;
-            <span class="ident">res</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">dp0</span>[<span class="ident">i</span>] <span class="op">+</span> <span class="ident">acc0</span>;
+        <span class="kw">for </span>i <span class="kw">in </span>n..=m {
+            acc1 += dp2[i];
+            acc0 += dp1[i] + acc1;
+            res[i] = dp0[i] + acc0;
         }
-        <span class="ident">res</span>
+        res
     };
 
-    <span class="macro">assert_eq!</span>(<span class="ident">actual</span>, <span class="ident">expected</span>);
+    <span class="macro">assert_eq!</span>(actual, expected);
 }
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">quadratic</span>() {
-    <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">7</span>];
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>quadratic() {
+    <span class="kw">let </span>a = <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">7</span>];
+    <span class="comment">// let a = vec![5, 0, 0, 0, 0, 0, 0, 0, 0];
 
-    <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">a</span>.<span class="ident">len</span>();
-    <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">n</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span> <span class="op">+</span> <span class="ident">a</span>[<span class="ident">i</span>]).<span class="ident">max</span>().<span class="ident">unwrap</span>();
-    <span class="kw">let</span> <span class="ident">expected</span> <span class="op">=</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dp</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">m</span> <span class="op">+</span> <span class="number">1</span>];
-        <span class="ident">dp</span>[<span class="number">0</span>] <span class="op">=</span> <span class="number">1</span>;
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span> {
-            <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">1</span>..<span class="op">=</span><span class="ident">a</span>[<span class="ident">i</span>] {
-                <span class="ident">dp</span>[<span class="ident">i</span> <span class="op">+</span> <span class="ident">j</span>] <span class="op">+</span><span class="op">=</span> <span class="ident">dp</span>[<span class="ident">i</span>] <span class="op">*</span> <span class="ident">j</span>.<span class="ident">pow</span>(<span class="number">2</span>) <span class="kw">as</span> <span class="ident">i32</span>;
+    </span><span class="kw">let </span>n = a.len();
+    <span class="kw">let </span>m = (<span class="number">0</span>..n).map(|i| i + a[i]).max().unwrap();
+    <span class="kw">let </span>expected = {
+        <span class="kw">let </span><span class="kw-2">mut </span>dp = <span class="macro">vec!</span>[<span class="number">0</span>; m + <span class="number">1</span>];
+        dp[<span class="number">0</span>] = <span class="number">1</span>;
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..n {
+            <span class="kw">for </span>j <span class="kw">in </span><span class="number">1</span>..=a[i] {
+                dp[i + j] += dp[i] * j.pow(<span class="number">2</span>) <span class="kw">as </span>i32;
             }
         }
-        <span class="ident">dp</span>
+        dp
     };
 
-    <span class="kw">let</span> <span class="ident">actual</span> <span class="op">=</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">m</span> <span class="op">+</span> <span class="number">1</span>];
-        <span class="kw">let</span> <span class="ident">dp0</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">m</span> <span class="op">+</span> <span class="number">1</span>];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dp1</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">m</span> <span class="op">+</span> <span class="number">2</span>];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dp2</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">m</span> <span class="op">+</span> <span class="number">2</span>];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dp3</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">m</span> <span class="op">+</span> <span class="number">2</span>];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">acc0</span> <span class="op">=</span> <span class="number">1</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">acc1</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">acc2</span> <span class="op">=</span> <span class="number">0</span>;
+    <span class="comment">// index:  0   1   2   3   4   5   6   7   8
+    // a:      1   0   0   0   0   0   0   0   0
+    // add:    0   1   4   9  16  25   0   0   0
+    // add&#39;:   0   1   3   5   7   9 -25   0   0
+    // add&#39;&#39;:  0   1   2   2   2   2 -16  25   0
+    // add&#39;&#39;&#39;: 0   1   1   0   0   0 -18  43 -25
 
-        <span class="ident">dp1</span>[<span class="number">1</span>] <span class="op">=</span> <span class="op">-</span><span class="ident">acc0</span>;
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span> {
-            <span class="ident">acc2</span> <span class="op">+</span><span class="op">=</span> <span class="ident">dp3</span>[<span class="ident">i</span>];
-            <span class="ident">acc1</span> <span class="op">+</span><span class="op">=</span> <span class="ident">dp2</span>[<span class="ident">i</span>] <span class="op">+</span> <span class="ident">acc2</span>;
-            <span class="ident">acc0</span> <span class="op">+</span><span class="op">=</span> <span class="ident">dp1</span>[<span class="ident">i</span>] <span class="op">+</span> <span class="ident">acc1</span>;
-            <span class="ident">res</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">dp0</span>[<span class="ident">i</span>] <span class="op">+</span> <span class="ident">acc0</span>;
+    </span><span class="kw">let </span>actual = {
+        <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="macro">vec!</span>[<span class="number">0</span>; m + <span class="number">1</span>];
+        <span class="kw">let </span>dp0 = <span class="macro">vec!</span>[<span class="number">0</span>; m + <span class="number">1</span>];
+        <span class="kw">let </span><span class="kw-2">mut </span>dp1 = <span class="macro">vec!</span>[<span class="number">0</span>; m + <span class="number">2</span>];
+        <span class="kw">let </span><span class="kw-2">mut </span>dp2 = <span class="macro">vec!</span>[<span class="number">0</span>; m + <span class="number">2</span>];
+        <span class="kw">let </span><span class="kw-2">mut </span>dp3 = <span class="macro">vec!</span>[<span class="number">0</span>; m + <span class="number">2</span>];
+        <span class="kw">let </span><span class="kw-2">mut </span>acc0 = <span class="number">1</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>acc1 = <span class="number">0</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>acc2 = <span class="number">0</span>;
 
-            <span class="comment">// この辺でちゃんとやる、差分計算</span>
-            <span class="comment">// dp2[i + a[i] + 1] -= acc0 * a[i] as i32;</span>
-            <span class="comment">// dp3[i + 1] += acc0;</span>
-            <span class="comment">// dp3[i + a[i] + 1] -= acc0;</span>
+        dp1[<span class="number">1</span>] = -acc0;
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..n {
+            acc2 += dp3[i];
+            acc1 += dp2[i] + acc2;
+            acc0 += dp1[i] + acc1;
+            res[i] = dp0[i] + acc0;
+
+            <span class="comment">// linear:
+            // dp1[i + a[i] + 1] -= acc0 * a[i] as i32;
+            // dp2[i + 1] += acc0;
+            // dp2[i + a[i] + 1] -= acc0;
+
+            </span>dp2[i + a[i] + <span class="number">1</span>] -= <span class="number">2 </span>* acc0 * a[i] <span class="kw">as </span>i32;
+            dp3[i + <span class="number">1</span>] += <span class="number">2 </span>* acc0;
+            dp3[i + a[i] + <span class="number">1</span>] -= <span class="number">2 </span>* acc0;
+            dp1[i + a[i] + <span class="number">1</span>] -= acc0 * a[i].pow(<span class="number">2</span>) <span class="kw">as </span>i32;
+
+            dp2[i + <span class="number">1</span>] += -acc0;
+            dp2[i + a[i] + <span class="number">1</span>] -= -acc0;
         }
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="ident">n</span>..<span class="op">=</span><span class="ident">m</span> {
-            <span class="ident">acc2</span> <span class="op">+</span><span class="op">=</span> <span class="ident">dp3</span>[<span class="ident">i</span>];
-            <span class="ident">acc1</span> <span class="op">+</span><span class="op">=</span> <span class="ident">dp2</span>[<span class="ident">i</span>] <span class="op">+</span> <span class="ident">acc2</span>;
-            <span class="ident">acc0</span> <span class="op">+</span><span class="op">=</span> <span class="ident">dp1</span>[<span class="ident">i</span>] <span class="op">+</span> <span class="ident">acc1</span>;
-            <span class="ident">res</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">dp0</span>[<span class="ident">i</span>] <span class="op">+</span> <span class="ident">acc0</span>;
+        <span class="kw">for </span>i <span class="kw">in </span>n..=m {
+            acc2 += dp3[i];
+            acc1 += dp2[i] + acc2;
+            acc0 += dp1[i] + acc1;
+            res[i] = dp0[i] + acc0;
         }
-        <span class="ident">res</span>
+        res
     };
 
-    <span class="macro">assert_eq!</span>(<span class="ident">actual</span>, <span class="ident">expected</span>);
+    <span class="macro">assert_eq!</span>(actual, expected);
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nekolib_notes" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nekolib_notes" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

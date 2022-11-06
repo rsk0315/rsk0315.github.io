@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/interpolation.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>interpolation.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/interpolation.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>interpolation.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -162,80 +162,80 @@
 <span id="73">73</span>
 <span id="74">74</span>
 <span id="75">75</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Lagrange 補間。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Lagrange 補間。
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::const_div</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::gcd_recip</span>;
+</span><span class="kw">use </span><span class="kw">super</span>::const_div;
+<span class="kw">use </span><span class="kw">super</span>::gcd_recip;
 
-<span class="kw">use</span> <span class="ident">const_div::ConstDiv</span>;
-<span class="kw">use</span> <span class="ident">gcd_recip::GcdRecip</span>;
+<span class="kw">use </span>const_div::ConstDiv;
+<span class="kw">use </span>gcd_recip::GcdRecip;
 
-<span class="doccomment">/// Lagrange 補間。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 与えられた $\\langle f(0), f(1), \\dots, f(n-1)\\rangle$ に対して $\\hat{f}(i)=f(i)$</span>
-<span class="doccomment">/// ($i=0,1,\\dots,n-1$) なる $n$ 次多項式 $\\hat{f}$ を考える。</span>
-<span class="doccomment">/// この $\\hat{f}$ に対して $\\hat{f}(x)\\bmod p$ を返す。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Idea</span>
-<span class="doccomment">/// `todo!()`</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// 前処理に $O(n)$ 時間、$\\hat{f}(x)$ を求めるのに $O(n)$ 時間。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::math::Interpolation;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let f = Interpolation::with(vec![0, 1, 3], 998244353);</span>
-<span class="doccomment">/// assert_eq!(f.interpolate(0), 0);</span>
-<span class="doccomment">/// assert_eq!(f.interpolate(3), 6);</span>
-<span class="doccomment">/// assert_eq!(f.interpolate(4), 10);</span>
-<span class="doccomment">/// assert_eq!(f.interpolate(100000000), 722404071);</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # See also</span>
-<span class="doccomment">/// - &lt;https://rsk0315.hatenablog.com/entry/2019/04/25/141012&gt;</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Interpolation</span> {
-    <span class="ident">first</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>,
-    <span class="ident">fact_recip</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>,
-    <span class="ident">cd</span>: <span class="ident">ConstDiv</span>,
-    <span class="ident">modulo</span>: <span class="ident">u64</span>,
+<span class="doccomment">/// Lagrange 補間。
+///
+/// 与えられた $\\langle f(0), f(1), \\dots, f(n-1)\\rangle$ に対して $\\hat{f}(i)=f(i)$
+/// ($i=0,1,\\dots,n-1$) なる $n$ 次多項式 $\\hat{f}$ を考える。
+/// この $\\hat{f}$ に対して $\\hat{f}(x)\\bmod p$ を返す。
+///
+/// # Idea
+/// `todo!()`
+///
+/// # Complexity
+/// 前処理に $O(n)$ 時間、$\\hat{f}(x)$ を求めるのに $O(n)$ 時間。
+///
+/// # Examples
+/// ```
+/// use nekolib::math::Interpolation;
+///
+/// let f = Interpolation::with(vec![0, 1, 3], 998244353);
+/// assert_eq!(f.interpolate(0), 0);
+/// assert_eq!(f.interpolate(3), 6);
+/// assert_eq!(f.interpolate(4), 10);
+/// assert_eq!(f.interpolate(100000000), 722404071);
+/// ```
+///
+/// # See also
+/// - &lt;https://rsk0315.hatenablog.com/entry/2019/04/25/141012&gt;
+</span><span class="kw">pub struct </span>Interpolation {
+    first: Vec&lt;u64&gt;,
+    fact_recip: Vec&lt;u64&gt;,
+    cd: ConstDiv,
+    modulo: u64,
 }
 
-<span class="kw">impl</span> <span class="ident">Interpolation</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with</span>(<span class="ident">first</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>, <span class="ident">modulo</span>: <span class="ident">u64</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">first</span>.<span class="ident">len</span>();
-        <span class="kw">let</span> <span class="ident">cd</span> <span class="op">=</span> <span class="ident">ConstDiv::new</span>(<span class="ident">modulo</span>);
-        <span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> (<span class="number">2</span>..<span class="ident">n</span> <span class="kw">as</span> <span class="ident">u64</span>).<span class="ident">reduce</span>(<span class="op">|</span><span class="ident">x</span>, <span class="ident">y</span><span class="op">|</span> <span class="ident">cd</span>.<span class="ident">rem</span>(<span class="ident">x</span> <span class="op">*</span> <span class="ident">y</span>)).<span class="ident">unwrap_or</span>(<span class="number">1</span>);
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">fact_recip</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">1</span>; <span class="ident">n</span>];
-        <span class="ident">fact_recip</span>[<span class="ident">n</span> <span class="op">-</span> <span class="number">1</span>] <span class="op">=</span> <span class="ident">r</span>.<span class="ident">gcd_recip</span>(<span class="ident">modulo</span>).<span class="number">1</span>;
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> (<span class="number">2</span>..<span class="ident">n</span>).<span class="ident">rev</span>() {
-            <span class="ident">fact_recip</span>[<span class="ident">i</span> <span class="op">-</span> <span class="number">1</span>] <span class="op">=</span> <span class="ident">cd</span>.<span class="ident">rem</span>(<span class="ident">fact_recip</span>[<span class="ident">i</span>] <span class="op">*</span> <span class="ident">i</span> <span class="kw">as</span> <span class="ident">u64</span>);
+<span class="kw">impl </span>Interpolation {
+    <span class="kw">pub fn </span>with(first: Vec&lt;u64&gt;, modulo: u64) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>n = first.len();
+        <span class="kw">let </span>cd = ConstDiv::new(modulo);
+        <span class="kw">let </span>r = (<span class="number">2</span>..n <span class="kw">as </span>u64).reduce(|x, y| cd.rem(x * y)).unwrap_or(<span class="number">1</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>fact_recip = <span class="macro">vec!</span>[<span class="number">1</span>; n];
+        fact_recip[n - <span class="number">1</span>] = r.gcd_recip(modulo).<span class="number">1</span>;
+        <span class="kw">for </span>i <span class="kw">in </span>(<span class="number">2</span>..n).rev() {
+            fact_recip[i - <span class="number">1</span>] = cd.rem(fact_recip[i] * i <span class="kw">as </span>u64);
         }
-        <span class="self">Self</span> { <span class="ident">first</span>, <span class="ident">fact_recip</span>, <span class="ident">cd</span>, <span class="ident">modulo</span> }
+        <span class="self">Self </span>{ first, fact_recip, cd, modulo }
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">interpolate</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">x</span>: <span class="ident">u64</span>) -&gt; <span class="ident">u64</span> {
-        <span class="kw">if</span> (<span class="ident">x</span> <span class="kw">as</span> <span class="ident">usize</span>) <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">first</span>.<span class="ident">len</span>() {
-            <span class="kw">return</span> <span class="self">self</span>.<span class="ident">first</span>[<span class="ident">x</span> <span class="kw">as</span> <span class="ident">usize</span>];
+    <span class="kw">pub fn </span>interpolate(<span class="kw-2">&amp;</span><span class="self">self</span>, x: u64) -&gt; u64 {
+        <span class="kw">if </span>(x <span class="kw">as </span>usize) &lt; <span class="self">self</span>.first.len() {
+            <span class="kw">return </span><span class="self">self</span>.first[x <span class="kw">as </span>usize];
         }
-        <span class="kw">let</span> <span class="ident">cd</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">cd</span>;
-        <span class="kw">let</span> <span class="ident">modulo</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">modulo</span>;
-        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">first</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>;
-        <span class="comment">// omega = (x-0) * ... (x-n)</span>
-        <span class="kw">let</span> <span class="ident">omega</span> <span class="op">=</span> (<span class="number">0</span>..<span class="op">=</span><span class="ident">n</span> <span class="kw">as</span> <span class="ident">u64</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">cd</span>.<span class="ident">rem</span>(<span class="ident">x</span> <span class="op">+</span> <span class="ident">modulo</span> <span class="op">-</span> <span class="ident">i</span>))
-            .<span class="ident">reduce</span>(<span class="op">|</span><span class="ident">acc</span>, <span class="ident">x</span><span class="op">|</span> <span class="ident">cd</span>.<span class="ident">rem</span>(<span class="ident">acc</span> <span class="op">*</span> <span class="ident">x</span>))
-            .<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">sigma</span>: <span class="ident">u64</span> <span class="op">=</span> (<span class="number">0</span>..<span class="op">=</span><span class="ident">n</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> {
-                <span class="kw">let</span> <span class="ident">wi</span> <span class="op">=</span> <span class="ident">cd</span>.<span class="ident">rem</span>(<span class="self">self</span>.<span class="ident">fact_recip</span>[<span class="ident">i</span>] <span class="op">*</span> <span class="self">self</span>.<span class="ident">fact_recip</span>[<span class="ident">n</span> <span class="op">-</span> <span class="ident">i</span>]);
-                <span class="kw">let</span> <span class="ident">sgn</span> <span class="op">=</span> <span class="kw">if</span> (<span class="ident">n</span> <span class="op">-</span> <span class="ident">i</span>) <span class="op">%</span> <span class="number">2</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> { <span class="ident">modulo</span> <span class="op">-</span> <span class="ident">wi</span> } <span class="kw">else</span> { <span class="ident">wi</span> };
-                <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">cd</span>.<span class="ident">rem</span>(<span class="self">self</span>.<span class="ident">first</span>[<span class="ident">i</span>] <span class="op">*</span> <span class="ident">sgn</span>);
-                <span class="ident">tmp</span> <span class="op">*</span> (<span class="ident">x</span> <span class="op">+</span> <span class="ident">modulo</span> <span class="op">-</span> <span class="ident">i</span> <span class="kw">as</span> <span class="ident">u64</span>).<span class="ident">gcd_recip</span>(<span class="ident">modulo</span>).<span class="number">1</span>
-            })
-            .<span class="ident">sum</span>();
-        <span class="ident">cd</span>.<span class="ident">rem</span>(<span class="ident">omega</span> <span class="op">*</span> <span class="ident">cd</span>.<span class="ident">rem</span>(<span class="ident">sigma</span>))
+        <span class="kw">let </span>cd = <span class="self">self</span>.cd;
+        <span class="kw">let </span>modulo = <span class="self">self</span>.modulo;
+        <span class="kw">let </span>n = <span class="self">self</span>.first.len() - <span class="number">1</span>;
+        <span class="comment">// omega = (x-0) * ... (x-n)
+        </span><span class="kw">let </span>omega = (<span class="number">0</span>..=n <span class="kw">as </span>u64)
+            .map(|i| cd.rem(x + modulo - i))
+            .reduce(|acc, x| cd.rem(acc * x))
+            .unwrap();
+        <span class="kw">let </span>sigma: u64 = (<span class="number">0</span>..=n)
+            .map(|i| {
+                <span class="kw">let </span>wi = cd.rem(<span class="self">self</span>.fact_recip[i] * <span class="self">self</span>.fact_recip[n - i]);
+                <span class="kw">let </span>sgn = <span class="kw">if </span>(n - i) % <span class="number">2 </span>!= <span class="number">0 </span>{ modulo - wi } <span class="kw">else </span>{ wi };
+                <span class="kw">let </span>tmp = cd.rem(<span class="self">self</span>.first[i] * sgn);
+                tmp * (x + modulo - i <span class="kw">as </span>u64).gcd_recip(modulo).<span class="number">1
+            </span>})
+            .sum();
+        cd.rem(omega * cd.rem(sigma))
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/gcd_recip.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>gcd_recip.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/gcd_recip.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>gcd_recip.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -197,115 +197,115 @@
 <span id="108">108</span>
 <span id="109">109</span>
 <span id="110">110</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 最大公約数と逆元。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 最大公約数と逆元。
 
-<span class="doccomment">/// 最大公約数と逆元。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 次の条件を満たす唯一の $(g, r)$ を返す。</span>
-<span class="doccomment">/// - $g = \\gcd(a, b)$</span>
-<span class="doccomment">/// - $a\\cdot r \\equiv g \\pmod{b}$</span>
-<span class="doccomment">/// - $0\\le r \\lt b/g$</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $a = 0$ のとき $g = b$ であり、$0\\le g \\lt b$ とはならないことに注意せよ[^1]。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [^1]: $g = 0$ とすると $b/g$ が定義できないため。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// $O(\\log(\\min\\{a, b\\}))$ time.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::math::GcdRecip;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let (g, r) = 27_u32.gcd_recip(30);</span>
-<span class="doccomment">/// assert_eq!(g, 3);</span>
-<span class="doccomment">/// assert_eq!(r, 9);</span>
-<span class="doccomment">/// assert_eq!((27 * r) % 30, g);</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">GcdRecip</span>: <span class="ident">Sized</span> {
-    <span class="kw">fn</span> <span class="ident">gcd_recip</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; (<span class="self">Self</span>, <span class="self">Self</span>);
+/// 最大公約数と逆元。
+///
+/// 次の条件を満たす唯一の $(g, r)$ を返す。
+/// - $g = \\gcd(a, b)$
+/// - $a\\cdot r \\equiv g \\pmod{b}$
+/// - $0\\le r \\lt b/g$
+///
+/// $a = 0$ のとき $g = b$ であり、$0\\le g \\lt b$ とはならないことに注意せよ[^1]。
+///
+/// [^1]: $g = 0$ とすると $b/g$ が定義できないため。
+///
+/// # Complexity
+/// $O(\\log(\\min\\{a, b\\}))$ time.
+///
+/// # Examples
+/// ```
+/// use nekolib::math::GcdRecip;
+///
+/// let (g, r) = 27_u32.gcd_recip(30);
+/// assert_eq!(g, 3);
+/// assert_eq!(r, 9);
+/// assert_eq!((27 * r) % 30, g);
+/// ```
+</span><span class="kw">pub trait </span>GcdRecip: Sized {
+    <span class="kw">fn </span>gcd_recip(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; (<span class="self">Self</span>, <span class="self">Self</span>);
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_uint</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span> <span class="ident">GcdRecip</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">gcd_recip</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; (<span class="self">Self</span>, <span class="self">Self</span>) {
-                <span class="macro">assert!</span>(<span class="ident">other</span> <span class="op">&gt;</span> <span class="number">0</span>);
-                <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="self">self</span> <span class="op">%</span> <span class="ident">other</span>;
-                <span class="kw">if</span> <span class="ident">a</span> <span class="op">==</span> <span class="number">0</span> {
-                    <span class="kw">return</span> (<span class="ident">other</span>, <span class="number">0</span>);
+<span class="macro">macro_rules! </span>impl_uint {
+    (<span class="macro-nonterminal">$t</span>:ty) =&gt; {
+        <span class="kw">impl </span>GcdRecip <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
+            <span class="kw">fn </span>gcd_recip(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; (<span class="self">Self</span>, <span class="self">Self</span>) {
+                <span class="macro">assert!</span>(other &gt; <span class="number">0</span>);
+                <span class="kw">let </span>a = <span class="self">self </span>% other;
+                <span class="kw">if </span>a == <span class="number">0 </span>{
+                    <span class="kw">return </span>(other, <span class="number">0</span>);
                 }
 
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">other</span>;
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">t</span> <span class="op">=</span> <span class="ident">a</span>;
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">m0</span> <span class="op">=</span> <span class="number">0</span>;
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">m1</span> <span class="op">=</span> <span class="number">1</span>;
-                <span class="kw">while</span> <span class="ident">t</span> <span class="op">&gt;</span> <span class="number">0</span> {
-                    <span class="kw">let</span> <span class="ident">u</span> <span class="op">=</span> <span class="ident">s</span> <span class="op">/</span> <span class="ident">t</span>;
-                    <span class="ident">s</span> <span class="op">-</span><span class="op">=</span> <span class="ident">t</span> <span class="op">*</span> <span class="ident">u</span>;
-                    <span class="comment">// m0 -= m1 * u;</span>
-                    <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> (<span class="ident">m1</span> <span class="op">*</span> <span class="ident">u</span>) <span class="op">%</span> <span class="ident">other</span>;
-                    <span class="ident">m0</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">m0</span> <span class="op">&lt;</span> <span class="ident">v</span> { <span class="ident">m0</span> <span class="op">+</span> <span class="ident">other</span> <span class="op">-</span> <span class="ident">v</span> } <span class="kw">else</span> { <span class="ident">m0</span> <span class="op">-</span> <span class="ident">v</span> };
-                    <span class="ident">std::mem::swap</span>(<span class="kw-2">&amp;mut</span> <span class="ident">s</span>, <span class="kw-2">&amp;mut</span> <span class="ident">t</span>);
-                    <span class="ident">std::mem::swap</span>(<span class="kw-2">&amp;mut</span> <span class="ident">m0</span>, <span class="kw-2">&amp;mut</span> <span class="ident">m1</span>);
+                <span class="kw">let </span><span class="kw-2">mut </span>s = other;
+                <span class="kw">let </span><span class="kw-2">mut </span>t = a;
+                <span class="kw">let </span><span class="kw-2">mut </span>m0 = <span class="number">0</span>;
+                <span class="kw">let </span><span class="kw-2">mut </span>m1 = <span class="number">1</span>;
+                <span class="kw">while </span>t &gt; <span class="number">0 </span>{
+                    <span class="kw">let </span>u = s / t;
+                    s -= t * u;
+                    <span class="comment">// m0 -= m1 * u;
+                    </span><span class="kw">let </span>v = (m1 * u) % other;
+                    m0 = <span class="kw">if </span>m0 &lt; v { m0 + other - v } <span class="kw">else </span>{ m0 - v };
+                    std::mem::swap(<span class="kw-2">&amp;mut </span>s, <span class="kw-2">&amp;mut </span>t);
+                    std::mem::swap(<span class="kw-2">&amp;mut </span>m0, <span class="kw-2">&amp;mut </span>m1);
                 }
-                (<span class="ident">s</span>, <span class="ident">m0</span> <span class="op">%</span> (<span class="ident">other</span> <span class="op">/</span> <span class="ident">s</span>))
+                (s, m0 % (other / s))
             }
         }
     };
-    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
+    ( $(<span class="macro-nonterminal">$t</span>:ty)* ) =&gt; { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$t</span>);)* };
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_int</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span> <span class="ident">GcdRecip</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">gcd_recip</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; (<span class="self">Self</span>, <span class="self">Self</span>) {
-                <span class="macro">assert!</span>(<span class="ident">other</span> <span class="op">&gt;</span> <span class="number">0</span>);
-                <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">rem_euclid</span>(<span class="ident">other</span>);
-                <span class="kw">if</span> <span class="ident">a</span> <span class="op">==</span> <span class="number">0</span> {
-                    <span class="kw">return</span> (<span class="ident">other</span>, <span class="number">0</span>);
+<span class="macro">macro_rules! </span>impl_int {
+    (<span class="macro-nonterminal">$t</span>:ty) =&gt; {
+        <span class="kw">impl </span>GcdRecip <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
+            <span class="kw">fn </span>gcd_recip(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; (<span class="self">Self</span>, <span class="self">Self</span>) {
+                <span class="macro">assert!</span>(other &gt; <span class="number">0</span>);
+                <span class="kw">let </span>a = <span class="self">self</span>.rem_euclid(other);
+                <span class="kw">if </span>a == <span class="number">0 </span>{
+                    <span class="kw">return </span>(other, <span class="number">0</span>);
                 }
 
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">other</span>;
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">t</span> <span class="op">=</span> <span class="ident">a</span>;
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">m0</span> <span class="op">=</span> <span class="number">0</span>;
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">m1</span> <span class="op">=</span> <span class="number">1</span>;
-                <span class="kw">while</span> <span class="ident">t</span> <span class="op">&gt;</span> <span class="number">0</span> {
-                    <span class="kw">let</span> <span class="ident">u</span> <span class="op">=</span> <span class="ident">s</span> <span class="op">/</span> <span class="ident">t</span>;
-                    <span class="ident">s</span> <span class="op">-</span><span class="op">=</span> <span class="ident">t</span> <span class="op">*</span> <span class="ident">u</span>;
-                    <span class="ident">m0</span> <span class="op">-</span><span class="op">=</span> <span class="ident">m1</span> <span class="op">*</span> <span class="ident">u</span>;
-                    <span class="ident">std::mem::swap</span>(<span class="kw-2">&amp;mut</span> <span class="ident">s</span>, <span class="kw-2">&amp;mut</span> <span class="ident">t</span>);
-                    <span class="ident">std::mem::swap</span>(<span class="kw-2">&amp;mut</span> <span class="ident">m0</span>, <span class="kw-2">&amp;mut</span> <span class="ident">m1</span>);
+                <span class="kw">let </span><span class="kw-2">mut </span>s = other;
+                <span class="kw">let </span><span class="kw-2">mut </span>t = a;
+                <span class="kw">let </span><span class="kw-2">mut </span>m0 = <span class="number">0</span>;
+                <span class="kw">let </span><span class="kw-2">mut </span>m1 = <span class="number">1</span>;
+                <span class="kw">while </span>t &gt; <span class="number">0 </span>{
+                    <span class="kw">let </span>u = s / t;
+                    s -= t * u;
+                    m0 -= m1 * u;
+                    std::mem::swap(<span class="kw-2">&amp;mut </span>s, <span class="kw-2">&amp;mut </span>t);
+                    std::mem::swap(<span class="kw-2">&amp;mut </span>m0, <span class="kw-2">&amp;mut </span>m1);
                 }
-                <span class="kw">if</span> <span class="ident">m0</span> <span class="op">&lt;</span> <span class="number">0</span> {
-                    <span class="ident">m0</span> <span class="op">+</span><span class="op">=</span> <span class="ident">other</span> <span class="op">/</span> <span class="ident">s</span>;
+                <span class="kw">if </span>m0 &lt; <span class="number">0 </span>{
+                    m0 += other / s;
                 }
-                (<span class="ident">s</span>, <span class="ident">m0</span>)
+                (s, m0)
             }
         }
     };
-    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(<span class="macro">impl_int!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
+    ( $(<span class="macro-nonterminal">$t</span>:ty)* ) =&gt; { $(<span class="macro">impl_int!</span>(<span class="macro-nonterminal">$t</span>);)* };
 }
 
-<span class="macro">impl_uint!</span>(<span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span>);
-<span class="macro">impl_int!</span>(<span class="ident">i8</span> <span class="ident">i16</span> <span class="ident">i32</span> <span class="ident">i64</span> <span class="ident">i128</span> <span class="ident">isize</span>);
+<span class="macro">impl_uint!</span>(u8 u16 u32 u64 u128 usize);
+<span class="macro">impl_int!</span>(i8 i16 i32 i64 i128 isize);
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test</span>() {
-    <span class="kw">for</span> <span class="ident">b</span> <span class="kw">in</span> <span class="number">1_i32</span>..<span class="op">=</span><span class="number">1000</span> {
-        <span class="kw">for</span> <span class="ident">a</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">b</span> {
-            <span class="kw">let</span> (<span class="ident">g</span>, <span class="ident">r</span>) <span class="op">=</span> <span class="ident">a</span>.<span class="ident">gcd_recip</span>(<span class="ident">b</span>);
-            <span class="macro">assert!</span>(<span class="number">0</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">r</span> <span class="op">&amp;&amp;</span> <span class="ident">r</span> <span class="op">&lt;</span> <span class="ident">b</span> <span class="op">/</span> <span class="ident">g</span>);
-            <span class="macro">assert_eq!</span>(<span class="ident">a</span> <span class="op">*</span> <span class="ident">r</span> <span class="op">%</span> <span class="ident">b</span>, <span class="ident">g</span> <span class="op">%</span> <span class="ident">b</span>);
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test() {
+    <span class="kw">for </span>b <span class="kw">in </span><span class="number">1_i32</span>..=<span class="number">1000 </span>{
+        <span class="kw">for </span>a <span class="kw">in </span><span class="number">0</span>..b {
+            <span class="kw">let </span>(g, r) = a.gcd_recip(b);
+            <span class="macro">assert!</span>(<span class="number">0 </span>&lt;= r &amp;&amp; r &lt; b / g);
+            <span class="macro">assert_eq!</span>(a * r % b, g % b);
         }
     }
-    <span class="kw">for</span> <span class="ident">b</span> <span class="kw">in</span> <span class="number">1_u32</span>..<span class="op">=</span><span class="number">1000</span> {
-        <span class="kw">for</span> <span class="ident">a</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">b</span> {
-            <span class="kw">let</span> (<span class="ident">g</span>, <span class="ident">r</span>) <span class="op">=</span> <span class="ident">a</span>.<span class="ident">gcd_recip</span>(<span class="ident">b</span>);
-            <span class="macro">assert!</span>(<span class="ident">r</span> <span class="op">&lt;</span> <span class="ident">b</span> <span class="op">/</span> <span class="ident">g</span>);
-            <span class="macro">assert_eq!</span>(<span class="ident">a</span> <span class="op">*</span> <span class="ident">r</span> <span class="op">%</span> <span class="ident">b</span>, <span class="ident">g</span> <span class="op">%</span> <span class="ident">b</span>);
+    <span class="kw">for </span>b <span class="kw">in </span><span class="number">1_u32</span>..=<span class="number">1000 </span>{
+        <span class="kw">for </span>a <span class="kw">in </span><span class="number">0</span>..b {
+            <span class="kw">let </span>(g, r) = a.gcd_recip(b);
+            <span class="macro">assert!</span>(r &lt; b / g);
+            <span class="macro">assert_eq!</span>(a * r % b, g % b);
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

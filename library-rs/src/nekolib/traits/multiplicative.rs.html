@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/traits/multiplicative.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>multiplicative.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/traits/multiplicative.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>multiplicative.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -130,48 +130,48 @@
 <span id="41">41</span>
 <span id="42">42</span>
 <span id="43">43</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 乗法に関するトレイトたちです。</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! これを実装したクラスは `OpMul` によって積を求められます。</span>
-<span class="doccomment">//! 区間和を求めるデータ構造などに使います。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 乗法に関するトレイトたちです。
+//!
+//! これを実装したクラスは `OpMul` によって積を求められます。
+//! 区間和を求めるデータ構造などに使います。
 
-<span class="kw">use</span> <span class="ident">std::ops::Mul</span>;
+</span><span class="kw">use </span>std::ops::Mul;
 
-<span class="doccomment">/// 乗法の単位元 $1$ を定義する。</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">One</span>: <span class="ident">Mul</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Sized</span> {
-    <span class="doccomment">/// 乗法の単位元 $1$ を返す。</span>
-    <span class="kw">fn</span> <span class="ident">one</span>() -&gt; <span class="self">Self</span>;
+<span class="doccomment">/// 乗法の単位元 $1$ を定義する。
+</span><span class="kw">pub trait </span>One: Mul&lt;Output = <span class="self">Self</span>&gt; + Sized {
+    <span class="doccomment">/// 乗法の単位元 $1$ を返す。
+    </span><span class="kw">fn </span>one() -&gt; <span class="self">Self</span>;
 }
-<span class="doccomment">/// 乗法の逆元を定義する。</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">MulRecip</span> {
-    <span class="doccomment">/// 返り値の型。</span>
-    <span class="kw">type</span> <span class="ident">Output</span>;
-    <span class="doccomment">/// 乗法における $x$ の逆元 $x^{-1}$ を返す。</span>
-    <span class="kw">fn</span> <span class="ident">mul_recip</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span>;
+<span class="doccomment">/// 乗法の逆元を定義する。
+</span><span class="kw">pub trait </span>MulRecip {
+    <span class="doccomment">/// 返り値の型。
+    </span><span class="kw">type </span>Output;
+    <span class="doccomment">/// 乗法における $x$ の逆元 $x^{-1}$ を返す。
+    </span><span class="kw">fn </span>mul_recip(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Output;
 }
-<span class="doccomment">/// 乗法が結合法則を満たすことを示す。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $$ x, y, z \\in S \\implies (x \\times y) \\times z = x \\times (y \\times z). $$</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">MulAssoc</span>: <span class="ident">Mul</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Sized</span> {}
-<span class="doccomment">/// 乗法が交換法則を満たすことを示す。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $$ x, y \\in S \\implies x \\times y = y \\times x. $$</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">MulComm</span>: <span class="ident">Mul</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Sized</span> {}
+<span class="doccomment">/// 乗法が結合法則を満たすことを示す。
+///
+/// $$ x, y, z \\in S \\implies (x \\times y) \\times z = x \\times (y \\times z). $$
+</span><span class="kw">pub trait </span>MulAssoc: Mul&lt;Output = <span class="self">Self</span>&gt; + Sized {}
+<span class="doccomment">/// 乗法が交換法則を満たすことを示す。
+///
+/// $$ x, y \\in S \\implies x \\times y = y \\times x. $$
+</span><span class="kw">pub trait </span>MulComm: Mul&lt;Output = <span class="self">Self</span>&gt; + Sized {}
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_trait</span> {
+<span class="macro">macro_rules! </span>impl_trait {
     (
-        $( <span class="kw">impl</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">T</span>:<span class="ident">ty</span>) <span class="kw">for</span> { $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">U</span>:<span class="ident">ty</span> ),<span class="op">*</span> } <span class="macro-nonterminal">$</span><span class="macro-nonterminal">S</span>:<span class="ident">tt</span> )<span class="op">*</span>
+        $( <span class="kw">impl </span>(<span class="macro-nonterminal">$T</span>:ty) <span class="kw">for </span>{ $( <span class="macro-nonterminal">$U</span>:ty ),* } <span class="macro-nonterminal">$S</span>:tt )*
     ) =&gt; {
-        $( $( <span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">T</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">U</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">S</span> )<span class="op">*</span> )<span class="op">*</span>
+        $( $( <span class="kw">impl </span><span class="macro-nonterminal">$T </span><span class="kw">for </span><span class="macro-nonterminal">$U $S </span>)* )*
     };
 }
 
-<span class="macro">impl_trait!</span> {
-    <span class="kw">impl</span> (<span class="ident">One</span>) <span class="kw">for</span> {<span class="ident">i8</span>, <span class="ident">i16</span>, <span class="ident">i32</span>, <span class="ident">i64</span>, <span class="ident">i128</span>, <span class="ident">isize</span>, <span class="ident">u8</span>, <span class="ident">u16</span>, <span class="ident">u32</span>, <span class="ident">u64</span>, <span class="ident">u128</span>, <span class="ident">usize</span>} {
-        <span class="kw">fn</span> <span class="ident">one</span>() -&gt; <span class="self">Self</span> { <span class="number">1</span> }
+<span class="macro">impl_trait! </span>{
+    <span class="kw">impl </span>(One) <span class="kw">for </span>{i8, i16, i32, i64, i128, isize, u8, u16, u32, u64, u128, usize} {
+        <span class="kw">fn </span>one() -&gt; <span class="self">Self </span>{ <span class="number">1 </span>}
     }
-    <span class="kw">impl</span> (<span class="ident">MulAssoc</span>) <span class="kw">for</span> {<span class="ident">i8</span>, <span class="ident">i16</span>, <span class="ident">i32</span>, <span class="ident">i64</span>, <span class="ident">i128</span>, <span class="ident">isize</span>, <span class="ident">u8</span>, <span class="ident">u16</span>, <span class="ident">u32</span>, <span class="ident">u64</span>, <span class="ident">u128</span>, <span class="ident">usize</span>} {}
-    <span class="kw">impl</span> (<span class="ident">MulComm</span>) <span class="kw">for</span> {<span class="ident">i8</span>, <span class="ident">i16</span>, <span class="ident">i32</span>, <span class="ident">i64</span>, <span class="ident">i128</span>, <span class="ident">isize</span>, <span class="ident">u8</span>, <span class="ident">u16</span>, <span class="ident">u32</span>, <span class="ident">u64</span>, <span class="ident">u128</span>, <span class="ident">usize</span>} {}
+    <span class="kw">impl </span>(MulAssoc) <span class="kw">for </span>{i8, i16, i32, i64, i128, isize, u8, u16, u32, u64, u128, usize} {}
+    <span class="kw">impl </span>(MulComm) <span class="kw">for </span>{i8, i16, i32, i64, i128, isize, u8, u16, u32, u64, u128, usize} {}
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/algo/minmax.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>minmax.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/algo/minmax.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>minmax.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -271,189 +271,189 @@
 <span id="182">182</span>
 <span id="183">183</span>
 <span id="184">184</span>
-</pre><pre class="rust"><code><span class="doccomment">//! スライスの最小値・最大値を求める。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! スライスの最小値・最大値を求める。
 
-<span class="kw">use</span> <span class="ident">std::cmp::Ordering</span>::{<span class="self">self</span>, <span class="ident">Equal</span>, <span class="ident">Greater</span>, <span class="ident">Less</span>};
+</span><span class="kw">use </span>std::cmp::Ordering::{<span class="self">self</span>, Equal, Greater, Less};
 
-<span class="doccomment">/// スライスの最小値および最大値を求める。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 該当する要素が複数個あった場合、最小値は最左のもの、最大値は最右のものが選ばれる。</span>
-<span class="doccomment">/// スライスが空の場合は `None` を返す。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Suggestions</span>
-<span class="doccomment">/// 最小値・最大値の添字ではなく最小値・最大値自体を返すようになっている。</span>
-<span class="doccomment">/// 添字が欲しい場合は [`minmax_by_key`] を利用するのがよい？ あるいは設計を変える？</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// [`minmax_by`] における `compare` の呼び出し回数と同じだけ、要素間の比較を行う。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Notes</span>
-<span class="doccomment">/// 詳細については [`minmax_by`] を参照。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::algo::minmax;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(minmax(&amp;[3, 2, 4, 1, 2, 0, 6]), Some((&amp;0, &amp;6)));</span>
-<span class="doccomment">/// assert_eq!(minmax(&amp;Vec::&lt;i32&gt;::new()), None);</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [`minmax_by`]: fn.minmax_by.html</span>
-<span class="doccomment">/// [`minmax_by_key`]: fn.minmax_by_key.html</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">minmax</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;</span>[<span class="ident">T</span>]) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="kw-2">&amp;</span><span class="ident">T</span>, <span class="kw-2">&amp;</span><span class="ident">T</span>)<span class="op">&gt;</span> {
-    <span class="ident">minmax_by</span>(<span class="ident">buf</span>, <span class="op">|</span><span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>, <span class="ident">y</span>: <span class="kw-2">&amp;</span><span class="ident">T</span><span class="op">|</span> <span class="ident">x</span>.<span class="ident">cmp</span>(<span class="ident">y</span>))
+<span class="doccomment">/// スライスの最小値および最大値を求める。
+///
+/// 該当する要素が複数個あった場合、最小値は最左のもの、最大値は最右のものが選ばれる。
+/// スライスが空の場合は `None` を返す。
+///
+/// # Suggestions
+/// 最小値・最大値の添字ではなく最小値・最大値自体を返すようになっている。
+/// 添字が欲しい場合は [`minmax_by_key`] を利用するのがよい？ あるいは設計を変える？
+///
+/// # Complexity
+/// [`minmax_by`] における `compare` の呼び出し回数と同じだけ、要素間の比較を行う。
+///
+/// # Notes
+/// 詳細については [`minmax_by`] を参照。
+///
+/// # Examples
+/// ```
+/// use nekolib::algo::minmax;
+///
+/// assert_eq!(minmax(&amp;[3, 2, 4, 1, 2, 0, 6]), Some((&amp;0, &amp;6)));
+/// assert_eq!(minmax(&amp;Vec::&lt;i32&gt;::new()), None);
+/// ```
+///
+/// [`minmax_by`]: fn.minmax_by.html
+/// [`minmax_by_key`]: fn.minmax_by_key.html
+</span><span class="kw">pub fn </span>minmax&lt;T: Ord&gt;(buf: <span class="kw-2">&amp;</span>[T]) -&gt; <span class="prelude-ty">Option</span>&lt;(<span class="kw-2">&amp;</span>T, <span class="kw-2">&amp;</span>T)&gt; {
+    minmax_by(buf, |x: <span class="kw-2">&amp;</span>T, y: <span class="kw-2">&amp;</span>T| x.cmp(y))
 }
 
-<span class="doccomment">/// キー `key` におけるスライスの最小値および最大値を求める。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 該当する要素が複数個あった場合、最小値は最左のもの、最大値は最右のものが選ばれる。</span>
-<span class="doccomment">/// スライスが空の場合は `None` を返す。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// [`minmax_by`] における `compare` の呼び出し回数と同じだけ、要素間の比較を行う。</span>
-<span class="doccomment">/// また、`key` の呼び出しをその $2$ 倍の回数だけ行う。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Implementation notes</span>
-<span class="doccomment">/// 実装を [`minmax_by`] に丸投げしているので `key` を $3n$ 回程度呼び出しうるが、</span>
-<span class="doccomment">/// 適切に実装することで $n$ 回に抑えられるはず。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// `key` のコストが大きい場合は予め別の配列を作る方がよさそう。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Notes</span>
-<span class="doccomment">/// 詳細については [`minmax_by`] を参照。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::algo::minmax_by_key;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let buf: Vec&lt;_&gt; =</span>
-<span class="doccomment">///     vec![3, 5, 0, 1, 2, 0, 5].into_iter().enumerate().collect();</span>
-<span class="doccomment">/// assert_eq!(minmax_by_key(&amp;buf, |&amp;(_, x)| x), Some((&amp;(2, 0), &amp;(6, 5))));</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let buf: Vec&lt;i32&gt; = vec![];</span>
-<span class="doccomment">/// assert_eq!(minmax_by_key(&amp;buf, |&amp;x| x), None);</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [`minmax_by`]: fn.minmax_by.html</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">minmax_by_key</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">K</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;</span>[<span class="ident">T</span>], <span class="kw-2">mut</span> <span class="ident">key</span>: <span class="ident">K</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="kw-2">&amp;</span><span class="ident">T</span>, <span class="kw-2">&amp;</span><span class="ident">T</span>)<span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">K</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="ident">T</span>) -&gt; <span class="ident">U</span>,
-    <span class="ident">U</span>: <span class="ident">Ord</span>,
+<span class="doccomment">/// キー `key` におけるスライスの最小値および最大値を求める。
+///
+/// 該当する要素が複数個あった場合、最小値は最左のもの、最大値は最右のものが選ばれる。
+/// スライスが空の場合は `None` を返す。
+///
+/// # Complexity
+/// [`minmax_by`] における `compare` の呼び出し回数と同じだけ、要素間の比較を行う。
+/// また、`key` の呼び出しをその $2$ 倍の回数だけ行う。
+///
+/// # Implementation notes
+/// 実装を [`minmax_by`] に丸投げしているので `key` を $3n$ 回程度呼び出しうるが、
+/// 適切に実装することで $n$ 回に抑えられるはず。
+///
+/// `key` のコストが大きい場合は予め別の配列を作る方がよさそう。
+///
+/// # Notes
+/// 詳細については [`minmax_by`] を参照。
+///
+/// # Examples
+/// ```
+/// use nekolib::algo::minmax_by_key;
+///
+/// let buf: Vec&lt;_&gt; =
+///     vec![3, 5, 0, 1, 2, 0, 5].into_iter().enumerate().collect();
+/// assert_eq!(minmax_by_key(&amp;buf, |&amp;(_, x)| x), Some((&amp;(2, 0), &amp;(6, 5))));
+///
+/// let buf: Vec&lt;i32&gt; = vec![];
+/// assert_eq!(minmax_by_key(&amp;buf, |&amp;x| x), None);
+/// ```
+///
+/// [`minmax_by`]: fn.minmax_by.html
+</span><span class="kw">pub fn </span>minmax_by_key&lt;T, K, U&gt;(buf: <span class="kw-2">&amp;</span>[T], <span class="kw-2">mut </span>key: K) -&gt; <span class="prelude-ty">Option</span>&lt;(<span class="kw-2">&amp;</span>T, <span class="kw-2">&amp;</span>T)&gt;
+<span class="kw">where
+    </span>K: FnMut(<span class="kw-2">&amp;</span>T) -&gt; U,
+    U: Ord,
 {
-    <span class="ident">minmax_by</span>(<span class="ident">buf</span>, <span class="op">|</span><span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>, <span class="ident">y</span>: <span class="kw-2">&amp;</span><span class="ident">T</span><span class="op">|</span> <span class="ident">key</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>).<span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>(<span class="kw-2">&amp;</span><span class="ident">y</span>)))
+    minmax_by(buf, |x: <span class="kw-2">&amp;</span>T, y: <span class="kw-2">&amp;</span>T| key(<span class="kw-2">&amp;</span>x).cmp(<span class="kw-2">&amp;</span>key(<span class="kw-2">&amp;</span>y)))
 }
 
-<span class="doccomment">/// 比較関数 `compare` におけるスライスの最小値および最大値を求める。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 該当する要素が複数個あった場合、最小値は最左のもの、最大値は最右のものが選ばれる。</span>
-<span class="doccomment">/// スライスが空の場合は `None` を返す。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// 要素数を $n \\gt 0$ として、`compare` の呼び出しを</span>
-<span class="doccomment">/// $\\lceil\\frac{3n}{2}\\rceil -2 \\lt 1.5n$</span>
-<span class="doccomment">/// 回行う。</span>
-<span class="doccomment">/// スライスが空の場合は $0$ 回の呼び出しを行う。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// この比較回数は最適であり、下界は [adversary argument] によって示すことができる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [adversary argument]: https://jeffe.cs.illinois.edu/teaching/algorithms/notes/13-adversary.pdf</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Notes</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// C++ では比較を `bool` の二値で行うため [`std::minmax_element`] は等価な要素の扱いに困る。</span>
-<span class="doccomment">/// 最小値も最大値も最左のものを返そうとすると、比較回数の下界を達成できないはず。</span>
-<span class="doccomment">/// 一方 Rust では、[`Ordering`] の三値を返すので、実装を変えることで任意のペアを返すことが可能。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [`std::minmax_element`]: https://en.cppreference.com/w/cpp/algorithm/minmax_element</span>
-<span class="doccomment">/// [`Ordering`]: https://doc.rust-lang.org/std/cmp/enum.Ordering.html</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::algo::minmax_by;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let buf: Vec&lt;_&gt; =</span>
-<span class="doccomment">///     vec![3, 9, 0, 1, 2, 0, 9].into_iter().enumerate().collect();</span>
-<span class="doccomment">/// let rev = |&amp;(_, x): &amp;(usize, i32), &amp;(_, y): &amp;(usize, i32)| y.cmp(&amp;x);</span>
-<span class="doccomment">/// assert_eq!(minmax_by(&amp;buf, rev), Some((&amp;(1, 9), &amp;(5, 0))));</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let buf = vec![];</span>
-<span class="doccomment">/// assert_eq!(minmax_by(&amp;buf, rev), None);</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">minmax_by</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="ident">T</span>, <span class="kw-2">&amp;</span><span class="ident">T</span>) -&gt; <span class="ident">Ordering</span><span class="op">&gt;</span>(
-    <span class="ident">buf</span>: <span class="kw-2">&amp;</span>[<span class="ident">T</span>],
-    <span class="kw-2">mut</span> <span class="ident">compare</span>: <span class="ident">F</span>,
-) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="kw-2">&amp;</span><span class="ident">T</span>, <span class="kw-2">&amp;</span><span class="ident">T</span>)<span class="op">&gt;</span> {
-    <span class="kw">if</span> <span class="ident">buf</span>.<span class="ident">is_empty</span>() {
-        <span class="kw">return</span> <span class="prelude-val">None</span>;
+<span class="doccomment">/// 比較関数 `compare` におけるスライスの最小値および最大値を求める。
+///
+/// 該当する要素が複数個あった場合、最小値は最左のもの、最大値は最右のものが選ばれる。
+/// スライスが空の場合は `None` を返す。
+///
+/// # Complexity
+/// 要素数を $n \\gt 0$ として、`compare` の呼び出しを
+/// $\\lceil\\frac{3n}{2}\\rceil -2 \\lt 1.5n$
+/// 回行う。
+/// スライスが空の場合は $0$ 回の呼び出しを行う。
+///
+/// この比較回数は最適であり、下界は [adversary argument] によって示すことができる。
+///
+/// [adversary argument]: https://jeffe.cs.illinois.edu/teaching/algorithms/notes/13-adversary.pdf
+///
+/// # Notes
+///
+/// C++ では比較を `bool` の二値で行うため [`std::minmax_element`] は等価な要素の扱いに困る。
+/// 最小値も最大値も最左のものを返そうとすると、比較回数の下界を達成できないはず。
+/// 一方 Rust では、[`Ordering`] の三値を返すので、実装を変えることで任意のペアを返すことが可能。
+///
+/// [`std::minmax_element`]: https://en.cppreference.com/w/cpp/algorithm/minmax_element
+/// [`Ordering`]: https://doc.rust-lang.org/std/cmp/enum.Ordering.html
+///
+/// # Examples
+/// ```
+/// use nekolib::algo::minmax_by;
+///
+/// let buf: Vec&lt;_&gt; =
+///     vec![3, 9, 0, 1, 2, 0, 9].into_iter().enumerate().collect();
+/// let rev = |&amp;(_, x): &amp;(usize, i32), &amp;(_, y): &amp;(usize, i32)| y.cmp(&amp;x);
+/// assert_eq!(minmax_by(&amp;buf, rev), Some((&amp;(1, 9), &amp;(5, 0))));
+///
+/// let buf = vec![];
+/// assert_eq!(minmax_by(&amp;buf, rev), None);
+/// ```
+</span><span class="kw">pub fn </span>minmax_by&lt;T, F: FnMut(<span class="kw-2">&amp;</span>T, <span class="kw-2">&amp;</span>T) -&gt; Ordering&gt;(
+    buf: <span class="kw-2">&amp;</span>[T],
+    <span class="kw-2">mut </span>compare: F,
+) -&gt; <span class="prelude-ty">Option</span>&lt;(<span class="kw-2">&amp;</span>T, <span class="kw-2">&amp;</span>T)&gt; {
+    <span class="kw">if </span>buf.is_empty() {
+        <span class="kw">return </span><span class="prelude-val">None</span>;
     }
-    <span class="kw">if</span> <span class="ident">buf</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> {
-        <span class="kw">return</span> <span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span><span class="ident">buf</span>[<span class="number">0</span>], <span class="kw-2">&amp;</span><span class="ident">buf</span>[<span class="number">0</span>]));
+    <span class="kw">if </span>buf.len() == <span class="number">1 </span>{
+        <span class="kw">return </span><span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>buf[<span class="number">0</span>], <span class="kw-2">&amp;</span>buf[<span class="number">0</span>]));
     }
-    <span class="kw">let</span> (<span class="kw-2">mut</span> <span class="ident">min</span>, <span class="kw-2">mut</span> <span class="ident">max</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">compare</span>(<span class="kw-2">&amp;</span><span class="ident">buf</span>[<span class="number">0</span>], <span class="kw-2">&amp;</span><span class="ident">buf</span>[<span class="number">1</span>]) {
-        <span class="ident">Less</span> <span class="op">|</span> <span class="ident">Equal</span> =&gt; (<span class="kw-2">&amp;</span><span class="ident">buf</span>[<span class="number">0</span>], <span class="kw-2">&amp;</span><span class="ident">buf</span>[<span class="number">1</span>]),
-        <span class="ident">Greater</span> =&gt; (<span class="kw-2">&amp;</span><span class="ident">buf</span>[<span class="number">1</span>], <span class="kw-2">&amp;</span><span class="ident">buf</span>[<span class="number">0</span>]),
+    <span class="kw">let </span>(<span class="kw-2">mut </span>min, <span class="kw-2">mut </span>max) = <span class="kw">match </span>compare(<span class="kw-2">&amp;</span>buf[<span class="number">0</span>], <span class="kw-2">&amp;</span>buf[<span class="number">1</span>]) {
+        Less | Equal =&gt; (<span class="kw-2">&amp;</span>buf[<span class="number">0</span>], <span class="kw-2">&amp;</span>buf[<span class="number">1</span>]),
+        Greater =&gt; (<span class="kw-2">&amp;</span>buf[<span class="number">1</span>], <span class="kw-2">&amp;</span>buf[<span class="number">0</span>]),
     };
-    <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> (<span class="number">2</span>..<span class="ident">buf</span>.<span class="ident">len</span>()).<span class="ident">step_by</span>(<span class="number">2</span>) {
-        <span class="kw">let</span> (<span class="ident">min_i</span>, <span class="ident">max_i</span>) <span class="op">=</span> <span class="kw">match</span> (<span class="ident">buf</span>.<span class="ident">get</span>(<span class="ident">i</span>), <span class="ident">buf</span>.<span class="ident">get</span>(<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>)) {
-            (<span class="prelude-val">Some</span>(<span class="ident">f</span>), <span class="prelude-val">None</span>) =&gt; (<span class="ident">f</span>, <span class="ident">f</span>),
-            (<span class="prelude-val">Some</span>(<span class="ident">f</span>), <span class="prelude-val">Some</span>(<span class="ident">s</span>)) =&gt; <span class="kw">match</span> <span class="ident">compare</span>(<span class="ident">f</span>, <span class="ident">s</span>) {
-                <span class="ident">Less</span> <span class="op">|</span> <span class="ident">Equal</span> =&gt; (<span class="ident">f</span>, <span class="ident">s</span>),
-                <span class="ident">Greater</span> =&gt; (<span class="ident">s</span>, <span class="ident">f</span>),
+    <span class="kw">for </span>i <span class="kw">in </span>(<span class="number">2</span>..buf.len()).step_by(<span class="number">2</span>) {
+        <span class="kw">let </span>(min_i, max_i) = <span class="kw">match </span>(buf.get(i), buf.get(i + <span class="number">1</span>)) {
+            (<span class="prelude-val">Some</span>(f), <span class="prelude-val">None</span>) =&gt; (f, f),
+            (<span class="prelude-val">Some</span>(f), <span class="prelude-val">Some</span>(s)) =&gt; <span class="kw">match </span>compare(f, s) {
+                Less | Equal =&gt; (f, s),
+                Greater =&gt; (s, f),
             },
             (<span class="prelude-val">None</span>, <span class="kw">_</span>) =&gt; <span class="macro">unreachable!</span>(),
         };
-        <span class="kw">if</span> <span class="ident">compare</span>(<span class="ident">min_i</span>, <span class="ident">min</span>) <span class="op">==</span> <span class="ident">Less</span> {
-            <span class="ident">min</span> <span class="op">=</span> <span class="ident">min_i</span>;
+        <span class="kw">if </span>compare(min_i, min) == Less {
+            min = min_i;
         }
-        <span class="kw">if</span> <span class="ident">compare</span>(<span class="ident">max_i</span>, <span class="ident">max</span>) <span class="op">!</span><span class="op">=</span> <span class="ident">Less</span> {
-            <span class="ident">max</span> <span class="op">=</span> <span class="ident">max_i</span>;
+        <span class="kw">if </span>compare(max_i, max) != Less {
+            max = max_i;
         }
     }
-    <span class="prelude-val">Some</span>((<span class="ident">min</span>, <span class="ident">max</span>))
+    <span class="prelude-val">Some</span>((min, max))
 }
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test</span>() {
-    <span class="kw">use</span> <span class="ident">std::fmt::Debug</span>;
-    <span class="kw">fn</span> <span class="ident">test_inner</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Debug</span> <span class="op">+</span> <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Ord</span><span class="op">&gt;</span>(
-        <span class="ident">expected</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="kw-2">&amp;</span>(<span class="ident">usize</span>, <span class="kw-2">&amp;</span><span class="ident">T</span>), <span class="kw-2">&amp;</span>(<span class="ident">usize</span>, <span class="kw-2">&amp;</span><span class="ident">T</span>))<span class="op">&gt;</span>,
-        <span class="ident">buf</span>: <span class="kw-2">&amp;</span>[<span class="ident">T</span>],
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test() {
+    <span class="kw">use </span>std::fmt::Debug;
+    <span class="kw">fn </span>test_inner&lt;T: Debug + Eq + Ord&gt;(
+        expected: <span class="prelude-ty">Option</span>&lt;(<span class="kw-2">&amp;</span>(usize, <span class="kw-2">&amp;</span>T), <span class="kw-2">&amp;</span>(usize, <span class="kw-2">&amp;</span>T))&gt;,
+        buf: <span class="kw-2">&amp;</span>[T],
     ) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cmped</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">let</span> <span class="ident">counted_cmp</span> <span class="op">=</span> <span class="op">|</span><span class="ident">x</span>: <span class="kw-2">&amp;</span>(<span class="ident">usize</span>, <span class="kw-2">&amp;</span><span class="ident">T</span>), <span class="ident">y</span>: <span class="kw-2">&amp;</span>(<span class="ident">usize</span>, <span class="kw-2">&amp;</span><span class="ident">T</span>)<span class="op">|</span> {
-            <span class="ident">cmped</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-            <span class="ident">x</span>.<span class="number">1</span>.<span class="ident">cmp</span>(<span class="ident">y</span>.<span class="number">1</span>)
+        <span class="kw">let </span><span class="kw-2">mut </span>cmped = <span class="number">0</span>;
+        <span class="kw">let </span>counted_cmp = |x: <span class="kw-2">&amp;</span>(usize, <span class="kw-2">&amp;</span>T), y: <span class="kw-2">&amp;</span>(usize, <span class="kw-2">&amp;</span>T)| {
+            cmped += <span class="number">1</span>;
+            x.<span class="number">1</span>.cmp(y.<span class="number">1</span>)
         };
-        <span class="kw">let</span> <span class="ident">buf</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>().<span class="ident">collect</span>();
-        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">len</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">minmax_by</span>(<span class="kw-2">&amp;</span><span class="ident">buf</span>, <span class="ident">counted_cmp</span>), <span class="ident">expected</span>);
-        <span class="kw">if</span> <span class="ident">n</span> <span class="op">==</span> <span class="number">0</span> {
-            <span class="macro">assert_eq!</span>(<span class="ident">cmped</span>, <span class="number">0</span>);
-        } <span class="kw">else</span> {
-            <span class="macro">assert_eq!</span>(<span class="ident">cmped</span>, <span class="ident">n</span> <span class="op">/</span> <span class="number">2</span> <span class="op">+</span> (<span class="ident">n</span> <span class="op">-</span> <span class="number">1</span>) <span class="op">/</span> <span class="number">2</span> <span class="op">*</span> <span class="number">2</span>);
+        <span class="kw">let </span>buf: Vec&lt;<span class="kw">_</span>&gt; = buf.iter().enumerate().collect();
+        <span class="kw">let </span>n = buf.len();
+        <span class="macro">assert_eq!</span>(minmax_by(<span class="kw-2">&amp;</span>buf, counted_cmp), expected);
+        <span class="kw">if </span>n == <span class="number">0 </span>{
+            <span class="macro">assert_eq!</span>(cmped, <span class="number">0</span>);
+        } <span class="kw">else </span>{
+            <span class="macro">assert_eq!</span>(cmped, n / <span class="number">2 </span>+ (n - <span class="number">1</span>) / <span class="number">2 </span>* <span class="number">2</span>);
         }
     }
 
-    <span class="ident">test_inner</span>(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="number">0</span>))), <span class="kw-2">&amp;</span>[<span class="number">0</span>]);
+    test_inner(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="number">0</span>))), <span class="kw-2">&amp;</span>[<span class="number">0</span>]);
 
-    <span class="ident">test_inner</span>(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">1</span>, <span class="kw-2">&amp;</span><span class="number">0</span>))), <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">0</span>]);
-    <span class="ident">test_inner</span>(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">1</span>, <span class="kw-2">&amp;</span><span class="number">10</span>))), <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">10</span>]);
-    <span class="ident">test_inner</span>(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">1</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="number">10</span>))), <span class="kw-2">&amp;</span>[<span class="number">10</span>, <span class="number">0</span>]);
+    test_inner(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">1</span>, <span class="kw-2">&amp;</span><span class="number">0</span>))), <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">0</span>]);
+    test_inner(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">1</span>, <span class="kw-2">&amp;</span><span class="number">10</span>))), <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">10</span>]);
+    test_inner(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">1</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="number">10</span>))), <span class="kw-2">&amp;</span>[<span class="number">10</span>, <span class="number">0</span>]);
 
-    <span class="ident">test_inner</span>(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">2</span>, <span class="kw-2">&amp;</span><span class="number">0</span>))), <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]);
-    <span class="ident">test_inner</span>(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">2</span>, <span class="kw-2">&amp;</span><span class="number">20</span>))), <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">10</span>, <span class="number">20</span>]);
-    <span class="ident">test_inner</span>(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">2</span>, <span class="kw-2">&amp;</span><span class="number">10</span>))), <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">10</span>, <span class="number">10</span>]);
-    <span class="ident">test_inner</span>(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="number">10</span>), <span class="kw-2">&amp;</span>(<span class="number">1</span>, <span class="kw-2">&amp;</span><span class="number">20</span>))), <span class="kw-2">&amp;</span>[<span class="number">10</span>, <span class="number">20</span>, <span class="number">10</span>]);
+    test_inner(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">2</span>, <span class="kw-2">&amp;</span><span class="number">0</span>))), <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]);
+    test_inner(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">2</span>, <span class="kw-2">&amp;</span><span class="number">20</span>))), <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">10</span>, <span class="number">20</span>]);
+    test_inner(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">2</span>, <span class="kw-2">&amp;</span><span class="number">10</span>))), <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">10</span>, <span class="number">10</span>]);
+    test_inner(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="number">10</span>), <span class="kw-2">&amp;</span>(<span class="number">1</span>, <span class="kw-2">&amp;</span><span class="number">20</span>))), <span class="kw-2">&amp;</span>[<span class="number">10</span>, <span class="number">20</span>, <span class="number">10</span>]);
 
-    <span class="ident">test_inner</span>(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">3</span>, <span class="kw-2">&amp;</span><span class="number">0</span>))), <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]);
-    <span class="ident">test_inner</span>(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">3</span>, <span class="kw-2">&amp;</span><span class="number">10</span>))), <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">10</span>]);
-    <span class="ident">test_inner</span>(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">1</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">2</span>, <span class="kw-2">&amp;</span><span class="number">10</span>))), <span class="kw-2">&amp;</span>[<span class="number">10</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">0</span>]);
-    <span class="ident">test_inner</span>(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">3</span>, <span class="kw-2">&amp;</span><span class="number">10</span>))), <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">10</span>]);
-    <span class="ident">test_inner</span>(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">2</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">1</span>, <span class="kw-2">&amp;</span><span class="number">10</span>))), <span class="kw-2">&amp;</span>[<span class="number">10</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">0</span>]);
+    test_inner(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">3</span>, <span class="kw-2">&amp;</span><span class="number">0</span>))), <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]);
+    test_inner(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">3</span>, <span class="kw-2">&amp;</span><span class="number">10</span>))), <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">10</span>]);
+    test_inner(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">1</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">2</span>, <span class="kw-2">&amp;</span><span class="number">10</span>))), <span class="kw-2">&amp;</span>[<span class="number">10</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">0</span>]);
+    test_inner(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">3</span>, <span class="kw-2">&amp;</span><span class="number">10</span>))), <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">10</span>]);
+    test_inner(<span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>(<span class="number">2</span>, <span class="kw-2">&amp;</span><span class="number">0</span>), <span class="kw-2">&amp;</span>(<span class="number">1</span>, <span class="kw-2">&amp;</span><span class="number">10</span>))), <span class="kw-2">&amp;</span>[<span class="number">10</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">0</span>]);
 
-    <span class="kw">let</span> <span class="ident">rev</span> <span class="op">=</span> <span class="op">|</span><span class="kw-2">&amp;</span>(<span class="kw">_</span>, <span class="ident">x</span>): <span class="kw-2">&amp;</span>(<span class="ident">usize</span>, <span class="ident">i32</span>), <span class="kw-2">&amp;</span>(<span class="kw">_</span>, <span class="ident">y</span>): <span class="kw-2">&amp;</span>(<span class="ident">usize</span>, <span class="ident">i32</span>)<span class="op">|</span> <span class="ident">y</span>.<span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>);
-    <span class="kw">let</span> <span class="ident">buf</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-    <span class="macro">assert_eq!</span>(<span class="ident">minmax_by</span>(<span class="kw-2">&amp;</span><span class="ident">buf</span>, <span class="ident">rev</span>), <span class="prelude-val">None</span>);
+    <span class="kw">let </span>rev = |<span class="kw-2">&amp;</span>(<span class="kw">_</span>, x): <span class="kw-2">&amp;</span>(usize, i32), <span class="kw-2">&amp;</span>(<span class="kw">_</span>, y): <span class="kw-2">&amp;</span>(usize, i32)| y.cmp(<span class="kw-2">&amp;</span>x);
+    <span class="kw">let </span>buf = <span class="macro">vec!</span>[];
+    <span class="macro">assert_eq!</span>(minmax_by(<span class="kw-2">&amp;</span>buf, rev), <span class="prelude-val">None</span>);
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

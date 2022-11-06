@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/ds/interval_map.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>interval_map.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/ds/interval_map.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>interval_map.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -516,434 +516,434 @@
 <span id="427">427</span>
 <span id="428">428</span>
 <span id="429">429</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 区間から値への対応づけ。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 区間から値への対応づけ。
 
-<span class="kw">use</span> <span class="ident">std::cmp::Ordering</span>::{<span class="self">self</span>, <span class="ident">Equal</span>, <span class="ident">Greater</span>, <span class="ident">Less</span>};
-<span class="kw">use</span> <span class="ident">std::collections::BTreeMap</span>;
-<span class="kw">use</span> <span class="ident">std::fmt</span>::{<span class="self">self</span>, <span class="ident">Debug</span>};
-<span class="kw">use</span> <span class="ident">std::ops::Bound</span>::{<span class="ident">Excluded</span>, <span class="ident">Included</span>, <span class="ident">Unbounded</span>};
-<span class="kw">use</span> <span class="ident">std::ops::RangeBounds</span>;
+</span><span class="kw">use </span>std::cmp::Ordering::{<span class="self">self</span>, Equal, Greater, Less};
+<span class="kw">use </span>std::collections::BTreeMap;
+<span class="kw">use </span>std::fmt::{<span class="self">self</span>, Debug};
+<span class="kw">use </span>std::ops::Bound::{Excluded, Included, Unbounded};
+<span class="kw">use </span>std::ops::RangeBounds;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">enum</span> <span class="ident">Left</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="ident">NegInfinity</span>,
-    <span class="ident">Closed</span>(<span class="ident">T</span>),
-    <span class="ident">Open</span>(<span class="ident">T</span>),
+<span class="attribute">#[derive(Clone, Copy, Eq, PartialEq)]
+</span><span class="kw">enum </span>Left&lt;T&gt; {
+    NegInfinity,
+    Closed(T),
+    Open(T),
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">enum</span> <span class="ident">Right</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="ident">Open</span>(<span class="ident">T</span>),
-    <span class="ident">Closed</span>(<span class="ident">T</span>),
-    <span class="ident">PosInfinity</span>,
+<span class="attribute">#[derive(Clone, Copy, Eq, PartialEq)]
+</span><span class="kw">enum </span>Right&lt;T&gt; {
+    Open(T),
+    Closed(T),
+    PosInfinity,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Debug</span><span class="op">&gt;</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">Left</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">Left::NegInfinity</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;(-oo&quot;</span>),
-            <span class="ident">Left::Closed</span>(<span class="ident">x</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;[{:?}&quot;</span>, <span class="ident">x</span>),
-            <span class="ident">Left::Open</span>(<span class="ident">x</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;({:?}&quot;</span>, <span class="ident">x</span>),
+<span class="kw">impl</span>&lt;T: Debug&gt; Debug <span class="kw">for </span>Left&lt;T&gt; {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        <span class="kw">match </span><span class="self">self </span>{
+            Left::NegInfinity =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;(-oo&quot;</span>),
+            Left::Closed(x) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;[{:?}&quot;</span>, x),
+            Left::Open(x) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;({:?}&quot;</span>, x),
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Debug</span><span class="op">&gt;</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">Right</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">Right::Open</span>(<span class="ident">x</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?})&quot;</span>, <span class="ident">x</span>),
-            <span class="ident">Right::Closed</span>(<span class="ident">x</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?}]&quot;</span>, <span class="ident">x</span>),
-            <span class="ident">Right::PosInfinity</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;oo)&quot;</span>),
+<span class="kw">impl</span>&lt;T: Debug&gt; Debug <span class="kw">for </span>Right&lt;T&gt; {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        <span class="kw">match </span><span class="self">self </span>{
+            Right::Open(x) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{:?})&quot;</span>, x),
+            Right::Closed(x) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{:?}]&quot;</span>, x),
+            Right::PosInfinity =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;oo)&quot;</span>),
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Left</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">inner</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">Left::Open</span>(<span class="ident">x</span>) <span class="op">|</span> <span class="ident">Left::Closed</span>(<span class="ident">x</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">x</span>),
-            <span class="ident">Left::NegInfinity</span> =&gt; <span class="prelude-val">None</span>,
+<span class="kw">impl</span>&lt;T&gt; Left&lt;T&gt; {
+    <span class="kw">pub fn </span>inner(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>T&gt; {
+        <span class="kw">match </span><span class="self">self </span>{
+            Left::Open(x) | Left::Closed(x) =&gt; <span class="prelude-val">Some</span>(x),
+            Left::NegInfinity =&gt; <span class="prelude-val">None</span>,
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Right</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">inner</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">Right::PosInfinity</span> =&gt; <span class="prelude-val">None</span>,
-            <span class="ident">Right::Closed</span>(<span class="ident">x</span>) <span class="op">|</span> <span class="ident">Right::Open</span>(<span class="ident">x</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">x</span>),
+<span class="kw">impl</span>&lt;T&gt; Right&lt;T&gt; {
+    <span class="kw">pub fn </span>inner(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>T&gt; {
+        <span class="kw">match </span><span class="self">self </span>{
+            Right::PosInfinity =&gt; <span class="prelude-val">None</span>,
+            Right::Closed(x) | Right::Open(x) =&gt; <span class="prelude-val">Some</span>(x),
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">Ord</span> <span class="kw">for</span> <span class="ident">Left</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="ident">Ordering</span> {
-        <span class="kw">use</span> <span class="ident">Left</span>::{<span class="ident">Closed</span>, <span class="ident">NegInfinity</span>, <span class="ident">Open</span>};
-        <span class="kw">match</span> (<span class="self">self</span>, <span class="ident">other</span>) {
-            (<span class="ident">NegInfinity</span>, <span class="ident">NegInfinity</span>) =&gt; <span class="ident">Equal</span>,
-            (<span class="ident">NegInfinity</span>, <span class="kw">_</span>) =&gt; <span class="ident">Less</span>,
-            (<span class="kw">_</span>, <span class="ident">NegInfinity</span>) =&gt; <span class="ident">Greater</span>,
-            (<span class="ident">Closed</span>(<span class="ident">x</span>), <span class="ident">Open</span>(<span class="ident">y</span>)) <span class="kw">if</span> <span class="ident">x</span> <span class="op">==</span> <span class="ident">y</span> =&gt; <span class="ident">Less</span>,
-            (<span class="ident">Open</span>(<span class="ident">x</span>), <span class="ident">Closed</span>(<span class="ident">y</span>)) <span class="kw">if</span> <span class="ident">x</span> <span class="op">==</span> <span class="ident">y</span> =&gt; <span class="ident">Greater</span>,
-            <span class="kw">_</span> =&gt; <span class="self">self</span>.<span class="ident">inner</span>().<span class="ident">unwrap</span>().<span class="ident">cmp</span>(<span class="ident">other</span>.<span class="ident">inner</span>().<span class="ident">unwrap</span>()),
+<span class="kw">impl</span>&lt;T: Ord&gt; Ord <span class="kw">for </span>Left&lt;T&gt; {
+    <span class="kw">fn </span>cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; Ordering {
+        <span class="kw">use </span>Left::{Closed, NegInfinity, Open};
+        <span class="kw">match </span>(<span class="self">self</span>, other) {
+            (NegInfinity, NegInfinity) =&gt; Equal,
+            (NegInfinity, <span class="kw">_</span>) =&gt; Less,
+            (<span class="kw">_</span>, NegInfinity) =&gt; Greater,
+            (Closed(x), Open(y)) <span class="kw">if </span>x == y =&gt; Less,
+            (Open(x), Closed(y)) <span class="kw">if </span>x == y =&gt; Greater,
+            <span class="kw">_ </span>=&gt; <span class="self">self</span>.inner().unwrap().cmp(other.inner().unwrap()),
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">PartialOrd</span> <span class="kw">for</span> <span class="ident">Left</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Ordering</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">cmp</span>(<span class="ident">other</span>))
+<span class="kw">impl</span>&lt;T: Ord&gt; PartialOrd <span class="kw">for </span>Left&lt;T&gt; {
+    <span class="kw">fn </span>partial_cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Ordering&gt; {
+        <span class="prelude-val">Some</span>(<span class="self">self</span>.cmp(other))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">Ord</span> <span class="kw">for</span> <span class="ident">Right</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="ident">Ordering</span> {
-        <span class="kw">use</span> <span class="ident">Right</span>::{<span class="ident">Closed</span>, <span class="ident">Open</span>, <span class="ident">PosInfinity</span>};
-        <span class="kw">match</span> (<span class="self">self</span>, <span class="ident">other</span>) {
-            (<span class="ident">PosInfinity</span>, <span class="ident">PosInfinity</span>) =&gt; <span class="ident">Equal</span>,
-            (<span class="kw">_</span>, <span class="ident">PosInfinity</span>) =&gt; <span class="ident">Less</span>,
-            (<span class="ident">PosInfinity</span>, <span class="kw">_</span>) =&gt; <span class="ident">Greater</span>,
-            (<span class="ident">Open</span>(<span class="ident">x</span>), <span class="ident">Closed</span>(<span class="ident">y</span>)) <span class="kw">if</span> <span class="ident">x</span> <span class="op">==</span> <span class="ident">y</span> =&gt; <span class="ident">Less</span>,
-            (<span class="ident">Closed</span>(<span class="ident">x</span>), <span class="ident">Open</span>(<span class="ident">y</span>)) <span class="kw">if</span> <span class="ident">x</span> <span class="op">==</span> <span class="ident">y</span> =&gt; <span class="ident">Greater</span>,
-            <span class="kw">_</span> =&gt; <span class="self">self</span>.<span class="ident">inner</span>().<span class="ident">unwrap</span>().<span class="ident">cmp</span>(<span class="ident">other</span>.<span class="ident">inner</span>().<span class="ident">unwrap</span>()),
+<span class="kw">impl</span>&lt;T: Ord&gt; Ord <span class="kw">for </span>Right&lt;T&gt; {
+    <span class="kw">fn </span>cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; Ordering {
+        <span class="kw">use </span>Right::{Closed, Open, PosInfinity};
+        <span class="kw">match </span>(<span class="self">self</span>, other) {
+            (PosInfinity, PosInfinity) =&gt; Equal,
+            (<span class="kw">_</span>, PosInfinity) =&gt; Less,
+            (PosInfinity, <span class="kw">_</span>) =&gt; Greater,
+            (Open(x), Closed(y)) <span class="kw">if </span>x == y =&gt; Less,
+            (Closed(x), Open(y)) <span class="kw">if </span>x == y =&gt; Greater,
+            <span class="kw">_ </span>=&gt; <span class="self">self</span>.inner().unwrap().cmp(other.inner().unwrap()),
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">PartialOrd</span> <span class="kw">for</span> <span class="ident">Right</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Ordering</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">cmp</span>(<span class="ident">other</span>))
+<span class="kw">impl</span>&lt;T: Ord&gt; PartialOrd <span class="kw">for </span>Right&lt;T&gt; {
+    <span class="kw">fn </span>partial_cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Ordering&gt; {
+        <span class="prelude-val">Some</span>(<span class="self">self</span>.cmp(other))
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="ident">left</span>: <span class="ident">Left</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
-    <span class="ident">right</span>: <span class="ident">Right</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
+<span class="attribute">#[derive(Clone, Copy, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>Interval&lt;T&gt; {
+    left: Left&lt;T&gt;,
+    right: Right&lt;T&gt;,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Debug</span><span class="op">&gt;</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?}, {:?}&quot;</span>, <span class="self">self</span>.<span class="ident">left</span>, <span class="self">self</span>.<span class="ident">right</span>)
+<span class="kw">impl</span>&lt;T: Debug&gt; Debug <span class="kw">for </span>Interval&lt;T&gt; {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        <span class="macro">write!</span>(f, <span class="string">&quot;{:?}, {:?}&quot;</span>, <span class="self">self</span>.left, <span class="self">self</span>.right)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">Ord</span> <span class="kw">for</span> <span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="ident">Ordering</span> {
-        <span class="self">self</span>.<span class="ident">left</span>.<span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="ident">left</span>).<span class="ident">then_with</span>(<span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">right</span>.<span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="ident">right</span>))
+<span class="kw">impl</span>&lt;T: Ord&gt; Ord <span class="kw">for </span>Interval&lt;T&gt; {
+    <span class="kw">fn </span>cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; Ordering {
+        <span class="self">self</span>.left.cmp(<span class="kw-2">&amp;</span>other.left).then_with(|| <span class="self">self</span>.right.cmp(<span class="kw-2">&amp;</span>other.right))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">PartialOrd</span> <span class="kw">for</span> <span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Ordering</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">cmp</span>(<span class="ident">other</span>))
+<span class="kw">impl</span>&lt;T: Ord&gt; PartialOrd <span class="kw">for </span>Interval&lt;T&gt; {
+    <span class="kw">fn </span>partial_cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Ordering&gt; {
+        <span class="prelude-val">Some</span>(<span class="self">self</span>.cmp(other))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span><span class="op">&gt;</span> <span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_bounds</span>(<span class="ident">b</span>: <span class="kw">impl</span> <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">left</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">b</span>.<span class="ident">start_bound</span>() {
-            <span class="ident">Unbounded</span> =&gt; <span class="ident">Left::NegInfinity</span>,
-            <span class="ident">Included</span>(<span class="ident">x</span>) =&gt; <span class="ident">Left::Closed</span>(<span class="ident">x</span>.<span class="ident">clone</span>()),
-            <span class="ident">Excluded</span>(<span class="ident">x</span>) =&gt; <span class="ident">Left::Open</span>(<span class="ident">x</span>.<span class="ident">clone</span>()),
+<span class="kw">impl</span>&lt;T: Ord + Clone&gt; Interval&lt;T&gt; {
+    <span class="kw">pub fn </span>from_bounds(b: <span class="kw">impl </span>RangeBounds&lt;T&gt;) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>left = <span class="kw">match </span>b.start_bound() {
+            Unbounded =&gt; Left::NegInfinity,
+            Included(x) =&gt; Left::Closed(x.clone()),
+            Excluded(x) =&gt; Left::Open(x.clone()),
         };
-        <span class="kw">let</span> <span class="ident">right</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">b</span>.<span class="ident">end_bound</span>() {
-            <span class="ident">Excluded</span>(<span class="ident">x</span>) =&gt; <span class="ident">Right::Open</span>(<span class="ident">x</span>.<span class="ident">clone</span>()),
-            <span class="ident">Included</span>(<span class="ident">x</span>) =&gt; <span class="ident">Right::Closed</span>(<span class="ident">x</span>.<span class="ident">clone</span>()),
-            <span class="ident">Unbounded</span> =&gt; <span class="ident">Right::PosInfinity</span>,
+        <span class="kw">let </span>right = <span class="kw">match </span>b.end_bound() {
+            Excluded(x) =&gt; Right::Open(x.clone()),
+            Included(x) =&gt; Right::Closed(x.clone()),
+            Unbounded =&gt; Right::PosInfinity,
         };
-        <span class="self">Self</span> { <span class="ident">left</span>, <span class="ident">right</span> }
+        <span class="self">Self </span>{ left, right }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">inf</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">T</span><span class="op">&gt;</span> { <span class="self">self</span>.<span class="ident">left</span>.<span class="ident">inner</span>() }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sup</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">T</span><span class="op">&gt;</span> { <span class="self">self</span>.<span class="ident">right</span>.<span class="ident">inner</span>() }
+<span class="kw">impl</span>&lt;T: Ord&gt; Interval&lt;T&gt; {
+    <span class="kw">pub fn </span>inf(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>T&gt; { <span class="self">self</span>.left.inner() }
+    <span class="kw">pub fn </span>sup(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>T&gt; { <span class="self">self</span>.right.inner() }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">match</span> (<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">left</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">right</span>) {
-            (<span class="ident">Left::NegInfinity</span>, <span class="kw">_</span>) =&gt; <span class="bool-val">false</span>,
-            (<span class="kw">_</span>, <span class="ident">Right::PosInfinity</span>) =&gt; <span class="bool-val">false</span>,
-            (<span class="ident">Left::Closed</span>(<span class="ident">x</span>), <span class="ident">Right::Closed</span>(<span class="ident">y</span>)) =&gt; <span class="ident">x</span> <span class="op">&gt;</span> <span class="ident">y</span>,
-            <span class="kw">_</span> =&gt; <span class="self">self</span>.<span class="ident">inf</span>().<span class="ident">unwrap</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">sup</span>().<span class="ident">unwrap</span>(),
+    <span class="kw">pub fn </span>is_empty(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">match </span>(<span class="kw-2">&amp;</span><span class="self">self</span>.left, <span class="kw-2">&amp;</span><span class="self">self</span>.right) {
+            (Left::NegInfinity, <span class="kw">_</span>) =&gt; <span class="bool-val">false</span>,
+            (<span class="kw">_</span>, Right::PosInfinity) =&gt; <span class="bool-val">false</span>,
+            (Left::Closed(x), Right::Closed(y)) =&gt; x &gt; y,
+            <span class="kw">_ </span>=&gt; <span class="self">self</span>.inf().unwrap() &gt;= <span class="self">self</span>.sup().unwrap(),
         }
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">intersects</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">let</span> (<span class="ident">left</span>, <span class="ident">right</span>) <span class="op">=</span>
-            <span class="kw">if</span> <span class="self">self</span> <span class="op">&lt;</span> <span class="ident">other</span> { (<span class="self">self</span>, <span class="ident">other</span>) } <span class="kw">else</span> { (<span class="ident">other</span>, <span class="self">self</span>) };
-        <span class="kw">match</span> (<span class="kw-2">&amp;</span><span class="ident">right</span>.<span class="ident">left</span>, <span class="kw-2">&amp;</span><span class="ident">left</span>.<span class="ident">right</span>) {
-            (<span class="ident">Left::NegInfinity</span>, <span class="kw">_</span>) =&gt; <span class="bool-val">true</span>,
-            (<span class="kw">_</span>, <span class="ident">Right::PosInfinity</span>) =&gt; <span class="bool-val">true</span>,
-            (<span class="ident">Left::Closed</span>(<span class="ident">x</span>), <span class="ident">Right::Closed</span>(<span class="ident">y</span>)) =&gt; <span class="ident">x</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">y</span>,
-            <span class="kw">_</span> =&gt; <span class="ident">right</span>.<span class="ident">inf</span>().<span class="ident">unwrap</span>() <span class="op">&lt;</span> <span class="ident">left</span>.<span class="ident">sup</span>().<span class="ident">unwrap</span>(),
+    <span class="kw">pub fn </span>intersects(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; bool {
+        <span class="kw">let </span>(left, right) =
+            <span class="kw">if </span><span class="self">self </span>&lt; other { (<span class="self">self</span>, other) } <span class="kw">else </span>{ (other, <span class="self">self</span>) };
+        <span class="kw">match </span>(<span class="kw-2">&amp;</span>right.left, <span class="kw-2">&amp;</span>left.right) {
+            (Left::NegInfinity, <span class="kw">_</span>) =&gt; <span class="bool-val">true</span>,
+            (<span class="kw">_</span>, Right::PosInfinity) =&gt; <span class="bool-val">true</span>,
+            (Left::Closed(x), Right::Closed(y)) =&gt; x &lt;= y,
+            <span class="kw">_ </span>=&gt; right.inf().unwrap() &lt; left.sup().unwrap(),
         }
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_connected_with</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">let</span> (<span class="ident">left</span>, <span class="ident">right</span>) <span class="op">=</span>
-            <span class="kw">if</span> <span class="self">self</span> <span class="op">&lt;</span> <span class="ident">other</span> { (<span class="self">self</span>, <span class="ident">other</span>) } <span class="kw">else</span> { (<span class="ident">other</span>, <span class="self">self</span>) };
-        <span class="kw">match</span> (<span class="kw-2">&amp;</span><span class="ident">right</span>.<span class="ident">left</span>, <span class="kw-2">&amp;</span><span class="ident">left</span>.<span class="ident">right</span>) {
-            (<span class="ident">Left::NegInfinity</span>, <span class="kw">_</span>) =&gt; <span class="bool-val">true</span>,
-            (<span class="kw">_</span>, <span class="ident">Right::PosInfinity</span>) =&gt; <span class="bool-val">true</span>,
-            (<span class="ident">Left::Open</span>(<span class="ident">x</span>), <span class="ident">Right::Open</span>(<span class="ident">y</span>)) =&gt; <span class="ident">x</span> <span class="op">&lt;</span> <span class="ident">y</span>,
-            <span class="kw">_</span> =&gt; <span class="ident">right</span>.<span class="ident">inf</span>().<span class="ident">unwrap</span>() <span class="op">&lt;</span><span class="op">=</span> <span class="ident">left</span>.<span class="ident">sup</span>().<span class="ident">unwrap</span>(),
+    <span class="kw">pub fn </span>is_connected_with(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; bool {
+        <span class="kw">let </span>(left, right) =
+            <span class="kw">if </span><span class="self">self </span>&lt; other { (<span class="self">self</span>, other) } <span class="kw">else </span>{ (other, <span class="self">self</span>) };
+        <span class="kw">match </span>(<span class="kw-2">&amp;</span>right.left, <span class="kw-2">&amp;</span>left.right) {
+            (Left::NegInfinity, <span class="kw">_</span>) =&gt; <span class="bool-val">true</span>,
+            (<span class="kw">_</span>, Right::PosInfinity) =&gt; <span class="bool-val">true</span>,
+            (Left::Open(x), Right::Open(y)) =&gt; x &lt; y,
+            <span class="kw">_ </span>=&gt; right.inf().unwrap() &lt;= left.sup().unwrap(),
         }
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_subset_of</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="comment">//      [--- self ---]</span>
-        <span class="comment">// [------- other -------]</span>
-        <span class="ident">other</span>.<span class="ident">left</span> <span class="op">&lt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">left</span> <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">right</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">other</span>.<span class="ident">right</span>
+    <span class="kw">pub fn </span>is_subset_of(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; bool {
+        <span class="comment">//      [--- self ---]
+        // [------- other -------]
+        </span>other.left &lt;= <span class="self">self</span>.left &amp;&amp; <span class="self">self</span>.right &lt;= other.right
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_superset_of</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="comment">// [------- self -------]</span>
-        <span class="comment">//    [--- other ---]</span>
-        <span class="self">self</span>.<span class="ident">left</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">other</span>.<span class="ident">left</span> <span class="op">&amp;&amp;</span> <span class="ident">other</span>.<span class="ident">right</span> <span class="op">&lt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">right</span>
+    <span class="kw">pub fn </span>is_superset_of(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; bool {
+        <span class="comment">// [------- self -------]
+        //    [--- other ---]
+        </span><span class="self">self</span>.left &lt;= other.left &amp;&amp; other.right &lt;= <span class="self">self</span>.right
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">intersection</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> (<span class="ident">left</span>, <span class="ident">right</span>) <span class="op">=</span>
-            <span class="kw">if</span> <span class="self">self</span> <span class="op">&lt;</span> <span class="ident">other</span> { (<span class="self">self</span>, <span class="ident">other</span>) } <span class="kw">else</span> { (<span class="ident">other</span>, <span class="self">self</span>) };
-        <span class="prelude-val">Some</span>(<span class="ident">Interval</span> { <span class="ident">left</span>: <span class="ident">right</span>.<span class="ident">left</span>, <span class="ident">right</span>: <span class="ident">left</span>.<span class="ident">right</span> })
-            .<span class="ident">filter</span>(<span class="op">|</span><span class="ident">it</span><span class="op">|</span> <span class="op">!</span><span class="ident">it</span>.<span class="ident">is_empty</span>())
+    <span class="kw">pub fn </span>intersection(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Interval&lt;T&gt;&gt; {
+        <span class="kw">let </span>(left, right) =
+            <span class="kw">if </span><span class="self">self </span>&lt; other { (<span class="self">self</span>, other) } <span class="kw">else </span>{ (other, <span class="self">self</span>) };
+        <span class="prelude-val">Some</span>(Interval { left: right.left, right: left.right })
+            .filter(|it| !it.is_empty())
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">connection</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> (<span class="ident">left</span>, <span class="ident">right</span>) <span class="op">=</span>
-            <span class="kw">if</span> <span class="self">self</span> <span class="op">&lt;</span> <span class="ident">other</span> { (<span class="self">self</span>, <span class="ident">other</span>) } <span class="kw">else</span> { (<span class="ident">other</span>, <span class="self">self</span>) };
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">left</span>.<span class="ident">is_connected_with</span>(<span class="kw-2">&amp;</span><span class="ident">right</span>) {
-            <span class="kw">return</span> <span class="prelude-val">None</span>;
+    <span class="kw">pub fn </span>connection(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Interval&lt;T&gt;&gt; {
+        <span class="kw">let </span>(left, right) =
+            <span class="kw">if </span><span class="self">self </span>&lt; other { (<span class="self">self</span>, other) } <span class="kw">else </span>{ (other, <span class="self">self</span>) };
+        <span class="kw">if </span>!left.is_connected_with(<span class="kw-2">&amp;</span>right) {
+            <span class="kw">return </span><span class="prelude-val">None</span>;
         }
-        <span class="prelude-val">Some</span>(<span class="ident">Interval</span> { <span class="ident">left</span>: <span class="ident">left</span>.<span class="ident">left</span>, <span class="ident">right</span>: <span class="ident">right</span>.<span class="ident">right</span> })
+        <span class="prelude-val">Some</span>(Interval { left: left.left, right: right.right })
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span><span class="op">&gt;</span> <span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">intersection_minus</span>(
+<span class="kw">impl</span>&lt;T: Ord + Clone&gt; Interval&lt;T&gt; {
+    <span class="kw">pub fn </span>intersection_minus(
         <span class="self">self</span>,
-        <span class="ident">other</span>: <span class="self">Self</span>,
-    ) -&gt; (<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span>) {
-        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">intersects</span>(<span class="kw-2">&amp;</span><span class="ident">other</span>) {
-            <span class="kw">return</span> (<span class="prelude-val">None</span>, <span class="macro">vec!</span>[<span class="self">self</span>]);
+        other: <span class="self">Self</span>,
+    ) -&gt; (<span class="prelude-ty">Option</span>&lt;Interval&lt;T&gt;&gt;, Vec&lt;Interval&lt;T&gt;&gt;) {
+        <span class="kw">if </span>!<span class="self">self</span>.intersects(<span class="kw-2">&amp;</span>other) {
+            <span class="kw">return </span>(<span class="prelude-val">None</span>, <span class="macro">vec!</span>[<span class="self">self</span>]);
         }
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_subset_of</span>(<span class="kw-2">&amp;</span><span class="ident">other</span>) {
-            <span class="kw">return</span> (<span class="prelude-val">Some</span>(<span class="self">self</span>), <span class="macro">vec!</span>[]);
+        <span class="kw">if </span><span class="self">self</span>.is_subset_of(<span class="kw-2">&amp;</span>other) {
+            <span class="kw">return </span>(<span class="prelude-val">Some</span>(<span class="self">self</span>), <span class="macro">vec!</span>[]);
         }
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_superset_of</span>(<span class="kw-2">&amp;</span><span class="ident">other</span>) {
-            <span class="comment">// [-----   self   ------]</span>
-            <span class="comment">//     [-- other ---]</span>
-            <span class="comment">// ======================</span>
-            <span class="comment">// [mi][intersection][nus]</span>
-            <span class="kw">let</span> <span class="ident">isx</span> <span class="op">=</span> <span class="ident">other</span>.<span class="ident">clone</span>();
-            <span class="kw">let</span> <span class="ident">Interval</span> { <span class="ident">left</span>: <span class="ident">ll</span>, <span class="ident">right</span>: <span class="ident">lr</span> } <span class="op">=</span> <span class="self">self</span>;
-            <span class="kw">let</span> <span class="ident">Interval</span> { <span class="ident">left</span>: <span class="ident">rl</span>, <span class="ident">right</span>: <span class="ident">rr</span> } <span class="op">=</span> <span class="ident">other</span>;
-            <span class="kw">let</span> <span class="ident">minus_left</span> <span class="op">=</span> {
-                <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">rl</span> {
-                    <span class="ident">Left::NegInfinity</span> =&gt; <span class="prelude-val">None</span>,
-                    <span class="ident">Left::Closed</span>(<span class="ident">x</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">Right::Open</span>(<span class="ident">x</span>)),
-                    <span class="ident">Left::Open</span>(<span class="ident">x</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">Right::Closed</span>(<span class="ident">x</span>)),
+        <span class="kw">if </span><span class="self">self</span>.is_superset_of(<span class="kw-2">&amp;</span>other) {
+            <span class="comment">// [-----   self   ------]
+            //     [-- other ---]
+            // ======================
+            // [mi][intersection][nus]
+            </span><span class="kw">let </span>isx = other.clone();
+            <span class="kw">let </span>Interval { left: ll, right: lr } = <span class="self">self</span>;
+            <span class="kw">let </span>Interval { left: rl, right: rr } = other;
+            <span class="kw">let </span>minus_left = {
+                <span class="kw">let </span>tmp = <span class="kw">match </span>rl {
+                    Left::NegInfinity =&gt; <span class="prelude-val">None</span>,
+                    Left::Closed(x) =&gt; <span class="prelude-val">Some</span>(Right::Open(x)),
+                    Left::Open(x) =&gt; <span class="prelude-val">Some</span>(Right::Closed(x)),
                 };
-                <span class="ident">tmp</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">right</span><span class="op">|</span> <span class="ident">Interval</span> { <span class="ident">left</span>: <span class="ident">ll</span>, <span class="ident">right</span> })
-                    .<span class="ident">filter</span>(<span class="op">|</span><span class="ident">it</span><span class="op">|</span> <span class="op">!</span><span class="ident">it</span>.<span class="ident">is_empty</span>())
+                tmp.map(|right| Interval { left: ll, right })
+                    .filter(|it| !it.is_empty())
             };
-            <span class="kw">let</span> <span class="ident">minus_right</span> <span class="op">=</span> {
-                <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">rr</span> {
-                    <span class="ident">Right::Open</span>(<span class="ident">x</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">Left::Closed</span>(<span class="ident">x</span>)),
-                    <span class="ident">Right::Closed</span>(<span class="ident">x</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">Left::Open</span>(<span class="ident">x</span>)),
-                    <span class="ident">Right::PosInfinity</span> =&gt; <span class="prelude-val">None</span>,
+            <span class="kw">let </span>minus_right = {
+                <span class="kw">let </span>tmp = <span class="kw">match </span>rr {
+                    Right::Open(x) =&gt; <span class="prelude-val">Some</span>(Left::Closed(x)),
+                    Right::Closed(x) =&gt; <span class="prelude-val">Some</span>(Left::Open(x)),
+                    Right::PosInfinity =&gt; <span class="prelude-val">None</span>,
                 };
-                <span class="ident">tmp</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">left</span><span class="op">|</span> <span class="ident">Interval</span> { <span class="ident">left</span>, <span class="ident">right</span>: <span class="ident">lr</span> })
-                    .<span class="ident">filter</span>(<span class="op">|</span><span class="ident">it</span><span class="op">|</span> <span class="op">!</span><span class="ident">it</span>.<span class="ident">is_empty</span>())
+                tmp.map(|left| Interval { left, right: lr })
+                    .filter(|it| !it.is_empty())
             };
 
-            <span class="kw">let</span> <span class="ident">isx</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">isx</span>.<span class="ident">is_empty</span>() { <span class="prelude-val">None</span> } <span class="kw">else</span> { <span class="prelude-val">Some</span>(<span class="ident">isx</span>) };
-            <span class="kw">let</span> <span class="ident">minus</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span>
-                <span class="ident">minus_left</span>.<span class="ident">into_iter</span>().<span class="ident">chain</span>(<span class="ident">minus_right</span>).<span class="ident">collect</span>();
-            <span class="kw">return</span> (<span class="ident">isx</span>, <span class="ident">minus</span>);
+            <span class="kw">let </span>isx = <span class="kw">if </span>isx.is_empty() { <span class="prelude-val">None </span>} <span class="kw">else </span>{ <span class="prelude-val">Some</span>(isx) };
+            <span class="kw">let </span>minus: Vec&lt;<span class="kw">_</span>&gt; =
+                minus_left.into_iter().chain(minus_right).collect();
+            <span class="kw">return </span>(isx, minus);
         }
-        <span class="kw">let</span> <span class="ident">swap</span> <span class="op">=</span> <span class="self">self</span> <span class="op">&gt;</span> <span class="ident">other</span>;
-        <span class="kw">let</span> (<span class="ident">left</span>, <span class="ident">right</span>) <span class="op">=</span> <span class="kw">if</span> <span class="ident">swap</span> { (<span class="ident">other</span>, <span class="self">self</span>) } <span class="kw">else</span> { (<span class="self">self</span>, <span class="ident">other</span>) };
-        <span class="comment">// [--- self ---]</span>
-        <span class="comment">//          [--- other ---]</span>
-        <span class="comment">// ========================</span>
-        <span class="comment">// [ minus ][isx]</span>
-        <span class="kw">let</span> <span class="ident">Interval</span> { <span class="ident">left</span>: <span class="ident">ll</span>, <span class="ident">right</span>: <span class="ident">lr</span> } <span class="op">=</span> <span class="ident">left</span>;
-        <span class="kw">let</span> <span class="ident">Interval</span> { <span class="ident">left</span>: <span class="ident">rl</span>, <span class="ident">right</span>: <span class="ident">rr</span> } <span class="op">=</span> <span class="ident">right</span>;
-        <span class="kw">let</span> <span class="ident">minus</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">swap</span> {
-            <span class="kw">let</span> <span class="ident">left</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">lr</span>.<span class="ident">clone</span>() {
-                <span class="ident">Right::Open</span>(<span class="ident">x</span>) =&gt; <span class="ident">Left::Closed</span>(<span class="ident">x</span>),
-                <span class="ident">Right::Closed</span>(<span class="ident">x</span>) =&gt; <span class="ident">Left::Open</span>(<span class="ident">x</span>),
-                <span class="ident">Right::PosInfinity</span> =&gt; <span class="macro">unreachable!</span>(),
+        <span class="kw">let </span>swap = <span class="self">self </span>&gt; other;
+        <span class="kw">let </span>(left, right) = <span class="kw">if </span>swap { (other, <span class="self">self</span>) } <span class="kw">else </span>{ (<span class="self">self</span>, other) };
+        <span class="comment">// [--- self ---]
+        //          [--- other ---]
+        // ========================
+        // [ minus ][isx]
+        </span><span class="kw">let </span>Interval { left: ll, right: lr } = left;
+        <span class="kw">let </span>Interval { left: rl, right: rr } = right;
+        <span class="kw">let </span>minus = <span class="kw">if </span>swap {
+            <span class="kw">let </span>left = <span class="kw">match </span>lr.clone() {
+                Right::Open(x) =&gt; Left::Closed(x),
+                Right::Closed(x) =&gt; Left::Open(x),
+                Right::PosInfinity =&gt; <span class="macro">unreachable!</span>(),
             };
-            <span class="ident">Interval</span> { <span class="ident">left</span>, <span class="ident">right</span>: <span class="ident">rr</span> }
-        } <span class="kw">else</span> {
-            <span class="kw">let</span> <span class="ident">right</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">rl</span>.<span class="ident">clone</span>() {
-                <span class="ident">Left::NegInfinity</span> =&gt; <span class="macro">unreachable!</span>(),
-                <span class="ident">Left::Closed</span>(<span class="ident">x</span>) =&gt; <span class="ident">Right::Open</span>(<span class="ident">x</span>),
-                <span class="ident">Left::Open</span>(<span class="ident">x</span>) =&gt; <span class="ident">Right::Closed</span>(<span class="ident">x</span>),
+            Interval { left, right: rr }
+        } <span class="kw">else </span>{
+            <span class="kw">let </span>right = <span class="kw">match </span>rl.clone() {
+                Left::NegInfinity =&gt; <span class="macro">unreachable!</span>(),
+                Left::Closed(x) =&gt; Right::Open(x),
+                Left::Open(x) =&gt; Right::Closed(x),
             };
-            <span class="ident">Interval</span> { <span class="ident">left</span>: <span class="ident">ll</span>, <span class="ident">right</span> }
+            Interval { left: ll, right }
         };
-        <span class="kw">let</span> <span class="ident">isx</span> <span class="op">=</span> <span class="ident">Interval</span> { <span class="ident">left</span>: <span class="ident">rl</span>, <span class="ident">right</span>: <span class="ident">lr</span> };
-        (<span class="prelude-val">Some</span>(<span class="ident">isx</span>), <span class="macro">vec!</span>[<span class="ident">minus</span>])
+        <span class="kw">let </span>isx = Interval { left: rl, right: lr };
+        (<span class="prelude-val">Some</span>(isx), <span class="macro">vec!</span>[minus])
     }
 }
 
-<span class="doccomment">/// 区間から値への対応づけ。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// `todo!()`</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">IntervalMap</span><span class="op">&lt;</span><span class="ident">K</span>, <span class="ident">V</span><span class="op">&gt;</span> {
-    <span class="ident">inner</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">K</span><span class="op">&gt;</span>, <span class="ident">V</span><span class="op">&gt;</span>,
+<span class="doccomment">/// 区間から値への対応づけ。
+///
+/// # Examples
+/// `todo!()`
+</span><span class="attribute">#[derive(Clone)]
+</span><span class="kw">pub struct </span>IntervalMap&lt;K, V&gt; {
+    inner: BTreeMap&lt;Interval&lt;K&gt;, V&gt;,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span>, <span class="ident">V</span>: <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Clone</span><span class="op">&gt;</span> <span class="ident">IntervalMap</span><span class="op">&lt;</span><span class="ident">K</span>, <span class="ident">V</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// $S\\gets\\emptyset$ で初期化する。</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span> { <span class="self">Self</span> { <span class="ident">inner</span>: <span class="ident">BTreeMap::new</span>() } }
+<span class="kw">impl</span>&lt;K: Ord + Clone, V: Eq + Clone&gt; IntervalMap&lt;K, V&gt; {
+    <span class="doccomment">/// $S\\gets\\emptyset$ で初期化する。
+    </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{ <span class="self">Self </span>{ inner: BTreeMap::new() } }
 
-    <span class="doccomment">/// $S=\\emptyset$ を返す。</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> { <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">is_empty</span>() }
+    <span class="doccomment">/// $S=\\emptyset$ を返す。
+    </span><span class="kw">pub fn </span>is_empty(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool { <span class="self">self</span>.inner.is_empty() }
 
-    <span class="doccomment">/// 区間 `b` 中の各 $k$ に対して $S\\xleftarrow{\\cup} (k\\mapsto v)$ で更新する。</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">insert</span><span class="op">&lt;</span><span class="ident">B</span>: <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">K</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">b</span>: <span class="ident">B</span>, <span class="ident">v</span>: <span class="ident">V</span>) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">it</span> <span class="op">=</span> <span class="ident">Interval::from_bounds</span>(<span class="ident">b</span>);
-        <span class="kw">if</span> <span class="ident">it</span>.<span class="ident">is_empty</span>() <span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">contains_internal</span>(<span class="kw-2">&amp;</span><span class="ident">it</span>, <span class="kw-2">&amp;</span><span class="ident">v</span>) {
+    <span class="doccomment">/// 区間 `b` 中の各 $k$ に対して $S\\xleftarrow{\\cup} (k\\mapsto v)$ で更新する。
+    </span><span class="kw">pub fn </span>insert&lt;B: RangeBounds&lt;K&gt;&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, b: B, v: V) {
+        <span class="kw">let </span><span class="kw-2">mut </span>it = Interval::from_bounds(b);
+        <span class="kw">if </span>it.is_empty() || <span class="self">self</span>.contains_internal(<span class="kw-2">&amp;</span>it, <span class="kw-2">&amp;</span>v) {
             <span class="kw">return</span>;
         }
-        <span class="self">self</span>.<span class="ident">remove_internal</span>(<span class="ident">it</span>.<span class="ident">clone</span>());
-        <span class="self">self</span>.<span class="ident">connect</span>(<span class="kw-2">&amp;mut</span> <span class="ident">it</span>, <span class="kw-2">&amp;</span><span class="ident">v</span>);
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">insert</span>(<span class="ident">it</span>, <span class="ident">v</span>);
+        <span class="self">self</span>.remove_internal(it.clone());
+        <span class="self">self</span>.connect(<span class="kw-2">&amp;mut </span>it, <span class="kw-2">&amp;</span>v);
+        <span class="self">self</span>.inner.insert(it, v);
     }
 
-    <span class="doccomment">/// 区間 `b` 中の各 $k$ に対して $S\\xleftarrow{\\setminus} (k\\mapsto\\bullet)$</span>
-    <span class="doccomment">/// で更新する。</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">remove</span><span class="op">&lt;</span><span class="ident">B</span>: <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">K</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">b</span>: <span class="ident">B</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">K</span><span class="op">&gt;</span>, <span class="ident">V</span>)<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">it</span> <span class="op">=</span> <span class="ident">Interval::from_bounds</span>(<span class="ident">b</span>);
-        <span class="kw">if</span> <span class="ident">it</span>.<span class="ident">is_empty</span>() {
-            <span class="kw">return</span> <span class="macro">vec!</span>[];
+    <span class="doccomment">/// 区間 `b` 中の各 $k$ に対して $S\\xleftarrow{\\setminus} (k\\mapsto\\bullet)$
+    /// で更新する。
+    </span><span class="kw">pub fn </span>remove&lt;B: RangeBounds&lt;K&gt;&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, b: B) -&gt; Vec&lt;(Interval&lt;K&gt;, V)&gt; {
+        <span class="kw">let </span>it = Interval::from_bounds(b);
+        <span class="kw">if </span>it.is_empty() {
+            <span class="kw">return </span><span class="macro">vec!</span>[];
         }
-        <span class="self">self</span>.<span class="ident">remove_internal</span>(<span class="ident">it</span>)
+        <span class="self">self</span>.remove_internal(it)
     }
 
-    <span class="kw">fn</span> <span class="ident">contains_internal</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">it</span>: <span class="kw-2">&amp;</span><span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">K</span><span class="op">&gt;</span>, <span class="ident">v</span>: <span class="kw-2">&amp;</span><span class="ident">V</span>) -&gt; <span class="ident">bool</span> {
-        <span class="comment">// it の superset である区間が含まれており、その値が v なら true</span>
-        (<span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">range</span>(<span class="ident">it</span>..).<span class="ident">next</span>())
-            .<span class="ident">into_iter</span>()
-            .<span class="ident">chain</span>(<span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">range</span>(..<span class="ident">it</span>).<span class="ident">next_back</span>())
-            .<span class="ident">any</span>(<span class="op">|</span>(<span class="ident">ki</span>, <span class="ident">vi</span>)<span class="op">|</span> <span class="ident">ki</span>.<span class="ident">is_superset_of</span>(<span class="ident">it</span>) <span class="op">&amp;&amp;</span> <span class="ident">vi</span> <span class="op">==</span> <span class="ident">v</span>)
+    <span class="kw">fn </span>contains_internal(<span class="kw-2">&amp;</span><span class="self">self</span>, it: <span class="kw-2">&amp;</span>Interval&lt;K&gt;, v: <span class="kw-2">&amp;</span>V) -&gt; bool {
+        <span class="comment">// it の superset である区間が含まれており、その値が v なら true
+        </span>(<span class="self">self</span>.inner.range(it..).next())
+            .into_iter()
+            .chain(<span class="self">self</span>.inner.range(..it).next_back())
+            .any(|(ki, vi)| ki.is_superset_of(it) &amp;&amp; vi == v)
     }
 
-    <span class="kw">fn</span> <span class="ident">remove_internal</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">it</span>: <span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">K</span><span class="op">&gt;</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">K</span><span class="op">&gt;</span>, <span class="ident">V</span>)<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rm</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">remove_subset_of</span>(<span class="kw-2">&amp;</span><span class="ident">it</span>);
-        <span class="ident">rm</span>.<span class="ident">extend</span>(<span class="self">self</span>.<span class="ident">remove_intersection_of</span>(<span class="ident">it</span>));
-        <span class="ident">rm</span>.<span class="ident">sort_unstable_by</span>(<span class="op">|</span><span class="ident">l</span>, <span class="ident">r</span><span class="op">|</span> <span class="ident">l</span>.<span class="number">0</span>.<span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="ident">r</span>.<span class="number">0</span>));
-        <span class="ident">rm</span>
+    <span class="kw">fn </span>remove_internal(<span class="kw-2">&amp;mut </span><span class="self">self</span>, it: Interval&lt;K&gt;) -&gt; Vec&lt;(Interval&lt;K&gt;, V)&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>rm = <span class="self">self</span>.remove_subset_of(<span class="kw-2">&amp;</span>it);
+        rm.extend(<span class="self">self</span>.remove_intersection_of(it));
+        rm.sort_unstable_by(|l, r| l.<span class="number">0</span>.cmp(<span class="kw-2">&amp;</span>r.<span class="number">0</span>));
+        rm
     }
 
-    <span class="kw">fn</span> <span class="ident">remove_subset_of</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">it</span>: <span class="kw-2">&amp;</span><span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">K</span><span class="op">&gt;</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">K</span><span class="op">&gt;</span>, <span class="ident">V</span>)<span class="op">&gt;</span> {
-        <span class="comment">// it の subset である区間を削除し、それを返す</span>
-        <span class="kw">let</span> <span class="ident">rm</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">range</span>(<span class="ident">it</span>..))
-            .<span class="ident">take_while</span>(<span class="op">|</span>(<span class="ident">ki</span>, <span class="kw">_</span>)<span class="op">|</span> <span class="ident">ki</span>.<span class="ident">is_subset_of</span>(<span class="ident">it</span>))
-            .<span class="ident">chain</span>(
-                (<span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">range</span>(..<span class="ident">it</span>).<span class="ident">rev</span>())
-                    .<span class="ident">take_while</span>(<span class="op">|</span>(<span class="ident">ki</span>, <span class="kw">_</span>)<span class="op">|</span> <span class="ident">ki</span>.<span class="ident">is_subset_of</span>(<span class="ident">it</span>)),
+    <span class="kw">fn </span>remove_subset_of(<span class="kw-2">&amp;mut </span><span class="self">self</span>, it: <span class="kw-2">&amp;</span>Interval&lt;K&gt;) -&gt; Vec&lt;(Interval&lt;K&gt;, V)&gt; {
+        <span class="comment">// it の subset である区間を削除し、それを返す
+        </span><span class="kw">let </span>rm: Vec&lt;<span class="kw">_</span>&gt; = (<span class="self">self</span>.inner.range(it..))
+            .take_while(|(ki, <span class="kw">_</span>)| ki.is_subset_of(it))
+            .chain(
+                (<span class="self">self</span>.inner.range(..it).rev())
+                    .take_while(|(ki, <span class="kw">_</span>)| ki.is_subset_of(it)),
             )
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">ki</span>, <span class="ident">vi</span>)<span class="op">|</span> (<span class="ident">ki</span>.<span class="ident">clone</span>(), <span class="ident">vi</span>.<span class="ident">clone</span>()))
-            .<span class="ident">collect</span>();
-        <span class="kw">for</span> (<span class="ident">k</span>, <span class="kw">_</span>) <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">rm</span> {
-            <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">remove</span>(<span class="ident">k</span>);
+            .map(|(ki, vi)| (ki.clone(), vi.clone()))
+            .collect();
+        <span class="kw">for </span>(k, <span class="kw">_</span>) <span class="kw">in </span><span class="kw-2">&amp;</span>rm {
+            <span class="self">self</span>.inner.remove(k);
         }
-        <span class="ident">rm</span>
+        rm
     }
 
-    <span class="kw">fn</span> <span class="ident">remove_intersection_of</span>(
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-        <span class="ident">it</span>: <span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">K</span><span class="op">&gt;</span>,
-    ) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">K</span><span class="op">&gt;</span>, <span class="ident">V</span>)<span class="op">&gt;</span> {
-        <span class="comment">// it と intersection を持つ区間を削除し、それを返す。</span>
-        <span class="comment">// ただし、it の subset はすでに削除済みとする</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rm</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>((<span class="ident">ki</span>, <span class="kw">_</span>)) <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">range</span>(<span class="kw-2">&amp;</span><span class="ident">it</span>..).<span class="ident">next</span>() {
-            <span class="kw">if</span> <span class="ident">it</span>.<span class="ident">intersects</span>(<span class="ident">ki</span>) {
-                <span class="kw">let</span> <span class="ident">ki</span> <span class="op">=</span> <span class="ident">ki</span>.<span class="ident">clone</span>();
-                <span class="kw">let</span> <span class="ident">vi</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">ki</span>).<span class="ident">unwrap</span>();
-                <span class="kw">let</span> (<span class="ident">isx</span>, <span class="ident">minus</span>) <span class="op">=</span> <span class="ident">ki</span>.<span class="ident">intersection_minus</span>(<span class="ident">it</span>.<span class="ident">clone</span>());
-                <span class="kw">for</span> <span class="ident">k</span> <span class="kw">in</span> <span class="ident">minus</span> {
-                    <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">insert</span>(<span class="ident">k</span>, <span class="ident">vi</span>.<span class="ident">clone</span>());
+    <span class="kw">fn </span>remove_intersection_of(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        it: Interval&lt;K&gt;,
+    ) -&gt; Vec&lt;(Interval&lt;K&gt;, V)&gt; {
+        <span class="comment">// it と intersection を持つ区間を削除し、それを返す。
+        // ただし、it の subset はすでに削除済みとする
+        </span><span class="kw">let </span><span class="kw-2">mut </span>rm = <span class="macro">vec!</span>[];
+        <span class="kw">if let </span><span class="prelude-val">Some</span>((ki, <span class="kw">_</span>)) = <span class="self">self</span>.inner.range(<span class="kw-2">&amp;</span>it..).next() {
+            <span class="kw">if </span>it.intersects(ki) {
+                <span class="kw">let </span>ki = ki.clone();
+                <span class="kw">let </span>vi = <span class="self">self</span>.inner.remove(<span class="kw-2">&amp;</span>ki).unwrap();
+                <span class="kw">let </span>(isx, minus) = ki.intersection_minus(it.clone());
+                <span class="kw">for </span>k <span class="kw">in </span>minus {
+                    <span class="self">self</span>.inner.insert(k, vi.clone());
                 }
-                <span class="ident">rm</span>.<span class="ident">push</span>((<span class="ident">isx</span>.<span class="ident">unwrap</span>(), <span class="ident">vi</span>));
+                rm.push((isx.unwrap(), vi));
             }
         }
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>((<span class="ident">ki</span>, <span class="kw">_</span>)) <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">range</span>(..<span class="kw-2">&amp;</span><span class="ident">it</span>).<span class="ident">next_back</span>() {
-            <span class="kw">if</span> <span class="ident">it</span>.<span class="ident">intersects</span>(<span class="ident">ki</span>) {
-                <span class="kw">let</span> <span class="ident">ki</span> <span class="op">=</span> <span class="ident">ki</span>.<span class="ident">clone</span>();
-                <span class="kw">let</span> <span class="ident">vi</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">ki</span>).<span class="ident">unwrap</span>();
-                <span class="kw">let</span> (<span class="ident">isx</span>, <span class="ident">minus</span>) <span class="op">=</span> <span class="ident">ki</span>.<span class="ident">intersection_minus</span>(<span class="ident">it</span>);
-                <span class="kw">for</span> <span class="ident">k</span> <span class="kw">in</span> <span class="ident">minus</span> {
-                    <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">insert</span>(<span class="ident">k</span>, <span class="ident">vi</span>.<span class="ident">clone</span>());
+        <span class="kw">if let </span><span class="prelude-val">Some</span>((ki, <span class="kw">_</span>)) = <span class="self">self</span>.inner.range(..<span class="kw-2">&amp;</span>it).next_back() {
+            <span class="kw">if </span>it.intersects(ki) {
+                <span class="kw">let </span>ki = ki.clone();
+                <span class="kw">let </span>vi = <span class="self">self</span>.inner.remove(<span class="kw-2">&amp;</span>ki).unwrap();
+                <span class="kw">let </span>(isx, minus) = ki.intersection_minus(it);
+                <span class="kw">for </span>k <span class="kw">in </span>minus {
+                    <span class="self">self</span>.inner.insert(k, vi.clone());
                 }
-                <span class="ident">rm</span>.<span class="ident">push</span>((<span class="ident">isx</span>.<span class="ident">unwrap</span>(), <span class="ident">vi</span>));
+                rm.push((isx.unwrap(), vi));
             }
         }
-        <span class="ident">rm</span>
+        rm
     }
 
-    <span class="kw">fn</span> <span class="ident">connect</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">it</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">K</span><span class="op">&gt;</span>, <span class="ident">v</span>: <span class="kw-2">&amp;</span><span class="ident">V</span>) {
-        <span class="comment">// it の両隣にくる区間の値が v であればそれらを削除し、</span>
-        <span class="comment">// it につなげる。</span>
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>((<span class="ident">ki</span>, <span class="ident">vi</span>)) <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">range</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">it</span>..).<span class="ident">next</span>() {
-            <span class="kw">if</span> <span class="ident">vi</span> <span class="op">==</span> <span class="ident">v</span> <span class="op">&amp;&amp;</span> <span class="ident">it</span>.<span class="ident">is_connected_with</span>(<span class="ident">ki</span>) {
-                <span class="kw">let</span> <span class="ident">ki</span> <span class="op">=</span> <span class="ident">ki</span>.<span class="ident">clone</span>();
-                <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">ki</span>);
-                <span class="ident">it</span>.<span class="ident">right</span> <span class="op">=</span> <span class="ident">ki</span>.<span class="ident">right</span>;
+    <span class="kw">fn </span>connect(<span class="kw-2">&amp;mut </span><span class="self">self</span>, it: <span class="kw-2">&amp;mut </span>Interval&lt;K&gt;, v: <span class="kw-2">&amp;</span>V) {
+        <span class="comment">// it の両隣にくる区間の値が v であればそれらを削除し、
+        // it につなげる。
+        </span><span class="kw">if let </span><span class="prelude-val">Some</span>((ki, vi)) = <span class="self">self</span>.inner.range(<span class="kw-2">&amp;*</span>it..).next() {
+            <span class="kw">if </span>vi == v &amp;&amp; it.is_connected_with(ki) {
+                <span class="kw">let </span>ki = ki.clone();
+                <span class="self">self</span>.inner.remove(<span class="kw-2">&amp;</span>ki);
+                it.right = ki.right;
             }
         }
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>((<span class="ident">ki</span>, <span class="ident">vi</span>)) <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">range</span>(..<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">it</span>).<span class="ident">next_back</span>() {
-            <span class="kw">if</span> <span class="ident">vi</span> <span class="op">==</span> <span class="ident">v</span> <span class="op">&amp;&amp;</span> <span class="ident">it</span>.<span class="ident">is_connected_with</span>(<span class="ident">ki</span>) {
-                <span class="kw">let</span> <span class="ident">ki</span> <span class="op">=</span> <span class="ident">ki</span>.<span class="ident">clone</span>();
-                <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">ki</span>);
-                <span class="ident">it</span>.<span class="ident">left</span> <span class="op">=</span> <span class="ident">ki</span>.<span class="ident">left</span>;
+        <span class="kw">if let </span><span class="prelude-val">Some</span>((ki, vi)) = <span class="self">self</span>.inner.range(..<span class="kw-2">&amp;*</span>it).next_back() {
+            <span class="kw">if </span>vi == v &amp;&amp; it.is_connected_with(ki) {
+                <span class="kw">let </span>ki = ki.clone();
+                <span class="self">self</span>.inner.remove(<span class="kw-2">&amp;</span>ki);
+                it.left = ki.left;
             }
         }
     }
 
-    <span class="doccomment">/// $T\\subseteq S$ かつ `b` を含む $T$ があれば、その $T$</span>
-    <span class="doccomment">/// および対応する値を返す。</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">superset_of</span><span class="op">&lt;</span><span class="ident">B</span>: <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">K</span><span class="op">&gt;</span><span class="op">&gt;</span>(
+    <span class="doccomment">/// $T\\subseteq S$ かつ `b` を含む $T$ があれば、その $T$
+    /// および対応する値を返す。
+    </span><span class="kw">pub fn </span>superset_of&lt;B: RangeBounds&lt;K&gt;&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">b</span>: <span class="ident">B</span>,
-    ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="kw-2">&amp;</span><span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">K</span><span class="op">&gt;</span>, <span class="kw-2">&amp;</span><span class="ident">V</span>)<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">it</span> <span class="op">=</span> <span class="ident">Interval::from_bounds</span>(<span class="ident">b</span>);
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">is_empty</span>() <span class="op">|</span><span class="op">|</span> <span class="ident">it</span>.<span class="ident">is_empty</span>() {
-            <span class="kw">return</span> <span class="prelude-val">None</span>;
+        b: B,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;(<span class="kw-2">&amp;</span>Interval&lt;K&gt;, <span class="kw-2">&amp;</span>V)&gt; {
+        <span class="kw">let </span>it = Interval::from_bounds(b);
+        <span class="kw">if </span><span class="self">self</span>.inner.is_empty() || it.is_empty() {
+            <span class="kw">return </span><span class="prelude-val">None</span>;
         }
-        (<span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">range</span>(..<span class="kw-2">&amp;</span><span class="ident">it</span>).<span class="ident">next_back</span>().<span class="ident">into_iter</span>())
-            .<span class="ident">chain</span>(<span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">range</span>(<span class="kw-2">&amp;</span><span class="ident">it</span>..).<span class="ident">next</span>())
-            .<span class="ident">find</span>(<span class="op">|</span>(<span class="ident">ki</span>, <span class="kw">_</span>)<span class="op">|</span> <span class="ident">ki</span>.<span class="ident">is_superset_of</span>(<span class="kw-2">&amp;</span><span class="ident">it</span>))
+        (<span class="self">self</span>.inner.range(..<span class="kw-2">&amp;</span>it).next_back().into_iter())
+            .chain(<span class="self">self</span>.inner.range(<span class="kw-2">&amp;</span>it..).next())
+            .find(|(ki, <span class="kw">_</span>)| ki.is_superset_of(<span class="kw-2">&amp;</span>it))
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iter</span>(
+    <span class="kw">pub fn </span>iter(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-    ) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> (<span class="kw-2">&amp;</span><span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">K</span><span class="op">&gt;</span>, <span class="kw-2">&amp;</span><span class="ident">V</span>)<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">DoubleEndedIterator</span> <span class="op">+</span> <span class="lifetime">&#39;_</span>
-    {
-        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">iter</span>()
+    ) -&gt; <span class="kw">impl </span>Iterator&lt;Item = (<span class="kw-2">&amp;</span>Interval&lt;K&gt;, <span class="kw-2">&amp;</span>V)&gt; + DoubleEndedIterator + <span class="lifetime">&#39;_
+    </span>{
+        <span class="self">self</span>.inner.iter()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">K</span>: <span class="ident">Ord</span>, <span class="ident">V</span>: <span class="ident">Eq</span><span class="op">&gt;</span> <span class="ident">IntoIterator</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">IntervalMap</span><span class="op">&lt;</span><span class="ident">K</span>, <span class="ident">V</span><span class="op">&gt;</span> {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> (<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">K</span><span class="op">&gt;</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">V</span>);
-    <span class="kw">type</span> <span class="ident">IntoIter</span> <span class="op">=</span> <span class="ident">std::collections::btree_map::Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">K</span><span class="op">&gt;</span>, <span class="ident">V</span><span class="op">&gt;</span>;
-    <span class="kw">fn</span> <span class="ident">into_iter</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::IntoIter</span> { <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">iter</span>() }
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, K: Ord, V: Eq&gt; IntoIterator <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>IntervalMap&lt;K, V&gt; {
+    <span class="kw">type </span>Item = (<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Interval&lt;K&gt;, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>V);
+    <span class="kw">type </span>IntoIter = std::collections::btree_map::Iter&lt;<span class="lifetime">&#39;a</span>, Interval&lt;K&gt;, V&gt;;
+    <span class="kw">fn </span>into_iter(<span class="self">self</span>) -&gt; <span class="self">Self</span>::IntoIter { <span class="self">self</span>.inner.iter() }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Ord</span>, <span class="ident">V</span>: <span class="ident">Eq</span><span class="op">&gt;</span> <span class="ident">IntoIterator</span> <span class="kw">for</span> <span class="ident">IntervalMap</span><span class="op">&lt;</span><span class="ident">K</span>, <span class="ident">V</span><span class="op">&gt;</span> {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> (<span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">K</span><span class="op">&gt;</span>, <span class="ident">V</span>);
-    <span class="kw">type</span> <span class="ident">IntoIter</span> <span class="op">=</span> <span class="ident">std::collections::btree_map::IntoIter</span><span class="op">&lt;</span><span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">K</span><span class="op">&gt;</span>, <span class="ident">V</span><span class="op">&gt;</span>;
-    <span class="kw">fn</span> <span class="ident">into_iter</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::IntoIter</span> { <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">into_iter</span>() }
+<span class="kw">impl</span>&lt;K: Ord, V: Eq&gt; IntoIterator <span class="kw">for </span>IntervalMap&lt;K, V&gt; {
+    <span class="kw">type </span>Item = (Interval&lt;K&gt;, V);
+    <span class="kw">type </span>IntoIter = std::collections::btree_map::IntoIter&lt;Interval&lt;K&gt;, V&gt;;
+    <span class="kw">fn </span>into_iter(<span class="self">self</span>) -&gt; <span class="self">Self</span>::IntoIter { <span class="self">self</span>.inner.into_iter() }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Debug</span>, <span class="ident">V</span>: <span class="ident">Debug</span><span class="op">&gt;</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">IntervalMap</span><span class="op">&lt;</span><span class="ident">K</span>, <span class="ident">V</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">fmt</span>: <span class="kw-2">&amp;mut</span> <span class="ident">fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="ident">fmt</span>.<span class="ident">debug_map</span>().<span class="ident">entries</span>(<span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">iter</span>()).<span class="ident">finish</span>()
+<span class="kw">impl</span>&lt;K: Ord + Debug, V: Debug&gt; Debug <span class="kw">for </span>IntervalMap&lt;K, V&gt; {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, fmt: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        fmt.debug_map().entries(<span class="self">self</span>.inner.iter()).finish()
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

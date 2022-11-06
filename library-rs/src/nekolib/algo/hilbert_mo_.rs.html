@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/algo/hilbert_mo_.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>hilbert_mo_.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/algo/hilbert_mo_.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>hilbert_mo_.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -189,107 +189,107 @@
 <span id="100">100</span>
 <span id="101">101</span>
 <span id="102">102</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Hilbert curve に基づく Mo&#39;s algorithm。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Hilbert curve に基づく Mo&#39;s algorithm。
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::elastic_slice</span>;
+</span><span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::traits::elastic_slice;
 
-<span class="kw">use</span> <span class="ident">std::ops::Range</span>;
+<span class="kw">use </span>std::ops::Range;
 
-<span class="kw">use</span> <span class="ident">elastic_slice</span>::{
-    <span class="ident">ElasticSlice</span>, <span class="ident">ExpandBack</span>, <span class="ident">ExpandFront</span>, <span class="ident">ShrinkBack</span>, <span class="ident">ShrinkFront</span>, <span class="ident">SliceHash</span>,
+<span class="kw">use </span>elastic_slice::{
+    ElasticSlice, ExpandBack, ExpandFront, ShrinkBack, ShrinkFront, SliceHash,
 };
 
-<span class="doccomment">/// Hilbert curve に基づく Mo&#39;s algorithm。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// &lt;style&gt;</span>
-<span class="doccomment">/// .label {</span>
-<span class="doccomment">///     cursor: default;</span>
-<span class="doccomment">///     user-select: none !important;</span>
-<span class="doccomment">///     display: inline;</span>
-<span class="doccomment">///     padding: 0.2em 0.6em 0.3em;</span>
-<span class="doccomment">///     font-size: 60%;</span>
-<span class="doccomment">///     line-height: 1;</span>
-<span class="doccomment">///     color: #fff;</span>
-<span class="doccomment">///     text-align: center;</span>
-<span class="doccomment">///     white-space: nowrap;</span>
-<span class="doccomment">///     vertical-align: baseline;</span>
-<span class="doccomment">///     border-radius: 0.25em;</span>
-<span class="doccomment">///     font-family: Lato;</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// .label-warning {</span>
-<span class="doccomment">///     background-color: #f0ad4e;</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// &lt;/style&gt;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// See &lt;https://codeforces.com/blog/entry/61203&gt;。</span>
-<span class="doccomment">/// [Range Set Query](https://atcoder.jp/contests/abc174/tasks/abc174_f)</span>
-<span class="doccomment">/// に投げたら &lt;span class=&quot;label label-warning&quot;&gt;TLE&lt;/span&gt; したのでつらい。</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">hilbert_mo</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(
-    <span class="kw-2">mut</span> <span class="ident">slice</span>: <span class="ident">S</span>,
-    <span class="ident">q</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>, <span class="ident">S::Salt</span>)<span class="op">&gt;</span>,
-) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">S::Hashed</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">S</span>: <span class="ident">ElasticSlice</span>
-        <span class="op">+</span> <span class="ident">ExpandFront</span>
-        <span class="op">+</span> <span class="ident">ExpandBack</span>
-        <span class="op">+</span> <span class="ident">ShrinkFront</span>
-        <span class="op">+</span> <span class="ident">ShrinkBack</span>
-        <span class="op">+</span> <span class="ident">SliceHash</span>,
-    <span class="ident">S::Hashed</span>: <span class="ident">Clone</span>,
+<span class="doccomment">/// Hilbert curve に基づく Mo&#39;s algorithm。
+///
+/// &lt;style&gt;
+/// .label {
+///     cursor: default;
+///     user-select: none !important;
+///     display: inline;
+///     padding: 0.2em 0.6em 0.3em;
+///     font-size: 60%;
+///     line-height: 1;
+///     color: #fff;
+///     text-align: center;
+///     white-space: nowrap;
+///     vertical-align: baseline;
+///     border-radius: 0.25em;
+///     font-family: Lato;
+/// }
+/// .label-warning {
+///     background-color: #f0ad4e;
+/// }
+/// &lt;/style&gt;
+///
+/// See &lt;https://codeforces.com/blog/entry/61203&gt;。
+/// [Range Set Query](https://atcoder.jp/contests/abc174/tasks/abc174_f)
+/// に投げたら &lt;span class=&quot;label label-warning&quot;&gt;TLE&lt;/span&gt; したのでつらい。
+</span><span class="kw">pub fn </span>hilbert_mo&lt;S&gt;(
+    <span class="kw-2">mut </span>slice: S,
+    q: Vec&lt;(Range&lt;usize&gt;, S::Salt)&gt;,
+) -&gt; <span class="kw">impl </span>Iterator&lt;Item = S::Hashed&gt;
+<span class="kw">where
+    </span>S: ElasticSlice
+        + ExpandFront
+        + ExpandBack
+        + ShrinkFront
+        + ShrinkBack
+        + SliceHash,
+    S::Hashed: Clone,
 {
-    <span class="kw">let</span> <span class="ident">qn</span> <span class="op">=</span> <span class="ident">q</span>.<span class="ident">len</span>();
-    <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">slice</span>.<span class="ident">len</span>();
-    <span class="kw">let</span> <span class="ident">k</span> <span class="op">=</span> <span class="ident">n</span>.<span class="ident">next_power_of_two</span>().<span class="ident">trailing_zeros</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">q</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">q</span>
-        .<span class="ident">into_iter</span>()
-        .<span class="ident">enumerate</span>()
-        .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, (<span class="ident">Range</span> { <span class="ident">start</span>, <span class="ident">end</span> }, <span class="ident">x</span>))<span class="op">|</span> {
-            (<span class="ident">i</span>, (<span class="ident">start</span>..<span class="ident">end</span>, <span class="ident">x</span>), <span class="ident">ord</span>(<span class="ident">start</span>, <span class="ident">end</span>, <span class="ident">k</span>))
+    <span class="kw">let </span>qn = q.len();
+    <span class="kw">let </span>n = slice.len();
+    <span class="kw">let </span>k = n.next_power_of_two().trailing_zeros();
+    <span class="kw">let </span><span class="kw-2">mut </span>q: Vec&lt;<span class="kw">_</span>&gt; = q
+        .into_iter()
+        .enumerate()
+        .map(|(i, (Range { start, end }, x))| {
+            (i, (start..end, x), ord(start, end, k))
         })
-        .<span class="ident">collect</span>();
-    <span class="ident">q</span>.<span class="ident">sort_unstable_by_key</span>(<span class="op">|</span><span class="kw-2">&amp;</span>(.., <span class="ident">o</span>)<span class="op">|</span> <span class="ident">o</span>);
+        .collect();
+    q.sort_unstable_by_key(|<span class="kw-2">&amp;</span>(.., o)| o);
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="prelude-val">None</span>; <span class="ident">qn</span>];
-    <span class="ident">slice</span>.<span class="ident">reset</span>();
-    <span class="kw">for</span> (<span class="ident">i</span>, (<span class="ident">Range</span> { <span class="ident">start</span>: <span class="ident">ql</span>, <span class="ident">end</span>: <span class="ident">qr</span> }, <span class="ident">x</span>), <span class="kw">_</span>) <span class="kw">in</span> <span class="ident">q</span> {
-        <span class="kw">while</span> <span class="ident">slice</span>.<span class="ident">end</span>() <span class="op">&lt;</span> <span class="ident">qr</span> {
-            <span class="ident">slice</span>.<span class="ident">expand_back</span>();
+    <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="macro">vec!</span>[<span class="prelude-val">None</span>; qn];
+    slice.reset();
+    <span class="kw">for </span>(i, (Range { start: ql, end: qr }, x), <span class="kw">_</span>) <span class="kw">in </span>q {
+        <span class="kw">while </span>slice.end() &lt; qr {
+            slice.expand_back();
         }
-        <span class="kw">while</span> <span class="ident">slice</span>.<span class="ident">start</span>() <span class="op">&gt;</span> <span class="ident">ql</span> {
-            <span class="ident">slice</span>.<span class="ident">expand_front</span>();
+        <span class="kw">while </span>slice.start() &gt; ql {
+            slice.expand_front();
         }
-        <span class="kw">while</span> <span class="ident">slice</span>.<span class="ident">start</span>() <span class="op">&lt;</span> <span class="ident">ql</span> {
-            <span class="ident">slice</span>.<span class="ident">shrink_front</span>();
+        <span class="kw">while </span>slice.start() &lt; ql {
+            slice.shrink_front();
         }
-        <span class="kw">while</span> <span class="ident">slice</span>.<span class="ident">end</span>() <span class="op">&gt;</span> <span class="ident">qr</span> {
-            <span class="ident">slice</span>.<span class="ident">shrink_back</span>();
+        <span class="kw">while </span>slice.end() &gt; qr {
+            slice.shrink_back();
         }
-        <span class="ident">res</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">slice</span>.<span class="ident">hash</span>(<span class="ident">x</span>));
+        res[i] = <span class="prelude-val">Some</span>(slice.hash(x));
     }
-    <span class="ident">res</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">std::option::Option::unwrap</span>)
+    res.into_iter().map(std::option::Option::unwrap)
 }
 
-<span class="kw">fn</span> <span class="ident">ord</span>(<span class="ident">i</span>: <span class="ident">usize</span>, <span class="ident">j</span>: <span class="ident">usize</span>, <span class="ident">k</span>: <span class="ident">u32</span>) -&gt; <span class="ident">usize</span> { <span class="ident">ord_internal</span>(<span class="ident">i</span>, <span class="ident">j</span>, <span class="ident">k</span>, <span class="number">0</span>) }
+<span class="kw">fn </span>ord(i: usize, j: usize, k: u32) -&gt; usize { ord_internal(i, j, k, <span class="number">0</span>) }
 
-<span class="kw">fn</span> <span class="ident">ord_internal</span>(<span class="ident">i</span>: <span class="ident">usize</span>, <span class="ident">j</span>: <span class="ident">usize</span>, <span class="ident">pow</span>: <span class="ident">u32</span>, <span class="ident">rot</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> {
-    <span class="kw">if</span> <span class="ident">pow</span> <span class="op">==</span> <span class="number">0</span> {
-        <span class="kw">return</span> <span class="number">0</span>;
+<span class="kw">fn </span>ord_internal(i: usize, j: usize, pow: u32, rot: usize) -&gt; usize {
+    <span class="kw">if </span>pow == <span class="number">0 </span>{
+        <span class="kw">return </span><span class="number">0</span>;
     }
-    <span class="kw">let</span> <span class="ident">hpow</span> <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> (<span class="ident">pow</span> <span class="op">-</span> <span class="number">1</span>);
-    <span class="kw">let</span> <span class="ident">seg</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="ident">hpow</span> {
-        <span class="kw">if</span> <span class="ident">j</span> <span class="op">&lt;</span> <span class="ident">hpow</span> { <span class="number">0</span> } <span class="kw">else</span> { <span class="number">3</span> }
-    } <span class="kw">else</span> {
-        <span class="kw">if</span> <span class="ident">j</span> <span class="op">&lt;</span> <span class="ident">hpow</span> { <span class="number">1</span> } <span class="kw">else</span> { <span class="number">2</span> }
+    <span class="kw">let </span>hpow = <span class="number">1 </span>&lt;&lt; (pow - <span class="number">1</span>);
+    <span class="kw">let </span>seg = <span class="kw">if </span>i &lt; hpow {
+        <span class="kw">if </span>j &lt; hpow { <span class="number">0 </span>} <span class="kw">else </span>{ <span class="number">3 </span>}
+    } <span class="kw">else </span>{
+        <span class="kw">if </span>j &lt; hpow { <span class="number">1 </span>} <span class="kw">else </span>{ <span class="number">2 </span>}
     };
-    <span class="kw">let</span> <span class="ident">seg</span> <span class="op">=</span> (<span class="ident">seg</span> <span class="op">+</span> <span class="ident">rot</span>) <span class="op">&amp;</span> <span class="number">3</span>;
-    <span class="kw">let</span> <span class="ident">drot</span> <span class="op">=</span> [<span class="number">3</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>];
-    <span class="kw">let</span> <span class="ident">nx</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">&amp;</span> (<span class="ident">i</span> <span class="op">^</span> <span class="ident">hpow</span>);
-    <span class="kw">let</span> <span class="ident">ny</span> <span class="op">=</span> <span class="ident">j</span> <span class="op">&amp;</span> (<span class="ident">j</span> <span class="op">^</span> <span class="ident">hpow</span>);
-    <span class="kw">let</span> <span class="ident">nrot</span> <span class="op">=</span> (<span class="ident">rot</span> <span class="op">+</span> <span class="ident">drot</span>[<span class="ident">seg</span>]) <span class="op">&amp;</span> <span class="number">3</span>;
-    <span class="kw">let</span> <span class="ident">sub</span> <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> (<span class="number">2</span> <span class="op">*</span> <span class="ident">pow</span> <span class="op">-</span> <span class="number">2</span>);
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">seg</span> <span class="op">*</span> <span class="ident">sub</span> <span class="kw">as</span> <span class="ident">usize</span>;
-    <span class="kw">let</span> <span class="ident">add</span> <span class="op">=</span> <span class="ident">ord_internal</span>(<span class="ident">nx</span>, <span class="ident">ny</span>, <span class="ident">pow</span> <span class="op">-</span> <span class="number">1</span>, <span class="ident">nrot</span>);
-    <span class="ident">res</span> <span class="op">+</span> <span class="kw">if</span> <span class="ident">seg</span> <span class="op">==</span> <span class="number">1</span> <span class="op">|</span><span class="op">|</span> <span class="ident">seg</span> <span class="op">==</span> <span class="number">2</span> { <span class="ident">add</span> } <span class="kw">else</span> { <span class="ident">sub</span> <span class="op">-</span> <span class="ident">add</span> <span class="op">-</span> <span class="number">1</span> }
+    <span class="kw">let </span>seg = (seg + rot) &amp; <span class="number">3</span>;
+    <span class="kw">let </span>drot = [<span class="number">3</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>];
+    <span class="kw">let </span>nx = i &amp; (i ^ hpow);
+    <span class="kw">let </span>ny = j &amp; (j ^ hpow);
+    <span class="kw">let </span>nrot = (rot + drot[seg]) &amp; <span class="number">3</span>;
+    <span class="kw">let </span>sub = <span class="number">1 </span>&lt;&lt; (<span class="number">2 </span>* pow - <span class="number">2</span>);
+    <span class="kw">let </span>res = seg * sub <span class="kw">as </span>usize;
+    <span class="kw">let </span>add = ord_internal(nx, ny, pow - <span class="number">1</span>, nrot);
+    res + <span class="kw">if </span>seg == <span class="number">1 </span>|| seg == <span class="number">2 </span>{ add } <span class="kw">else </span>{ sub - add - <span class="number">1 </span>}
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

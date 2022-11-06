@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/algo/bisect_.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>bisect_.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/algo/bisect_.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>bisect_.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -186,104 +186,104 @@
 <span id="97">97</span>
 <span id="98">98</span>
 <span id="99">99</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 二分探索。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 二分探索。
 
-<span class="kw">use</span> <span class="ident">std::ops::Range</span>;
+</span><span class="kw">use </span>std::ops::Range;
 
-<span class="doccomment">/// 二分探索で境界を探す。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// `pred(&amp;buf[i])` が `false` となる最小の `i` を返す。</span>
-<span class="doccomment">/// ただし `i &lt; buf.len()` なる全ての `i` で `true` の場合は `buf.len()` を返す。</span>
-<span class="doccomment">/// 先頭から `i` 個の要素が条件を満たすと考えるのがよい。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Requirements</span>
-<span class="doccomment">/// `pred(&amp;buf[i])` が `false` となる `i` が存在するとき、`i &lt; j` なる全ての `j` で</span>
-<span class="doccomment">/// `pred(&amp;buf[j])` が `false` となる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// `buf.len()` を $n$ として、高々 $\\lceil\\log_2(n+1)\\rceil$ 回の `pred` の呼び出しを行う。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::algo::bisect_slice;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(bisect_slice(&amp;[2, 4, 7], |&amp;x| x &lt; 4), 1);</span>
-<span class="doccomment">/// assert_eq!(bisect_slice(&amp;[2, 4, 7], |&amp;x| x &lt;= 4), 2);</span>
-<span class="doccomment">/// assert_eq!(bisect_slice(&amp;[2, 4, 7], |&amp;_| false), 0);</span>
-<span class="doccomment">/// assert_eq!(bisect_slice(&amp;[2, 4, 7], |&amp;_| true), 3);</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bisect_slice</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;</span>[<span class="ident">T</span>], <span class="kw-2">mut</span> <span class="ident">pred</span>: <span class="kw">impl</span> <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="ident">T</span>) -&gt; <span class="ident">bool</span>) -&gt; <span class="ident">usize</span> {
-    <span class="ident">bisect</span>(<span class="number">0</span>..<span class="ident">buf</span>.<span class="ident">len</span>(), <span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">buf</span>[<span class="ident">i</span>]))
+<span class="doccomment">/// 二分探索で境界を探す。
+///
+/// `pred(&amp;buf[i])` が `false` となる最小の `i` を返す。
+/// ただし `i &lt; buf.len()` なる全ての `i` で `true` の場合は `buf.len()` を返す。
+/// 先頭から `i` 個の要素が条件を満たすと考えるのがよい。
+///
+/// # Requirements
+/// `pred(&amp;buf[i])` が `false` となる `i` が存在するとき、`i &lt; j` なる全ての `j` で
+/// `pred(&amp;buf[j])` が `false` となる。
+///
+/// # Complexity
+/// `buf.len()` を $n$ として、高々 $\\lceil\\log_2(n+1)\\rceil$ 回の `pred` の呼び出しを行う。
+///
+/// # Examples
+/// ```
+/// use nekolib::algo::bisect_slice;
+///
+/// assert_eq!(bisect_slice(&amp;[2, 4, 7], |&amp;x| x &lt; 4), 1);
+/// assert_eq!(bisect_slice(&amp;[2, 4, 7], |&amp;x| x &lt;= 4), 2);
+/// assert_eq!(bisect_slice(&amp;[2, 4, 7], |&amp;_| false), 0);
+/// assert_eq!(bisect_slice(&amp;[2, 4, 7], |&amp;_| true), 3);
+/// ```
+</span><span class="kw">pub fn </span>bisect_slice&lt;T&gt;(buf: <span class="kw-2">&amp;</span>[T], <span class="kw-2">mut </span>pred: <span class="kw">impl </span>FnMut(<span class="kw-2">&amp;</span>T) -&gt; bool) -&gt; usize {
+    bisect(<span class="number">0</span>..buf.len(), |i| pred(<span class="kw-2">&amp;</span>buf[i]))
 }
 
-<span class="doccomment">/// 二分探索で境界を探す。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// `pred(i)` が `false` となる最小の `i` を返す。</span>
-<span class="doccomment">/// ただし `start..end` 内の全ての `i` で `true` の場合は `end` を返す。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Requirements</span>
-<span class="doccomment">/// `pred(i)` が `false` となる `i` が存在するとき、`i &lt; j` なる全ての `j` で</span>
-<span class="doccomment">/// `pred(j)` が `false` となる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// 区間の長さを $n$ として、高々 $\\lceil\\log_2(n+1)\\rceil$ 回の `pred` の呼び出しを行う。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Suggestions</span>
-<span class="doccomment">/// 範囲の型を `PrimInt` なり `Ord` なりにしたい気もする。区間長と中間値の取得をよしなにできると助かる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::algo::bisect;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let floor_sqrt = |i| if i &lt;= 1 { i } else {</span>
-<span class="doccomment">///     bisect(0..i, |j| match (j + 1).overflowing_pow(2) {</span>
-<span class="doccomment">///         (x, false) if x &lt;= i =&gt; true,</span>
-<span class="doccomment">///         _ =&gt; false</span>
-<span class="doccomment">///     })</span>
-<span class="doccomment">/// };</span>
-<span class="doccomment">/// assert_eq!(floor_sqrt(8), 2);</span>
-<span class="doccomment">/// assert_eq!(floor_sqrt(9), 3);</span>
-<span class="doccomment">/// assert_eq!(floor_sqrt(10), 3);</span>
-<span class="doccomment">/// assert_eq!(floor_sqrt(1 &lt;&lt; 60), 1 &lt;&lt; 30);</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bisect</span>(
-    <span class="ident">Range</span> { <span class="ident">start</span>, <span class="ident">end</span> }: <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-    <span class="kw-2">mut</span> <span class="ident">pred</span>: <span class="kw">impl</span> <span class="ident">FnMut</span>(<span class="ident">usize</span>) -&gt; <span class="ident">bool</span>,
-) -&gt; <span class="ident">usize</span> {
-    <span class="kw">if</span> <span class="ident">start</span> <span class="op">==</span> <span class="ident">end</span> {
-        <span class="kw">return</span> <span class="ident">start</span>;
+<span class="doccomment">/// 二分探索で境界を探す。
+///
+/// `pred(i)` が `false` となる最小の `i` を返す。
+/// ただし `start..end` 内の全ての `i` で `true` の場合は `end` を返す。
+///
+/// # Requirements
+/// `pred(i)` が `false` となる `i` が存在するとき、`i &lt; j` なる全ての `j` で
+/// `pred(j)` が `false` となる。
+///
+/// # Complexity
+/// 区間の長さを $n$ として、高々 $\\lceil\\log_2(n+1)\\rceil$ 回の `pred` の呼び出しを行う。
+///
+/// # Suggestions
+/// 範囲の型を `PrimInt` なり `Ord` なりにしたい気もする。区間長と中間値の取得をよしなにできると助かる。
+///
+/// # Examples
+/// ```
+/// use nekolib::algo::bisect;
+///
+/// let floor_sqrt = |i| if i &lt;= 1 { i } else {
+///     bisect(0..i, |j| match (j + 1).overflowing_pow(2) {
+///         (x, false) if x &lt;= i =&gt; true,
+///         _ =&gt; false
+///     })
+/// };
+/// assert_eq!(floor_sqrt(8), 2);
+/// assert_eq!(floor_sqrt(9), 3);
+/// assert_eq!(floor_sqrt(10), 3);
+/// assert_eq!(floor_sqrt(1 &lt;&lt; 60), 1 &lt;&lt; 30);
+/// ```
+</span><span class="kw">pub fn </span>bisect(
+    Range { start, end }: Range&lt;usize&gt;,
+    <span class="kw-2">mut </span>pred: <span class="kw">impl </span>FnMut(usize) -&gt; bool,
+) -&gt; usize {
+    <span class="kw">if </span>start == end {
+        <span class="kw">return </span>start;
     }
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ok</span> <span class="op">=</span> <span class="ident">start</span>;
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bad</span> <span class="op">=</span> <span class="ident">end</span>;
-    <span class="kw">while</span> <span class="ident">bad</span> <span class="op">-</span> <span class="ident">ok</span> <span class="op">&gt;</span> <span class="number">1</span> {
-        <span class="kw">let</span> <span class="ident">mid</span> <span class="op">=</span> <span class="ident">ok</span> <span class="op">+</span> (<span class="ident">bad</span> <span class="op">-</span> <span class="ident">ok</span>) <span class="op">/</span> <span class="number">2</span>;
-        <span class="kw">if</span> <span class="ident">pred</span>(<span class="ident">mid</span>) {
-            <span class="ident">ok</span> <span class="op">=</span> <span class="ident">mid</span>;
-        } <span class="kw">else</span> {
-            <span class="ident">bad</span> <span class="op">=</span> <span class="ident">mid</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>ok = start;
+    <span class="kw">let </span><span class="kw-2">mut </span>bad = end;
+    <span class="kw">while </span>bad - ok &gt; <span class="number">1 </span>{
+        <span class="kw">let </span>mid = ok + (bad - ok) / <span class="number">2</span>;
+        <span class="kw">if </span>pred(mid) {
+            ok = mid;
+        } <span class="kw">else </span>{
+            bad = mid;
         }
     }
-    <span class="kw">if</span> <span class="ident">ok</span> <span class="op">==</span> <span class="ident">start</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">pred</span>(<span class="ident">start</span>) {
-        <span class="ident">start</span>
-    } <span class="kw">else</span> {
-        <span class="ident">bad</span>
+    <span class="kw">if </span>ok == start &amp;&amp; !pred(start) {
+        start
+    } <span class="kw">else </span>{
+        bad
     }
 }
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">bisect_count</span>() {
-    <span class="kw">for</span> <span class="ident">n</span> <span class="kw">in</span> <span class="number">0</span>..<span class="op">=</span><span class="number">128</span> {
-        <span class="kw">for</span> <span class="ident">k</span> <span class="kw">in</span> <span class="number">0</span>..<span class="op">=</span><span class="ident">n</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">count</span> <span class="op">=</span> <span class="number">0</span>;
-            <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="op">|</span><span class="ident">i</span><span class="op">|</span> {
-                <span class="ident">count</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-                <span class="ident">i</span> <span class="op">&lt;</span> <span class="ident">k</span>
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>bisect_count() {
+    <span class="kw">for </span>n <span class="kw">in </span><span class="number">0</span>..=<span class="number">128 </span>{
+        <span class="kw">for </span>k <span class="kw">in </span><span class="number">0</span>..=n {
+            <span class="kw">let </span><span class="kw-2">mut </span>count = <span class="number">0</span>;
+            <span class="kw">let </span>f = |i| {
+                count += <span class="number">1</span>;
+                i &lt; k
             };
-            <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">bisect</span>(<span class="number">0</span>..<span class="ident">n</span>, <span class="ident">f</span>);
-            <span class="macro">assert!</span>(<span class="ident">count</span> <span class="op">&lt;</span><span class="op">=</span> (<span class="ident">n</span> <span class="op">+</span> <span class="number">1</span>).<span class="ident">next_power_of_two</span>().<span class="ident">trailing_zeros</span>());
-            <span class="macro">assert_eq!</span>(<span class="ident">res</span>, <span class="ident">k</span>);
+            <span class="kw">let </span>res = bisect(<span class="number">0</span>..n, f);
+            <span class="macro">assert!</span>(count &lt;= (n + <span class="number">1</span>).next_power_of_two().trailing_zeros());
+            <span class="macro">assert_eq!</span>(res, k);
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

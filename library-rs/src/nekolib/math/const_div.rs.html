@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/const_div.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>const_div.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/const_div.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>const_div.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -363,281 +363,281 @@
 <span id="274">274</span>
 <span id="275">275</span>
 <span id="276">276</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 定数除算。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 定数除算。
 
-<span class="kw">use</span> <span class="ident">std::fmt</span>::{<span class="self">self</span>, <span class="ident">Debug</span>};
+</span><span class="kw">use </span>std::fmt::{<span class="self">self</span>, Debug};
 
-<span class="doccomment">/// 定数除算。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 除算命令は重いので、加減算や乗算で置き換えることを考える。</span>
-<span class="doccomment">/// 同じ値で何度も除算する際には、あらかじめ置き換える値を先に求めておくことで高速化できる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Barrett reduction に基づく。$a\\lt n^2$ に対して、$\\lfloor a/n\\rfloor$ と $a\\bmod n$</span>
-<span class="doccomment">/// を求めることができる。ちゃんと考察すれば、[この制約は除ける][`ConstDiv`]。</span>
-<span class="doccomment">/// 実際、コンパイラは同様の最適化を行う。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [`ConstDiv`]: struct.ConstDiv.html</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```asm</span>
-<span class="doccomment">/// example::div2:</span>
-<span class="doccomment">///         mov     rax, rdi</span>
-<span class="doccomment">///         shr     rax</span>
-<span class="doccomment">///         ret</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// ```asm</span>
-<span class="doccomment">/// example::div3:</span>
-<span class="doccomment">///         mov     rax, rdi</span>
-<span class="doccomment">///         movabs  rcx, -6148914691236517205</span>
-<span class="doccomment">///         mul     rcx</span>
-<span class="doccomment">///         mov     rax, rdx</span>
-<span class="doccomment">///         shr     rax</span>
-<span class="doccomment">///         ret</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// ```asm</span>
-<span class="doccomment">/// example::div63:</span>
-<span class="doccomment">///         movabs  rcx, 292805461487453201</span>
-<span class="doccomment">///         mov     rax, rdi</span>
-<span class="doccomment">///         mul     rcx</span>
-<span class="doccomment">///         sub     rdi, rdx</span>
-<span class="doccomment">///         shr     rdi</span>
-<span class="doccomment">///         lea     rax, [rdi + rdx]</span>
-<span class="doccomment">///         shr     rax, 5</span>
-<span class="doccomment">///         ret</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// example::div64:</span>
-<span class="doccomment">///         mov     rax, rdi</span>
-<span class="doccomment">///         shr     rax, 6</span>
-<span class="doccomment">///         ret</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// example::div65:</span>
-<span class="doccomment">///         mov     rax, rdi</span>
-<span class="doccomment">///         movabs  rcx, 1135184250689818561</span>
-<span class="doccomment">///         mul     rcx</span>
-<span class="doccomment">///         mov     rax, rdx</span>
-<span class="doccomment">///         shr     rax, 2</span>
-<span class="doccomment">///         ret</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// fn div63(rdi: u64) -&gt; u64 {</span>
-<span class="doccomment">///     let rdx = ((rdi as u128 * 0x410410410410411_u128) &gt;&gt; 64) as u64;</span>
-<span class="doccomment">///     (((rdi - rdx) &gt;&gt; 1) + rdx) &gt;&gt; 5</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// fn div64(rdi: u64) -&gt; u64 { rdi &gt;&gt; 6 }</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// fn div65(rdi: u64) -&gt; u64 {</span>
-<span class="doccomment">///     ((rdi as u128 * 0xFC0FC0FC0FC0FC1_u128) &gt;&gt; 66) as u64</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// for i in 0..=100000 {</span>
-<span class="doccomment">///     assert_eq!(div63(i), i / 63);</span>
-<span class="doccomment">///     assert_eq!(div64(i), i / 64);</span>
-<span class="doccomment">///     assert_eq!(div65(i), i / 65);</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $$ \\begin{aligned}</span>
-<span class="doccomment">/// \\lfloor n/63\\rfloor &amp;= (((n-m)\\gg 1) + m)\\gg 5\\text{, where }</span>
-<span class="doccomment">/// m=(n\\cdot\\lceil 2^{64}/63\\rceil)\\gg 64 \\\\</span>
-<span class="doccomment">/// \\lfloor n/64\\rfloor &amp;= n\\gg 6 \\\\</span>
-<span class="doccomment">/// \\lfloor n/65\\rfloor &amp;= (n\\cdot\\lceil 2^{66}/65\\rceil)\\gg 66</span>
-<span class="doccomment">/// \\end{aligned} $$</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 剰余算については、$n\\bmod d = n-\\lfloor n/d\\rfloor\\cdot d$ に基づく。</span>
-<span class="doccomment">/// $d$ を掛ける際には定数乗算の最適化（加減算とシフトを用いるなど）を行っていそう。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Naming</span>
-<span class="doccomment">/// 除数の 2 乗未満の入力を仮定することから `2` をつけている。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # References</span>
-<span class="doccomment">/// - &lt;https://rsk0315.hatenablog.com/entry/2021/01/18/065720#Barrett-reduction-%E3%81%AE%E8%A9%B1&gt;</span>
-<span class="doccomment">/// - &lt;https://godbolt.org/z/snq4nvTP6&gt;</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ConstDiv2</span> {
-    <span class="ident">n</span>: <span class="ident">u64</span>,
-    <span class="ident">recip</span>: <span class="ident">u128</span>,
+<span class="doccomment">/// 定数除算。
+///
+/// 除算命令は重いので、加減算や乗算で置き換えることを考える。
+/// 同じ値で何度も除算する際には、あらかじめ置き換える値を先に求めておくことで高速化できる。
+///
+/// Barrett reduction に基づく。$a\\lt n^2$ に対して、$\\lfloor a/n\\rfloor$ と $a\\bmod n$
+/// を求めることができる。ちゃんと考察すれば、[この制約は除ける][`ConstDiv`]。
+/// 実際、コンパイラは同様の最適化を行う。
+///
+/// [`ConstDiv`]: struct.ConstDiv.html
+///
+/// ```asm
+/// example::div2:
+///         mov     rax, rdi
+///         shr     rax
+///         ret
+/// ```
+/// ```asm
+/// example::div3:
+///         mov     rax, rdi
+///         movabs  rcx, -6148914691236517205
+///         mul     rcx
+///         mov     rax, rdx
+///         shr     rax
+///         ret
+/// ```
+/// ```asm
+/// example::div63:
+///         movabs  rcx, 292805461487453201
+///         mov     rax, rdi
+///         mul     rcx
+///         sub     rdi, rdx
+///         shr     rdi
+///         lea     rax, [rdi + rdx]
+///         shr     rax, 5
+///         ret
+///
+/// example::div64:
+///         mov     rax, rdi
+///         shr     rax, 6
+///         ret
+///
+/// example::div65:
+///         mov     rax, rdi
+///         movabs  rcx, 1135184250689818561
+///         mul     rcx
+///         mov     rax, rdx
+///         shr     rax, 2
+///         ret
+/// ```
+///
+/// ```
+/// fn div63(rdi: u64) -&gt; u64 {
+///     let rdx = ((rdi as u128 * 0x410410410410411_u128) &gt;&gt; 64) as u64;
+///     (((rdi - rdx) &gt;&gt; 1) + rdx) &gt;&gt; 5
+/// }
+///
+/// fn div64(rdi: u64) -&gt; u64 { rdi &gt;&gt; 6 }
+///
+/// fn div65(rdi: u64) -&gt; u64 {
+///     ((rdi as u128 * 0xFC0FC0FC0FC0FC1_u128) &gt;&gt; 66) as u64
+/// }
+///
+/// for i in 0..=100000 {
+///     assert_eq!(div63(i), i / 63);
+///     assert_eq!(div64(i), i / 64);
+///     assert_eq!(div65(i), i / 65);
+/// }
+/// ```
+///
+/// $$ \\begin{aligned}
+/// \\lfloor n/63\\rfloor &amp;= (((n-m)\\gg 1) + m)\\gg 5\\text{, where }
+/// m=(n\\cdot\\lceil 2^{64}/63\\rceil)\\gg 64 \\\\
+/// \\lfloor n/64\\rfloor &amp;= n\\gg 6 \\\\
+/// \\lfloor n/65\\rfloor &amp;= (n\\cdot\\lceil 2^{66}/65\\rceil)\\gg 66
+/// \\end{aligned} $$
+///
+/// 剰余算については、$n\\bmod d = n-\\lfloor n/d\\rfloor\\cdot d$ に基づく。
+/// $d$ を掛ける際には定数乗算の最適化（加減算とシフトを用いるなど）を行っていそう。
+///
+/// # Naming
+/// 除数の 2 乗未満の入力を仮定することから `2` をつけている。
+///
+/// # References
+/// - &lt;https://rsk0315.hatenablog.com/entry/2021/01/18/065720#Barrett-reduction-%E3%81%AE%E8%A9%B1&gt;
+/// - &lt;https://godbolt.org/z/snq4nvTP6&gt;
+</span><span class="attribute">#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>ConstDiv2 {
+    n: u64,
+    recip: u128,
 }
 
-<span class="kw">impl</span> <span class="ident">ConstDiv2</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">n</span>: <span class="ident">u64</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">recip</span> <span class="op">=</span> <span class="number">1_u64</span>.<span class="ident">wrapping_add</span>(<span class="ident">std::u64::MAX</span> <span class="op">/</span> <span class="ident">n</span>) <span class="kw">as</span> <span class="ident">u128</span>;
-        <span class="self">Self</span> { <span class="ident">n</span>, <span class="ident">recip</span> }
+<span class="kw">impl </span>ConstDiv2 {
+    <span class="kw">pub fn </span>new(n: u64) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>recip = <span class="number">1_u64</span>.wrapping_add(std::u64::MAX / n) <span class="kw">as </span>u128;
+        <span class="self">Self </span>{ n, recip }
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">quot</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">z</span>: <span class="ident">u64</span>) -&gt; <span class="ident">u64</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">n</span> <span class="op">==</span> <span class="number">1</span> {
-            <span class="kw">return</span> <span class="ident">z</span>;
+    <span class="kw">pub fn </span>quot(<span class="kw-2">&amp;</span><span class="self">self</span>, z: u64) -&gt; u64 {
+        <span class="kw">if </span><span class="self">self</span>.n == <span class="number">1 </span>{
+            <span class="kw">return </span>z;
         }
-        <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> ((<span class="self">self</span>.<span class="ident">recip</span> <span class="op">*</span> <span class="ident">z</span> <span class="kw">as</span> <span class="ident">u128</span>) <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">64</span>) <span class="kw">as</span> <span class="ident">u64</span>;
-        <span class="kw">match</span> <span class="ident">x</span>.<span class="ident">checked_mul</span>(<span class="self">self</span>.<span class="ident">n</span>) {
-            <span class="prelude-val">Some</span>(<span class="ident">xn</span>) <span class="kw">if</span> <span class="ident">xn</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">z</span> =&gt; <span class="ident">x</span>,
-            <span class="kw">_</span> =&gt; <span class="ident">x</span> <span class="op">-</span> <span class="number">1</span>,
-        }
-    }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rem</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">z</span>: <span class="ident">u64</span>) -&gt; <span class="ident">u64</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">n</span> <span class="op">==</span> <span class="number">1</span> {
-            <span class="kw">return</span> <span class="number">0</span>;
-        }
-        <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> ((<span class="self">self</span>.<span class="ident">recip</span> <span class="op">*</span> <span class="ident">z</span> <span class="kw">as</span> <span class="ident">u128</span>) <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">64</span>) <span class="kw">as</span> <span class="ident">u64</span>;
-        <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">z</span>.<span class="ident">wrapping_sub</span>(<span class="ident">x</span>.<span class="ident">wrapping_mul</span>(<span class="self">self</span>.<span class="ident">n</span>));
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">n</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">v</span> {
-            <span class="ident">v</span>.<span class="ident">wrapping_add</span>(<span class="self">self</span>.<span class="ident">n</span>)
-        } <span class="kw">else</span> {
-            <span class="ident">v</span>
+        <span class="kw">let </span>x = ((<span class="self">self</span>.recip * z <span class="kw">as </span>u128) &gt;&gt; <span class="number">64</span>) <span class="kw">as </span>u64;
+        <span class="kw">match </span>x.checked_mul(<span class="self">self</span>.n) {
+            <span class="prelude-val">Some</span>(xn) <span class="kw">if </span>xn &lt;= z =&gt; x,
+            <span class="kw">_ </span>=&gt; x - <span class="number">1</span>,
         }
     }
+    <span class="kw">pub fn </span>rem(<span class="kw-2">&amp;</span><span class="self">self</span>, z: u64) -&gt; u64 {
+        <span class="kw">if </span><span class="self">self</span>.n == <span class="number">1 </span>{
+            <span class="kw">return </span><span class="number">0</span>;
+        }
+        <span class="kw">let </span>x = ((<span class="self">self</span>.recip * z <span class="kw">as </span>u128) &gt;&gt; <span class="number">64</span>) <span class="kw">as </span>u64;
+        <span class="kw">let </span>v = z.wrapping_sub(x.wrapping_mul(<span class="self">self</span>.n));
+        <span class="kw">if </span><span class="self">self</span>.n &lt;= v {
+            v.wrapping_add(<span class="self">self</span>.n)
+        } <span class="kw">else </span>{
+            v
+        }
+    }
 }
 
-<span class="doccomment">/// 定数除算。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 除算命令は重いので、加減算や乗算で置き換えることを考える。</span>
-<span class="doccomment">/// 同じ値で何度も除算する際には、あらかじめ置き換える値を先に求めておくことで高速化できる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 以下、$d$ による除算を行うとする。$d = 2^s$ であれば $s$ bit 右シフトするだけなので、$2$</span>
-<span class="doccomment">/// べきではないとする。magic number $M\_d$ とシフト幅 $s$</span>
-<span class="doccomment">/// を求めておき、次の式に基づいて計算する。</span>
-<span class="doccomment">/// $$ \\lfloor n/d\\rfloor</span>
-<span class="doccomment">/// = \\left\\lfloor\\frac{M\_d\\cdot n}{2^s}\\right\\rfloor. $$</span>
-<span class="doccomment">/// $M\_d$ は、ある $0\\le r\\lt d$ が存在して次の形になる。</span>
-<span class="doccomment">/// $$ M\_d = \\frac{2^s+r}{d} = 1+\\left\\lfloor\\frac{2^s-1}{d}\\right\\rfloor. $$</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $M\_d$ と $s$ が満たすべき性質について考える。$0\\le n\\lt 2^w$</span>
-<span class="doccomment">/// に対して常に次の式が成り立ってほしい。$w$ はワードサイズで、ここでは $w=64$ とする。</span>
-<span class="doccomment">/// $$ \\lfloor n/d\\rfloor</span>
-<span class="doccomment">/// = \\left\\lfloor\\frac{2\^s+r}{d}\\cdot\\frac{n}{2^s}\\right\\rfloor</span>
-<span class="doccomment">/// = \\left\\lfloor\\frac{n\\vphantom{2^s}}{d} + \\frac{r\\cdot n}{2^s}\\right\\rfloor. $$</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 有理数と床関数の性質から、$r\\cdot n/2^s \\lt 1/d$ が常に成り立てばよい。</span>
-<span class="doccomment">/// このとき、$0\\le M\_d\\lt 2^{w+1}$ をみたす $M\_d$ が存在することを示す。</span>
-<span class="doccomment">/// すなわち、$\\lfloor M\_d/2^w\\rfloor\\in\\{0, 1\\}$ となる。`todo!()`</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// さて、$M\_d$ が見つかったとする。$0\\le M\_d\\lt 2^w$ であれば上の式に基づいて、</span>
-<span class="doccomment">/// 直接計算できる。一方で、$2^w\\le M\_d\\lt 2^{w+1}$ の場合はワードサイズに収まらないので、</span>
-<span class="doccomment">/// 少々工夫する必要がある。$M\_d-2\^w$ はワードサイズに収まるので、それを利用する。</span>
-<span class="doccomment">/// `todo!()`</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # References</span>
-<span class="doccomment">/// - Warren, Henry S. _Hacker&#39;s delight_. Pearson Education, 2013.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ConstDiv</span> {
-    <span class="ident">n</span>: <span class="ident">u64</span>,
-    <span class="ident">di</span>: <span class="ident">DivAlgo</span>,
+<span class="doccomment">/// 定数除算。
+///
+/// 除算命令は重いので、加減算や乗算で置き換えることを考える。
+/// 同じ値で何度も除算する際には、あらかじめ置き換える値を先に求めておくことで高速化できる。
+///
+/// 以下、$d$ による除算を行うとする。$d = 2^s$ であれば $s$ bit 右シフトするだけなので、$2$
+/// べきではないとする。magic number $M\_d$ とシフト幅 $s$
+/// を求めておき、次の式に基づいて計算する。
+/// $$ \\lfloor n/d\\rfloor
+/// = \\left\\lfloor\\frac{M\_d\\cdot n}{2^s}\\right\\rfloor. $$
+/// $M\_d$ は、ある $0\\le r\\lt d$ が存在して次の形になる。
+/// $$ M\_d = \\frac{2^s+r}{d} = 1+\\left\\lfloor\\frac{2^s-1}{d}\\right\\rfloor. $$
+///
+/// $M\_d$ と $s$ が満たすべき性質について考える。$0\\le n\\lt 2^w$
+/// に対して常に次の式が成り立ってほしい。$w$ はワードサイズで、ここでは $w=64$ とする。
+/// $$ \\lfloor n/d\\rfloor
+/// = \\left\\lfloor\\frac{2\^s+r}{d}\\cdot\\frac{n}{2^s}\\right\\rfloor
+/// = \\left\\lfloor\\frac{n\\vphantom{2^s}}{d} + \\frac{r\\cdot n}{2^s}\\right\\rfloor. $$
+///
+/// 有理数と床関数の性質から、$r\\cdot n/2^s \\lt 1/d$ が常に成り立てばよい。
+/// このとき、$0\\le M\_d\\lt 2^{w+1}$ をみたす $M\_d$ が存在することを示す。
+/// すなわち、$\\lfloor M\_d/2^w\\rfloor\\in\\{0, 1\\}$ となる。`todo!()`
+///
+/// さて、$M\_d$ が見つかったとする。$0\\le M\_d\\lt 2^w$ であれば上の式に基づいて、
+/// 直接計算できる。一方で、$2^w\\le M\_d\\lt 2^{w+1}$ の場合はワードサイズに収まらないので、
+/// 少々工夫する必要がある。$M\_d-2\^w$ はワードサイズに収まるので、それを利用する。
+/// `todo!()`
+///
+/// # References
+/// - Warren, Henry S. _Hacker&#39;s delight_. Pearson Education, 2013.
+</span><span class="attribute">#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>ConstDiv {
+    n: u64,
+    di: DivAlgo,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">enum</span> <span class="ident">DivAlgo</span> {
-    <span class="ident">Shr</span>(<span class="ident">u32</span>, <span class="ident">u64</span>),
-    <span class="ident">MulShr</span>(<span class="ident">u64</span>, <span class="ident">u32</span>),
-    <span class="ident">MulAddShr</span>(<span class="ident">u64</span>, <span class="ident">u32</span>),
-    <span class="ident">Ge</span>(<span class="ident">u64</span>),
+<span class="attribute">#[derive(Clone, Copy, Eq, PartialEq)]
+</span><span class="kw">enum </span>DivAlgo {
+    Shr(u32, u64),
+    MulShr(u64, u32),
+    MulAddShr(u64, u32),
+    Ge(u64),
 }
-<span class="kw">use</span> <span class="ident">DivAlgo</span>::{<span class="ident">Ge</span>, <span class="ident">MulAddShr</span>, <span class="ident">MulShr</span>, <span class="ident">Shr</span>};
+<span class="kw">use </span>DivAlgo::{Ge, MulAddShr, MulShr, Shr};
 
-<span class="kw">impl</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">DivAlgo</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">Shr</span>(<span class="ident">s</span>, <span class="ident">a</span>) =&gt; <span class="macro">format!</span>(<span class="string">&quot;|n| n &gt;&gt; {}, |n| n &amp; 0x{:016X}&quot;</span>, <span class="ident">s</span>, <span class="ident">a</span>),
-            <span class="ident">MulShr</span>(<span class="ident">m</span>, <span class="ident">s</span>) =&gt; <span class="macro">format!</span>(<span class="string">&quot;|n| (n * 0x{:016X}) &gt;&gt; {}&quot;</span>, <span class="ident">m</span>, <span class="ident">s</span>),
-            <span class="ident">MulAddShr</span>(<span class="ident">m</span>, <span class="ident">s</span>) =&gt; {
-                <span class="macro">format!</span>(<span class="string">&quot;|n| (n + ((n * 0x{:016X}) &gt;&gt; 64) &gt;&gt; 1) &gt;&gt; {}&quot;</span>, <span class="ident">m</span>, <span class="ident">s</span>)
+<span class="kw">impl </span>Debug <span class="kw">for </span>DivAlgo {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        <span class="kw">let </span>res = <span class="kw">match </span><span class="self">self </span>{
+            Shr(s, a) =&gt; <span class="macro">format!</span>(<span class="string">&quot;|n| n &gt;&gt; {}, |n| n &amp; 0x{:016X}&quot;</span>, s, a),
+            MulShr(m, s) =&gt; <span class="macro">format!</span>(<span class="string">&quot;|n| (n * 0x{:016X}) &gt;&gt; {}&quot;</span>, m, s),
+            MulAddShr(m, s) =&gt; {
+                <span class="macro">format!</span>(<span class="string">&quot;|n| (n + ((n * 0x{:016X}) &gt;&gt; 64) &gt;&gt; 1) &gt;&gt; {}&quot;</span>, m, s)
             }
-            <span class="ident">Ge</span>(<span class="ident">g</span>) =&gt; {
-                <span class="kw">let</span> <span class="ident">q</span> <span class="op">=</span>
-                    <span class="macro">format!</span>(<span class="string">&quot;|n| if n &gt;= 0x{:016x} {{ 1 }} else {{ 0 }}&quot;</span>, <span class="ident">g</span>);
-                <span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="macro">format!</span>(
+            Ge(g) =&gt; {
+                <span class="kw">let </span>q =
+                    <span class="macro">format!</span>(<span class="string">&quot;|n| if n &gt;= 0x{:016x} {{ 1 }} else {{ 0 }}&quot;</span>, g);
+                <span class="kw">let </span>r = <span class="macro">format!</span>(
                     <span class="string">&quot;|n| if n &gt;= 0x{0:016X} {{ n - 0x{0:016X} }} else {{ n }}&quot;</span>,
-                    <span class="ident">g</span>
+                    g
                 );
-                <span class="macro">format!</span>(<span class="string">&quot;{}, {}&quot;</span>, <span class="ident">q</span>, <span class="ident">r</span>)
+                <span class="macro">format!</span>(<span class="string">&quot;{}, {}&quot;</span>, q, r)
             }
         };
-        <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="ident">res</span>.<span class="ident">as_str</span>())
+        f.write_str(res.as_str())
     }
 }
 
-<span class="kw">impl</span> <span class="ident">ConstDiv</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">n</span>: <span class="ident">u64</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">ns</span> <span class="op">=</span> <span class="ident">n</span>.<span class="ident">next_power_of_two</span>().<span class="ident">trailing_zeros</span>();
-        <span class="kw">if</span> <span class="ident">n</span>.<span class="ident">is_power_of_two</span>() {
-            <span class="kw">return</span> <span class="self">Self</span> { <span class="ident">n</span>, <span class="ident">di</span>: <span class="ident">Shr</span>(<span class="ident">ns</span>, <span class="ident">n</span> <span class="op">-</span> <span class="number">1</span>) };
+<span class="kw">impl </span>ConstDiv {
+    <span class="kw">pub fn </span>new(n: u64) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>ns = n.next_power_of_two().trailing_zeros();
+        <span class="kw">if </span>n.is_power_of_two() {
+            <span class="kw">return </span><span class="self">Self </span>{ n, di: Shr(ns, n - <span class="number">1</span>) };
         }
-        <span class="kw">if</span> <span class="ident">n</span>.<span class="ident">leading_zeros</span>() <span class="op">==</span> <span class="number">0</span> {
-            <span class="kw">return</span> <span class="self">Self</span> { <span class="ident">n</span>, <span class="ident">di</span>: <span class="ident">Ge</span>(<span class="ident">n</span>) };
+        <span class="kw">if </span>n.leading_zeros() == <span class="number">0 </span>{
+            <span class="kw">return </span><span class="self">Self </span>{ n, di: Ge(n) };
         }
-        <span class="kw">let</span> <span class="ident">nc</span> <span class="op">=</span> <span class="ident">std::u64::MAX</span> <span class="kw">as</span> <span class="ident">u128</span>;
+        <span class="kw">let </span>nc = std::u64::MAX <span class="kw">as </span>u128;
 
-        <span class="kw">for</span> <span class="ident">p</span> <span class="kw">in</span> <span class="number">63</span> <span class="op">+</span> <span class="ident">ns</span>..<span class="number">128</span> {
-            <span class="kw">let</span> <span class="ident">n_</span> <span class="op">=</span> <span class="ident">n</span> <span class="kw">as</span> <span class="ident">u128</span>;
-            <span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> ((<span class="number">1_u128</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">p</span>) <span class="op">-</span> <span class="number">1</span>) <span class="op">%</span> <span class="ident">n_</span>;
-            <span class="kw">if</span> (<span class="ident">nc</span> <span class="op">*</span> (<span class="ident">n_</span> <span class="op">-</span> <span class="number">1</span> <span class="op">-</span> <span class="ident">r</span>)) <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">p</span> <span class="op">==</span> <span class="number">0</span> {
-                <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="number">1</span> <span class="op">+</span> ((<span class="number">1_u128</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">p</span>) <span class="op">-</span> <span class="number">1</span> <span class="op">-</span> <span class="ident">r</span>) <span class="op">/</span> <span class="ident">n_</span>;
-                <span class="kw">return</span> <span class="kw">if</span> <span class="ident">m</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">64</span> <span class="op">==</span> <span class="number">0</span> {
-                    <span class="self">Self</span> { <span class="ident">n</span>, <span class="ident">di</span>: <span class="ident">MulShr</span>(<span class="ident">m</span> <span class="kw">as</span> <span class="ident">u64</span>, <span class="ident">p</span>) }
-                } <span class="kw">else</span> {
-                    <span class="self">Self</span> { <span class="ident">n</span>, <span class="ident">di</span>: <span class="ident">MulAddShr</span>(<span class="ident">m</span> <span class="kw">as</span> <span class="ident">u64</span>, <span class="ident">p</span> <span class="op">-</span> <span class="number">1</span> <span class="op">-</span> <span class="number">64</span>) }
+        <span class="kw">for </span>p <span class="kw">in </span><span class="number">63 </span>+ ns..<span class="number">128 </span>{
+            <span class="kw">let </span>n_ = n <span class="kw">as </span>u128;
+            <span class="kw">let </span>r = ((<span class="number">1_u128 </span>&lt;&lt; p) - <span class="number">1</span>) % n_;
+            <span class="kw">if </span>(nc * (n_ - <span class="number">1 </span>- r)) &gt;&gt; p == <span class="number">0 </span>{
+                <span class="kw">let </span>m = <span class="number">1 </span>+ ((<span class="number">1_u128 </span>&lt;&lt; p) - <span class="number">1 </span>- r) / n_;
+                <span class="kw">return if </span>m &gt;&gt; <span class="number">64 </span>== <span class="number">0 </span>{
+                    <span class="self">Self </span>{ n, di: MulShr(m <span class="kw">as </span>u64, p) }
+                } <span class="kw">else </span>{
+                    <span class="self">Self </span>{ n, di: MulAddShr(m <span class="kw">as </span>u64, p - <span class="number">1 </span>- <span class="number">64</span>) }
                 };
             }
         }
         <span class="macro">unreachable!</span>()
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">quot</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">u64</span>) -&gt; <span class="ident">u64</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">di</span> {
-            <span class="ident">Shr</span>(<span class="ident">s</span>, <span class="kw">_</span>) =&gt; <span class="ident">n</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">s</span>,
-            <span class="ident">MulShr</span>(<span class="ident">m</span>, <span class="ident">s</span>) =&gt; ((<span class="ident">n</span> <span class="kw">as</span> <span class="ident">u128</span> <span class="op">*</span> <span class="ident">m</span> <span class="kw">as</span> <span class="ident">u128</span>) <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">s</span>) <span class="kw">as</span> <span class="ident">u64</span>,
-            <span class="ident">MulAddShr</span>(<span class="ident">m</span>, <span class="ident">s</span>) =&gt; {
-                <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> ((<span class="ident">n</span> <span class="kw">as</span> <span class="ident">u128</span> <span class="op">*</span> <span class="ident">m</span> <span class="kw">as</span> <span class="ident">u128</span>) <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">64</span>) <span class="kw">as</span> <span class="ident">u64</span>;
-                (((<span class="ident">n</span> <span class="op">-</span> <span class="ident">tmp</span>) <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">1</span>) <span class="op">+</span> <span class="ident">tmp</span>) <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">s</span>
+    <span class="kw">pub fn </span>quot(<span class="kw-2">&amp;</span><span class="self">self</span>, n: u64) -&gt; u64 {
+        <span class="kw">match </span><span class="self">self</span>.di {
+            Shr(s, <span class="kw">_</span>) =&gt; n &gt;&gt; s,
+            MulShr(m, s) =&gt; ((n <span class="kw">as </span>u128 * m <span class="kw">as </span>u128) &gt;&gt; s) <span class="kw">as </span>u64,
+            MulAddShr(m, s) =&gt; {
+                <span class="kw">let </span>tmp = ((n <span class="kw">as </span>u128 * m <span class="kw">as </span>u128) &gt;&gt; <span class="number">64</span>) <span class="kw">as </span>u64;
+                (((n - tmp) &gt;&gt; <span class="number">1</span>) + tmp) &gt;&gt; s
             }
-            <span class="ident">Ge</span>(<span class="ident">g</span>) <span class="kw">if</span> <span class="ident">n</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">g</span> =&gt; <span class="number">1</span>,
-            <span class="ident">Ge</span>(<span class="kw">_</span>) =&gt; <span class="number">0</span>,
+            Ge(g) <span class="kw">if </span>n &gt;= g =&gt; <span class="number">1</span>,
+            Ge(<span class="kw">_</span>) =&gt; <span class="number">0</span>,
         }
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rem</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">u64</span>) -&gt; <span class="ident">u64</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">di</span> {
-            <span class="ident">Shr</span>(<span class="kw">_</span>, <span class="ident">a</span>) =&gt; <span class="ident">n</span> <span class="op">&amp;</span> <span class="ident">a</span>,
-            <span class="ident">Ge</span>(<span class="ident">g</span>) <span class="kw">if</span> <span class="ident">n</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">g</span> =&gt; <span class="ident">n</span> <span class="op">-</span> <span class="ident">g</span>,
-            <span class="ident">Ge</span>(<span class="kw">_</span>) =&gt; <span class="ident">n</span>,
-            <span class="kw">_</span> =&gt; <span class="ident">n</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">quot</span>(<span class="ident">n</span>) <span class="op">*</span> <span class="self">self</span>.<span class="ident">n</span>,
-        }
-    }
-}
-
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test_small_2</span>() {
-    <span class="kw">for</span> <span class="ident">n</span> <span class="kw">in</span> <span class="number">1</span>..<span class="op">=</span><span class="number">500</span> {
-        <span class="kw">let</span> <span class="ident">cd</span> <span class="op">=</span> <span class="ident">ConstDiv2::new</span>(<span class="ident">n</span>);
-        <span class="kw">for</span> <span class="ident">a</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span> <span class="op">*</span> <span class="ident">n</span> {
-            <span class="macro">assert_eq!</span>(<span class="ident">cd</span>.<span class="ident">quot</span>(<span class="ident">a</span>), <span class="ident">a</span> <span class="op">/</span> <span class="ident">n</span>);
-            <span class="macro">assert_eq!</span>(<span class="ident">cd</span>.<span class="ident">rem</span>(<span class="ident">a</span>), <span class="ident">a</span> <span class="op">%</span> <span class="ident">n</span>);
+    <span class="kw">pub fn </span>rem(<span class="kw-2">&amp;</span><span class="self">self</span>, n: u64) -&gt; u64 {
+        <span class="kw">match </span><span class="self">self</span>.di {
+            Shr(<span class="kw">_</span>, a) =&gt; n &amp; a,
+            Ge(g) <span class="kw">if </span>n &gt;= g =&gt; n - g,
+            Ge(<span class="kw">_</span>) =&gt; n,
+            <span class="kw">_ </span>=&gt; n - <span class="self">self</span>.quot(n) * <span class="self">self</span>.n,
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test_small</span>() {
-    <span class="kw">for</span> <span class="ident">n</span> <span class="kw">in</span> <span class="number">1</span>..<span class="op">=</span><span class="number">500</span> {
-        <span class="kw">let</span> <span class="ident">cd</span> <span class="op">=</span> <span class="ident">ConstDiv::new</span>(<span class="ident">n</span>);
-        <span class="kw">for</span> <span class="ident">a</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">5</span> <span class="op">*</span> <span class="ident">n</span> <span class="op">*</span> <span class="ident">n</span> {
-            <span class="macro">assert_eq!</span>(<span class="ident">cd</span>.<span class="ident">quot</span>(<span class="ident">a</span>), <span class="ident">a</span> <span class="op">/</span> <span class="ident">n</span>);
-            <span class="macro">assert_eq!</span>(<span class="ident">cd</span>.<span class="ident">rem</span>(<span class="ident">a</span>), <span class="ident">a</span> <span class="op">%</span> <span class="ident">n</span>);
-        }
-        <span class="kw">for</span> <span class="ident">a</span> <span class="kw">in</span> <span class="number">1</span>..<span class="op">=</span><span class="number">5</span> <span class="op">*</span> <span class="ident">n</span> <span class="op">*</span> <span class="ident">n</span> {
-            <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">std::u64::MAX</span> <span class="op">-</span> <span class="ident">a</span>;
-            <span class="macro">assert_eq!</span>(<span class="ident">cd</span>.<span class="ident">quot</span>(<span class="ident">a</span>), <span class="ident">a</span> <span class="op">/</span> <span class="ident">n</span>);
-            <span class="macro">assert_eq!</span>(<span class="ident">cd</span>.<span class="ident">rem</span>(<span class="ident">a</span>), <span class="ident">a</span> <span class="op">%</span> <span class="ident">n</span>);
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test_small_2() {
+    <span class="kw">for </span>n <span class="kw">in </span><span class="number">1</span>..=<span class="number">500 </span>{
+        <span class="kw">let </span>cd = ConstDiv2::new(n);
+        <span class="kw">for </span>a <span class="kw">in </span><span class="number">0</span>..n * n {
+            <span class="macro">assert_eq!</span>(cd.quot(a), a / n);
+            <span class="macro">assert_eq!</span>(cd.rem(a), a % n);
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test_corner</span>() {
-    <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">d</span> <span class="kw">in</span> <span class="kw-2">&amp;</span>[(<span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">63</span>) <span class="op">-</span> <span class="number">1</span>, <span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">63</span>, (<span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">63</span>) <span class="op">+</span> <span class="number">1</span>, <span class="ident">std::u64::MAX</span>] {
-        <span class="kw">let</span> <span class="ident">cd</span> <span class="op">=</span> <span class="ident">ConstDiv::new</span>(<span class="ident">d</span>);
-        <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">n</span> <span class="kw">in</span> <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">1</span>, <span class="ident">d</span> <span class="op">-</span> <span class="number">1</span>, <span class="ident">d</span>, <span class="ident">d</span>.<span class="ident">saturating_add</span>(<span class="number">1</span>), <span class="ident">d</span>.<span class="ident">saturating_mul</span>(<span class="number">2</span>)] {
-            <span class="macro">assert_eq!</span>(<span class="ident">cd</span>.<span class="ident">quot</span>(<span class="ident">n</span>), <span class="ident">n</span> <span class="op">/</span> <span class="ident">d</span>);
-            <span class="macro">assert_eq!</span>(<span class="ident">cd</span>.<span class="ident">rem</span>(<span class="ident">n</span>), <span class="ident">n</span> <span class="op">%</span> <span class="ident">d</span>);
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test_small() {
+    <span class="kw">for </span>n <span class="kw">in </span><span class="number">1</span>..=<span class="number">500 </span>{
+        <span class="kw">let </span>cd = ConstDiv::new(n);
+        <span class="kw">for </span>a <span class="kw">in </span><span class="number">0</span>..<span class="number">5 </span>* n * n {
+            <span class="macro">assert_eq!</span>(cd.quot(a), a / n);
+            <span class="macro">assert_eq!</span>(cd.rem(a), a % n);
+        }
+        <span class="kw">for </span>a <span class="kw">in </span><span class="number">1</span>..=<span class="number">5 </span>* n * n {
+            <span class="kw">let </span>a = std::u64::MAX - a;
+            <span class="macro">assert_eq!</span>(cd.quot(a), a / n);
+            <span class="macro">assert_eq!</span>(cd.rem(a), a % n);
+        }
+    }
+}
+
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test_corner() {
+    <span class="kw">for </span><span class="kw-2">&amp;</span>d <span class="kw">in </span><span class="kw-2">&amp;</span>[(<span class="number">1 </span>&lt;&lt; <span class="number">63</span>) - <span class="number">1</span>, <span class="number">1 </span>&lt;&lt; <span class="number">63</span>, (<span class="number">1 </span>&lt;&lt; <span class="number">63</span>) + <span class="number">1</span>, std::u64::MAX] {
+        <span class="kw">let </span>cd = ConstDiv::new(d);
+        <span class="kw">for </span><span class="kw-2">&amp;</span>n <span class="kw">in </span><span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">1</span>, d - <span class="number">1</span>, d, d.saturating_add(<span class="number">1</span>), d.saturating_mul(<span class="number">2</span>)] {
+            <span class="macro">assert_eq!</span>(cd.quot(n), n / d);
+            <span class="macro">assert_eq!</span>(cd.rem(n), n % d);
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

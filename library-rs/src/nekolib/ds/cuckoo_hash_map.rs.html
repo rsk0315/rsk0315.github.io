@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/ds/cuckoo_hash_map.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>cuckoo_hash_map.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/ds/cuckoo_hash_map.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>cuckoo_hash_map.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -230,148 +230,148 @@
 <span id="141">141</span>
 <span id="142">142</span>
 <span id="143">143</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Cuckoo hashing による連想配列。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Cuckoo hashing による連想配列。
 
-<span class="kw">use</span> <span class="ident">std::collections::hash_map::RandomState</span>;
-<span class="kw">use</span> <span class="ident">std::fmt::Debug</span>;
-<span class="kw">use</span> <span class="ident">std::hash</span>::{<span class="ident">BuildHasher</span>, <span class="ident">Hash</span>, <span class="ident">Hasher</span>};
-<span class="kw">use</span> <span class="ident">std::iter::FromIterator</span>;
+</span><span class="kw">use </span>std::collections::hash_map::RandomState;
+<span class="kw">use </span>std::fmt::Debug;
+<span class="kw">use </span>std::hash::{BuildHasher, Hash, Hasher};
+<span class="kw">use </span>std::iter::FromIterator;
 
-<span class="doccomment">/// Cuckoo hashing による連想配列。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Idea</span>
-<span class="doccomment">/// `todo!()`</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # References</span>
-<span class="doccomment">/// - &lt;http://web.stanford.edu/class/cs166/lectures/07/Slides07.pdf&gt;</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CuckooHashMap</span><span class="op">&lt;</span><span class="ident">K</span>, <span class="ident">V</span><span class="op">&gt;</span> {
-    <span class="ident">rs</span>: [<span class="ident">RandomState</span>; <span class="number">2</span>],
-    <span class="ident">buf</span>: [<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">K</span>, <span class="ident">V</span>)<span class="op">&gt;</span><span class="op">&gt;</span>; <span class="number">2</span>],
-    <span class="ident">len</span>: <span class="ident">usize</span>,
+<span class="doccomment">/// Cuckoo hashing による連想配列。
+///
+/// # Idea
+/// `todo!()`
+///
+/// # References
+/// - &lt;http://web.stanford.edu/class/cs166/lectures/07/Slides07.pdf&gt;
+</span><span class="attribute">#[derive(Clone, Debug)]
+</span><span class="kw">pub struct </span>CuckooHashMap&lt;K, V&gt; {
+    rs: [RandomState; <span class="number">2</span>],
+    buf: [Vec&lt;Vec&lt;(K, V)&gt;&gt;; <span class="number">2</span>],
+    len: usize,
 }
 
-<span class="kw">const</span> <span class="ident">LOOP_THRESHOLD</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">8</span>;
-<span class="kw">const</span> <span class="ident">LEN_THRESHOLD</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">32</span>;
+<span class="kw">const </span>LOOP_THRESHOLD: usize = <span class="number">8</span>;
+<span class="kw">const </span>LEN_THRESHOLD: usize = <span class="number">32</span>;
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Hash</span>, <span class="ident">V</span><span class="op">&gt;</span> <span class="ident">CuckooHashMap</span><span class="op">&lt;</span><span class="ident">K</span>, <span class="ident">V</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">r0</span> <span class="op">=</span> <span class="ident">RandomState::new</span>();
-        <span class="kw">let</span> <span class="ident">r1</span> <span class="op">=</span> <span class="ident">RandomState::new</span>();
-        <span class="self">Self</span> {
-            <span class="ident">rs</span>: [<span class="ident">r0</span>, <span class="ident">r1</span>],
-            <span class="ident">buf</span>: [<span class="macro">vec!</span>[<span class="macro">vec!</span>[]], <span class="macro">vec!</span>[<span class="macro">vec!</span>[]]],
-            <span class="ident">len</span>: <span class="number">0</span>,
+<span class="kw">impl</span>&lt;K: Eq + Hash, V&gt; CuckooHashMap&lt;K, V&gt; {
+    <span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>r0 = RandomState::new();
+        <span class="kw">let </span>r1 = RandomState::new();
+        <span class="self">Self </span>{
+            rs: [r0, r1],
+            buf: [<span class="macro">vec!</span>[<span class="macro">vec!</span>[]], <span class="macro">vec!</span>[<span class="macro">vec!</span>[]]],
+            len: <span class="number">0</span>,
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">contains_key</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">key</span>: <span class="kw-2">&amp;</span><span class="ident">K</span>) -&gt; <span class="ident">bool</span> { <span class="self">self</span>.<span class="ident">find</span>(<span class="ident">key</span>).<span class="ident">is_some</span>() }
+    <span class="kw">pub fn </span>contains_key(<span class="kw-2">&amp;</span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>K) -&gt; bool { <span class="self">self</span>.find(key).is_some() }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">insert</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">key</span>: <span class="ident">K</span>, <span class="ident">val</span>: <span class="ident">V</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">V</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>((<span class="ident">i</span>, <span class="ident">j</span>, <span class="ident">k</span>)) <span class="op">=</span> <span class="self">self</span>.<span class="ident">find</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>) {
-            <span class="kw">let</span> <span class="ident">old</span> <span class="op">=</span> <span class="ident">std::mem::replace</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>][<span class="ident">j</span>][<span class="ident">k</span>].<span class="number">1</span>, <span class="ident">val</span>);
-            <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">old</span>);
+    <span class="kw">pub fn </span>insert(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: K, val: V) -&gt; <span class="prelude-ty">Option</span>&lt;V&gt; {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>((i, j, k)) = <span class="self">self</span>.find(<span class="kw-2">&amp;</span>key) {
+            <span class="kw">let </span>old = std::mem::replace(<span class="kw-2">&amp;mut </span><span class="self">self</span>.buf[i][j][k].<span class="number">1</span>, val);
+            <span class="kw">return </span><span class="prelude-val">Some</span>(old);
         }
 
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">elts</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">try_insert</span>((<span class="ident">key</span>, <span class="ident">val</span>), <span class="ident">LOOP_THRESHOLD</span>) {
-            <span class="self">self</span>.<span class="ident">rehash</span>(<span class="ident">elts</span>);
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(elts) = <span class="self">self</span>.try_insert((key, val), LOOP_THRESHOLD) {
+            <span class="self">self</span>.rehash(elts);
         }
-        <span class="self">self</span>.<span class="ident">len</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-        <span class="prelude-val">None</span>
+        <span class="self">self</span>.len += <span class="number">1</span>;
+        <span class="prelude-val">None
+    </span>}
+
+    <span class="kw">pub fn </span>remove(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>K) -&gt; <span class="prelude-ty">Option</span>&lt;V&gt; {
+        <span class="self">self</span>.find(key).map(|(i, j, k)| {
+            <span class="self">self</span>.len -= <span class="number">1</span>;
+            <span class="self">self</span>.buf[i][j].swap_remove(k).<span class="number">1
+        </span>})
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">remove</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">key</span>: <span class="kw-2">&amp;</span><span class="ident">K</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">V</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">find</span>(<span class="ident">key</span>).<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">j</span>, <span class="ident">k</span>)<span class="op">|</span> {
-            <span class="self">self</span>.<span class="ident">len</span> <span class="op">-</span><span class="op">=</span> <span class="number">1</span>;
-            <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>][<span class="ident">j</span>].<span class="ident">swap_remove</span>(<span class="ident">k</span>).<span class="number">1</span>
-        })
-    }
+    <span class="kw">pub fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize { <span class="self">self</span>.len }
+    <span class="kw">pub fn </span>is_empty(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool { <span class="self">self</span>.len == <span class="number">0 </span>}
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">len</span> }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> { <span class="self">self</span>.<span class="ident">len</span> <span class="op">==</span> <span class="number">0</span> }
-
-    <span class="kw">fn</span> <span class="ident">try_insert</span>(
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-        <span class="kw-2">mut</span> <span class="ident">keyval</span>: (<span class="ident">K</span>, <span class="ident">V</span>),
-        <span class="ident">thresh</span>: <span class="ident">usize</span>,
-    ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">K</span>, <span class="ident">V</span>)<span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">thresh</span> {
-            <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="op">=</span><span class="number">1</span> {
-                <span class="kw">let</span> <span class="ident">j</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_hash</span>(<span class="kw-2">&amp;</span><span class="ident">keyval</span>.<span class="number">0</span>, <span class="ident">i</span>);
-                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>][<span class="ident">j</span>].<span class="ident">len</span>() <span class="op">&lt;</span> <span class="ident">LEN_THRESHOLD</span> {
-                    <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>][<span class="ident">j</span>].<span class="ident">push</span>(<span class="ident">keyval</span>);
-                    <span class="kw">return</span> <span class="prelude-val">None</span>;
+    <span class="kw">fn </span>try_insert(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        <span class="kw-2">mut </span>keyval: (K, V),
+        thresh: usize,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;Vec&lt;(K, V)&gt;&gt; {
+        <span class="kw">for _ in </span><span class="number">0</span>..thresh {
+            <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..=<span class="number">1 </span>{
+                <span class="kw">let </span>j = <span class="self">self</span>.get_hash(<span class="kw-2">&amp;</span>keyval.<span class="number">0</span>, i);
+                <span class="kw">if </span><span class="self">self</span>.buf[i][j].len() &lt; LEN_THRESHOLD {
+                    <span class="self">self</span>.buf[i][j].push(keyval);
+                    <span class="kw">return </span><span class="prelude-val">None</span>;
                 }
-                <span class="ident">std::mem::swap</span>(<span class="kw-2">&amp;mut</span> <span class="ident">keyval</span>, <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>][<span class="ident">j</span>].<span class="ident">last_mut</span>().<span class="ident">unwrap</span>());
+                std::mem::swap(<span class="kw-2">&amp;mut </span>keyval, <span class="self">self</span>.buf[i][j].last_mut().unwrap());
             }
         }
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">elts</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">keyval</span>];
-        <span class="ident">elts</span>.<span class="ident">extend</span>(<span class="self">self</span>.<span class="ident">buf</span>[<span class="number">0</span>].<span class="ident">drain</span>(..).<span class="ident">flatten</span>());
-        <span class="ident">elts</span>.<span class="ident">extend</span>(<span class="self">self</span>.<span class="ident">buf</span>[<span class="number">1</span>].<span class="ident">drain</span>(..).<span class="ident">flatten</span>());
-        <span class="prelude-val">Some</span>(<span class="ident">elts</span>)
+        <span class="kw">let </span><span class="kw-2">mut </span>elts = <span class="macro">vec!</span>[keyval];
+        elts.extend(<span class="self">self</span>.buf[<span class="number">0</span>].drain(..).flatten());
+        elts.extend(<span class="self">self</span>.buf[<span class="number">1</span>].drain(..).flatten());
+        <span class="prelude-val">Some</span>(elts)
     }
 
-    <span class="kw">fn</span> <span class="ident">rehash</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">elts</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">K</span>, <span class="ident">V</span>)<span class="op">&gt;</span>) {
-        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::calc_len</span>(<span class="ident">elts</span>.<span class="ident">len</span>());
+    <span class="kw">fn </span>rehash(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw-2">mut </span>elts: Vec&lt;(K, V)&gt;) {
+        <span class="kw">let </span>len = <span class="self">Self</span>::calc_len(elts.len());
 
-        <span class="lifetime">&#39;outer</span>: <span class="kw">loop</span> {
-            <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="op">=</span><span class="number">1</span> {
-                <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>] <span class="op">=</span> (<span class="number">0</span>..<span class="ident">len</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="macro">vec!</span>[]).<span class="ident">collect</span>();
-                <span class="self">self</span>.<span class="ident">rs</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">RandomState::new</span>();
+        <span class="lifetime">&#39;outer</span>: <span class="kw">loop </span>{
+            <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..=<span class="number">1 </span>{
+                <span class="self">self</span>.buf[i] = (<span class="number">0</span>..len).map(|<span class="kw">_</span>| <span class="macro">vec!</span>[]).collect();
+                <span class="self">self</span>.rs[i] = RandomState::new();
             }
-            <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>((<span class="ident">k</span>, <span class="ident">v</span>)) <span class="op">=</span> <span class="ident">elts</span>.<span class="ident">pop</span>() {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">tmp</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">try_insert</span>((<span class="ident">k</span>, <span class="ident">v</span>), <span class="ident">LOOP_THRESHOLD</span>) {
-                    <span class="ident">elts</span>.<span class="ident">extend</span>(<span class="ident">tmp</span>);
-                    <span class="kw">continue</span> <span class="lifetime">&#39;outer</span>;
+            <span class="kw">while let </span><span class="prelude-val">Some</span>((k, v)) = elts.pop() {
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(tmp) = <span class="self">self</span>.try_insert((k, v), LOOP_THRESHOLD) {
+                    elts.extend(tmp);
+                    <span class="kw">continue </span><span class="lifetime">&#39;outer</span>;
                 }
             }
             <span class="kw">return</span>;
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">calc_len</span>(<span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> { <span class="ident">n</span> }
+    <span class="kw">fn </span>calc_len(n: usize) -&gt; usize { n }
 
-    <span class="kw">fn</span> <span class="ident">find</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">key</span>: <span class="kw-2">&amp;</span><span class="ident">K</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">usize</span>, <span class="ident">usize</span>)<span class="op">&gt;</span> {
-        (<span class="number">0</span>..<span class="op">=</span><span class="number">1</span>).<span class="ident">find_map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> {
-            <span class="kw">let</span> <span class="ident">j</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_hash</span>(<span class="ident">key</span>, <span class="ident">i</span>);
-            <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>][<span class="ident">j</span>]
-                .<span class="ident">iter</span>()
-                .<span class="ident">enumerate</span>()
-                .<span class="ident">find</span>(<span class="op">|</span>(<span class="kw">_</span>, (<span class="ident">key0</span>, <span class="kw">_</span>))<span class="op">|</span> <span class="ident">key0</span> <span class="op">==</span> <span class="ident">key</span>)
-                .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">k</span>, <span class="kw">_</span>)<span class="op">|</span> (<span class="ident">i</span>, <span class="ident">j</span>, <span class="ident">k</span>))
+    <span class="kw">fn </span>find(<span class="kw-2">&amp;</span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>K) -&gt; <span class="prelude-ty">Option</span>&lt;(usize, usize, usize)&gt; {
+        (<span class="number">0</span>..=<span class="number">1</span>).find_map(|i| {
+            <span class="kw">let </span>j = <span class="self">self</span>.get_hash(key, i);
+            <span class="self">self</span>.buf[i][j]
+                .iter()
+                .enumerate()
+                .find(|(<span class="kw">_</span>, (key0, <span class="kw">_</span>))| key0 == key)
+                .map(|(k, <span class="kw">_</span>)| (i, j, k))
         })
     }
 
-    <span class="kw">fn</span> <span class="ident">get_hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">key</span>: <span class="kw-2">&amp;</span><span class="ident">K</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">h</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">rs</span>[<span class="ident">i</span>].<span class="ident">build_hasher</span>();
-        <span class="ident">key</span>.<span class="ident">hash</span>(<span class="kw-2">&amp;mut</span> <span class="ident">h</span>);
-        <span class="ident">h</span>.<span class="ident">finish</span>() <span class="kw">as</span> <span class="ident">usize</span> <span class="op">%</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">len</span>()
+    <span class="kw">fn </span>get_hash(<span class="kw-2">&amp;</span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>K, i: usize) -&gt; usize {
+        <span class="kw">let </span><span class="kw-2">mut </span>h = <span class="self">self</span>.rs[i].build_hasher();
+        key.hash(<span class="kw-2">&amp;mut </span>h);
+        h.finish() <span class="kw">as </span>usize % <span class="self">self</span>.buf[i].len()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Hash</span>, <span class="ident">V</span><span class="op">&gt;</span> <span class="ident">FromIterator</span><span class="op">&lt;</span>(<span class="ident">K</span>, <span class="ident">V</span>)<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CuckooHashMap</span><span class="op">&lt;</span><span class="ident">K</span>, <span class="ident">V</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">from_iter</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>(<span class="ident">iter</span>: <span class="ident">I</span>) -&gt; <span class="self">Self</span>
-    <span class="kw">where</span>
-        <span class="ident">I</span>: <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> (<span class="ident">K</span>, <span class="ident">V</span>)<span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;K: Eq + Hash, V&gt; FromIterator&lt;(K, V)&gt; <span class="kw">for </span>CuckooHashMap&lt;K, V&gt; {
+    <span class="kw">fn </span>from_iter&lt;I&gt;(iter: I) -&gt; <span class="self">Self
+    </span><span class="kw">where
+        </span>I: IntoIterator&lt;Item = (K, V)&gt;,
     {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">CuckooHashMap::new</span>();
-        <span class="kw">for</span> (<span class="ident">k</span>, <span class="ident">v</span>) <span class="kw">in</span> <span class="ident">iter</span> {
-            <span class="ident">res</span>.<span class="ident">insert</span>(<span class="ident">k</span>, <span class="ident">v</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>res = CuckooHashMap::new();
+        <span class="kw">for </span>(k, v) <span class="kw">in </span>iter {
+            res.insert(k, v);
         }
-        <span class="ident">res</span>
+        res
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Hash</span>, <span class="ident">V</span><span class="op">&gt;</span> <span class="ident">Extend</span><span class="op">&lt;</span>(<span class="ident">K</span>, <span class="ident">V</span>)<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CuckooHashMap</span><span class="op">&lt;</span><span class="ident">K</span>, <span class="ident">V</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">extend</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">iter</span>: <span class="ident">I</span>)
-    <span class="kw">where</span>
-        <span class="ident">I</span>: <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> (<span class="ident">K</span>, <span class="ident">V</span>)<span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;K: Eq + Hash, V&gt; Extend&lt;(K, V)&gt; <span class="kw">for </span>CuckooHashMap&lt;K, V&gt; {
+    <span class="kw">fn </span>extend&lt;I&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, iter: I)
+    <span class="kw">where
+        </span>I: IntoIterator&lt;Item = (K, V)&gt;,
     {
-        <span class="kw">for</span> (<span class="ident">k</span>, <span class="ident">v</span>) <span class="kw">in</span> <span class="ident">iter</span> {
-            <span class="self">self</span>.<span class="ident">insert</span>(<span class="ident">k</span>, <span class="ident">v</span>);
+        <span class="kw">for </span>(k, v) <span class="kw">in </span>iter {
+            <span class="self">self</span>.insert(k, v);
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

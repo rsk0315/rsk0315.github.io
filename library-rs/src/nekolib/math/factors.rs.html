@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/factors.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>factors.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/factors.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>factors.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -212,78 +212,78 @@
 <span id="123">123</span>
 <span id="124">124</span>
 <span id="125">125</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 素因数分解。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 素因数分解。
 
-<span class="doccomment">/// 素因数分解。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $n = \\prod\_{p\_i:\\text{ prime}} p\_i^{e\_i}$ に対して、各</span>
-<span class="doccomment">/// $(p\_i, e\_i)$ を $p\_i$ の昇順に返す。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// $O(\\sqrt{n})$ time, $O(1)$ space.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::math::Factors;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let n = 735134400_u64;</span>
-<span class="doccomment">/// let fac: Vec&lt;_&gt; = n.factors().collect();</span>
-<span class="doccomment">/// assert_eq!(fac, [(2, 6), (3, 3), (5, 2), (7, 1), (11, 1), (13, 1), (17, 1)]);</span>
-<span class="doccomment">/// assert_eq!(fac.iter().map(|&amp;(p, e)| p.pow(e)).product::&lt;u64&gt;(), n);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(1_u64.factors().next(), None);</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Factors</span> {
-    <span class="kw">type</span> <span class="ident">Output</span>;
-    <span class="kw">fn</span> <span class="ident">factors</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span>;
+/// 素因数分解。
+///
+/// $n = \\prod\_{p\_i:\\text{ prime}} p\_i^{e\_i}$ に対して、各
+/// $(p\_i, e\_i)$ を $p\_i$ の昇順に返す。
+///
+/// # Complexity
+/// $O(\\sqrt{n})$ time, $O(1)$ space.
+///
+/// # Examples
+/// ```
+/// use nekolib::math::Factors;
+///
+/// let n = 735134400_u64;
+/// let fac: Vec&lt;_&gt; = n.factors().collect();
+/// assert_eq!(fac, [(2, 6), (3, 3), (5, 2), (7, 1), (11, 1), (13, 1), (17, 1)]);
+/// assert_eq!(fac.iter().map(|&amp;(p, e)| p.pow(e)).product::&lt;u64&gt;(), n);
+///
+/// assert_eq!(1_u64.factors().next(), None);
+/// ```
+</span><span class="kw">pub trait </span>Factors {
+    <span class="kw">type </span>Output;
+    <span class="kw">fn </span>factors(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Output;
 }
 
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FactorsStruct</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-    <span class="ident">i</span>: <span class="ident">I</span>,
-    <span class="ident">n</span>: <span class="ident">I</span>,
+<span class="kw">pub struct </span>FactorsStruct&lt;I&gt; {
+    i: I,
+    n: I,
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_factors_unit</span> {
-    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(
-        <span class="kw">impl</span> <span class="ident">Factors</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span> {
-            <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">FactorsStruct</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span><span class="op">&gt;</span>;
-            <span class="kw">fn</span> <span class="ident">factors</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span> {
-                <span class="ident"><span class="self">Self</span>::Output</span> { <span class="ident">i</span>: <span class="number">2</span>, <span class="ident">n</span>: <span class="self">self</span> }
+<span class="macro">macro_rules! </span>impl_factors_unit {
+    ( $(<span class="macro-nonterminal">$ty</span>:ty)* ) =&gt; { $(
+        <span class="kw">impl </span>Factors <span class="kw">for </span><span class="macro-nonterminal">$ty </span>{
+            <span class="kw">type </span>Output = FactorsStruct&lt;<span class="macro-nonterminal">$ty</span>&gt;;
+            <span class="kw">fn </span>factors(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Output {
+                <span class="self">Self</span>::Output { i: <span class="number">2</span>, n: <span class="self">self </span>}
             }
         }
-        <span class="kw">impl</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">FactorsStruct</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span><span class="op">&gt;</span> {
-            <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>, <span class="ident">u32</span>);
-            <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>, <span class="ident">u32</span>)<span class="op">&gt;</span> {
-                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">n</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">1</span> <span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">i</span> <span class="op">==</span> <span class="number">0</span> {
-                    <span class="kw">return</span> <span class="prelude-val">None</span>;
+        <span class="kw">impl </span>Iterator <span class="kw">for </span>FactorsStruct&lt;<span class="macro-nonterminal">$ty</span>&gt; {
+            <span class="kw">type </span>Item = (<span class="macro-nonterminal">$ty</span>, u32);
+            <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;(<span class="macro-nonterminal">$ty</span>, u32)&gt; {
+                <span class="kw">if </span><span class="self">self</span>.n &lt;= <span class="number">1 </span>|| <span class="self">self</span>.i == <span class="number">0 </span>{
+                    <span class="kw">return </span><span class="prelude-val">None</span>;
                 }
-                <span class="kw">while</span> <span class="self">self</span>.<span class="ident">i</span> <span class="op">*</span> <span class="self">self</span>.<span class="ident">i</span> <span class="op">&lt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">n</span> {
-                    <span class="kw">while</span> <span class="self">self</span>.<span class="ident">n</span> <span class="op">%</span> <span class="self">self</span>.<span class="ident">i</span> <span class="op">==</span> <span class="number">0</span> {
-                        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">e</span> <span class="op">=</span> <span class="number">1</span>;
-                        <span class="self">self</span>.<span class="ident">n</span> <span class="op">/</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">i</span>;
-                        <span class="kw">while</span> <span class="self">self</span>.<span class="ident">n</span> <span class="op">%</span> <span class="self">self</span>.<span class="ident">i</span> <span class="op">==</span> <span class="number">0</span> {
-                            <span class="self">self</span>.<span class="ident">n</span> <span class="op">/</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">i</span>;
-                            <span class="ident">e</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+                <span class="kw">while </span><span class="self">self</span>.i * <span class="self">self</span>.i &lt;= <span class="self">self</span>.n {
+                    <span class="kw">while </span><span class="self">self</span>.n % <span class="self">self</span>.i == <span class="number">0 </span>{
+                        <span class="kw">let </span><span class="kw-2">mut </span>e = <span class="number">1</span>;
+                        <span class="self">self</span>.n /= <span class="self">self</span>.i;
+                        <span class="kw">while </span><span class="self">self</span>.n % <span class="self">self</span>.i == <span class="number">0 </span>{
+                            <span class="self">self</span>.n /= <span class="self">self</span>.i;
+                            e += <span class="number">1</span>;
                         }
-                        <span class="kw">return</span> <span class="prelude-val">Some</span>((<span class="self">self</span>.<span class="ident">i</span>, <span class="ident">e</span>));
+                        <span class="kw">return </span><span class="prelude-val">Some</span>((<span class="self">self</span>.i, e));
                     }
-                    <span class="self">self</span>.<span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+                    <span class="self">self</span>.i += <span class="number">1</span>;
                 }
-                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">i</span> <span class="op">&gt;</span> <span class="number">0</span> {
-                    <span class="self">self</span>.<span class="ident">i</span> <span class="op">=</span> <span class="number">0</span>;
-                    <span class="kw">return</span> <span class="prelude-val">Some</span>((<span class="self">self</span>.<span class="ident">n</span>, <span class="number">1</span>));
+                <span class="kw">if </span><span class="self">self</span>.i &gt; <span class="number">0 </span>{
+                    <span class="self">self</span>.i = <span class="number">0</span>;
+                    <span class="kw">return </span><span class="prelude-val">Some</span>((<span class="self">self</span>.n, <span class="number">1</span>));
                 }
-                <span class="prelude-val">None</span>
-            }
+                <span class="prelude-val">None
+            </span>}
         }
-    )<span class="op">*</span> };
+    )* };
 }
 
-<span class="macro">impl_factors_unit!</span> { <span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span> }
+<span class="macro">impl_factors_unit! </span>{ u8 u16 u32 u64 u128 usize }
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test_small</span>() {
-    <span class="kw">let</span> <span class="ident">suite</span>: <span class="kw-2">&amp;</span>[(<span class="ident">u64</span>, <span class="kw-2">&amp;</span>[(<span class="ident">u64</span>, <span class="ident">u32</span>)])] <span class="op">=</span> <span class="kw-2">&amp;</span>[
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test_small() {
+    <span class="kw">let </span>suite: <span class="kw-2">&amp;</span>[(u64, <span class="kw-2">&amp;</span>[(u64, u32)])] = <span class="kw-2">&amp;</span>[
         (<span class="number">0</span>, <span class="kw-2">&amp;</span>[]),
         (<span class="number">1</span>, <span class="kw-2">&amp;</span>[]),
         (<span class="number">2</span>, <span class="kw-2">&amp;</span>[(<span class="number">2</span>, <span class="number">1</span>)]),
@@ -294,48 +294,48 @@
         (<span class="number">100</span>, <span class="kw-2">&amp;</span>[(<span class="number">2</span>, <span class="number">2</span>), (<span class="number">5</span>, <span class="number">2</span>)]),
         (<span class="number">200</span>, <span class="kw-2">&amp;</span>[(<span class="number">2</span>, <span class="number">3</span>), (<span class="number">5</span>, <span class="number">2</span>)]),
     ];
-    <span class="kw">for</span> (<span class="ident">n</span>, <span class="ident">expected</span>) <span class="kw">in</span> <span class="ident">suite</span> {
-        <span class="kw">let</span> <span class="ident">actual</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">n</span>.<span class="ident">factors</span>().<span class="ident">collect</span>();
-        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="ident">actual</span>, <span class="ident">expected</span>);
+    <span class="kw">for </span>(n, expected) <span class="kw">in </span>suite {
+        <span class="kw">let </span>actual: Vec&lt;<span class="kw">_</span>&gt; = n.factors().collect();
+        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>actual, expected);
     }
 }
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test</span>() {
-    <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="number">10000_usize</span>;
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test() {
+    <span class="kw">let </span>n = <span class="number">10000_usize</span>;
 
-    <span class="kw">let</span> <span class="ident">lp</span> <span class="op">=</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">lp</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="op">=</span><span class="ident">n</span>).<span class="ident">collect</span>();
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">2</span>..<span class="op">=</span><span class="ident">n</span> {
-            <span class="kw">if</span> <span class="ident">lp</span>[<span class="ident">i</span>] <span class="op">&lt;</span> <span class="ident">i</span> {
+    <span class="kw">let </span>lp = {
+        <span class="kw">let </span><span class="kw-2">mut </span>lp: Vec&lt;<span class="kw">_</span>&gt; = (<span class="number">0</span>..=n).collect();
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">2</span>..=n {
+            <span class="kw">if </span>lp[i] &lt; i {
                 <span class="kw">continue</span>;
             }
-            <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="ident">i</span>..<span class="op">=</span><span class="ident">n</span> <span class="op">/</span> <span class="ident">i</span> {
-                <span class="kw">if</span> <span class="ident">lp</span>[<span class="ident">i</span> <span class="op">*</span> <span class="ident">j</span>] <span class="op">==</span> <span class="ident">i</span> <span class="op">*</span> <span class="ident">j</span> {
-                    <span class="ident">lp</span>[<span class="ident">i</span> <span class="op">*</span> <span class="ident">j</span>] <span class="op">=</span> <span class="ident">i</span>;
+            <span class="kw">for </span>j <span class="kw">in </span>i..=n / i {
+                <span class="kw">if </span>lp[i * j] == i * j {
+                    lp[i * j] = i;
                 }
             }
         }
-        <span class="ident">lp</span>
+        lp
     };
 
-    <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="op">=</span><span class="ident">n</span> {
-        <span class="kw">let</span> <span class="ident">actual</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">i</span>.<span class="ident">factors</span>().<span class="ident">collect</span>();
-        <span class="kw">let</span> <span class="ident">expected</span> <span class="op">=</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">j</span> <span class="op">=</span> <span class="ident">i</span>;
-            <span class="kw">while</span> <span class="ident">j</span> <span class="op">&gt;</span> <span class="number">1</span> {
-                <span class="kw">if</span> <span class="ident">res</span>.<span class="ident">last</span>().<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span>(<span class="ident">x</span>, <span class="kw">_</span>): <span class="kw-2">&amp;</span>(<span class="ident">usize</span>, <span class="ident">u32</span>)<span class="op">|</span> <span class="ident">x</span>) <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="ident">lp</span>[<span class="ident">j</span>]) {
-                    <span class="ident">res</span>.<span class="ident">last_mut</span>().<span class="ident">unwrap</span>().<span class="number">1</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-                } <span class="kw">else</span> {
-                    <span class="ident">res</span>.<span class="ident">push</span>((<span class="ident">lp</span>[<span class="ident">j</span>], <span class="number">1</span>));
+    <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..=n {
+        <span class="kw">let </span>actual: Vec&lt;<span class="kw">_</span>&gt; = i.factors().collect();
+        <span class="kw">let </span>expected = {
+            <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="macro">vec!</span>[];
+            <span class="kw">let </span><span class="kw-2">mut </span>j = i;
+            <span class="kw">while </span>j &gt; <span class="number">1 </span>{
+                <span class="kw">if </span>res.last().map(|<span class="kw-2">&amp;</span>(x, <span class="kw">_</span>): <span class="kw-2">&amp;</span>(usize, u32)| x) == <span class="prelude-val">Some</span>(lp[j]) {
+                    res.last_mut().unwrap().<span class="number">1 </span>+= <span class="number">1</span>;
+                } <span class="kw">else </span>{
+                    res.push((lp[j], <span class="number">1</span>));
                 }
-                <span class="ident">j</span> <span class="op">/</span><span class="op">=</span> <span class="ident">lp</span>[<span class="ident">j</span>];
+                j /= lp[j];
             }
-            <span class="ident">res</span>
+            res
         };
-        <span class="macro">assert_eq!</span>(<span class="ident">actual</span>, <span class="ident">expected</span>);
+        <span class="macro">assert_eq!</span>(actual, expected);
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

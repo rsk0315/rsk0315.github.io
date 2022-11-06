@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/ds/decremental_usize_set.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>decremental_usize_set.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/ds/decremental_usize_set.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>decremental_usize_set.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -311,229 +311,229 @@
 <span id="222">222</span>
 <span id="223">223</span>
 <span id="224">224</span>
-</pre><pre class="rust"><code><span class="doccomment">//! `usize` の decremental set。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! `usize` の decremental set。
 
-<span class="doccomment">/// `usize` の decremental set。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $\\{0, 1, \\dots, u-1\\}$ で初期化し、要素を取り除く操作を行える。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// |演算|時間計算量|</span>
-<span class="doccomment">/// |---|---|</span>
-<span class="doccomment">/// |`new`|$\\Theta(n/w)$|</span>
-<span class="doccomment">/// |`remove`|amortized $O(1)$|</span>
-<span class="doccomment">/// |`less`|amortized $O(1)$|</span>
-<span class="doccomment">/// |`less_equal`|amortized $O(1)$|</span>
-<span class="doccomment">/// |`greater`|amortized $O(1)$|</span>
-<span class="doccomment">/// |`greater_equal`|amortized $O(1)$|</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 空間：$O(n)$ bits.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # References</span>
-<span class="doccomment">/// - &lt;https://atcoder.jp/contests/abc228/editorial/2962&gt;</span>
-<span class="doccomment">/// - &lt;https://twitter.com/noshi91/status/1389116169634795525&gt;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::ds::DecrementalUsizeSet;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let mut set = DecrementalUsizeSet::new(6);</span>
-<span class="doccomment">/// assert_eq!(set.universe_len(), 6);</span>
-<span class="doccomment">/// assert_eq!(set.len(), 6);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// set.remove(3);</span>
-<span class="doccomment">/// assert_eq!(set.less(3), Some(2));</span>
-<span class="doccomment">/// assert_eq!(set.less_equal(3), Some(2));</span>
-<span class="doccomment">/// assert_eq!(set.greater(3), Some(4));</span>
-<span class="doccomment">/// assert_eq!(set.greater_equal(3), Some(4));</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(set.less(4), Some(2));</span>
-<span class="doccomment">/// assert_eq!(set.less_equal(4), Some(4));</span>
-<span class="doccomment">/// assert_eq!(set.greater(4), Some(5));</span>
-<span class="doccomment">/// assert_eq!(set.greater_equal(4), Some(4));</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(set.less(0), None);</span>
-<span class="doccomment">/// assert_eq!(set.greater(5), None);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// set.remove(0);</span>
-<span class="doccomment">/// set.remove(5);</span>
-<span class="doccomment">/// assert_eq!(set.less_equal(0), None);</span>
-<span class="doccomment">/// assert_eq!(set.greater_equal(5), None);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert!(set.contains(4));</span>
-<span class="doccomment">/// assert!(!set.contains(3));</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(set.universe_len(), 6);</span>
-<span class="doccomment">/// assert_eq!(set.len(), 3);</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DecrementalUsizeSet</span> {
-    <span class="ident">u</span>: <span class="ident">usize</span>,
-    <span class="ident">len</span>: <span class="ident">usize</span>,
-    <span class="ident">small</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-    <span class="ident">large</span>: <span class="ident">UnionFind</span>,
+/// `usize` の decremental set。
+///
+/// $\\{0, 1, \\dots, u-1\\}$ で初期化し、要素を取り除く操作を行える。
+///
+/// # Complexity
+/// |演算|時間計算量|
+/// |---|---|
+/// |`new`|$\\Theta(n/w)$|
+/// |`remove`|amortized $O(1)$|
+/// |`less`|amortized $O(1)$|
+/// |`less_equal`|amortized $O(1)$|
+/// |`greater`|amortized $O(1)$|
+/// |`greater_equal`|amortized $O(1)$|
+///
+/// 空間：$O(n)$ bits.
+///
+/// # References
+/// - &lt;https://atcoder.jp/contests/abc228/editorial/2962&gt;
+/// - &lt;https://twitter.com/noshi91/status/1389116169634795525&gt;
+///
+/// # Examples
+/// ```
+/// use nekolib::ds::DecrementalUsizeSet;
+///
+/// let mut set = DecrementalUsizeSet::new(6);
+/// assert_eq!(set.universe_len(), 6);
+/// assert_eq!(set.len(), 6);
+///
+/// set.remove(3);
+/// assert_eq!(set.less(3), Some(2));
+/// assert_eq!(set.less_equal(3), Some(2));
+/// assert_eq!(set.greater(3), Some(4));
+/// assert_eq!(set.greater_equal(3), Some(4));
+///
+/// assert_eq!(set.less(4), Some(2));
+/// assert_eq!(set.less_equal(4), Some(4));
+/// assert_eq!(set.greater(4), Some(5));
+/// assert_eq!(set.greater_equal(4), Some(4));
+///
+/// assert_eq!(set.less(0), None);
+/// assert_eq!(set.greater(5), None);
+///
+/// set.remove(0);
+/// set.remove(5);
+/// assert_eq!(set.less_equal(0), None);
+/// assert_eq!(set.greater_equal(5), None);
+///
+/// assert!(set.contains(4));
+/// assert!(!set.contains(3));
+///
+/// assert_eq!(set.universe_len(), 6);
+/// assert_eq!(set.len(), 3);
+/// ```
+</span><span class="kw">pub struct </span>DecrementalUsizeSet {
+    u: usize,
+    len: usize,
+    small: Vec&lt;usize&gt;,
+    large: UnionFind,
 }
 
-<span class="kw">const</span> <span class="ident">WORD_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">0_usize</span>.<span class="ident">count_zeros</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+<span class="kw">const </span>WORD_SIZE: usize = <span class="number">0_usize</span>.count_zeros() <span class="kw">as </span>usize;
 
-<span class="kw">fn</span> <span class="ident">bsf</span>(<span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> { <span class="ident">i</span>.<span class="ident">trailing_zeros</span>() <span class="kw">as</span> <span class="ident">usize</span> }
-<span class="kw">fn</span> <span class="ident">bsr</span>(<span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> { <span class="ident">WORD_SIZE</span> <span class="op">-</span> <span class="number">1</span> <span class="op">-</span> <span class="ident">i</span>.<span class="ident">leading_zeros</span>() <span class="kw">as</span> <span class="ident">usize</span> }
+<span class="kw">fn </span>bsf(i: usize) -&gt; usize { i.trailing_zeros() <span class="kw">as </span>usize }
+<span class="kw">fn </span>bsr(i: usize) -&gt; usize { WORD_SIZE - <span class="number">1 </span>- i.leading_zeros() <span class="kw">as </span>usize }
 
-<span class="kw">impl</span> <span class="ident">DecrementalUsizeSet</span> {
-    <span class="doccomment">/// $S\\gets\\{0, 1, \\dots, u-1\\}$ で初期化。</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">u</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">small</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="op">!</span><span class="number">0_usize</span>; <span class="ident">u</span> <span class="op">/</span> <span class="ident">WORD_SIZE</span> <span class="op">+</span> <span class="number">1</span>];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">large</span> <span class="op">=</span> <span class="ident">UnionFind::new</span>(<span class="ident">small</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="number">1</span>);
-        <span class="kw">let</span> <span class="ident">div</span> <span class="op">=</span> <span class="ident">u</span> <span class="op">/</span> <span class="ident">WORD_SIZE</span>;
-        <span class="kw">let</span> <span class="ident">rem</span> <span class="op">=</span> <span class="ident">u</span> <span class="op">%</span> <span class="ident">WORD_SIZE</span>;
-        <span class="ident">small</span>[<span class="ident">div</span>] <span class="op">=</span> <span class="op">!</span>(<span class="op">!</span><span class="number">0_usize</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">rem</span>);
-        <span class="kw">if</span> <span class="ident">rem</span> <span class="op">==</span> <span class="number">0</span> {
-            <span class="ident">large</span>.<span class="ident">unite</span>(<span class="ident">div</span>, <span class="ident">div</span> <span class="op">+</span> <span class="number">1</span>);
+<span class="kw">impl </span>DecrementalUsizeSet {
+    <span class="doccomment">/// $S\\gets\\{0, 1, \\dots, u-1\\}$ で初期化。
+    </span><span class="kw">pub fn </span>new(u: usize) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>small = <span class="macro">vec!</span>[!<span class="number">0_usize</span>; u / WORD_SIZE + <span class="number">1</span>];
+        <span class="kw">let </span><span class="kw-2">mut </span>large = UnionFind::new(small.len() + <span class="number">1</span>);
+        <span class="kw">let </span>div = u / WORD_SIZE;
+        <span class="kw">let </span>rem = u % WORD_SIZE;
+        small[div] = !(!<span class="number">0_usize </span>&lt;&lt; rem);
+        <span class="kw">if </span>rem == <span class="number">0 </span>{
+            large.unite(div, div + <span class="number">1</span>);
         }
-        <span class="self">Self</span> { <span class="ident">u</span>, <span class="ident">len</span>: <span class="ident">u</span>, <span class="ident">small</span>, <span class="ident">large</span> }
-    }
-
-    <span class="doccomment">/// $u$ を返す。</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">universe_len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">u</span> }
-    <span class="doccomment">/// $|S|$ を返す。</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">len</span> }
-    <span class="doccomment">/// $S=\\emptyset$ を返す。</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> { <span class="self">self</span>.<span class="ident">len</span> <span class="op">==</span> <span class="number">0</span> }
-
-    <span class="doccomment">/// $i\\in S$ を返す。</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">let</span> <span class="ident">div</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">/</span> <span class="ident">WORD_SIZE</span>;
-        <span class="kw">let</span> <span class="ident">rem</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">%</span> <span class="ident">WORD_SIZE</span>;
-        <span class="ident">div</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">small</span>.<span class="ident">len</span>() <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">small</span>[<span class="ident">div</span>] <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">rem</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>
+        <span class="self">Self </span>{ u, len: u, small, large }
     }
 
-    <span class="doccomment">/// $\\max\_{j\\lt i}\\text{ s.t. }j\\in S$ を返す。</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">less</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="ident">i</span> <span class="op">==</span> <span class="number">0</span> {
-            <span class="prelude-val">None</span>
-        } <span class="kw">else</span> {
-            <span class="self">self</span>.<span class="ident">less_equal</span>(<span class="ident">i</span> <span class="op">-</span> <span class="number">1</span>)
+    <span class="doccomment">/// $u$ を返す。
+    </span><span class="kw">pub fn </span>universe_len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize { <span class="self">self</span>.u }
+    <span class="doccomment">/// $|S|$ を返す。
+    </span><span class="kw">pub fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize { <span class="self">self</span>.len }
+    <span class="doccomment">/// $S=\\emptyset$ を返す。
+    </span><span class="kw">pub fn </span>is_empty(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool { <span class="self">self</span>.len == <span class="number">0 </span>}
+
+    <span class="doccomment">/// $i\\in S$ を返す。
+    </span><span class="kw">pub fn </span>contains(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize) -&gt; bool {
+        <span class="kw">let </span>div = i / WORD_SIZE;
+        <span class="kw">let </span>rem = i % WORD_SIZE;
+        div &lt; <span class="self">self</span>.small.len() &amp;&amp; <span class="self">self</span>.small[div] &gt;&gt; rem &amp; <span class="number">1 </span>!= <span class="number">0
+    </span>}
+
+    <span class="doccomment">/// $\\max\_{j\\lt i}\\text{ s.t. }j\\in S$ を返す。
+    </span><span class="kw">pub fn </span>less(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt; {
+        <span class="kw">if </span>i == <span class="number">0 </span>{
+            <span class="prelude-val">None
+        </span>} <span class="kw">else </span>{
+            <span class="self">self</span>.less_equal(i - <span class="number">1</span>)
         }
     }
-    <span class="doccomment">/// $\\max\_{j\\le i}\\text{ s.t. }j\\in S$ を返す。</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">less_equal</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="ident">i</span>.<span class="ident">min</span>(<span class="self">self</span>.<span class="ident">u</span> <span class="op">-</span> <span class="number">1</span>) <span class="op">+</span> <span class="number">1</span>;
-        <span class="kw">let</span> <span class="ident">div</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">/</span> <span class="ident">WORD_SIZE</span>;
-        <span class="kw">let</span> <span class="ident">rem</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">%</span> <span class="ident">WORD_SIZE</span>;
-        <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">small</span>[<span class="ident">div</span>] <span class="op">&amp;</span> <span class="op">!</span>(<span class="op">!</span><span class="number">0_usize</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">rem</span>);
-        <span class="kw">if</span> <span class="ident">m</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-            <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">div</span> <span class="op">*</span> <span class="ident">WORD_SIZE</span> <span class="op">+</span> <span class="ident">bsr</span>(<span class="ident">m</span>));
+    <span class="doccomment">/// $\\max\_{j\\le i}\\text{ s.t. }j\\in S$ を返す。
+    </span><span class="kw">pub fn </span>less_equal(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt; {
+        <span class="kw">let </span>i = i.min(<span class="self">self</span>.u - <span class="number">1</span>) + <span class="number">1</span>;
+        <span class="kw">let </span>div = i / WORD_SIZE;
+        <span class="kw">let </span>rem = i % WORD_SIZE;
+        <span class="kw">let </span>m = <span class="self">self</span>.small[div] &amp; !(!<span class="number">0_usize </span>&lt;&lt; rem);
+        <span class="kw">if </span>m != <span class="number">0 </span>{
+            <span class="kw">return </span><span class="prelude-val">Some</span>(div * WORD_SIZE + bsr(m));
         }
-        <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">large</span>.<span class="ident">left</span>(<span class="ident">div</span>);
-        <span class="kw">if</span> <span class="ident">b</span> <span class="op">==</span> <span class="number">0</span> {
-            <span class="prelude-val">None</span>
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Some</span>((<span class="ident">b</span> <span class="op">-</span> <span class="number">1</span>) <span class="op">*</span> <span class="ident">WORD_SIZE</span> <span class="op">+</span> <span class="ident">bsr</span>(<span class="self">self</span>.<span class="ident">small</span>[<span class="ident">b</span> <span class="op">-</span> <span class="number">1</span>]))
-        }
-    }
-    <span class="doccomment">/// $\\min\_{j\\gt i}\\text{ s.t. }j\\in S$ を返す。</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">greater</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="ident">i</span> <span class="op">==</span> <span class="self">self</span>.<span class="ident">u</span> {
-            <span class="prelude-val">None</span>
-        } <span class="kw">else</span> {
-            <span class="self">self</span>.<span class="ident">greater_equal</span>(<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>)
+        <span class="kw">let </span>b = <span class="self">self</span>.large.left(div);
+        <span class="kw">if </span>b == <span class="number">0 </span>{
+            <span class="prelude-val">None
+        </span>} <span class="kw">else </span>{
+            <span class="prelude-val">Some</span>((b - <span class="number">1</span>) * WORD_SIZE + bsr(<span class="self">self</span>.small[b - <span class="number">1</span>]))
         }
     }
-    <span class="doccomment">/// $\\min\_{j\\ge i}\\text{ s.t. }j\\in S$ を返す。</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">greater_equal</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">div</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">/</span> <span class="ident">WORD_SIZE</span>;
-        <span class="kw">let</span> <span class="ident">rem</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">%</span> <span class="ident">WORD_SIZE</span>;
-        <span class="kw">if</span> <span class="ident">div</span> <span class="op">&gt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">small</span>.<span class="ident">len</span>() {
-            <span class="kw">return</span> <span class="prelude-val">None</span>;
+    <span class="doccomment">/// $\\min\_{j\\gt i}\\text{ s.t. }j\\in S$ を返す。
+    </span><span class="kw">pub fn </span>greater(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt; {
+        <span class="kw">if </span>i == <span class="self">self</span>.u {
+            <span class="prelude-val">None
+        </span>} <span class="kw">else </span>{
+            <span class="self">self</span>.greater_equal(i + <span class="number">1</span>)
         }
-        <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">small</span>[<span class="ident">div</span>] <span class="op">&amp;</span> <span class="op">!</span><span class="number">0_usize</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">rem</span>;
-        <span class="kw">if</span> <span class="ident">m</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-            <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">div</span> <span class="op">*</span> <span class="ident">WORD_SIZE</span> <span class="op">+</span> <span class="ident">bsf</span>(<span class="ident">m</span>));
+    }
+    <span class="doccomment">/// $\\min\_{j\\ge i}\\text{ s.t. }j\\in S$ を返す。
+    </span><span class="kw">pub fn </span>greater_equal(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt; {
+        <span class="kw">let </span>div = i / WORD_SIZE;
+        <span class="kw">let </span>rem = i % WORD_SIZE;
+        <span class="kw">if </span>div &gt;= <span class="self">self</span>.small.len() {
+            <span class="kw">return </span><span class="prelude-val">None</span>;
         }
-        <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">large</span>.<span class="ident">right</span>(<span class="ident">div</span> <span class="op">+</span> <span class="number">1</span>);
-        <span class="kw">if</span> <span class="ident">b</span> <span class="op">==</span> <span class="self">self</span>.<span class="ident">small</span>.<span class="ident">len</span>() {
-            <span class="prelude-val">None</span>
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">b</span> <span class="op">*</span> <span class="ident">WORD_SIZE</span> <span class="op">+</span> <span class="ident">bsf</span>(<span class="self">self</span>.<span class="ident">small</span>[<span class="ident">b</span>]))
+        <span class="kw">let </span>m = <span class="self">self</span>.small[div] &amp; !<span class="number">0_usize </span>&lt;&lt; rem;
+        <span class="kw">if </span>m != <span class="number">0 </span>{
+            <span class="kw">return </span><span class="prelude-val">Some</span>(div * WORD_SIZE + bsf(m));
+        }
+        <span class="kw">let </span>b = <span class="self">self</span>.large.right(div + <span class="number">1</span>);
+        <span class="kw">if </span>b == <span class="self">self</span>.small.len() {
+            <span class="prelude-val">None
+        </span>} <span class="kw">else </span>{
+            <span class="prelude-val">Some</span>(b * WORD_SIZE + bsf(<span class="self">self</span>.small[b]))
         }
     }
 
-    <span class="doccomment">/// $S\\gets S\\setminus\\{i\\}$ で更新する。</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">remove</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">let</span> <span class="ident">div</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">/</span> <span class="ident">WORD_SIZE</span>;
-        <span class="kw">let</span> <span class="ident">rem</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">%</span> <span class="ident">WORD_SIZE</span>;
-        <span class="kw">if</span> <span class="ident">div</span> <span class="op">&gt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">small</span>.<span class="ident">len</span>() <span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">small</span>[<span class="ident">div</span>] <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">rem</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">==</span> <span class="number">0</span> {
-            <span class="kw">return</span> <span class="bool-val">false</span>;
+    <span class="doccomment">/// $S\\gets S\\setminus\\{i\\}$ で更新する。
+    </span><span class="kw">pub fn </span>remove(<span class="kw-2">&amp;mut </span><span class="self">self</span>, i: usize) -&gt; bool {
+        <span class="kw">let </span>div = i / WORD_SIZE;
+        <span class="kw">let </span>rem = i % WORD_SIZE;
+        <span class="kw">if </span>div &gt;= <span class="self">self</span>.small.len() || <span class="self">self</span>.small[div] &gt;&gt; rem &amp; <span class="number">1 </span>== <span class="number">0 </span>{
+            <span class="kw">return </span><span class="bool-val">false</span>;
         }
-        <span class="self">self</span>.<span class="ident">len</span> <span class="op">-</span><span class="op">=</span> <span class="number">1</span>;
-        <span class="self">self</span>.<span class="ident">small</span>[<span class="ident">div</span>] <span class="op">&amp;=</span> <span class="op">!</span>(<span class="number">1_usize</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">rem</span>);
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">small</span>[<span class="ident">div</span>] <span class="op">==</span> <span class="number">0</span> {
-            <span class="self">self</span>.<span class="ident">large</span>.<span class="ident">unite</span>(<span class="ident">div</span>, <span class="ident">div</span> <span class="op">+</span> <span class="number">1</span>);
+        <span class="self">self</span>.len -= <span class="number">1</span>;
+        <span class="self">self</span>.small[div] &amp;= !(<span class="number">1_usize </span>&lt;&lt; rem);
+        <span class="kw">if </span><span class="self">self</span>.small[div] == <span class="number">0 </span>{
+            <span class="self">self</span>.large.unite(div, div + <span class="number">1</span>);
         }
-        <span class="bool-val">true</span>
-    }
+        <span class="bool-val">true
+    </span>}
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
-<span class="kw">enum</span> <span class="ident">Item</span> {
-    <span class="ident">Parent</span>(<span class="ident">usize</span>),
-    <span class="ident">Size</span>(<span class="ident">usize</span>),
+<span class="attribute">#[derive(Clone, Copy)]
+</span><span class="kw">enum </span>Item {
+    Parent(usize),
+    Size(usize),
 }
-<span class="kw">use</span> <span class="ident">Item</span>::{<span class="ident">Parent</span>, <span class="ident">Size</span>};
+<span class="kw">use </span>Item::{Parent, Size};
 
-<span class="kw">use</span> <span class="ident">std::cell::RefCell</span>;
+<span class="kw">use </span>std::cell::RefCell;
 
-<span class="kw">struct</span> <span class="ident">UnionFind</span> {
-    <span class="ident">buf</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Item</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">left</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-    <span class="ident">right</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
+<span class="kw">struct </span>UnionFind {
+    buf: RefCell&lt;Vec&lt;Item&gt;&gt;,
+    left: Vec&lt;usize&gt;,
+    right: Vec&lt;usize&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">UnionFind</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">buf</span>: <span class="ident">RefCell::new</span>(<span class="macro">vec!</span>[<span class="ident">Size</span>(<span class="number">1</span>); <span class="ident">n</span>]),
-            <span class="ident">left</span>: (<span class="number">0</span>..<span class="ident">n</span>).<span class="ident">collect</span>(),
-            <span class="ident">right</span>: (<span class="number">0</span>..<span class="ident">n</span>).<span class="ident">collect</span>(),
+<span class="kw">impl </span>UnionFind {
+    <span class="kw">pub fn </span>new(n: usize) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            buf: RefCell::new(<span class="macro">vec!</span>[Size(<span class="number">1</span>); n]),
+            left: (<span class="number">0</span>..n).collect(),
+            right: (<span class="number">0</span>..n).collect(),
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">repr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow_mut</span>();
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="ident">i</span>;
-            <span class="kw">while</span> <span class="kw">let</span> <span class="ident">Parent</span>(<span class="ident">ni</span>) <span class="op">=</span> <span class="ident">buf</span>[<span class="ident">i</span>] {
-                <span class="ident">i</span> <span class="op">=</span> <span class="ident">ni</span>;
+    <span class="kw">fn </span>repr(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>i: usize) -&gt; usize {
+        <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="self">self</span>.buf.borrow_mut();
+        <span class="kw">let </span>res = {
+            <span class="kw">let </span><span class="kw-2">mut </span>i = i;
+            <span class="kw">while let </span>Parent(ni) = buf[i] {
+                i = ni;
             }
-            <span class="ident">i</span>
+            i
         };
-        <span class="kw">while</span> <span class="kw">let</span> <span class="ident">Parent</span>(<span class="ident">ni</span>) <span class="op">=</span> <span class="ident">buf</span>[<span class="ident">i</span>] {
-            <span class="ident">buf</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">Parent</span>(<span class="ident">res</span>);
-            <span class="ident">i</span> <span class="op">=</span> <span class="ident">ni</span>;
+        <span class="kw">while let </span>Parent(ni) = buf[i] {
+            buf[i] = Parent(res);
+            i = ni;
         }
-        <span class="ident">res</span>
+        res
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">left</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">left</span>[<span class="self">self</span>.<span class="ident">repr</span>(<span class="ident">i</span>)] }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">right</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">right</span>[<span class="self">self</span>.<span class="ident">repr</span>(<span class="ident">i</span>)] }
+    <span class="kw">pub fn </span>left(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize) -&gt; usize { <span class="self">self</span>.left[<span class="self">self</span>.repr(i)] }
+    <span class="kw">pub fn </span>right(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize) -&gt; usize { <span class="self">self</span>.right[<span class="self">self</span>.repr(i)] }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unite</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">il</span>: <span class="ident">usize</span>, <span class="ident">ir</span>: <span class="ident">usize</span>) {
-        <span class="kw">let</span> <span class="ident">il</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">repr</span>(<span class="ident">il</span>);
-        <span class="kw">let</span> <span class="ident">ir</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">repr</span>(<span class="ident">ir</span>);
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow_mut</span>();
-        <span class="kw">let</span> (<span class="ident">sl</span>, <span class="ident">sr</span>) <span class="op">=</span> <span class="kw">match</span> (<span class="ident">buf</span>[<span class="ident">il</span>], <span class="ident">buf</span>[<span class="ident">ir</span>]) {
-            (<span class="ident">Size</span>(<span class="ident">sl</span>), <span class="ident">Size</span>(<span class="ident">sr</span>)) =&gt; (<span class="ident">sl</span>, <span class="ident">sr</span>),
-            <span class="kw">_</span> =&gt; <span class="macro">unreachable!</span>(),
+    <span class="kw">pub fn </span>unite(<span class="kw-2">&amp;mut </span><span class="self">self</span>, il: usize, ir: usize) {
+        <span class="kw">let </span>il = <span class="self">self</span>.repr(il);
+        <span class="kw">let </span>ir = <span class="self">self</span>.repr(ir);
+        <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="self">self</span>.buf.borrow_mut();
+        <span class="kw">let </span>(sl, sr) = <span class="kw">match </span>(buf[il], buf[ir]) {
+            (Size(sl), Size(sr)) =&gt; (sl, sr),
+            <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(),
         };
-        <span class="kw">if</span> <span class="ident">sl</span> <span class="op">&lt;</span> <span class="ident">sr</span> {
-            <span class="ident">buf</span>[<span class="ident">ir</span>] <span class="op">=</span> <span class="ident">Size</span>(<span class="ident">sl</span> <span class="op">+</span> <span class="ident">sr</span>);
-            <span class="ident">buf</span>[<span class="ident">il</span>] <span class="op">=</span> <span class="ident">Parent</span>(<span class="ident">ir</span>);
-            <span class="self">self</span>.<span class="ident">left</span>[<span class="ident">ir</span>] <span class="op">=</span> <span class="self">self</span>.<span class="ident">left</span>[<span class="ident">il</span>];
-        } <span class="kw">else</span> {
-            <span class="ident">buf</span>[<span class="ident">il</span>] <span class="op">=</span> <span class="ident">Size</span>(<span class="ident">sl</span> <span class="op">+</span> <span class="ident">sr</span>);
-            <span class="ident">buf</span>[<span class="ident">ir</span>] <span class="op">=</span> <span class="ident">Parent</span>(<span class="ident">il</span>);
-            <span class="self">self</span>.<span class="ident">right</span>[<span class="ident">il</span>] <span class="op">=</span> <span class="self">self</span>.<span class="ident">right</span>[<span class="ident">ir</span>];
+        <span class="kw">if </span>sl &lt; sr {
+            buf[ir] = Size(sl + sr);
+            buf[il] = Parent(ir);
+            <span class="self">self</span>.left[ir] = <span class="self">self</span>.left[il];
+        } <span class="kw">else </span>{
+            buf[il] = Size(sl + sr);
+            buf[ir] = Parent(il);
+            <span class="self">self</span>.right[il] = <span class="self">self</span>.right[ir];
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

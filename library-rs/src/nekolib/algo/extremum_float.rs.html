@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/algo/extremum_float.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>extremum_float.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/algo/extremum_float.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>extremum_float.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -162,80 +162,80 @@
 <span id="73">73</span>
 <span id="74">74</span>
 <span id="75">75</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 三分探索（実数）。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 三分探索（実数）。
 
-<span class="kw">use</span> <span class="ident">std::ops::RangeInclusive</span>;
+</span><span class="kw">use </span>std::ops::RangeInclusive;
 
-<span class="doccomment">/// 三分探索で極値を探す。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 関数 $f$ の $[x\_l, x\_r]$ における極大値を $x\^\\ast$ として、</span>
-<span class="doccomment">/// $|x-x\^\\ast| \\le \\varepsilon$ なる $x$ を求め、$(x, f(x))$ を返す。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Requirements</span>
-<span class="doccomment">/// $f$ は凸である。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Notes</span>
-<span class="doccomment">/// 黄金比を用いて分割する実装のため、関数値を使い回すことができる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// `f` の呼び出しを $\\log\_{\\varphi}(\\frac{x\_r-x\_l}{\\varepsilon}) + 1$ 回行う。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Suggestions</span>
-<span class="doccomment">/// `f64` に限らずジェネリックにするべき？ 関数の返り値も `T: PartialOrd` にする？</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// $f(x) = x\^x$ の最小値を求める。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $x = 1/e$ のとき、最小値 $e\^{-1/e}$ をとる。</span>
-<span class="doccomment">/// cf. [Wolfram|Alpha](https://www.wolframalpha.com/input/?i=y+%3D+x**x)</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::algo::extremum_float;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let p = 3.0_f64;</span>
-<span class="doccomment">/// let f = |x: f64| -x.powf(x);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let xl = 0.0;</span>
-<span class="doccomment">/// let xr = 140.0;</span>
-<span class="doccomment">/// let eps = 1.0e-8;</span>
-<span class="doccomment">/// let (x, y) = extremum_float(xl..=xr, eps, f);</span>
-<span class="doccomment">/// let y = -y;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let e = std::f64::consts::E;</span>
-<span class="doccomment">/// assert!(((1.0 / e) - x).abs() &lt; eps);</span>
-<span class="doccomment">/// assert!((e.powf(-1.0 / e) - y).abs() &lt; eps);</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extremum_float</span>(
-    <span class="ident">range</span>: <span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
-    <span class="ident">eps</span>: <span class="ident">f64</span>,
-    <span class="kw-2">mut</span> <span class="ident">f</span>: <span class="kw">impl</span> <span class="ident">FnMut</span>(<span class="ident">f64</span>) -&gt; <span class="ident">f64</span>,
-) -&gt; (<span class="ident">f64</span>, <span class="ident">f64</span>) {
-    <span class="kw">let</span> <span class="ident">phi</span>: <span class="ident">f64</span> <span class="op">=</span> (<span class="number">1.0</span> <span class="op">+</span> <span class="number">5.0_f64</span>.<span class="ident">sqrt</span>()) <span class="op">/</span> <span class="number">2.0</span>;
-    <span class="kw">let</span> <span class="ident">phi_p1</span> <span class="op">=</span> <span class="ident">phi</span> <span class="op">+</span> <span class="number">1.0</span>;
+<span class="doccomment">/// 三分探索で極値を探す。
+///
+/// 関数 $f$ の $[x\_l, x\_r]$ における極大値を $x\^\\ast$ として、
+/// $|x-x\^\\ast| \\le \\varepsilon$ なる $x$ を求め、$(x, f(x))$ を返す。
+///
+/// # Requirements
+/// $f$ は凸である。
+///
+/// # Notes
+/// 黄金比を用いて分割する実装のため、関数値を使い回すことができる。
+///
+/// # Complexity
+/// `f` の呼び出しを $\\log\_{\\varphi}(\\frac{x\_r-x\_l}{\\varepsilon}) + 1$ 回行う。
+///
+/// # Suggestions
+/// `f64` に限らずジェネリックにするべき？ 関数の返り値も `T: PartialOrd` にする？
+///
+/// # Examples
+/// $f(x) = x\^x$ の最小値を求める。
+///
+/// $x = 1/e$ のとき、最小値 $e\^{-1/e}$ をとる。
+/// cf. [Wolfram|Alpha](https://www.wolframalpha.com/input/?i=y+%3D+x**x)
+/// ```
+/// use nekolib::algo::extremum_float;
+///
+/// let p = 3.0_f64;
+/// let f = |x: f64| -x.powf(x);
+///
+/// let xl = 0.0;
+/// let xr = 140.0;
+/// let eps = 1.0e-8;
+/// let (x, y) = extremum_float(xl..=xr, eps, f);
+/// let y = -y;
+///
+/// let e = std::f64::consts::E;
+/// assert!(((1.0 / e) - x).abs() &lt; eps);
+/// assert!((e.powf(-1.0 / e) - y).abs() &lt; eps);
+/// ```
+</span><span class="kw">pub fn </span>extremum_float(
+    range: RangeInclusive&lt;f64&gt;,
+    eps: f64,
+    <span class="kw-2">mut </span>f: <span class="kw">impl </span>FnMut(f64) -&gt; f64,
+) -&gt; (f64, f64) {
+    <span class="kw">let </span>phi: f64 = (<span class="number">1.0 </span>+ <span class="number">5.0_f64</span>.sqrt()) / <span class="number">2.0</span>;
+    <span class="kw">let </span>phi_p1 = phi + <span class="number">1.0</span>;
 
-    <span class="kw">let</span> <span class="kw-2">&amp;</span>(<span class="kw-2">mut</span> <span class="ident">xl</span>) <span class="op">=</span> <span class="ident">range</span>.<span class="ident">start</span>();
-    <span class="kw">let</span> <span class="kw-2">&amp;</span>(<span class="kw-2">mut</span> <span class="ident">xr</span>) <span class="op">=</span> <span class="ident">range</span>.<span class="ident">end</span>();
+    <span class="kw">let </span><span class="kw-2">&amp;</span>(<span class="kw-2">mut </span>xl) = range.start();
+    <span class="kw">let </span><span class="kw-2">&amp;</span>(<span class="kw-2">mut </span>xr) = range.end();
 
-    <span class="kw">let</span> <span class="ident">iter</span> <span class="op">=</span> ((<span class="ident">xr</span> <span class="op">-</span> <span class="ident">xl</span>) <span class="op">/</span> <span class="ident">eps</span>).<span class="ident">log</span>(<span class="ident">phi</span>) <span class="kw">as</span> <span class="ident">u32</span> <span class="op">+</span> <span class="number">1</span>;
+    <span class="kw">let </span>iter = ((xr - xl) / eps).log(phi) <span class="kw">as </span>u32 + <span class="number">1</span>;
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xml</span> <span class="op">=</span> (<span class="ident">phi</span> <span class="op">*</span> <span class="ident">xl</span> <span class="op">+</span> <span class="ident">xr</span>) <span class="op">/</span> <span class="ident">phi_p1</span>;
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xmr</span> <span class="op">=</span> (<span class="ident">xl</span> <span class="op">+</span> <span class="ident">phi</span> <span class="op">*</span> <span class="ident">xr</span>) <span class="op">/</span> <span class="ident">phi_p1</span>;
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">yml</span> <span class="op">=</span> <span class="ident">f</span>(<span class="ident">xml</span>);
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ymr</span> <span class="op">=</span> <span class="ident">f</span>(<span class="ident">xmr</span>);
+    <span class="kw">let </span><span class="kw-2">mut </span>xml = (phi * xl + xr) / phi_p1;
+    <span class="kw">let </span><span class="kw-2">mut </span>xmr = (xl + phi * xr) / phi_p1;
+    <span class="kw">let </span><span class="kw-2">mut </span>yml = f(xml);
+    <span class="kw">let </span><span class="kw-2">mut </span>ymr = f(xmr);
 
-    <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">iter</span> {
-        <span class="kw">if</span> <span class="ident">yml</span> <span class="op">&gt;</span> <span class="ident">ymr</span> {
-            <span class="ident">xr</span> <span class="op">=</span> <span class="ident">std::mem::replace</span>(<span class="kw-2">&amp;mut</span> <span class="ident">xmr</span>, <span class="ident">xml</span>);
-            <span class="ident">ymr</span> <span class="op">=</span> <span class="ident">yml</span>;
-            <span class="ident">xml</span> <span class="op">=</span> (<span class="ident">phi</span> <span class="op">*</span> <span class="ident">xl</span> <span class="op">+</span> <span class="ident">xr</span>) <span class="op">/</span> <span class="ident">phi_p1</span>;
-            <span class="ident">yml</span> <span class="op">=</span> <span class="ident">f</span>(<span class="ident">xml</span>);
-        } <span class="kw">else</span> {
-            <span class="ident">xl</span> <span class="op">=</span> <span class="ident">std::mem::replace</span>(<span class="kw-2">&amp;mut</span> <span class="ident">xml</span>, <span class="ident">xmr</span>);
-            <span class="ident">yml</span> <span class="op">=</span> <span class="ident">ymr</span>;
-            <span class="ident">xmr</span> <span class="op">=</span> (<span class="ident">xl</span> <span class="op">+</span> <span class="ident">phi</span> <span class="op">*</span> <span class="ident">xr</span>) <span class="op">/</span> <span class="ident">phi_p1</span>;
-            <span class="ident">ymr</span> <span class="op">=</span> <span class="ident">f</span>(<span class="ident">xmr</span>);
+    <span class="kw">for _ in </span><span class="number">0</span>..iter {
+        <span class="kw">if </span>yml &gt; ymr {
+            xr = std::mem::replace(<span class="kw-2">&amp;mut </span>xmr, xml);
+            ymr = yml;
+            xml = (phi * xl + xr) / phi_p1;
+            yml = f(xml);
+        } <span class="kw">else </span>{
+            xl = std::mem::replace(<span class="kw-2">&amp;mut </span>xml, xmr);
+            yml = ymr;
+            xmr = (xl + phi * xr) / phi_p1;
+            ymr = f(xmr);
         }
     }
-    (<span class="ident">xml</span>, <span class="ident">yml</span>)
+    (xml, yml)
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

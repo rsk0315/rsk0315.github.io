@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/algo/exact_cover.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>exact_cover.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/algo/exact_cover.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>exact_cover.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -344,262 +344,262 @@
 <span id="255">255</span>
 <span id="256">256</span>
 <span id="257">257</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Exact cover。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Exact cover。
 
-<span class="doccomment">/// Exact cover。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $n$ 行 $m$ 列の 0/1 行列 $A$ が与えられたとき、行 $\\{0, 1, \\dots, n-1\\}$</span>
-<span class="doccomment">/// の部分集合 $S$ であって、各列 $0\\le j\\lt m$ に対して $A\_{i, j}=1$ なる</span>
-<span class="doccomment">/// $i\\in S$ がちょうど 1 つ存在するものを探す。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $\\gdef\\I{\\textcolor{red}{1}}$</span>
-<span class="doccomment">/// $$ A = \\begin{pmatrix}</span>
-<span class="doccomment">/// 0 &amp; 0 &amp; \\I &amp; 0 &amp; \\I &amp; \\I &amp; 0 \\\\</span>
-<span class="doccomment">/// 1 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 1 \\\\</span>
-<span class="doccomment">/// 0 &amp; 1 &amp; 1 &amp; 0 &amp; 0 &amp; 1 &amp; 0 \\\\</span>
-<span class="doccomment">/// \\I &amp; 0 &amp; 0 &amp; \\I &amp; 0 &amp; 0 &amp; 0 \\\\</span>
-<span class="doccomment">/// 0 &amp; \\I &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; \\I \\\\</span>
-<span class="doccomment">/// 0 &amp; 0 &amp; 0 &amp; 1 &amp; 1 &amp; 0 &amp; 1 \\\\</span>
-<span class="doccomment">/// \\end{pmatrix} $$</span>
-<span class="doccomment">/// のような行列 $A$ に対しては、$\\{0, 3, 4\\}$ が解となる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Idea</span>
-<span class="doccomment">/// Dancing links と呼ばれるデータ構造を用いる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// `todo!()`</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::algo::ExactCover;</span>
-<span class="doccomment">/// let a = vec![                 </span>
-<span class="doccomment">///     vec![0, 0, 1, 0, 1, 1, 0],</span>
-<span class="doccomment">///     vec![1, 0, 0, 1, 0, 0, 1],</span>
-<span class="doccomment">///     vec![0, 1, 1, 0, 0, 1, 0],</span>
-<span class="doccomment">///     vec![1, 0, 0, 1, 0, 0, 0],</span>
-<span class="doccomment">///     vec![0, 1, 0, 0, 0, 0, 1],</span>
-<span class="doccomment">///     vec![0, 0, 0, 1, 1, 0, 1],</span>
-<span class="doccomment">/// ];</span>
-<span class="doccomment">/// let ec = ExactCover::from_matrix(&amp;a);</span>
-<span class="doccomment">/// assert_eq!(ec.any(), Some(vec![3, 0, 4]));</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # References</span>
-<span class="doccomment">/// - &lt;https://www-cs-faculty.stanford.edu/~knuth/papers/dancing-color.ps.gz&gt;</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Default</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ExactCover</span> {
-    <span class="ident">link</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Node</span><span class="op">&gt;</span>,
-    <span class="ident">size</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-    <span class="ident">row</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-    <span class="ident">col</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
+/// Exact cover。
+///
+/// $n$ 行 $m$ 列の 0/1 行列 $A$ が与えられたとき、行 $\\{0, 1, \\dots, n-1\\}$
+/// の部分集合 $S$ であって、各列 $0\\le j\\lt m$ に対して $A\_{i, j}=1$ なる
+/// $i\\in S$ がちょうど 1 つ存在するものを探す。
+///
+/// $\\gdef\\I{\\textcolor{red}{1}}$
+/// $$ A = \\begin{pmatrix}
+/// 0 &amp; 0 &amp; \\I &amp; 0 &amp; \\I &amp; \\I &amp; 0 \\\\
+/// 1 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 1 \\\\
+/// 0 &amp; 1 &amp; 1 &amp; 0 &amp; 0 &amp; 1 &amp; 0 \\\\
+/// \\I &amp; 0 &amp; 0 &amp; \\I &amp; 0 &amp; 0 &amp; 0 \\\\
+/// 0 &amp; \\I &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; \\I \\\\
+/// 0 &amp; 0 &amp; 0 &amp; 1 &amp; 1 &amp; 0 &amp; 1 \\\\
+/// \\end{pmatrix} $$
+/// のような行列 $A$ に対しては、$\\{0, 3, 4\\}$ が解となる。
+///
+/// # Idea
+/// Dancing links と呼ばれるデータ構造を用いる。
+///
+/// `todo!()`
+///
+/// # Examples
+/// ```
+/// use nekolib::algo::ExactCover;
+/// let a = vec![                 
+///     vec![0, 0, 1, 0, 1, 1, 0],
+///     vec![1, 0, 0, 1, 0, 0, 1],
+///     vec![0, 1, 1, 0, 0, 1, 0],
+///     vec![1, 0, 0, 1, 0, 0, 0],
+///     vec![0, 1, 0, 0, 0, 0, 1],
+///     vec![0, 0, 0, 1, 1, 0, 1],
+/// ];
+/// let ec = ExactCover::from_matrix(&amp;a);
+/// assert_eq!(ec.any(), Some(vec![3, 0, 4]));
+/// ```
+///
+/// # References
+/// - &lt;https://www-cs-faculty.stanford.edu/~knuth/papers/dancing-color.ps.gz&gt;
+</span><span class="attribute">#[derive(Default)]
+</span><span class="kw">pub struct </span>ExactCover {
+    link: Vec&lt;Node&gt;,
+    size: Vec&lt;usize&gt;,
+    row: Vec&lt;usize&gt;,
+    col: Vec&lt;usize&gt;,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
-<span class="kw">struct</span> <span class="ident">Node</span> {
-    <span class="ident">left</span>: <span class="ident">usize</span>,
-    <span class="ident">right</span>: <span class="ident">usize</span>,
-    <span class="ident">up</span>: <span class="ident">usize</span>,
-    <span class="ident">down</span>: <span class="ident">usize</span>,
+<span class="attribute">#[derive(Clone, Copy, Debug, Default)]
+</span><span class="kw">struct </span>Node {
+    left: usize,
+    right: usize,
+    up: usize,
+    down: usize,
 }
 
-<span class="kw">impl</span> <span class="ident">ExactCover</span> {
-    <span class="doccomment">/// 与えられた行列に対して前計算を行う。</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_matrix</span>(<span class="ident">a</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">a</span>.<span class="ident">len</span>();
-        <span class="kw">if</span> <span class="ident">h</span> <span class="op">==</span> <span class="number">0</span> {
-            <span class="kw">return</span> <span class="ident"><span class="self">Self</span>::default</span>();
+<span class="kw">impl </span>ExactCover {
+    <span class="doccomment">/// 与えられた行列に対して前計算を行う。
+    </span><span class="kw">pub fn </span>from_matrix(a: <span class="kw-2">&amp;</span>Vec&lt;Vec&lt;usize&gt;&gt;) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>h = a.len();
+        <span class="kw">if </span>h == <span class="number">0 </span>{
+            <span class="kw">return </span><span class="self">Self</span>::default();
         }
-        <span class="kw">let</span> <span class="ident">w</span> <span class="op">=</span> <span class="ident">a</span>[<span class="number">0</span>].<span class="ident">len</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">index</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">w</span>]; <span class="ident">h</span>];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">size</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">w</span>];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">row</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">w</span> <span class="op">+</span> <span class="number">1</span>];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">col</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">w</span> <span class="op">+</span> <span class="number">1</span>];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cur</span> <span class="op">=</span> <span class="ident">w</span>;
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">h</span> {
-            <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">w</span> {
-                <span class="kw">if</span> <span class="ident">a</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">==</span> <span class="number">0</span> {
+        <span class="kw">let </span>w = a[<span class="number">0</span>].len();
+        <span class="kw">let </span><span class="kw-2">mut </span>index = <span class="macro">vec!</span>[<span class="macro">vec!</span>[<span class="number">0</span>; w]; h];
+        <span class="kw">let </span><span class="kw-2">mut </span>size = <span class="macro">vec!</span>[<span class="number">0</span>; w];
+        <span class="kw">let </span><span class="kw-2">mut </span>row = <span class="macro">vec!</span>[<span class="number">0</span>; w + <span class="number">1</span>];
+        <span class="kw">let </span><span class="kw-2">mut </span>col = <span class="macro">vec!</span>[<span class="number">0</span>; w + <span class="number">1</span>];
+        <span class="kw">let </span><span class="kw-2">mut </span>cur = w;
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..h {
+            <span class="kw">for </span>j <span class="kw">in </span><span class="number">0</span>..w {
+                <span class="kw">if </span>a[i][j] == <span class="number">0 </span>{
                     <span class="kw">continue</span>;
                 }
-                <span class="ident">cur</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-                <span class="ident">index</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">=</span> <span class="ident">cur</span>;
-                <span class="ident">size</span>[<span class="ident">j</span>] <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-                <span class="ident">row</span>.<span class="ident">push</span>(<span class="ident">i</span>);
-                <span class="ident">col</span>.<span class="ident">push</span>(<span class="ident">j</span>);
+                cur += <span class="number">1</span>;
+                index[i][j] = cur;
+                size[j] += <span class="number">1</span>;
+                row.push(i);
+                col.push(j);
             }
         }
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">link</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">Node::default</span>(); <span class="ident">cur</span> <span class="op">+</span> <span class="number">1</span>];
-        <span class="ident">link</span>[<span class="number">0</span>].<span class="ident">right</span> <span class="op">=</span> <span class="number">1</span>;
-        <span class="ident">link</span>[<span class="number">0</span>].<span class="ident">left</span> <span class="op">=</span> <span class="ident">w</span>;
-        <span class="ident">link</span>[<span class="ident">w</span>].<span class="ident">right</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="ident">link</span>[<span class="ident">w</span>].<span class="ident">left</span> <span class="op">=</span> <span class="ident">w</span> <span class="op">-</span> <span class="number">1</span>;
-        <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">1</span>..<span class="ident">w</span> {
-            <span class="ident">link</span>[<span class="ident">j</span>].<span class="ident">right</span> <span class="op">=</span> <span class="ident">j</span> <span class="op">+</span> <span class="number">1</span>;
-            <span class="ident">link</span>[<span class="ident">j</span>].<span class="ident">left</span> <span class="op">=</span> <span class="ident">j</span> <span class="op">-</span> <span class="number">1</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>link = <span class="macro">vec!</span>[Node::default(); cur + <span class="number">1</span>];
+        link[<span class="number">0</span>].right = <span class="number">1</span>;
+        link[<span class="number">0</span>].left = w;
+        link[w].right = <span class="number">0</span>;
+        link[w].left = w - <span class="number">1</span>;
+        <span class="kw">for </span>j <span class="kw">in </span><span class="number">1</span>..w {
+            link[j].right = j + <span class="number">1</span>;
+            link[j].left = j - <span class="number">1</span>;
         }
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">h</span> {
-            <span class="kw">let</span> <span class="ident">first</span> <span class="op">=</span> <span class="kw">match</span> (<span class="number">0</span>..<span class="ident">w</span>).<span class="ident">find</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">j</span><span class="op">|</span> <span class="ident">index</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">!</span><span class="op">=</span> <span class="number">0</span>) {
-                <span class="prelude-val">Some</span>(<span class="ident">s</span>) =&gt; <span class="ident">s</span>,
-                <span class="prelude-val">None</span> =&gt; <span class="kw">continue</span>,
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..h {
+            <span class="kw">let </span>first = <span class="kw">match </span>(<span class="number">0</span>..w).find(|<span class="kw-2">&amp;</span>j| index[i][j] != <span class="number">0</span>) {
+                <span class="prelude-val">Some</span>(s) =&gt; s,
+                <span class="prelude-val">None </span>=&gt; <span class="kw">continue</span>,
             };
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">j</span> <span class="op">=</span> <span class="ident">first</span>;
-            <span class="kw">loop</span> {
-                <span class="kw">match</span> (<span class="ident">j</span> <span class="op">+</span> <span class="number">1</span>..<span class="ident">w</span>).<span class="ident">find</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">nj</span><span class="op">|</span> <span class="ident">index</span>[<span class="ident">i</span>][<span class="ident">nj</span>] <span class="op">!</span><span class="op">=</span> <span class="number">0</span>) {
-                    <span class="prelude-val">Some</span>(<span class="ident">nj</span>) =&gt; {
-                        <span class="ident">link</span>[<span class="ident">index</span>[<span class="ident">i</span>][<span class="ident">j</span>]].<span class="ident">right</span> <span class="op">=</span> <span class="ident">index</span>[<span class="ident">i</span>][<span class="ident">nj</span>];
-                        <span class="ident">link</span>[<span class="ident">index</span>[<span class="ident">i</span>][<span class="ident">nj</span>]].<span class="ident">left</span> <span class="op">=</span> <span class="ident">index</span>[<span class="ident">i</span>][<span class="ident">j</span>];
-                        <span class="ident">j</span> <span class="op">=</span> <span class="ident">nj</span>;
+            <span class="kw">let </span><span class="kw-2">mut </span>j = first;
+            <span class="kw">loop </span>{
+                <span class="kw">match </span>(j + <span class="number">1</span>..w).find(|<span class="kw-2">&amp;</span>nj| index[i][nj] != <span class="number">0</span>) {
+                    <span class="prelude-val">Some</span>(nj) =&gt; {
+                        link[index[i][j]].right = index[i][nj];
+                        link[index[i][nj]].left = index[i][j];
+                        j = nj;
                     }
-                    <span class="prelude-val">None</span> =&gt; {
-                        <span class="ident">link</span>[<span class="ident">index</span>[<span class="ident">i</span>][<span class="ident">first</span>]].<span class="ident">left</span> <span class="op">=</span> <span class="ident">index</span>[<span class="ident">i</span>][<span class="ident">j</span>];
-                        <span class="ident">link</span>[<span class="ident">index</span>[<span class="ident">i</span>][<span class="ident">j</span>]].<span class="ident">right</span> <span class="op">=</span> <span class="ident">index</span>[<span class="ident">i</span>][<span class="ident">first</span>];
+                    <span class="prelude-val">None </span>=&gt; {
+                        link[index[i][first]].left = index[i][j];
+                        link[index[i][j]].right = index[i][first];
                         <span class="kw">break</span>;
                     }
                 };
             }
         }
 
-        <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">w</span> {
-            <span class="kw">let</span> <span class="ident">first</span> <span class="op">=</span> <span class="kw">match</span> (<span class="number">0</span>..<span class="ident">h</span>).<span class="ident">find</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">i</span><span class="op">|</span> <span class="ident">index</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">!</span><span class="op">=</span> <span class="number">0</span>) {
-                <span class="prelude-val">Some</span>(<span class="ident">s</span>) =&gt; <span class="ident">s</span>,
-                <span class="prelude-val">None</span> =&gt; <span class="kw">continue</span>,
+        <span class="kw">for </span>j <span class="kw">in </span><span class="number">0</span>..w {
+            <span class="kw">let </span>first = <span class="kw">match </span>(<span class="number">0</span>..h).find(|<span class="kw-2">&amp;</span>i| index[i][j] != <span class="number">0</span>) {
+                <span class="prelude-val">Some</span>(s) =&gt; s,
+                <span class="prelude-val">None </span>=&gt; <span class="kw">continue</span>,
             };
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="ident">first</span>;
-            <span class="ident">link</span>[<span class="ident">j</span> <span class="op">+</span> <span class="number">1</span>].<span class="ident">down</span> <span class="op">=</span> <span class="ident">index</span>[<span class="ident">i</span>][<span class="ident">j</span>];
-            <span class="ident">link</span>[<span class="ident">index</span>[<span class="ident">i</span>][<span class="ident">j</span>]].<span class="ident">up</span> <span class="op">=</span> <span class="ident">j</span> <span class="op">+</span> <span class="number">1</span>;
-            <span class="kw">loop</span> {
-                <span class="kw">match</span> (<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>..<span class="ident">h</span>).<span class="ident">find</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">ni</span><span class="op">|</span> <span class="ident">index</span>[<span class="ident">ni</span>][<span class="ident">j</span>] <span class="op">!</span><span class="op">=</span> <span class="number">0</span>) {
-                    <span class="prelude-val">Some</span>(<span class="ident">ni</span>) =&gt; {
-                        <span class="ident">link</span>[<span class="ident">index</span>[<span class="ident">i</span>][<span class="ident">j</span>]].<span class="ident">down</span> <span class="op">=</span> <span class="ident">index</span>[<span class="ident">ni</span>][<span class="ident">j</span>];
-                        <span class="ident">link</span>[<span class="ident">index</span>[<span class="ident">ni</span>][<span class="ident">j</span>]].<span class="ident">up</span> <span class="op">=</span> <span class="ident">index</span>[<span class="ident">i</span>][<span class="ident">j</span>];
-                        <span class="ident">i</span> <span class="op">=</span> <span class="ident">ni</span>;
+            <span class="kw">let </span><span class="kw-2">mut </span>i = first;
+            link[j + <span class="number">1</span>].down = index[i][j];
+            link[index[i][j]].up = j + <span class="number">1</span>;
+            <span class="kw">loop </span>{
+                <span class="kw">match </span>(i + <span class="number">1</span>..h).find(|<span class="kw-2">&amp;</span>ni| index[ni][j] != <span class="number">0</span>) {
+                    <span class="prelude-val">Some</span>(ni) =&gt; {
+                        link[index[i][j]].down = index[ni][j];
+                        link[index[ni][j]].up = index[i][j];
+                        i = ni;
                     }
-                    <span class="prelude-val">None</span> =&gt; {
-                        <span class="ident">link</span>[<span class="ident">j</span> <span class="op">+</span> <span class="number">1</span>].<span class="ident">up</span> <span class="op">=</span> <span class="ident">index</span>[<span class="ident">i</span>][<span class="ident">j</span>];
-                        <span class="ident">link</span>[<span class="ident">index</span>[<span class="ident">i</span>][<span class="ident">j</span>]].<span class="ident">down</span> <span class="op">=</span> <span class="ident">j</span> <span class="op">+</span> <span class="number">1</span>;
+                    <span class="prelude-val">None </span>=&gt; {
+                        link[j + <span class="number">1</span>].up = index[i][j];
+                        link[index[i][j]].down = j + <span class="number">1</span>;
                         <span class="kw">break</span>;
                     }
                 }
             }
         }
 
-        <span class="self">Self</span> { <span class="ident">link</span>, <span class="ident">size</span>, <span class="ident">row</span>, <span class="ident">col</span> }
+        <span class="self">Self </span>{ link, size, row, col }
     }
 
-    <span class="doccomment">/// 解を全て探す。</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">all</span>(<span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">link</span>.<span class="ident">is_empty</span>() <span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">size</span>.<span class="ident">iter</span>().<span class="ident">any</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span> <span class="op">==</span> <span class="number">0</span>) {
-            <span class="kw">return</span> <span class="macro">vec!</span>[];
+    <span class="doccomment">/// 解を全て探す。
+    </span><span class="kw">pub fn </span>all(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; Vec&lt;Vec&lt;usize&gt;&gt; {
+        <span class="kw">if </span><span class="self">self</span>.link.is_empty() || <span class="self">self</span>.size.iter().any(|<span class="kw-2">&amp;</span>x| x == <span class="number">0</span>) {
+            <span class="kw">return </span><span class="macro">vec!</span>[];
         }
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cur</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-        <span class="self">self</span>.<span class="ident">dfs</span>(<span class="kw-2">&amp;mut</span> <span class="ident">cur</span>, <span class="kw-2">&amp;mut</span> <span class="ident">res</span>, <span class="bool-val">false</span>);
-        <span class="ident">res</span>
+        <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="macro">vec!</span>[];
+        <span class="kw">let </span><span class="kw-2">mut </span>cur = <span class="macro">vec!</span>[];
+        <span class="self">self</span>.dfs(<span class="kw-2">&amp;mut </span>cur, <span class="kw-2">&amp;mut </span>res, <span class="bool-val">false</span>);
+        res
     }
 
-    <span class="doccomment">/// 解を探す。一つ見つかった時点で打ち切る。</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">any</span>(<span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">link</span>.<span class="ident">is_empty</span>() <span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">size</span>.<span class="ident">iter</span>().<span class="ident">any</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span> <span class="op">==</span> <span class="number">0</span>) {
-            <span class="kw">return</span> <span class="prelude-val">None</span>;
+    <span class="doccomment">/// 解を探す。一つ見つかった時点で打ち切る。
+    </span><span class="kw">pub fn </span>any(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Vec&lt;usize&gt;&gt; {
+        <span class="kw">if </span><span class="self">self</span>.link.is_empty() || <span class="self">self</span>.size.iter().any(|<span class="kw-2">&amp;</span>x| x == <span class="number">0</span>) {
+            <span class="kw">return </span><span class="prelude-val">None</span>;
         }
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cur</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-        <span class="self">self</span>.<span class="ident">dfs</span>(<span class="kw-2">&amp;mut</span> <span class="ident">cur</span>, <span class="kw-2">&amp;mut</span> <span class="ident">res</span>, <span class="bool-val">true</span>);
-        <span class="ident">res</span>.<span class="ident">pop</span>()
+        <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="macro">vec!</span>[];
+        <span class="kw">let </span><span class="kw-2">mut </span>cur = <span class="macro">vec!</span>[];
+        <span class="self">self</span>.dfs(<span class="kw-2">&amp;mut </span>cur, <span class="kw-2">&amp;mut </span>res, <span class="bool-val">true</span>);
+        res.pop()
     }
 
-    <span class="kw">fn</span> <span class="ident">dfs</span>(
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-        <span class="ident">cur</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-        <span class="ident">res</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-        <span class="ident">any</span>: <span class="ident">bool</span>,
+    <span class="kw">fn </span>dfs(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        cur: <span class="kw-2">&amp;mut </span>Vec&lt;usize&gt;,
+        res: <span class="kw-2">&amp;mut </span>Vec&lt;Vec&lt;usize&gt;&gt;,
+        any: bool,
     ) {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">link</span>[<span class="number">0</span>].<span class="ident">right</span> <span class="op">==</span> <span class="number">0</span> {
-            <span class="ident">res</span>.<span class="ident">push</span>(<span class="ident">cur</span>.<span class="ident">clone</span>());
+        <span class="kw">if </span><span class="self">self</span>.link[<span class="number">0</span>].right == <span class="number">0 </span>{
+            res.push(cur.clone());
             <span class="kw">return</span>;
         }
 
-        <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">choose</span>();
-        <span class="self">self</span>.<span class="ident">cover</span>(<span class="ident">c</span>);
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">r</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">c</span>].<span class="ident">down</span>;
-        <span class="kw">while</span> <span class="ident">r</span> <span class="op">!</span><span class="op">=</span> <span class="ident">c</span> {
-            <span class="ident">cur</span>.<span class="ident">push</span>(<span class="self">self</span>.<span class="ident">row</span>[<span class="ident">r</span>]);
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">j</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">r</span>].<span class="ident">right</span>;
-            <span class="kw">while</span> <span class="ident">j</span> <span class="op">!</span><span class="op">=</span> <span class="ident">r</span> {
-                <span class="self">self</span>.<span class="ident">cover</span>(<span class="self">self</span>.<span class="ident">col</span>[<span class="ident">j</span>] <span class="op">+</span> <span class="number">1</span>);
-                <span class="ident">j</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">j</span>].<span class="ident">right</span>;
+        <span class="kw">let </span>c = <span class="self">self</span>.choose();
+        <span class="self">self</span>.cover(c);
+        <span class="kw">let </span><span class="kw-2">mut </span>r = <span class="self">self</span>.link[c].down;
+        <span class="kw">while </span>r != c {
+            cur.push(<span class="self">self</span>.row[r]);
+            <span class="kw">let </span><span class="kw-2">mut </span>j = <span class="self">self</span>.link[r].right;
+            <span class="kw">while </span>j != r {
+                <span class="self">self</span>.cover(<span class="self">self</span>.col[j] + <span class="number">1</span>);
+                j = <span class="self">self</span>.link[j].right;
             }
-            <span class="self">self</span>.<span class="ident">dfs</span>(<span class="ident">cur</span>, <span class="ident">res</span>, <span class="ident">any</span>);
-            <span class="kw">if</span> <span class="ident">any</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">res</span>.<span class="ident">is_empty</span>() {
+            <span class="self">self</span>.dfs(cur, res, any);
+            <span class="kw">if </span>any &amp;&amp; !res.is_empty() {
                 <span class="kw">return</span>;
             }
 
-            <span class="ident">cur</span>.<span class="ident">pop</span>();
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">j</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">r</span>].<span class="ident">left</span>;
-            <span class="kw">while</span> <span class="ident">j</span> <span class="op">!</span><span class="op">=</span> <span class="ident">r</span> {
-                <span class="self">self</span>.<span class="ident">uncover</span>(<span class="self">self</span>.<span class="ident">col</span>[<span class="ident">j</span>] <span class="op">+</span> <span class="number">1</span>);
-                <span class="ident">j</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">j</span>].<span class="ident">left</span>;
+            cur.pop();
+            <span class="kw">let </span><span class="kw-2">mut </span>j = <span class="self">self</span>.link[r].left;
+            <span class="kw">while </span>j != r {
+                <span class="self">self</span>.uncover(<span class="self">self</span>.col[j] + <span class="number">1</span>);
+                j = <span class="self">self</span>.link[j].left;
             }
-            <span class="ident">r</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">r</span>].<span class="ident">down</span>;
+            r = <span class="self">self</span>.link[r].down;
         }
 
-        <span class="self">self</span>.<span class="ident">uncover</span>(<span class="ident">c</span>);
+        <span class="self">self</span>.uncover(c);
     }
 
-    <span class="kw">fn</span> <span class="ident">choose</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">j</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">link</span>[<span class="number">0</span>].<span class="ident">right</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">j</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">s</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">size</span>[<span class="ident">j</span> <span class="op">-</span> <span class="number">1</span>];
-        <span class="kw">while</span> <span class="ident">j</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">size</span>[<span class="ident">j</span> <span class="op">-</span> <span class="number">1</span>] <span class="op">&lt;</span> <span class="ident">s</span> {
-                <span class="ident">c</span> <span class="op">=</span> <span class="ident">j</span>;
-                <span class="ident">s</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">size</span>[<span class="ident">j</span> <span class="op">-</span> <span class="number">1</span>];
+    <span class="kw">fn </span>choose(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+        <span class="kw">let </span><span class="kw-2">mut </span>j = <span class="self">self</span>.link[<span class="number">0</span>].right;
+        <span class="kw">let </span><span class="kw-2">mut </span>c = j;
+        <span class="kw">let </span><span class="kw-2">mut </span>s = <span class="self">self</span>.size[j - <span class="number">1</span>];
+        <span class="kw">while </span>j != <span class="number">0 </span>{
+            <span class="kw">if </span><span class="self">self</span>.size[j - <span class="number">1</span>] &lt; s {
+                c = j;
+                s = <span class="self">self</span>.size[j - <span class="number">1</span>];
             }
-            <span class="ident">j</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">j</span>].<span class="ident">right</span>;
+            j = <span class="self">self</span>.link[j].right;
         }
-        <span class="ident">c</span>
+        c
     }
 
-    <span class="kw">fn</span> <span class="ident">cover</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">c</span>: <span class="ident">usize</span>) {
-        <span class="kw">let</span> <span class="ident">left</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">c</span>].<span class="ident">left</span>;
-        <span class="kw">let</span> <span class="ident">right</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">c</span>].<span class="ident">right</span>;
-        <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">right</span>].<span class="ident">left</span> <span class="op">=</span> <span class="ident">left</span>;
-        <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">left</span>].<span class="ident">right</span> <span class="op">=</span> <span class="ident">right</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">c</span>].<span class="ident">down</span>;
-        <span class="kw">while</span> <span class="ident">i</span> <span class="op">!</span><span class="op">=</span> <span class="ident">c</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">j</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">i</span>].<span class="ident">right</span>;
-            <span class="kw">while</span> <span class="ident">j</span> <span class="op">!</span><span class="op">=</span> <span class="ident">i</span> {
-                <span class="kw">let</span> <span class="ident">up</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">j</span>].<span class="ident">up</span>;
-                <span class="kw">let</span> <span class="ident">down</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">j</span>].<span class="ident">down</span>;
-                <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">down</span>].<span class="ident">up</span> <span class="op">=</span> <span class="ident">up</span>;
-                <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">up</span>].<span class="ident">down</span> <span class="op">=</span> <span class="ident">down</span>;
-                <span class="self">self</span>.<span class="ident">size</span>[<span class="self">self</span>.<span class="ident">col</span>[<span class="ident">j</span>]] <span class="op">-</span><span class="op">=</span> <span class="number">1</span>;
-                <span class="ident">j</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">j</span>].<span class="ident">right</span>;
+    <span class="kw">fn </span>cover(<span class="kw-2">&amp;mut </span><span class="self">self</span>, c: usize) {
+        <span class="kw">let </span>left = <span class="self">self</span>.link[c].left;
+        <span class="kw">let </span>right = <span class="self">self</span>.link[c].right;
+        <span class="self">self</span>.link[right].left = left;
+        <span class="self">self</span>.link[left].right = right;
+        <span class="kw">let </span><span class="kw-2">mut </span>i = <span class="self">self</span>.link[c].down;
+        <span class="kw">while </span>i != c {
+            <span class="kw">let </span><span class="kw-2">mut </span>j = <span class="self">self</span>.link[i].right;
+            <span class="kw">while </span>j != i {
+                <span class="kw">let </span>up = <span class="self">self</span>.link[j].up;
+                <span class="kw">let </span>down = <span class="self">self</span>.link[j].down;
+                <span class="self">self</span>.link[down].up = up;
+                <span class="self">self</span>.link[up].down = down;
+                <span class="self">self</span>.size[<span class="self">self</span>.col[j]] -= <span class="number">1</span>;
+                j = <span class="self">self</span>.link[j].right;
             }
-            <span class="ident">i</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">i</span>].<span class="ident">down</span>;
+            i = <span class="self">self</span>.link[i].down;
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">uncover</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">c</span>: <span class="ident">usize</span>) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">c</span>].<span class="ident">up</span>;
-        <span class="kw">while</span> <span class="ident">i</span> <span class="op">!</span><span class="op">=</span> <span class="ident">c</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">j</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">i</span>].<span class="ident">left</span>;
-            <span class="kw">while</span> <span class="ident">j</span> <span class="op">!</span><span class="op">=</span> <span class="ident">i</span> {
-                <span class="self">self</span>.<span class="ident">size</span>[<span class="self">self</span>.<span class="ident">col</span>[<span class="ident">j</span>]] <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-                <span class="kw">let</span> <span class="ident">down</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">j</span>].<span class="ident">down</span>;
-                <span class="kw">let</span> <span class="ident">up</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">j</span>].<span class="ident">up</span>;
-                <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">down</span>].<span class="ident">up</span> <span class="op">=</span> <span class="ident">j</span>;
-                <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">up</span>].<span class="ident">down</span> <span class="op">=</span> <span class="ident">j</span>;
-                <span class="ident">j</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">j</span>].<span class="ident">left</span>;
+    <span class="kw">fn </span>uncover(<span class="kw-2">&amp;mut </span><span class="self">self</span>, c: usize) {
+        <span class="kw">let </span><span class="kw-2">mut </span>i = <span class="self">self</span>.link[c].up;
+        <span class="kw">while </span>i != c {
+            <span class="kw">let </span><span class="kw-2">mut </span>j = <span class="self">self</span>.link[i].left;
+            <span class="kw">while </span>j != i {
+                <span class="self">self</span>.size[<span class="self">self</span>.col[j]] += <span class="number">1</span>;
+                <span class="kw">let </span>down = <span class="self">self</span>.link[j].down;
+                <span class="kw">let </span>up = <span class="self">self</span>.link[j].up;
+                <span class="self">self</span>.link[down].up = j;
+                <span class="self">self</span>.link[up].down = j;
+                j = <span class="self">self</span>.link[j].left;
             }
-            <span class="ident">i</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">i</span>].<span class="ident">up</span>;
+            i = <span class="self">self</span>.link[i].up;
         }
-        <span class="kw">let</span> <span class="ident">right</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">c</span>].<span class="ident">right</span>;
-        <span class="kw">let</span> <span class="ident">left</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">c</span>].<span class="ident">left</span>;
-        <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">right</span>].<span class="ident">left</span> <span class="op">=</span> <span class="ident">c</span>;
-        <span class="self">self</span>.<span class="ident">link</span>[<span class="ident">left</span>].<span class="ident">right</span> <span class="op">=</span> <span class="ident">c</span>;
+        <span class="kw">let </span>right = <span class="self">self</span>.link[c].right;
+        <span class="kw">let </span>left = <span class="self">self</span>.link[c].left;
+        <span class="self">self</span>.link[right].left = c;
+        <span class="self">self</span>.link[left].right = c;
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

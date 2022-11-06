@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/ds/wavelet_matrix.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>wavelet_matrix.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/ds/wavelet_matrix.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>wavelet_matrix.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -506,424 +506,424 @@
 <span id="417">417</span>
 <span id="418">418</span>
 <span id="419">419</span>
-</pre><pre class="rust"><code><span class="doccomment">//! wavelet matrix。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! wavelet matrix。
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::rs_dict</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::count</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::find_nth</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::quantile</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::utils::buf_range</span>;
+</span><span class="kw">use </span><span class="kw">super</span>::rs_dict;
+<span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::traits::count;
+<span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::traits::find_nth;
+<span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::traits::quantile;
+<span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::utils::buf_range;
 
-<span class="kw">use</span> <span class="ident">std::ops</span>::{<span class="ident">Index</span>, <span class="ident">Range</span>, <span class="ident">RangeBounds</span>, <span class="ident">RangeInclusive</span>};
+<span class="kw">use </span>std::ops::{Index, Range, RangeBounds, RangeInclusive};
 
-<span class="kw">use</span> <span class="ident">buf_range::bounds_within</span>;
-<span class="kw">use</span> <span class="ident">count</span>::{<span class="ident">Count</span>, <span class="ident">Count3way</span>, <span class="ident">Count3wayResult</span>};
-<span class="kw">use</span> <span class="ident">find_nth::FindNth</span>;
-<span class="kw">use</span> <span class="ident">quantile::Quantile</span>;
-<span class="kw">use</span> <span class="ident">rs_dict::RsDict</span>;
+<span class="kw">use </span>buf_range::bounds_within;
+<span class="kw">use </span>count::{Count, Count3way, Count3wayResult};
+<span class="kw">use </span>find_nth::FindNth;
+<span class="kw">use </span>quantile::Quantile;
+<span class="kw">use </span>rs_dict::RsDict;
 
-<span class="doccomment">/// wavelet matrix。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 整数に関する多くの区間クエリを処理できる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::ds::WaveletMatrix;</span>
-<span class="doccomment">/// use nekolib::traits::{Count3way, FindNth, Quantile};</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let wm: WaveletMatrix&lt;u32&gt; = vec![1, 8, 4, 9, 2, 7, 5, 2].into();</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(wm.count_3way(2.., 5).lt(), 3); // [4, _, 2, _, _, _, 2]</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let c3 = wm.count_3way(..6, 2..=7); // [1, 8, 4, 9, 2, 7]</span>
-<span class="doccomment">/// assert_eq!(c3.lt(), 1); // [1, _, _, _, _, _]</span>
-<span class="doccomment">/// assert_eq!(c3.eq(), 3); // [_, _, 4, _, 2, 7]</span>
-<span class="doccomment">/// assert_eq!(c3.gt(), 2); // [_, 8, _, 9, _, _]</span>
-<span class="doccomment">/// assert_eq!(c3.le(), 4);</span>
-<span class="doccomment">/// assert_eq!(c3.ge(), 5);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(wm.quantile(2..=4, 0), Some(2)); // [_, _, 2]</span>
-<span class="doccomment">/// assert_eq!(wm.quantile(2..=4, 1), Some(4)); // [4, _, _]</span>
-<span class="doccomment">/// assert_eq!(wm.quantile(2..=4, 2), Some(9)); // [_, 9, _]</span>
-<span class="doccomment">/// assert_eq!(wm.quantile(2..=4, 3), None);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(wm.find_nth(3.., 2, 0), Some(4));</span>
-<span class="doccomment">/// assert_eq!(wm.find_nth(3.., 2, 1), Some(7));</span>
-<span class="doccomment">/// assert_eq!(wm.find_nth(4.., 2, 0), Some(4));</span>
-<span class="doccomment">/// assert_eq!(wm.find_nth(5.., 2, 0), Some(7));</span>
-<span class="doccomment">/// assert_eq!(wm.find_nth(5.., 2, 1), None);</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">WaveletMatrix</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-    <span class="ident">len</span>: <span class="ident">usize</span>,
-    <span class="ident">bitlen</span>: <span class="ident">usize</span>,
-    <span class="ident">buf</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RsDict</span><span class="op">&gt;</span>,
-    <span class="ident">zeros</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-    <span class="ident">orig</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>,
+<span class="doccomment">/// wavelet matrix。
+///
+/// 整数に関する多くの区間クエリを処理できる。
+///
+/// # Examples
+/// ```
+/// use nekolib::ds::WaveletMatrix;
+/// use nekolib::traits::{Count3way, FindNth, Quantile};
+///
+/// let wm: WaveletMatrix&lt;u32&gt; = vec![1, 8, 4, 9, 2, 7, 5, 2].into();
+///
+/// assert_eq!(wm.count_3way(2.., 5).lt(), 3); // [4, _, 2, _, _, _, 2]
+///
+/// let c3 = wm.count_3way(..6, 2..=7); // [1, 8, 4, 9, 2, 7]
+/// assert_eq!(c3.lt(), 1); // [1, _, _, _, _, _]
+/// assert_eq!(c3.eq(), 3); // [_, _, 4, _, 2, 7]
+/// assert_eq!(c3.gt(), 2); // [_, 8, _, 9, _, _]
+/// assert_eq!(c3.le(), 4);
+/// assert_eq!(c3.ge(), 5);
+///
+/// assert_eq!(wm.quantile(2..=4, 0), Some(2)); // [_, _, 2]
+/// assert_eq!(wm.quantile(2..=4, 1), Some(4)); // [4, _, _]
+/// assert_eq!(wm.quantile(2..=4, 2), Some(9)); // [_, 9, _]
+/// assert_eq!(wm.quantile(2..=4, 3), None);
+///
+/// assert_eq!(wm.find_nth(3.., 2, 0), Some(4));
+/// assert_eq!(wm.find_nth(3.., 2, 1), Some(7));
+/// assert_eq!(wm.find_nth(4.., 2, 0), Some(4));
+/// assert_eq!(wm.find_nth(5.., 2, 0), Some(7));
+/// assert_eq!(wm.find_nth(5.., 2, 1), None);
+/// ```
+</span><span class="kw">pub struct </span>WaveletMatrix&lt;I&gt; {
+    len: usize,
+    bitlen: usize,
+    buf: Vec&lt;RsDict&gt;,
+    zeros: Vec&lt;usize&gt;,
+    orig: Vec&lt;I&gt;,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">WmInt</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">WaveletMatrix</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">orig</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">orig</span>.<span class="ident">len</span>();
-        <span class="kw">let</span> <span class="ident">bitlen</span> <span class="op">=</span>
-            <span class="ident">orig</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">ai</span><span class="op">|</span> <span class="ident">ai</span>.<span class="ident">bitlen</span>()).<span class="ident">max</span>().<span class="ident">unwrap_or</span>(<span class="number">0</span>) <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">whole</span> <span class="op">=</span> <span class="ident">orig</span>.<span class="ident">clone</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">zeros</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">bitlen</span>];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> (<span class="number">0</span>..<span class="ident">bitlen</span>).<span class="ident">rev</span>() {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">zero</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">one</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vb</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="bool-val">false</span>; <span class="ident">len</span>];
-            <span class="kw">for</span> (<span class="ident">j</span>, <span class="ident">aj</span>) <span class="kw">in</span> <span class="ident">whole</span>.<span class="ident">into_iter</span>().<span class="ident">enumerate</span>() {
-                (<span class="kw">if</span> <span class="ident">aj</span>.<span class="ident">test</span>(<span class="ident">i</span>) { <span class="kw-2">&amp;mut</span> <span class="ident">one</span> } <span class="kw">else</span> { <span class="kw-2">&amp;mut</span> <span class="ident">zero</span> }).<span class="ident">push</span>(<span class="ident">aj</span>);
-                <span class="ident">vb</span>[<span class="ident">j</span>] <span class="op">=</span> <span class="ident">aj</span>.<span class="ident">test</span>(<span class="ident">i</span>);
+<span class="kw">impl</span>&lt;I: WmInt&gt; From&lt;Vec&lt;I&gt;&gt; <span class="kw">for </span>WaveletMatrix&lt;I&gt; {
+    <span class="kw">fn </span>from(orig: Vec&lt;I&gt;) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>len = orig.len();
+        <span class="kw">let </span>bitlen =
+            orig.iter().map(|ai| ai.bitlen()).max().unwrap_or(<span class="number">0</span>) <span class="kw">as </span>usize;
+        <span class="kw">let </span><span class="kw-2">mut </span>whole = orig.clone();
+        <span class="kw">let </span><span class="kw-2">mut </span>zeros = <span class="macro">vec!</span>[<span class="number">0</span>; bitlen];
+        <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="macro">vec!</span>[];
+        <span class="kw">for </span>i <span class="kw">in </span>(<span class="number">0</span>..bitlen).rev() {
+            <span class="kw">let </span><span class="kw-2">mut </span>zero = <span class="macro">vec!</span>[];
+            <span class="kw">let </span><span class="kw-2">mut </span>one = <span class="macro">vec!</span>[];
+            <span class="kw">let </span><span class="kw-2">mut </span>vb = <span class="macro">vec!</span>[<span class="bool-val">false</span>; len];
+            <span class="kw">for </span>(j, aj) <span class="kw">in </span>whole.into_iter().enumerate() {
+                (<span class="kw">if </span>aj.test(i) { <span class="kw-2">&amp;mut </span>one } <span class="kw">else </span>{ <span class="kw-2">&amp;mut </span>zero }).push(aj);
+                vb[j] = aj.test(i);
             }
-            <span class="ident">zeros</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">zero</span>.<span class="ident">len</span>();
-            <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">vb</span>.<span class="ident">into</span>());
-            <span class="ident">whole</span> <span class="op">=</span> <span class="ident">zero</span>;
-            <span class="ident">whole</span>.<span class="ident">append</span>(<span class="kw-2">&amp;mut</span> <span class="ident">one</span>);
+            zeros[i] = zero.len();
+            buf.push(vb.into());
+            whole = zero;
+            whole.append(<span class="kw-2">&amp;mut </span>one);
         }
-        <span class="ident">buf</span>.<span class="ident">reverse</span>();
-        <span class="self">Self</span> { <span class="ident">len</span>, <span class="ident">bitlen</span>, <span class="ident">buf</span>, <span class="ident">zeros</span>, <span class="ident">orig</span> }
+        buf.reverse();
+        <span class="self">Self </span>{ len, bitlen, buf, zeros, orig }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">WmInt</span><span class="op">&gt;</span> <span class="ident">Count</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">WaveletMatrix</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">count</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">range</span>: <span class="kw">impl</span> <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>, <span class="ident">value</span>: <span class="ident">I</span>) -&gt; <span class="ident">usize</span> {
-        <span class="self">self</span>.<span class="ident">count_3way</span>(<span class="ident">range</span>, <span class="ident">value</span>).<span class="ident">eq</span>()
+<span class="kw">impl</span>&lt;I: WmInt&gt; Count&lt;I&gt; <span class="kw">for </span>WaveletMatrix&lt;I&gt; {
+    <span class="kw">fn </span>count(<span class="kw-2">&amp;</span><span class="self">self</span>, range: <span class="kw">impl </span>RangeBounds&lt;usize&gt;, value: I) -&gt; usize {
+        <span class="self">self</span>.count_3way(range, value).eq()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">WmInt</span><span class="op">&gt;</span> <span class="ident">Count</span><span class="op">&lt;</span><span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">WaveletMatrix</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">count</span>(
+<span class="kw">impl</span>&lt;I: WmInt&gt; Count&lt;RangeInclusive&lt;I&gt;&gt; <span class="kw">for </span>WaveletMatrix&lt;I&gt; {
+    <span class="kw">fn </span>count(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">range</span>: <span class="kw">impl</span> <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-        <span class="ident">value</span>: <span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>,
-    ) -&gt; <span class="ident">usize</span> {
-        <span class="self">self</span>.<span class="ident">count_3way</span>(<span class="ident">range</span>, <span class="ident">value</span>).<span class="ident">eq</span>()
+        range: <span class="kw">impl </span>RangeBounds&lt;usize&gt;,
+        value: RangeInclusive&lt;I&gt;,
+    ) -&gt; usize {
+        <span class="self">self</span>.count_3way(range, value).eq()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">WmInt</span><span class="op">&gt;</span> <span class="ident">Count3way</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">WaveletMatrix</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">count_3way</span>(
+<span class="kw">impl</span>&lt;I: WmInt&gt; Count3way&lt;I&gt; <span class="kw">for </span>WaveletMatrix&lt;I&gt; {
+    <span class="kw">fn </span>count_3way(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">range</span>: <span class="kw">impl</span> <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-        <span class="ident">value</span>: <span class="ident">I</span>,
-    ) -&gt; <span class="ident">Count3wayResult</span> {
-        <span class="kw">let</span> <span class="ident">Range</span> { <span class="ident">start</span>, <span class="ident">end</span> } <span class="op">=</span> <span class="ident">bounds_within</span>(<span class="ident">range</span>, <span class="self">self</span>.<span class="ident">len</span>);
-        <span class="kw">let</span> (<span class="ident">lt</span>, <span class="ident">gt</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">count_3way_internal</span>(<span class="ident">start</span>..<span class="ident">end</span>, <span class="ident">value</span>);
-        <span class="kw">let</span> <span class="ident">eq</span> <span class="op">=</span> (<span class="ident">end</span> <span class="op">-</span> <span class="ident">start</span>) <span class="op">-</span> (<span class="ident">lt</span> <span class="op">+</span> <span class="ident">gt</span>);
-        <span class="ident">Count3wayResult::new</span>(<span class="ident">lt</span>, <span class="ident">eq</span>, <span class="ident">gt</span>)
+        range: <span class="kw">impl </span>RangeBounds&lt;usize&gt;,
+        value: I,
+    ) -&gt; Count3wayResult {
+        <span class="kw">let </span>Range { start, end } = bounds_within(range, <span class="self">self</span>.len);
+        <span class="kw">let </span>(lt, gt) = <span class="self">self</span>.count_3way_internal(start..end, value);
+        <span class="kw">let </span>eq = (end - start) - (lt + gt);
+        Count3wayResult::new(lt, eq, gt)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">WmInt</span><span class="op">&gt;</span> <span class="ident">Count3way</span><span class="op">&lt;</span><span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">WaveletMatrix</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">count_3way</span>(
+<span class="kw">impl</span>&lt;I: WmInt&gt; Count3way&lt;RangeInclusive&lt;I&gt;&gt; <span class="kw">for </span>WaveletMatrix&lt;I&gt; {
+    <span class="kw">fn </span>count_3way(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">range</span>: <span class="kw">impl</span> <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-        <span class="ident">value</span>: <span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>,
-    ) -&gt; <span class="ident">Count3wayResult</span> {
-        <span class="kw">let</span> <span class="ident">Range</span> { <span class="ident">start</span>: <span class="ident">il</span>, <span class="ident">end</span>: <span class="ident">ir</span> } <span class="op">=</span> <span class="ident">bounds_within</span>(<span class="ident">range</span>, <span class="self">self</span>.<span class="ident">len</span>);
-        <span class="kw">let</span> <span class="ident">vl</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">value</span>.<span class="ident">start</span>();
-        <span class="kw">let</span> <span class="ident">vr</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">value</span>.<span class="ident">end</span>();
-        <span class="kw">let</span> <span class="ident">lt</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">count_3way_internal</span>(<span class="ident">il</span>..<span class="ident">ir</span>, <span class="ident">vl</span>).<span class="number">0</span>;
-        <span class="kw">let</span> <span class="ident">gt</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">count_3way_internal</span>(<span class="ident">il</span>..<span class="ident">ir</span>, <span class="ident">vr</span>).<span class="number">1</span>;
-        <span class="kw">let</span> <span class="ident">eq</span> <span class="op">=</span> (<span class="ident">ir</span> <span class="op">-</span> <span class="ident">il</span>) <span class="op">-</span> (<span class="ident">lt</span> <span class="op">+</span> <span class="ident">gt</span>);
-        <span class="ident">Count3wayResult::new</span>(<span class="ident">lt</span>, <span class="ident">eq</span>, <span class="ident">gt</span>)
+        range: <span class="kw">impl </span>RangeBounds&lt;usize&gt;,
+        value: RangeInclusive&lt;I&gt;,
+    ) -&gt; Count3wayResult {
+        <span class="kw">let </span>Range { start: il, end: ir } = bounds_within(range, <span class="self">self</span>.len);
+        <span class="kw">let </span>vl = <span class="kw-2">*</span>value.start();
+        <span class="kw">let </span>vr = <span class="kw-2">*</span>value.end();
+        <span class="kw">let </span>lt = <span class="self">self</span>.count_3way_internal(il..ir, vl).<span class="number">0</span>;
+        <span class="kw">let </span>gt = <span class="self">self</span>.count_3way_internal(il..ir, vr).<span class="number">1</span>;
+        <span class="kw">let </span>eq = (ir - il) - (lt + gt);
+        Count3wayResult::new(lt, eq, gt)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">WmInt</span><span class="op">&gt;</span> <span class="ident">WaveletMatrix</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">count_3way_internal</span>(
+<span class="kw">impl</span>&lt;I: WmInt&gt; WaveletMatrix&lt;I&gt; {
+    <span class="kw">fn </span>count_3way_internal(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">Range</span> { <span class="kw-2">mut</span> <span class="ident">start</span>, <span class="kw-2">mut</span> <span class="ident">end</span> }: <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-        <span class="ident">value</span>: <span class="ident">I</span>,
-    ) -&gt; (<span class="ident">usize</span>, <span class="ident">usize</span>) {
-        <span class="kw">if</span> <span class="ident">start</span> <span class="op">==</span> <span class="ident">end</span> {
-            <span class="kw">return</span> (<span class="number">0</span>, <span class="number">0</span>);
+        Range { <span class="kw-2">mut </span>start, <span class="kw-2">mut </span>end }: Range&lt;usize&gt;,
+        value: I,
+    ) -&gt; (usize, usize) {
+        <span class="kw">if </span>start == end {
+            <span class="kw">return </span>(<span class="number">0</span>, <span class="number">0</span>);
         }
-        <span class="kw">if</span> <span class="ident">value</span>.<span class="ident">bitlen</span>() <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">bitlen</span> {
-            <span class="kw">return</span> (<span class="ident">end</span> <span class="op">-</span> <span class="ident">start</span>, <span class="number">0</span>);
+        <span class="kw">if </span>value.bitlen() &gt; <span class="self">self</span>.bitlen {
+            <span class="kw">return </span>(end - start, <span class="number">0</span>);
         }
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">lt</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">gt</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> (<span class="number">0</span>..<span class="self">self</span>.<span class="ident">bitlen</span>).<span class="ident">rev</span>() {
-            <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">end</span> <span class="op">-</span> <span class="ident">start</span>;
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">value</span>.<span class="ident">test</span>(<span class="ident">i</span>) {
-                <span class="ident">start</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">start</span>, <span class="number">0</span>);
-                <span class="ident">end</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">end</span>, <span class="number">0</span>);
-            } <span class="kw">else</span> {
-                <span class="ident">start</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">zeros</span>[<span class="ident">i</span>] <span class="op">+</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">start</span>, <span class="number">1</span>);
-                <span class="ident">end</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">zeros</span>[<span class="ident">i</span>] <span class="op">+</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">end</span>, <span class="number">1</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>lt = <span class="number">0</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>gt = <span class="number">0</span>;
+        <span class="kw">for </span>i <span class="kw">in </span>(<span class="number">0</span>..<span class="self">self</span>.bitlen).rev() {
+            <span class="kw">let </span>tmp = end - start;
+            <span class="kw">if </span>!value.test(i) {
+                start = <span class="self">self</span>.buf[i].rank(start, <span class="number">0</span>);
+                end = <span class="self">self</span>.buf[i].rank(end, <span class="number">0</span>);
+            } <span class="kw">else </span>{
+                start = <span class="self">self</span>.zeros[i] + <span class="self">self</span>.buf[i].rank(start, <span class="number">1</span>);
+                end = <span class="self">self</span>.zeros[i] + <span class="self">self</span>.buf[i].rank(end, <span class="number">1</span>);
             }
-            <span class="kw-2">*</span>(<span class="kw">if</span> <span class="ident">value</span>.<span class="ident">test</span>(<span class="ident">i</span>) { <span class="kw-2">&amp;mut</span> <span class="ident">lt</span> } <span class="kw">else</span> { <span class="kw-2">&amp;mut</span> <span class="ident">gt</span> }) <span class="op">+</span><span class="op">=</span>
-                <span class="ident">tmp</span> <span class="op">-</span> (<span class="ident">end</span> <span class="op">-</span> <span class="ident">start</span>);
+            <span class="kw-2">*</span>(<span class="kw">if </span>value.test(i) { <span class="kw-2">&amp;mut </span>lt } <span class="kw">else </span>{ <span class="kw-2">&amp;mut </span>gt }) +=
+                tmp - (end - start);
         }
-        (<span class="ident">lt</span>, <span class="ident">gt</span>)
+        (lt, gt)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">WmInt</span><span class="op">&gt;</span> <span class="ident">Quantile</span> <span class="kw">for</span> <span class="ident">WaveletMatrix</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">I</span>;
-    <span class="kw">fn</span> <span class="ident">quantile</span>(
+<span class="kw">impl</span>&lt;I: WmInt&gt; Quantile <span class="kw">for </span>WaveletMatrix&lt;I&gt; {
+    <span class="kw">type </span>Output = I;
+    <span class="kw">fn </span>quantile(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">range</span>: <span class="kw">impl</span> <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-        <span class="kw-2">mut</span> <span class="ident">n</span>: <span class="ident">usize</span>,
-    ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">Range</span> { <span class="kw-2">mut</span> <span class="ident">start</span>, <span class="kw-2">mut</span> <span class="ident">end</span> } <span class="op">=</span> <span class="ident">bounds_within</span>(<span class="ident">range</span>, <span class="self">self</span>.<span class="ident">len</span>);
-        <span class="kw">if</span> <span class="ident">end</span> <span class="op">-</span> <span class="ident">start</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">n</span> {
-            <span class="kw">return</span> <span class="prelude-val">None</span>;
+        range: <span class="kw">impl </span>RangeBounds&lt;usize&gt;,
+        <span class="kw-2">mut </span>n: usize,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;I&gt; {
+        <span class="kw">let </span>Range { <span class="kw-2">mut </span>start, <span class="kw-2">mut </span>end } = bounds_within(range, <span class="self">self</span>.len);
+        <span class="kw">if </span>end - start &lt;= n {
+            <span class="kw">return </span><span class="prelude-val">None</span>;
         }
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">I::zero</span>();
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> (<span class="number">0</span>..<span class="self">self</span>.<span class="ident">bitlen</span>).<span class="ident">rev</span>() {
-            <span class="kw">let</span> <span class="ident">z</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">count</span>(<span class="ident">start</span>..<span class="ident">end</span>, <span class="number">0</span>);
-            <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span> <span class="ident">z</span> {
-                <span class="ident">start</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">start</span>, <span class="number">0</span>);
-                <span class="ident">end</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">end</span>, <span class="number">0</span>);
-            } <span class="kw">else</span> {
-                <span class="ident">res</span>.<span class="ident">set</span>(<span class="ident">i</span>);
-                <span class="ident">start</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">zeros</span>[<span class="ident">i</span>] <span class="op">+</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">start</span>, <span class="number">1</span>);
-                <span class="ident">end</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">zeros</span>[<span class="ident">i</span>] <span class="op">+</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">end</span>, <span class="number">1</span>);
-                <span class="ident">n</span> <span class="op">-</span><span class="op">=</span> <span class="ident">z</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>res = I::zero();
+        <span class="kw">for </span>i <span class="kw">in </span>(<span class="number">0</span>..<span class="self">self</span>.bitlen).rev() {
+            <span class="kw">let </span>z = <span class="self">self</span>.buf[i].count(start..end, <span class="number">0</span>);
+            <span class="kw">if </span>n &lt; z {
+                start = <span class="self">self</span>.buf[i].rank(start, <span class="number">0</span>);
+                end = <span class="self">self</span>.buf[i].rank(end, <span class="number">0</span>);
+            } <span class="kw">else </span>{
+                res.set(i);
+                start = <span class="self">self</span>.zeros[i] + <span class="self">self</span>.buf[i].rank(start, <span class="number">1</span>);
+                end = <span class="self">self</span>.zeros[i] + <span class="self">self</span>.buf[i].rank(end, <span class="number">1</span>);
+                n -= z;
             }
         }
-        <span class="prelude-val">Some</span>(<span class="ident">res</span>)
+        <span class="prelude-val">Some</span>(res)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">WmInt</span><span class="op">&gt;</span> <span class="ident">WaveletMatrix</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">xored_quantile</span>(
+<span class="kw">impl</span>&lt;I: WmInt&gt; WaveletMatrix&lt;I&gt; {
+    <span class="kw">pub fn </span>xored_quantile(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">range</span>: <span class="kw">impl</span> <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-        <span class="kw-2">mut</span> <span class="ident">n</span>: <span class="ident">usize</span>,
-        <span class="ident">x</span>: <span class="ident">I</span>,
-    ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">Range</span> { <span class="kw-2">mut</span> <span class="ident">start</span>, <span class="kw-2">mut</span> <span class="ident">end</span> } <span class="op">=</span> <span class="ident">bounds_within</span>(<span class="ident">range</span>, <span class="self">self</span>.<span class="ident">len</span>);
-        <span class="kw">if</span> <span class="ident">end</span> <span class="op">-</span> <span class="ident">start</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">n</span> {
-            <span class="kw">return</span> <span class="prelude-val">None</span>;
+        range: <span class="kw">impl </span>RangeBounds&lt;usize&gt;,
+        <span class="kw-2">mut </span>n: usize,
+        x: I,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;I&gt; {
+        <span class="kw">let </span>Range { <span class="kw-2">mut </span>start, <span class="kw-2">mut </span>end } = bounds_within(range, <span class="self">self</span>.len);
+        <span class="kw">if </span>end - start &lt;= n {
+            <span class="kw">return </span><span class="prelude-val">None</span>;
         }
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">I::zero</span>();
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> (<span class="number">0</span>..<span class="self">self</span>.<span class="ident">bitlen</span>).<span class="ident">rev</span>() {
-            <span class="kw">let</span> <span class="ident">z</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">count</span>(<span class="ident">start</span>..<span class="ident">end</span>, <span class="number">0</span>);
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">x</span>.<span class="ident">test</span>(<span class="ident">i</span>) {
-                <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span> <span class="ident">z</span> {
-                    <span class="ident">start</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">start</span>, <span class="number">0</span>);
-                    <span class="ident">end</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">end</span>, <span class="number">0</span>);
-                } <span class="kw">else</span> {
-                    <span class="ident">res</span>.<span class="ident">set</span>(<span class="ident">i</span>);
-                    <span class="ident">start</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">zeros</span>[<span class="ident">i</span>] <span class="op">+</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">start</span>, <span class="number">1</span>);
-                    <span class="ident">end</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">zeros</span>[<span class="ident">i</span>] <span class="op">+</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">end</span>, <span class="number">1</span>);
-                    <span class="ident">n</span> <span class="op">-</span><span class="op">=</span> <span class="ident">z</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>res = I::zero();
+        <span class="kw">for </span>i <span class="kw">in </span>(<span class="number">0</span>..<span class="self">self</span>.bitlen).rev() {
+            <span class="kw">let </span>z = <span class="self">self</span>.buf[i].count(start..end, <span class="number">0</span>);
+            <span class="kw">if </span>!x.test(i) {
+                <span class="kw">if </span>n &lt; z {
+                    start = <span class="self">self</span>.buf[i].rank(start, <span class="number">0</span>);
+                    end = <span class="self">self</span>.buf[i].rank(end, <span class="number">0</span>);
+                } <span class="kw">else </span>{
+                    res.set(i);
+                    start = <span class="self">self</span>.zeros[i] + <span class="self">self</span>.buf[i].rank(start, <span class="number">1</span>);
+                    end = <span class="self">self</span>.zeros[i] + <span class="self">self</span>.buf[i].rank(end, <span class="number">1</span>);
+                    n -= z;
                 }
-            } <span class="kw">else</span> {
-                <span class="kw">let</span> <span class="ident">z</span> <span class="op">=</span> (<span class="ident">end</span> <span class="op">-</span> <span class="ident">start</span>) <span class="op">-</span> <span class="ident">z</span>;
-                <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span> <span class="ident">z</span> {
-                    <span class="ident">start</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">zeros</span>[<span class="ident">i</span>] <span class="op">+</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">start</span>, <span class="number">1</span>);
-                    <span class="ident">end</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">zeros</span>[<span class="ident">i</span>] <span class="op">+</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">end</span>, <span class="number">1</span>);
-                } <span class="kw">else</span> {
-                    <span class="ident">res</span>.<span class="ident">set</span>(<span class="ident">i</span>);
-                    <span class="ident">start</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">start</span>, <span class="number">0</span>);
-                    <span class="ident">end</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">end</span>, <span class="number">0</span>);
-                    <span class="ident">n</span> <span class="op">-</span><span class="op">=</span> <span class="ident">z</span>;
-                }
-            }
-        }
-        <span class="prelude-val">Some</span>(<span class="ident">res</span>)
-    }
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">WmInt</span><span class="op">&gt;</span> <span class="ident">FindNth</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">WaveletMatrix</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">find_nth</span>(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">range</span>: <span class="kw">impl</span> <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-        <span class="ident">value</span>: <span class="ident">I</span>,
-        <span class="ident">n</span>: <span class="ident">usize</span>,
-    ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">start</span> <span class="op">=</span> <span class="ident">bounds_within</span>(<span class="ident">range</span>, <span class="self">self</span>.<span class="ident">len</span>).<span class="ident">start</span>;
-        <span class="kw">let</span> (<span class="ident">lt</span>, <span class="ident">gt</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">count_3way_internal</span>(<span class="number">0</span>..<span class="ident">start</span>, <span class="ident">value</span>);
-        <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="ident">start</span> <span class="op">-</span> (<span class="ident">lt</span> <span class="op">+</span> <span class="ident">gt</span>);
-        <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">select</span>(<span class="ident">value</span>, <span class="ident">n</span> <span class="op">+</span> <span class="ident">offset</span> <span class="op">+</span> <span class="number">1</span>)<span class="question-mark">?</span> <span class="op">-</span> <span class="number">1</span>)
-    }
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">WmInt</span><span class="op">&gt;</span> <span class="ident">WaveletMatrix</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">len</span> }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> { <span class="self">self</span>.<span class="ident">len</span> <span class="op">==</span> <span class="number">0</span> }
-
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rank</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">end</span>: <span class="ident">usize</span>, <span class="ident">value</span>: <span class="ident">I</span>) -&gt; <span class="ident">usize</span> {
-        <span class="self">self</span>.<span class="ident">count</span>(<span class="number">0</span>..<span class="ident">end</span>, <span class="ident">value</span>)
-    }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">select</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">value</span>: <span class="ident">I</span>, <span class="kw-2">mut</span> <span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="ident">n</span> <span class="op">==</span> <span class="number">0</span> {
-            <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="number">0</span>);
-        }
-        <span class="kw">let</span> (<span class="ident">lt</span>, <span class="ident">gt</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">count_3way_internal</span>(<span class="number">0</span>..<span class="self">self</span>.<span class="ident">len</span>, <span class="ident">value</span>);
-        <span class="kw">let</span> <span class="ident">count</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span> <span class="op">-</span> (<span class="ident">lt</span> <span class="op">+</span> <span class="ident">gt</span>);
-        <span class="kw">if</span> <span class="ident">count</span> <span class="op">&lt;</span> <span class="ident">n</span> {
-            <span class="kw">return</span> <span class="prelude-val">None</span>;
-        }
-        <span class="kw">let</span> <span class="ident">si</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">start_pos</span>(<span class="ident">value</span>);
-        <span class="kw">let</span> <span class="ident">value0</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">test</span>(<span class="number">0</span>) <span class="kw">as</span> <span class="ident">u64</span>;
-        <span class="ident">n</span> <span class="op">+</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="number">0</span>].<span class="ident">rank</span>(<span class="ident">si</span>, <span class="ident">value0</span>);
-        <span class="ident">n</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="number">0</span>].<span class="ident">select</span>(<span class="ident">value0</span>, <span class="ident">n</span>).<span class="ident">unwrap</span>();
-
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">1</span>..<span class="self">self</span>.<span class="ident">bitlen</span> {
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">value</span>.<span class="ident">test</span>(<span class="ident">i</span>) {
-                <span class="ident">n</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">select</span>(<span class="number">0</span>, <span class="ident">n</span>).<span class="ident">unwrap</span>();
-            } <span class="kw">else</span> {
-                <span class="ident">n</span> <span class="op">-</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">zeros</span>[<span class="ident">i</span>];
-                <span class="ident">n</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">select</span>(<span class="number">1</span>, <span class="ident">n</span>).<span class="ident">unwrap</span>();
-            }
-        }
-        <span class="prelude-val">Some</span>(<span class="ident">n</span>)
-    }
-    <span class="kw">fn</span> <span class="ident">start_pos</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">value</span>: <span class="ident">I</span>) -&gt; <span class="ident">usize</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">start</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">end</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> (<span class="number">1</span>..<span class="self">self</span>.<span class="ident">bitlen</span>).<span class="ident">rev</span>() {
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">value</span>.<span class="ident">test</span>(<span class="ident">i</span>) {
-                <span class="ident">start</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">start</span>, <span class="number">0</span>);
-                <span class="ident">end</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">end</span>, <span class="number">0</span>);
-            } <span class="kw">else</span> {
-                <span class="ident">start</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">zeros</span>[<span class="ident">i</span>] <span class="op">+</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">start</span>, <span class="number">1</span>);
-                <span class="ident">end</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">zeros</span>[<span class="ident">i</span>] <span class="op">+</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">rank</span>(<span class="ident">end</span>, <span class="number">1</span>);
-            }
-        }
-        <span class="ident">start</span>
-    }
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">WmInt</span><span class="op">&gt;</span> <span class="ident">Index</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">WaveletMatrix</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">I</span>;
-    <span class="kw">fn</span> <span class="ident">index</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">I</span> { <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">orig</span>[<span class="ident">i</span>] }
-}
-
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">WmInt</span>: <span class="ident">Copy</span> {
-    <span class="kw">fn</span> <span class="ident">test</span>(<span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="ident">bool</span>;
-    <span class="kw">fn</span> <span class="ident">set</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>);
-    <span class="kw">fn</span> <span class="ident">bitlen</span>(<span class="self">self</span>) -&gt; <span class="ident">usize</span>;
-    <span class="kw">fn</span> <span class="ident">zero</span>() -&gt; <span class="self">Self</span>;
-}
-
-<span class="macro">macro_rules!</span> <span class="ident">impl_wm_int</span> {
-    ( $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>:<span class="ident">ty</span> )<span class="op">*</span> ) =&gt; { $(
-        <span class="kw">impl</span> <span class="ident">WmInt</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span> {
-            <span class="kw">fn</span> <span class="ident">test</span>(<span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="ident">bool</span> { <span class="self">self</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">i</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
-            <span class="kw">fn</span> <span class="ident">set</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) { <span class="kw-2">*</span><span class="self">self</span> <span class="op">|</span><span class="op">=</span> <span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">i</span>; }
-            <span class="kw">fn</span> <span class="ident">bitlen</span>(<span class="self">self</span>) -&gt; <span class="ident">usize</span> {
-                <span class="kw">let</span> <span class="ident">w</span> <span class="op">=</span> (<span class="number">0</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>).<span class="ident">count_zeros</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">test</span>(<span class="ident">w</span> <span class="op">-</span> <span class="number">1</span>) {
-                    <span class="ident">w</span>
-                } <span class="kw">else</span> {
-                    (<span class="self">self</span> <span class="op">+</span> <span class="number">1</span>).<span class="ident">next_power_of_two</span>().<span class="ident">trailing_zeros</span>() <span class="kw">as</span> <span class="ident">usize</span>
+            } <span class="kw">else </span>{
+                <span class="kw">let </span>z = (end - start) - z;
+                <span class="kw">if </span>n &lt; z {
+                    start = <span class="self">self</span>.zeros[i] + <span class="self">self</span>.buf[i].rank(start, <span class="number">1</span>);
+                    end = <span class="self">self</span>.zeros[i] + <span class="self">self</span>.buf[i].rank(end, <span class="number">1</span>);
+                } <span class="kw">else </span>{
+                    res.set(i);
+                    start = <span class="self">self</span>.buf[i].rank(start, <span class="number">0</span>);
+                    end = <span class="self">self</span>.buf[i].rank(end, <span class="number">0</span>);
+                    n -= z;
                 }
             }
-            <span class="kw">fn</span> <span class="ident">zero</span>() -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span> { <span class="number">0</span> }
         }
-    )<span class="op">*</span> };
+        <span class="prelude-val">Some</span>(res)
+    }
 }
 
-<span class="macro">impl_wm_int!</span> { <span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span> }
+<span class="kw">impl</span>&lt;I: WmInt&gt; FindNth&lt;I&gt; <span class="kw">for </span>WaveletMatrix&lt;I&gt; {
+    <span class="kw">fn </span>find_nth(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        range: <span class="kw">impl </span>RangeBounds&lt;usize&gt;,
+        value: I,
+        n: usize,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt; {
+        <span class="kw">let </span>start = bounds_within(range, <span class="self">self</span>.len).start;
+        <span class="kw">let </span>(lt, gt) = <span class="self">self</span>.count_3way_internal(<span class="number">0</span>..start, value);
+        <span class="kw">let </span>offset = start - (lt + gt);
+        <span class="prelude-val">Some</span>(<span class="self">self</span>.select(value, n + offset + <span class="number">1</span>)<span class="question-mark">? </span>- <span class="number">1</span>)
+    }
+}
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test_simple</span>() {
-    <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="number">300</span>;
-    <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="ident">std::iter::successors</span>(<span class="prelude-val">Some</span>(<span class="number">296</span>), <span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">x</span><span class="op">|</span> <span class="prelude-val">Some</span>((<span class="ident">x</span> <span class="op">*</span> <span class="number">258</span> <span class="op">+</span> <span class="number">185</span>) <span class="op">%</span> <span class="number">397</span>))
-        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span> <span class="op">&amp;</span> <span class="number">7</span>);
-    <span class="kw">let</span> <span class="ident">buf</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">f</span>.<span class="ident">take</span>(<span class="ident">n</span>).<span class="ident">collect</span>();
-    <span class="kw">let</span> <span class="ident">wm</span>: <span class="ident">WaveletMatrix</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">clone</span>().<span class="ident">into</span>();
-    <span class="kw">for</span> <span class="ident">start</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">count</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="number">8</span>];
-        <span class="kw">for</span> <span class="ident">end</span> <span class="kw">in</span> <span class="ident">start</span>..<span class="op">=</span><span class="ident">n</span> {
-            <span class="kw">for</span> <span class="ident">xl</span> <span class="kw">in</span> <span class="number">0</span>..<span class="op">=</span><span class="number">7</span> {
-                <span class="kw">for</span> <span class="ident">xr</span> <span class="kw">in</span> <span class="ident">xl</span>..<span class="op">=</span><span class="number">7</span> {
-                    <span class="kw">let</span> <span class="ident">lt</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="ident">count</span>[..<span class="ident">xl</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">iter</span>().<span class="ident">sum</span>();
-                    <span class="kw">let</span> <span class="ident">gt</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="ident">count</span>[<span class="ident">xr</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">+</span> <span class="number">1</span>..].<span class="ident">iter</span>().<span class="ident">sum</span>();
-                    <span class="kw">let</span> <span class="ident">eq</span> <span class="op">=</span> (<span class="ident">end</span> <span class="op">-</span> <span class="ident">start</span>) <span class="op">-</span> (<span class="ident">lt</span> <span class="op">+</span> <span class="ident">gt</span>);
-                    <span class="kw">let</span> <span class="ident">c3</span> <span class="op">=</span> <span class="ident">Count3wayResult::new</span>(<span class="ident">lt</span>, <span class="ident">eq</span>, <span class="ident">gt</span>);
-                    <span class="macro">assert_eq!</span>(<span class="ident">wm</span>.<span class="ident">count_3way</span>(<span class="ident">start</span>..<span class="ident">end</span>, <span class="ident">xl</span>..<span class="op">=</span><span class="ident">xr</span>), <span class="ident">c3</span>);
+<span class="kw">impl</span>&lt;I: WmInt&gt; WaveletMatrix&lt;I&gt; {
+    <span class="kw">pub fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize { <span class="self">self</span>.len }
+    <span class="kw">pub fn </span>is_empty(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool { <span class="self">self</span>.len == <span class="number">0 </span>}
+
+    <span class="kw">pub fn </span>rank(<span class="kw-2">&amp;</span><span class="self">self</span>, end: usize, value: I) -&gt; usize {
+        <span class="self">self</span>.count(<span class="number">0</span>..end, value)
+    }
+    <span class="kw">pub fn </span>select(<span class="kw-2">&amp;</span><span class="self">self</span>, value: I, <span class="kw-2">mut </span>n: usize) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt; {
+        <span class="kw">if </span>n == <span class="number">0 </span>{
+            <span class="kw">return </span><span class="prelude-val">Some</span>(<span class="number">0</span>);
+        }
+        <span class="kw">let </span>(lt, gt) = <span class="self">self</span>.count_3way_internal(<span class="number">0</span>..<span class="self">self</span>.len, value);
+        <span class="kw">let </span>count = <span class="self">self</span>.len - (lt + gt);
+        <span class="kw">if </span>count &lt; n {
+            <span class="kw">return </span><span class="prelude-val">None</span>;
+        }
+        <span class="kw">let </span>si = <span class="self">self</span>.start_pos(value);
+        <span class="kw">let </span>value0 = value.test(<span class="number">0</span>) <span class="kw">as </span>u64;
+        n += <span class="self">self</span>.buf[<span class="number">0</span>].rank(si, value0);
+        n = <span class="self">self</span>.buf[<span class="number">0</span>].select(value0, n).unwrap();
+
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..<span class="self">self</span>.bitlen {
+            <span class="kw">if </span>!value.test(i) {
+                n = <span class="self">self</span>.buf[i].select(<span class="number">0</span>, n).unwrap();
+            } <span class="kw">else </span>{
+                n -= <span class="self">self</span>.zeros[i];
+                n = <span class="self">self</span>.buf[i].select(<span class="number">1</span>, n).unwrap();
+            }
+        }
+        <span class="prelude-val">Some</span>(n)
+    }
+    <span class="kw">fn </span>start_pos(<span class="kw-2">&amp;</span><span class="self">self</span>, value: I) -&gt; usize {
+        <span class="kw">let </span><span class="kw-2">mut </span>start = <span class="number">0</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>end = <span class="number">0</span>;
+        <span class="kw">for </span>i <span class="kw">in </span>(<span class="number">1</span>..<span class="self">self</span>.bitlen).rev() {
+            <span class="kw">if </span>!value.test(i) {
+                start = <span class="self">self</span>.buf[i].rank(start, <span class="number">0</span>);
+                end = <span class="self">self</span>.buf[i].rank(end, <span class="number">0</span>);
+            } <span class="kw">else </span>{
+                start = <span class="self">self</span>.zeros[i] + <span class="self">self</span>.buf[i].rank(start, <span class="number">1</span>);
+                end = <span class="self">self</span>.zeros[i] + <span class="self">self</span>.buf[i].rank(end, <span class="number">1</span>);
+            }
+        }
+        start
+    }
+}
+
+<span class="kw">impl</span>&lt;I: WmInt&gt; Index&lt;usize&gt; <span class="kw">for </span>WaveletMatrix&lt;I&gt; {
+    <span class="kw">type </span>Output = I;
+    <span class="kw">fn </span>index(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize) -&gt; <span class="kw-2">&amp;</span>I { <span class="kw-2">&amp;</span><span class="self">self</span>.orig[i] }
+}
+
+<span class="kw">pub trait </span>WmInt: Copy {
+    <span class="kw">fn </span>test(<span class="self">self</span>, i: usize) -&gt; bool;
+    <span class="kw">fn </span>set(<span class="kw-2">&amp;mut </span><span class="self">self</span>, i: usize);
+    <span class="kw">fn </span>bitlen(<span class="self">self</span>) -&gt; usize;
+    <span class="kw">fn </span>zero() -&gt; <span class="self">Self</span>;
+}
+
+<span class="macro">macro_rules! </span>impl_wm_int {
+    ( $( <span class="macro-nonterminal">$ty</span>:ty )* ) =&gt; { $(
+        <span class="kw">impl </span>WmInt <span class="kw">for </span><span class="macro-nonterminal">$ty </span>{
+            <span class="kw">fn </span>test(<span class="self">self</span>, i: usize) -&gt; bool { <span class="self">self </span>&gt;&gt; i &amp; <span class="number">1 </span>!= <span class="number">0 </span>}
+            <span class="kw">fn </span>set(<span class="kw-2">&amp;mut </span><span class="self">self</span>, i: usize) { <span class="kw-2">*</span><span class="self">self </span>|= <span class="number">1 </span>&lt;&lt; i; }
+            <span class="kw">fn </span>bitlen(<span class="self">self</span>) -&gt; usize {
+                <span class="kw">let </span>w = (<span class="number">0 </span><span class="kw">as </span><span class="macro-nonterminal">$ty</span>).count_zeros() <span class="kw">as </span>usize;
+                <span class="kw">if </span><span class="self">self</span>.test(w - <span class="number">1</span>) {
+                    w
+                } <span class="kw">else </span>{
+                    (<span class="self">self </span>+ <span class="number">1</span>).next_power_of_two().trailing_zeros() <span class="kw">as </span>usize
+                }
+            }
+            <span class="kw">fn </span>zero() -&gt; <span class="macro-nonterminal">$ty </span>{ <span class="number">0 </span>}
+        }
+    )* };
+}
+
+<span class="macro">impl_wm_int! </span>{ u8 u16 u32 u64 u128 usize }
+
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test_simple() {
+    <span class="kw">let </span>n = <span class="number">300</span>;
+    <span class="kw">let </span>f = std::iter::successors(<span class="prelude-val">Some</span>(<span class="number">296</span>), |<span class="kw-2">&amp;</span>x| <span class="prelude-val">Some</span>((x * <span class="number">258 </span>+ <span class="number">185</span>) % <span class="number">397</span>))
+        .map(|x| x &amp; <span class="number">7</span>);
+    <span class="kw">let </span>buf: Vec&lt;<span class="kw">_</span>&gt; = f.take(n).collect();
+    <span class="kw">let </span>wm: WaveletMatrix&lt;u32&gt; = buf.clone().into();
+    <span class="kw">for </span>start <span class="kw">in </span><span class="number">0</span>..n {
+        <span class="kw">let </span><span class="kw-2">mut </span>count = <span class="macro">vec!</span>[<span class="number">0</span>; <span class="number">8</span>];
+        <span class="kw">for </span>end <span class="kw">in </span>start..=n {
+            <span class="kw">for </span>xl <span class="kw">in </span><span class="number">0</span>..=<span class="number">7 </span>{
+                <span class="kw">for </span>xr <span class="kw">in </span>xl..=<span class="number">7 </span>{
+                    <span class="kw">let </span>lt: usize = count[..xl <span class="kw">as </span>usize].iter().sum();
+                    <span class="kw">let </span>gt: usize = count[xr <span class="kw">as </span>usize + <span class="number">1</span>..].iter().sum();
+                    <span class="kw">let </span>eq = (end - start) - (lt + gt);
+                    <span class="kw">let </span>c3 = Count3wayResult::new(lt, eq, gt);
+                    <span class="macro">assert_eq!</span>(wm.count_3way(start..end, xl..=xr), c3);
                 }
 
-                <span class="kw">let</span> <span class="ident">lt</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="ident">count</span>[..<span class="ident">xl</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">iter</span>().<span class="ident">sum</span>();
-                <span class="kw">let</span> <span class="ident">gt</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="ident">count</span>[<span class="ident">xl</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">+</span> <span class="number">1</span>..].<span class="ident">iter</span>().<span class="ident">sum</span>();
-                <span class="kw">let</span> <span class="ident">eq</span> <span class="op">=</span> (<span class="ident">end</span> <span class="op">-</span> <span class="ident">start</span>) <span class="op">-</span> (<span class="ident">lt</span> <span class="op">+</span> <span class="ident">gt</span>);
-                <span class="kw">let</span> <span class="ident">c3</span> <span class="op">=</span> <span class="ident">Count3wayResult::new</span>(<span class="ident">lt</span>, <span class="ident">eq</span>, <span class="ident">gt</span>);
-                <span class="macro">assert_eq!</span>(<span class="ident">wm</span>.<span class="ident">count</span>(<span class="ident">start</span>..<span class="ident">end</span>, <span class="ident">xl</span>), <span class="ident">eq</span>);
-                <span class="macro">assert_eq!</span>(<span class="ident">wm</span>.<span class="ident">count</span>(<span class="ident">start</span>..<span class="ident">end</span>, <span class="ident">xl</span>..<span class="op">=</span><span class="ident">xl</span>), <span class="ident">eq</span>);
-                <span class="macro">assert_eq!</span>(<span class="ident">wm</span>.<span class="ident">count_3way</span>(<span class="ident">start</span>..<span class="ident">end</span>, <span class="ident">xl</span>), <span class="ident">c3</span>);
-                <span class="macro">assert_eq!</span>(<span class="ident">wm</span>.<span class="ident">count_3way</span>(<span class="ident">start</span>..<span class="ident">end</span>, <span class="ident">xl</span>..<span class="op">=</span><span class="ident">xl</span>), <span class="ident">c3</span>);
+                <span class="kw">let </span>lt: usize = count[..xl <span class="kw">as </span>usize].iter().sum();
+                <span class="kw">let </span>gt: usize = count[xl <span class="kw">as </span>usize + <span class="number">1</span>..].iter().sum();
+                <span class="kw">let </span>eq = (end - start) - (lt + gt);
+                <span class="kw">let </span>c3 = Count3wayResult::new(lt, eq, gt);
+                <span class="macro">assert_eq!</span>(wm.count(start..end, xl), eq);
+                <span class="macro">assert_eq!</span>(wm.count(start..end, xl..=xl), eq);
+                <span class="macro">assert_eq!</span>(wm.count_3way(start..end, xl), c3);
+                <span class="macro">assert_eq!</span>(wm.count_3way(start..end, xl..=xl), c3);
             }
 
-            <span class="kw">if</span> <span class="ident">end</span> <span class="op">&lt;</span> <span class="ident">n</span> {
-                <span class="ident">count</span>[<span class="ident">buf</span>[<span class="ident">end</span>] <span class="kw">as</span> <span class="ident">usize</span>] <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+            <span class="kw">if </span>end &lt; n {
+                count[buf[end] <span class="kw">as </span>usize] += <span class="number">1</span>;
             }
         }
     }
 
-    <span class="kw">for</span> <span class="ident">start</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">count</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="number">8</span>];
-        <span class="kw">for</span> <span class="ident">end</span> <span class="kw">in</span> <span class="ident">start</span>..<span class="ident">n</span> {
-            <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">buf</span>[<span class="ident">end</span>];
-            <span class="macro">assert_eq!</span>(<span class="ident">wm</span>.<span class="ident">find_nth</span>(<span class="ident">start</span>.., <span class="ident">x</span>, <span class="ident">count</span>[<span class="ident">x</span> <span class="kw">as</span> <span class="ident">usize</span>]), <span class="prelude-val">Some</span>(<span class="ident">end</span>));
-            <span class="ident">count</span>[<span class="ident">x</span> <span class="kw">as</span> <span class="ident">usize</span>] <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+    <span class="kw">for </span>start <span class="kw">in </span><span class="number">0</span>..n {
+        <span class="kw">let </span><span class="kw-2">mut </span>count = <span class="macro">vec!</span>[<span class="number">0</span>; <span class="number">8</span>];
+        <span class="kw">for </span>end <span class="kw">in </span>start..n {
+            <span class="kw">let </span>x = buf[end];
+            <span class="macro">assert_eq!</span>(wm.find_nth(start.., x, count[x <span class="kw">as </span>usize]), <span class="prelude-val">Some</span>(end));
+            count[x <span class="kw">as </span>usize] += <span class="number">1</span>;
         }
-        <span class="kw">for</span> <span class="ident">x</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">8</span> {
-            <span class="macro">assert_eq!</span>(<span class="ident">wm</span>.<span class="ident">find_nth</span>(<span class="ident">start</span>.., <span class="ident">x</span>, <span class="ident">count</span>[<span class="ident">x</span> <span class="kw">as</span> <span class="ident">usize</span>]), <span class="prelude-val">None</span>);
+        <span class="kw">for </span>x <span class="kw">in </span><span class="number">0</span>..<span class="number">8 </span>{
+            <span class="macro">assert_eq!</span>(wm.find_nth(start.., x, count[x <span class="kw">as </span>usize]), <span class="prelude-val">None</span>);
         }
     }
 
-    <span class="kw">for</span> <span class="ident">start</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span> {
-        <span class="kw">for</span> <span class="ident">end</span> <span class="kw">in</span> <span class="ident">start</span>..<span class="ident">n</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">buf</span>[<span class="ident">start</span>..<span class="ident">end</span>].<span class="ident">to_vec</span>();
-            <span class="ident">tmp</span>.<span class="ident">sort_unstable</span>();
-            <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">tmp</span>.<span class="ident">len</span>() {
-                <span class="macro">assert_eq!</span>(<span class="ident">wm</span>.<span class="ident">quantile</span>(<span class="ident">start</span>..<span class="ident">end</span>, <span class="ident">i</span>), <span class="prelude-val">Some</span>(<span class="ident">tmp</span>[<span class="ident">i</span>]));
+    <span class="kw">for </span>start <span class="kw">in </span><span class="number">0</span>..n {
+        <span class="kw">for </span>end <span class="kw">in </span>start..n {
+            <span class="kw">let </span><span class="kw-2">mut </span>tmp = buf[start..end].to_vec();
+            tmp.sort_unstable();
+            <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..tmp.len() {
+                <span class="macro">assert_eq!</span>(wm.quantile(start..end, i), <span class="prelude-val">Some</span>(tmp[i]));
             }
-            <span class="macro">assert_eq!</span>(<span class="ident">wm</span>.<span class="ident">quantile</span>(<span class="ident">start</span>..<span class="ident">end</span>, <span class="ident">tmp</span>.<span class="ident">len</span>()), <span class="prelude-val">None</span>);
+            <span class="macro">assert_eq!</span>(wm.quantile(start..end, tmp.len()), <span class="prelude-val">None</span>);
         }
     }
 
-    <span class="kw">for</span> <span class="ident">start</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span> {
-        <span class="kw">for</span> <span class="ident">end</span> <span class="kw">in</span> <span class="ident">start</span>..<span class="ident">n</span> {
-            <span class="kw">for</span> <span class="ident">x</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">8</span> {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tmp</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span>
-                    <span class="ident">buf</span>[<span class="ident">start</span>..<span class="ident">end</span>].<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">y</span><span class="op">|</span> <span class="ident">x</span> <span class="op">^</span> <span class="ident">y</span>).<span class="ident">collect</span>();
-                <span class="ident">tmp</span>.<span class="ident">sort_unstable</span>();
-                <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">tmp</span>.<span class="ident">len</span>() {
+    <span class="kw">for </span>start <span class="kw">in </span><span class="number">0</span>..n {
+        <span class="kw">for </span>end <span class="kw">in </span>start..n {
+            <span class="kw">for </span>x <span class="kw">in </span><span class="number">0</span>..<span class="number">8 </span>{
+                <span class="kw">let </span><span class="kw-2">mut </span>tmp: Vec&lt;<span class="kw">_</span>&gt; =
+                    buf[start..end].iter().map(|<span class="kw-2">&amp;</span>y| x ^ y).collect();
+                tmp.sort_unstable();
+                <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..tmp.len() {
                     <span class="macro">assert_eq!</span>(
-                        <span class="ident">wm</span>.<span class="ident">xored_quantile</span>(<span class="ident">start</span>..<span class="ident">end</span>, <span class="ident">i</span>, <span class="ident">x</span>),
-                        <span class="prelude-val">Some</span>(<span class="ident">tmp</span>[<span class="ident">i</span>])
+                        wm.xored_quantile(start..end, i, x),
+                        <span class="prelude-val">Some</span>(tmp[i])
                     );
                 }
-                <span class="macro">assert_eq!</span>(<span class="ident">wm</span>.<span class="ident">xored_quantile</span>(<span class="ident">start</span>..<span class="ident">end</span>, <span class="ident">tmp</span>.<span class="ident">len</span>(), <span class="ident">x</span>), <span class="prelude-val">None</span>);
+                <span class="macro">assert_eq!</span>(wm.xored_quantile(start..end, tmp.len(), x), <span class="prelude-val">None</span>);
             }
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test_count</span>() {
-    <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="number">8</span>;
-    <span class="kw">let</span> <span class="ident">c3</span> <span class="op">=</span> <span class="op">|</span><span class="ident">lt</span>, <span class="ident">eq</span>, <span class="ident">gt</span><span class="op">|</span> <span class="ident">Count3wayResult::new</span>(<span class="ident">lt</span>, <span class="ident">eq</span>, <span class="ident">gt</span>);
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test_count() {
+    <span class="kw">let </span>n = <span class="number">8</span>;
+    <span class="kw">let </span>c3 = |lt, eq, gt| Count3wayResult::new(lt, eq, gt);
 
-    <span class="kw">let</span> <span class="ident">zero</span>: <span class="ident">WaveletMatrix</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">n</span>].<span class="ident">into</span>();
-    <span class="macro">assert_eq!</span>(<span class="ident">zero</span>.<span class="ident">count_3way</span>(.., <span class="number">0</span>), <span class="ident">c3</span>(<span class="number">0</span>, <span class="ident">n</span>, <span class="number">0</span>));
-    <span class="macro">assert_eq!</span>(<span class="ident">zero</span>.<span class="ident">count_3way</span>(.., <span class="number">0</span>..<span class="op">=</span><span class="number">0</span>), <span class="ident">c3</span>(<span class="number">0</span>, <span class="ident">n</span>, <span class="number">0</span>));
-    <span class="macro">assert_eq!</span>(<span class="ident">zero</span>.<span class="ident">count_3way</span>(.., <span class="number">1</span>), <span class="ident">c3</span>(<span class="ident">n</span>, <span class="number">0</span>, <span class="number">0</span>));
-    <span class="macro">assert_eq!</span>(<span class="ident">zero</span>.<span class="ident">count_3way</span>(.., <span class="number">1</span>..<span class="op">=</span><span class="number">1</span>), <span class="ident">c3</span>(<span class="ident">n</span>, <span class="number">0</span>, <span class="number">0</span>));
-    <span class="macro">assert_eq!</span>(<span class="ident">zero</span>.<span class="ident">count_3way</span>(.., <span class="number">254</span>), <span class="ident">c3</span>(<span class="ident">n</span>, <span class="number">0</span>, <span class="number">0</span>));
-    <span class="macro">assert_eq!</span>(<span class="ident">zero</span>.<span class="ident">count_3way</span>(.., <span class="number">254</span>..<span class="op">=</span><span class="number">254</span>), <span class="ident">c3</span>(<span class="ident">n</span>, <span class="number">0</span>, <span class="number">0</span>));
-    <span class="macro">assert_eq!</span>(<span class="ident">zero</span>.<span class="ident">count_3way</span>(.., <span class="number">255</span>), <span class="ident">c3</span>(<span class="ident">n</span>, <span class="number">0</span>, <span class="number">0</span>));
-    <span class="macro">assert_eq!</span>(<span class="ident">zero</span>.<span class="ident">count_3way</span>(.., <span class="number">255</span>..<span class="op">=</span><span class="number">255</span>), <span class="ident">c3</span>(<span class="ident">n</span>, <span class="number">0</span>, <span class="number">0</span>));
+    <span class="kw">let </span>zero: WaveletMatrix&lt;u8&gt; = <span class="macro">vec!</span>[<span class="number">0</span>; n].into();
+    <span class="macro">assert_eq!</span>(zero.count_3way(.., <span class="number">0</span>), c3(<span class="number">0</span>, n, <span class="number">0</span>));
+    <span class="macro">assert_eq!</span>(zero.count_3way(.., <span class="number">0</span>..=<span class="number">0</span>), c3(<span class="number">0</span>, n, <span class="number">0</span>));
+    <span class="macro">assert_eq!</span>(zero.count_3way(.., <span class="number">1</span>), c3(n, <span class="number">0</span>, <span class="number">0</span>));
+    <span class="macro">assert_eq!</span>(zero.count_3way(.., <span class="number">1</span>..=<span class="number">1</span>), c3(n, <span class="number">0</span>, <span class="number">0</span>));
+    <span class="macro">assert_eq!</span>(zero.count_3way(.., <span class="number">254</span>), c3(n, <span class="number">0</span>, <span class="number">0</span>));
+    <span class="macro">assert_eq!</span>(zero.count_3way(.., <span class="number">254</span>..=<span class="number">254</span>), c3(n, <span class="number">0</span>, <span class="number">0</span>));
+    <span class="macro">assert_eq!</span>(zero.count_3way(.., <span class="number">255</span>), c3(n, <span class="number">0</span>, <span class="number">0</span>));
+    <span class="macro">assert_eq!</span>(zero.count_3way(.., <span class="number">255</span>..=<span class="number">255</span>), c3(n, <span class="number">0</span>, <span class="number">0</span>));
 
-    <span class="kw">let</span> <span class="ident">full</span>: <span class="ident">WaveletMatrix</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="op">!</span><span class="number">0</span>; <span class="ident">n</span>].<span class="ident">into</span>();
-    <span class="macro">assert_eq!</span>(<span class="ident">full</span>.<span class="ident">count_3way</span>(.., <span class="number">0</span>), <span class="ident">c3</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="ident">n</span>));
-    <span class="macro">assert_eq!</span>(<span class="ident">full</span>.<span class="ident">count_3way</span>(.., <span class="number">0</span>..<span class="op">=</span><span class="number">0</span>), <span class="ident">c3</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="ident">n</span>));
-    <span class="macro">assert_eq!</span>(<span class="ident">full</span>.<span class="ident">count_3way</span>(.., <span class="number">1</span>), <span class="ident">c3</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="ident">n</span>));
-    <span class="macro">assert_eq!</span>(<span class="ident">full</span>.<span class="ident">count_3way</span>(.., <span class="number">1</span>..<span class="op">=</span><span class="number">1</span>), <span class="ident">c3</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="ident">n</span>));
-    <span class="macro">assert_eq!</span>(<span class="ident">full</span>.<span class="ident">count_3way</span>(.., <span class="number">254</span>), <span class="ident">c3</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="ident">n</span>));
-    <span class="macro">assert_eq!</span>(<span class="ident">full</span>.<span class="ident">count_3way</span>(.., <span class="number">254</span>..<span class="op">=</span><span class="number">254</span>), <span class="ident">c3</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="ident">n</span>));
-    <span class="macro">assert_eq!</span>(<span class="ident">full</span>.<span class="ident">count_3way</span>(.., <span class="number">255</span>), <span class="ident">c3</span>(<span class="number">0</span>, <span class="ident">n</span>, <span class="number">0</span>));
-    <span class="macro">assert_eq!</span>(<span class="ident">full</span>.<span class="ident">count_3way</span>(.., <span class="number">255</span>..<span class="op">=</span><span class="number">255</span>), <span class="ident">c3</span>(<span class="number">0</span>, <span class="ident">n</span>, <span class="number">0</span>));
+    <span class="kw">let </span>full: WaveletMatrix&lt;u8&gt; = <span class="macro">vec!</span>[!<span class="number">0</span>; n].into();
+    <span class="macro">assert_eq!</span>(full.count_3way(.., <span class="number">0</span>), c3(<span class="number">0</span>, <span class="number">0</span>, n));
+    <span class="macro">assert_eq!</span>(full.count_3way(.., <span class="number">0</span>..=<span class="number">0</span>), c3(<span class="number">0</span>, <span class="number">0</span>, n));
+    <span class="macro">assert_eq!</span>(full.count_3way(.., <span class="number">1</span>), c3(<span class="number">0</span>, <span class="number">0</span>, n));
+    <span class="macro">assert_eq!</span>(full.count_3way(.., <span class="number">1</span>..=<span class="number">1</span>), c3(<span class="number">0</span>, <span class="number">0</span>, n));
+    <span class="macro">assert_eq!</span>(full.count_3way(.., <span class="number">254</span>), c3(<span class="number">0</span>, <span class="number">0</span>, n));
+    <span class="macro">assert_eq!</span>(full.count_3way(.., <span class="number">254</span>..=<span class="number">254</span>), c3(<span class="number">0</span>, <span class="number">0</span>, n));
+    <span class="macro">assert_eq!</span>(full.count_3way(.., <span class="number">255</span>), c3(<span class="number">0</span>, n, <span class="number">0</span>));
+    <span class="macro">assert_eq!</span>(full.count_3way(.., <span class="number">255</span>..=<span class="number">255</span>), c3(<span class="number">0</span>, n, <span class="number">0</span>));
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

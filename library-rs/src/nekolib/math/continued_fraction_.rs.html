@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/continued_fraction_.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>continued_fraction_.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/continued_fraction_.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>continued_fraction_.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -138,56 +138,56 @@
 <span id="49">49</span>
 <span id="50">50</span>
 <span id="51">51</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 連分数展開。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 連分数展開。
 
-<span class="doccomment">/// 連分数展開。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $[a\_0, a\_1, \\dots, a\_{i-1}]$ の連分数展開。</span>
-<span class="doccomment">/// $a\_\\bullet$ を生成するイテレータから</span>
-<span class="doccomment">/// $$</span>
-<span class="doccomment">/// a\_0 + \\frac{1}{a\_1 + \\frac{1}{\\cdots\\, + \\frac{1}{a\_{\\bullet}}}}</span>
-<span class="doccomment">/// $$</span>
-<span class="doccomment">/// を生成するイテレータを作る。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Implementation notes</span>
-<span class="doccomment">/// [`std::iter::successors`](https://doc.rust-lang.org/std/iter/fn.successors.html)</span>
-<span class="doccomment">/// によって次の項が計算されるタイミングの関係で、</span>
-<span class="doccomment">/// 実際には必要ない値の計算のせいでオーバーフローし、panic するのを避けるため、</span>
-<span class="doccomment">/// 同等の処理を `map` 中に再度書いている。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Pell 方程式を解く際、解は [`i128`](https://doc.rust-lang.org/std/primitive.i128.html)</span>
-<span class="doccomment">/// に収まるが上記の問題で panic したのでこうなった。</span>
-<span class="doccomment">/// 実際には release build では問題なく動くことが予想されるので無視してもいい気もするが...</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::math::continued_fraction;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let frac_exp = [1, 2];</span>
-<span class="doccomment">/// let sqrt3 = std::iter::once(1).chain(frac_exp.iter().copied().cycle());</span>
-<span class="doccomment">/// let mut it = continued_fraction(sqrt3);</span>
-<span class="doccomment">/// assert_eq!(it.next(), Some((1, 1)));</span>
-<span class="doccomment">/// assert_eq!(it.next(), Some((2, 1)));</span>
-<span class="doccomment">/// assert_eq!(it.next(), Some((5, 3)));</span>
-<span class="doccomment">/// assert_eq!(it.next(), Some((7, 4)));</span>
-<span class="doccomment">/// assert_eq!(it.next(), Some((19, 11)));</span>
-<span class="doccomment">/// assert_eq!(it.next(), Some((26, 15)));</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let (x, y) = it.nth(24).unwrap();</span>
-<span class="doccomment">/// assert!(((x as f64 / y as f64) - 3.0_f64.sqrt()).abs() &lt; 1.0e-16);</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">continued_fraction</span>(
-    <span class="kw-2">mut</span> <span class="ident">a</span>: <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">i128</span><span class="op">&gt;</span>,
-) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> (<span class="ident">i128</span>, <span class="ident">i128</span>)<span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">a0</span> <span class="op">=</span> <span class="ident">a</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>();
-    <span class="kw">let</span> <span class="ident">frac</span> <span class="op">=</span> <span class="ident">std::iter::successors</span>(
-        <span class="prelude-val">Some</span>(((<span class="number">1</span>, <span class="ident">a0</span>), (<span class="number">0</span>, <span class="number">1</span>), <span class="ident">a</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>())),
-        <span class="kw">move</span> <span class="op">|</span><span class="kw-2">&amp;</span>((<span class="ident">nx</span>, <span class="ident">ny</span>), (<span class="ident">dx</span>, <span class="ident">dy</span>), <span class="ident">ai</span>)<span class="op">|</span> {
-            <span class="prelude-val">Some</span>(((<span class="ident">ny</span>, <span class="ident">nx</span> <span class="op">+</span> <span class="ident">ai</span> <span class="op">*</span> <span class="ident">ny</span>), (<span class="ident">dy</span>, <span class="ident">dx</span> <span class="op">+</span> <span class="ident">ai</span> <span class="op">*</span> <span class="ident">dy</span>), <span class="ident">a</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>()))
+/// 連分数展開。
+///
+/// $[a\_0, a\_1, \\dots, a\_{i-1}]$ の連分数展開。
+/// $a\_\\bullet$ を生成するイテレータから
+/// $$
+/// a\_0 + \\frac{1}{a\_1 + \\frac{1}{\\cdots\\, + \\frac{1}{a\_{\\bullet}}}}
+/// $$
+/// を生成するイテレータを作る。
+///
+/// # Implementation notes
+/// [`std::iter::successors`](https://doc.rust-lang.org/std/iter/fn.successors.html)
+/// によって次の項が計算されるタイミングの関係で、
+/// 実際には必要ない値の計算のせいでオーバーフローし、panic するのを避けるため、
+/// 同等の処理を `map` 中に再度書いている。
+///
+/// Pell 方程式を解く際、解は [`i128`](https://doc.rust-lang.org/std/primitive.i128.html)
+/// に収まるが上記の問題で panic したのでこうなった。
+/// 実際には release build では問題なく動くことが予想されるので無視してもいい気もするが...
+///
+/// # Examples
+/// ```
+/// use nekolib::math::continued_fraction;
+///
+/// let frac_exp = [1, 2];
+/// let sqrt3 = std::iter::once(1).chain(frac_exp.iter().copied().cycle());
+/// let mut it = continued_fraction(sqrt3);
+/// assert_eq!(it.next(), Some((1, 1)));
+/// assert_eq!(it.next(), Some((2, 1)));
+/// assert_eq!(it.next(), Some((5, 3)));
+/// assert_eq!(it.next(), Some((7, 4)));
+/// assert_eq!(it.next(), Some((19, 11)));
+/// assert_eq!(it.next(), Some((26, 15)));
+///
+/// let (x, y) = it.nth(24).unwrap();
+/// assert!(((x as f64 / y as f64) - 3.0_f64.sqrt()).abs() &lt; 1.0e-16);
+/// ```
+</span><span class="kw">pub fn </span>continued_fraction(
+    <span class="kw-2">mut </span>a: <span class="kw">impl </span>Iterator&lt;Item = i128&gt;,
+) -&gt; <span class="kw">impl </span>Iterator&lt;Item = (i128, i128)&gt; {
+    <span class="kw">let </span>a0 = a.next().unwrap();
+    <span class="kw">let </span>frac = std::iter::successors(
+        <span class="prelude-val">Some</span>(((<span class="number">1</span>, a0), (<span class="number">0</span>, <span class="number">1</span>), a.next().unwrap())),
+        <span class="kw">move </span>|<span class="kw-2">&amp;</span>((nx, ny), (dx, dy), ai)| {
+            <span class="prelude-val">Some</span>(((ny, nx + ai * ny), (dy, dx + ai * dy), a.next().unwrap()))
         },
     )
-    .<span class="ident">map</span>(<span class="op">|</span>((<span class="ident">nx</span>, <span class="ident">ny</span>), (<span class="ident">dx</span>, <span class="ident">dy</span>), <span class="ident">ai</span>)<span class="op">|</span> (<span class="ident">nx</span> <span class="op">+</span> <span class="ident">ai</span> <span class="op">*</span> <span class="ident">ny</span>, <span class="ident">dx</span> <span class="op">+</span> <span class="ident">ai</span> <span class="op">*</span> <span class="ident">dy</span>));
-    <span class="ident">std::iter::once</span>((<span class="ident">a0</span>, <span class="number">1</span>)).<span class="ident">chain</span>(<span class="ident">frac</span>)
+    .map(|((nx, ny), (dx, dy), ai)| (nx + ai * ny, dx + ai * dy));
+    std::iter::once((a0, <span class="number">1</span>)).chain(frac)
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

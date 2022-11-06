@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/mod_recip_table_.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod_recip_table_.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/mod_recip_table_.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod_recip_table_.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -182,100 +182,100 @@
 <span id="93">93</span>
 <span id="94">94</span>
 <span id="95">95</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 素数 $m$ を法とした逆元のテーブル。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 素数 $m$ を法とした逆元のテーブル。
 
-<span class="doccomment">/// 素数 $m$ を法とした逆元のテーブル。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $\\gdef\\recip#1#2{#1\_{(#2)}\^{-1}}$</span>
-<span class="doccomment">/// 以下、$i\^{-1}\\bmod j$ を $\\recip{i}{j}$ と書く。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 次で定められる \\(a = (a\_0, a\_1, \\dots, a\_n)\\) を返す。</span>
-<span class="doccomment">/// \\[</span>
-<span class="doccomment">/// a\_i = \\begin{cases}</span>
-<span class="doccomment">/// \\recip{i}{m}, &amp; \\text{if }\\recip{i}{m}\\text{ exists}; \\\\</span>
-<span class="doccomment">/// 0, &amp; \\text{otherwise}.</span>
-<span class="doccomment">/// \\end{cases}</span>
-<span class="doccomment">/// \\]</span>
-<span class="doccomment">/// Note: $\\recip{i}{m}\\ne 0$。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Idea</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 次のことが成り立つ：</span>
-<span class="doccomment">/// - $\\recip{0}{m}$ は存在しない。</span>
-<span class="doccomment">/// - $\\recip{1}{m} = 1$ である。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $\\recip{(i+m)}{m} = \\recip{i}{m}$ なので、$i\\lt m$ について考える。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 各 $j$ ($1\\le j\\lt i$) については $\\recip{j}{m}$</span>
-<span class="doccomment">/// が得られているとする。ただし、$m$ が素数なので、これらは常に存在する。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $m = q\\cdot i+r$ ($0\\le r\\lt i$) とおき、$\\recip{i}{m}$ を辺々掛けると</span>
-<span class="doccomment">/// $$</span>
-<span class="doccomment">/// \\begin{aligned}</span>
-<span class="doccomment">/// m\\cdot\\recip{i}{m} &amp;= q\\cdot i\\cdot\\recip{i}{m} + r\\cdot\\recip{i}{m} \\\\</span>
-<span class="doccomment">/// 0 &amp;\\equiv q + r\\cdot\\recip{i}{m} \\pmod{m}.</span>
-<span class="doccomment">/// \\end{aligned}</span>
-<span class="doccomment">/// $$</span>
-<span class="doccomment">/// よって、</span>
-<span class="doccomment">/// $$ \\recip{i}{m} \\equiv -q\\cdot\\recip{r}{m} \\pmod{m}. $$</span>
-<span class="doccomment">/// $q\\gt 0$ と $\\recip{r}{m}\\gt 0$ であることから、</span>
-<span class="doccomment">/// $$ \\recip{i}{m} = m - (q\\cdot\\recip{r}{m} \\bmod m) $$</span>
-<span class="doccomment">/// となる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $r\\lt i$ より $\\recip{r}{m}$</span>
-<span class="doccomment">/// は既に得られているため、$\\recip{i}{m}$ が順次 $O(1)$ time で求まる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Notes</span>
-<span class="doccomment">/// 一般のケースでは $\\gcd(r, m)=\\gcd(i, m)$ とは限らないので注意。</span>
-<span class="doccomment">/// たとえば、$\\recip{3}{8}$ を求める際、$8 = 3\\cdot 2 + 2$ なので</span>
-<span class="doccomment">/// $\\recip{2}{8}$ が必要になるが、これは存在しない。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 一般のケースで必要になる場合は、線形篩を用いる方法がある。See:</span>
-<span class="doccomment">/// [`LinearSieve::recips`](../struct.LinearSieve.html#method.recips)</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// $O(n)$ time。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::math::mod_recip_table_prime;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(mod_recip_table_prime(2, 3), [0, 1, 2]);</span>
-<span class="doccomment">/// assert_eq!(mod_recip_table_prime(4, 5), [0, 1, 3, 2, 4]);</span>
-<span class="doccomment">/// assert_eq!(mod_recip_table_prime(9, 5), [0, 1, 3, 2, 4].repeat(2));</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mod_recip_table_prime</span>(<span class="ident">n</span>: <span class="ident">u64</span>, <span class="ident">m</span>: <span class="ident">u64</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dp</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">n</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">+</span> <span class="number">1</span>];
-    <span class="ident">dp</span>[<span class="number">1</span>] <span class="op">=</span> <span class="number">1</span>;
-    <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">2</span>..<span class="op">=</span><span class="ident">n</span>.<span class="ident">min</span>(<span class="ident">m</span> <span class="op">-</span> <span class="number">1</span>) {
-        <span class="kw">let</span> (<span class="ident">q</span>, <span class="ident">r</span>) <span class="op">=</span> (<span class="ident">m</span> <span class="op">/</span> <span class="ident">i</span>, <span class="ident">m</span> <span class="op">%</span> <span class="ident">i</span>);
-        <span class="kw">if</span> <span class="ident">dp</span>[<span class="ident">r</span> <span class="kw">as</span> <span class="ident">usize</span>] <span class="op">&gt;</span> <span class="number">0</span> {
-            <span class="ident">dp</span>[<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>] <span class="op">=</span> <span class="ident">m</span> <span class="op">-</span> <span class="ident">q</span> <span class="op">*</span> <span class="ident">dp</span>[<span class="ident">r</span> <span class="kw">as</span> <span class="ident">usize</span>] <span class="op">%</span> <span class="ident">m</span>;
+/// 素数 $m$ を法とした逆元のテーブル。
+///
+/// $\\gdef\\recip#1#2{#1\_{(#2)}\^{-1}}$
+/// 以下、$i\^{-1}\\bmod j$ を $\\recip{i}{j}$ と書く。
+///
+/// 次で定められる \\(a = (a\_0, a\_1, \\dots, a\_n)\\) を返す。
+/// \\[
+/// a\_i = \\begin{cases}
+/// \\recip{i}{m}, &amp; \\text{if }\\recip{i}{m}\\text{ exists}; \\\\
+/// 0, &amp; \\text{otherwise}.
+/// \\end{cases}
+/// \\]
+/// Note: $\\recip{i}{m}\\ne 0$。
+///
+/// # Idea
+///
+/// 次のことが成り立つ：
+/// - $\\recip{0}{m}$ は存在しない。
+/// - $\\recip{1}{m} = 1$ である。
+///
+/// $\\recip{(i+m)}{m} = \\recip{i}{m}$ なので、$i\\lt m$ について考える。
+///
+/// 各 $j$ ($1\\le j\\lt i$) については $\\recip{j}{m}$
+/// が得られているとする。ただし、$m$ が素数なので、これらは常に存在する。
+///
+/// $m = q\\cdot i+r$ ($0\\le r\\lt i$) とおき、$\\recip{i}{m}$ を辺々掛けると
+/// $$
+/// \\begin{aligned}
+/// m\\cdot\\recip{i}{m} &amp;= q\\cdot i\\cdot\\recip{i}{m} + r\\cdot\\recip{i}{m} \\\\
+/// 0 &amp;\\equiv q + r\\cdot\\recip{i}{m} \\pmod{m}.
+/// \\end{aligned}
+/// $$
+/// よって、
+/// $$ \\recip{i}{m} \\equiv -q\\cdot\\recip{r}{m} \\pmod{m}. $$
+/// $q\\gt 0$ と $\\recip{r}{m}\\gt 0$ であることから、
+/// $$ \\recip{i}{m} = m - (q\\cdot\\recip{r}{m} \\bmod m) $$
+/// となる。
+///
+/// $r\\lt i$ より $\\recip{r}{m}$
+/// は既に得られているため、$\\recip{i}{m}$ が順次 $O(1)$ time で求まる。
+///
+/// # Notes
+/// 一般のケースでは $\\gcd(r, m)=\\gcd(i, m)$ とは限らないので注意。
+/// たとえば、$\\recip{3}{8}$ を求める際、$8 = 3\\cdot 2 + 2$ なので
+/// $\\recip{2}{8}$ が必要になるが、これは存在しない。
+///
+/// 一般のケースで必要になる場合は、線形篩を用いる方法がある。See:
+/// [`LinearSieve::recips`](../struct.LinearSieve.html#method.recips)
+///
+/// # Complexity
+/// $O(n)$ time。
+///
+/// # Examples
+/// ```
+/// use nekolib::math::mod_recip_table_prime;
+///
+/// assert_eq!(mod_recip_table_prime(2, 3), [0, 1, 2]);
+/// assert_eq!(mod_recip_table_prime(4, 5), [0, 1, 3, 2, 4]);
+/// assert_eq!(mod_recip_table_prime(9, 5), [0, 1, 3, 2, 4].repeat(2));
+/// ```
+</span><span class="kw">pub fn </span>mod_recip_table_prime(n: u64, m: u64) -&gt; Vec&lt;u64&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>dp = <span class="macro">vec!</span>[<span class="number">0</span>; n <span class="kw">as </span>usize + <span class="number">1</span>];
+    dp[<span class="number">1</span>] = <span class="number">1</span>;
+    <span class="kw">for </span>i <span class="kw">in </span><span class="number">2</span>..=n.min(m - <span class="number">1</span>) {
+        <span class="kw">let </span>(q, r) = (m / i, m % i);
+        <span class="kw">if </span>dp[r <span class="kw">as </span>usize] &gt; <span class="number">0 </span>{
+            dp[i <span class="kw">as </span>usize] = m - q * dp[r <span class="kw">as </span>usize] % m;
         }
     }
-    <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="ident">m</span>..<span class="op">=</span><span class="ident">n</span> {
-        <span class="ident">dp</span>[<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>] <span class="op">=</span> <span class="ident">dp</span>[(<span class="ident">i</span> <span class="op">-</span> <span class="ident">m</span>) <span class="kw">as</span> <span class="ident">usize</span>];
+    <span class="kw">for </span>i <span class="kw">in </span>m..=n {
+        dp[i <span class="kw">as </span>usize] = dp[(i - m) <span class="kw">as </span>usize];
     }
-    <span class="ident">dp</span>
+    dp
 }
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test</span>() {
-    <span class="kw">use</span> <span class="ident">factors_dup::FactorsDup</span>;
-    <span class="kw">use</span> <span class="ident">gcd::Gcd</span>;
-    <span class="kw">for</span> <span class="ident">m</span> <span class="kw">in</span> (<span class="number">2_u64</span>..<span class="op">=</span><span class="number">1000</span>).<span class="ident">filter</span>(<span class="op">|</span><span class="ident">m</span><span class="op">|</span> <span class="ident">m</span>.<span class="ident">factors_dup</span>().<span class="ident">count</span>() <span class="op">==</span> <span class="number">1</span>) {
-        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">m</span> <span class="op">-</span> <span class="number">1</span>;
-        <span class="kw">let</span> <span class="ident">actual</span> <span class="op">=</span> <span class="ident">mod_recip_table_prime</span>(<span class="ident">n</span>, <span class="ident">m</span>);
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="op">=</span><span class="ident">n</span> {
-            <span class="kw">let</span> <span class="ident">recip</span> <span class="op">=</span> <span class="ident">actual</span>[<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>];
-            <span class="kw">if</span> <span class="ident">recip</span> <span class="op">==</span> <span class="number">0</span> {
-                <span class="macro">assert_ne!</span>(<span class="ident">i</span>.<span class="ident">gcd</span>(<span class="ident">m</span>), <span class="number">1</span>);
-            } <span class="kw">else</span> {
-                <span class="macro">assert!</span>(<span class="ident">recip</span> <span class="op">&lt;</span> <span class="ident">m</span>);
-                <span class="macro">assert_eq!</span>(<span class="ident">i</span> <span class="op">*</span> <span class="ident">recip</span> <span class="op">%</span> <span class="ident">m</span>, <span class="number">1</span>);
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test() {
+    <span class="kw">use </span>factors_dup::FactorsDup;
+    <span class="kw">use </span>gcd::Gcd;
+    <span class="kw">for </span>m <span class="kw">in </span>(<span class="number">2_u64</span>..=<span class="number">1000</span>).filter(|m| m.factors_dup().count() == <span class="number">1</span>) {
+        <span class="kw">let </span>n = m - <span class="number">1</span>;
+        <span class="kw">let </span>actual = mod_recip_table_prime(n, m);
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..=n {
+            <span class="kw">let </span>recip = actual[i <span class="kw">as </span>usize];
+            <span class="kw">if </span>recip == <span class="number">0 </span>{
+                <span class="macro">assert_ne!</span>(i.gcd(m), <span class="number">1</span>);
+            } <span class="kw">else </span>{
+                <span class="macro">assert!</span>(recip &lt; m);
+                <span class="macro">assert_eq!</span>(i * recip % m, <span class="number">1</span>);
             }
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

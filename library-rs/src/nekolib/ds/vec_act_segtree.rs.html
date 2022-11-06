@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/ds/vec_act_segtree.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>vec_act_segtree.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/ds/vec_act_segtree.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>vec_act_segtree.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -814,732 +814,732 @@
 <span id="725">725</span>
 <span id="726">726</span>
 <span id="727">727</span>
-</pre><pre class="rust"><code><span class="doccomment">//! `Vec` ベースの区間作用セグ木。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! `Vec` ベースの区間作用セグ木。
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::act</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::action</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::binop</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::fold</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::fold_bisect</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::get_mut</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::utils::buf_range</span>;
+</span><span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::traits::act;
+<span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::traits::action;
+<span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::traits::binop;
+<span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::traits::fold;
+<span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::traits::fold_bisect;
+<span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::traits::get_mut;
+<span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::utils::buf_range;
 
-<span class="kw">use</span> <span class="ident">std::cell::RefCell</span>;
-<span class="kw">use</span> <span class="ident">std::fmt</span>::{<span class="self">self</span>, <span class="ident">Debug</span>};
-<span class="kw">use</span> <span class="ident">std::ops</span>::{<span class="ident">Deref</span>, <span class="ident">DerefMut</span>, <span class="ident">Range</span>, <span class="ident">RangeBounds</span>};
+<span class="kw">use </span>std::cell::RefCell;
+<span class="kw">use </span>std::fmt::{<span class="self">self</span>, Debug};
+<span class="kw">use </span>std::ops::{Deref, DerefMut, Range, RangeBounds};
 
-<span class="kw">use</span> <span class="ident">act::Act</span>;
-<span class="kw">use</span> <span class="ident">action::MonoidAction</span>;
-<span class="kw">use</span> <span class="ident">binop</span>::{<span class="ident">Identity</span>, <span class="ident">Magma</span>};
-<span class="kw">use</span> <span class="ident">buf_range</span>::{<span class="ident">bounds_within</span>, <span class="ident">check_bounds_range</span>};
-<span class="kw">use</span> <span class="ident">fold::Fold</span>;
-<span class="kw">use</span> <span class="ident">fold_bisect</span>::{<span class="ident">FoldBisect</span>, <span class="ident">FoldBisectRev</span>};
-<span class="kw">use</span> <span class="ident">get_mut::GetMut</span>;
+<span class="kw">use </span>act::Act;
+<span class="kw">use </span>action::MonoidAction;
+<span class="kw">use </span>binop::{Identity, Magma};
+<span class="kw">use </span>buf_range::{bounds_within, check_bounds_range};
+<span class="kw">use </span>fold::Fold;
+<span class="kw">use </span>fold_bisect::{FoldBisect, FoldBisectRev};
+<span class="kw">use </span>get_mut::GetMut;
 
-<span class="kw">const</span> <span class="ident">WORD_SIZE</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">0_usize</span>.<span class="ident">count_zeros</span>();
+<span class="kw">const </span>WORD_SIZE: u32 = <span class="number">0_usize</span>.count_zeros();
 
-<span class="kw">fn</span> <span class="ident">lcp</span>(<span class="ident">i</span>: <span class="ident">usize</span>, <span class="ident">j</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> {
-    <span class="kw">if</span> <span class="ident">i</span> <span class="op">==</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">j</span> <span class="op">==</span> <span class="number">0</span> {
-        <span class="kw">return</span> <span class="number">0</span>;
+<span class="kw">fn </span>lcp(i: usize, j: usize) -&gt; usize {
+    <span class="kw">if </span>i == <span class="number">0 </span>|| j == <span class="number">0 </span>{
+        <span class="kw">return </span><span class="number">0</span>;
     }
-    <span class="kw">if</span> <span class="ident">i</span> <span class="op">==</span> <span class="ident">j</span> {
-        <span class="kw">return</span> <span class="ident">i</span>;
+    <span class="kw">if </span>i == j {
+        <span class="kw">return </span>i;
     }
-    <span class="kw">let</span> (<span class="ident">i</span>, <span class="ident">j</span>) <span class="op">=</span> (<span class="ident">i</span>.<span class="ident">min</span>(<span class="ident">j</span>), <span class="ident">i</span>.<span class="ident">max</span>(<span class="ident">j</span>));
-    <span class="kw">let</span> <span class="ident">iz</span> <span class="op">=</span> <span class="ident">i</span>.<span class="ident">leading_zeros</span>();
-    <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">iz</span>;
-    <span class="kw">let</span> <span class="ident">j</span> <span class="op">=</span> <span class="ident">j</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">j</span>.<span class="ident">leading_zeros</span>();
-    <span class="ident">i</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">iz</span>.<span class="ident">max</span>(<span class="ident">WORD_SIZE</span> <span class="op">-</span> (<span class="ident">i</span> <span class="op">^</span> <span class="ident">j</span>).<span class="ident">leading_zeros</span>())
+    <span class="kw">let </span>(i, j) = (i.min(j), i.max(j));
+    <span class="kw">let </span>iz = i.leading_zeros();
+    <span class="kw">let </span>i = i &lt;&lt; iz;
+    <span class="kw">let </span>j = j &lt;&lt; j.leading_zeros();
+    i &gt;&gt; iz.max(WORD_SIZE - (i ^ j).leading_zeros())
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">VecActSegtree</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">A</span>: <span class="ident">MonoidAction</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operator</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
+<span class="attribute">#[derive(Clone, Default)]
+</span><span class="kw">pub struct </span>VecActSegtree&lt;A&gt;
+<span class="kw">where
+    </span>A: MonoidAction,
+    &lt;A::Operator <span class="kw">as </span>Magma&gt;::Set: Clone,
+    &lt;A::Operand <span class="kw">as </span>Magma&gt;::Set: Clone,
 {
-    <span class="ident">buf</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">def</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="ident">A::Operator</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">len</span>: <span class="ident">usize</span>,
-    <span class="ident">action</span>: <span class="ident">A</span>,
+    buf: RefCell&lt;Vec&lt;&lt;A::Operand <span class="kw">as </span>Magma&gt;::Set&gt;&gt;,
+    def: RefCell&lt;Vec&lt;&lt;A::Operator <span class="kw">as </span>Magma&gt;::Set&gt;&gt;,
+    len: usize,
+    action: A,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> <span class="ident">VecActSegtree</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">A</span>: <span class="ident">MonoidAction</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operator</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;A&gt; VecActSegtree&lt;A&gt;
+<span class="kw">where
+    </span>A: MonoidAction,
+    &lt;A::Operator <span class="kw">as </span>Magma&gt;::Set: Clone,
+    &lt;A::Operand <span class="kw">as </span>Magma&gt;::Set: Clone,
 {
-    <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">len</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span>
-    <span class="kw">where</span>
-        <span class="ident">A</span>: <span class="ident">Default</span>,
+    <span class="attribute">#[must_use]
+    </span><span class="kw">pub fn </span>new(len: usize) -&gt; <span class="self">Self
+    </span><span class="kw">where
+        </span>A: Default,
     {
-        <span class="kw">let</span> <span class="ident">action</span> <span class="op">=</span> <span class="ident">A::default</span>();
-        <span class="self">Self</span> {
-            <span class="ident">len</span>,
-            <span class="ident">buf</span>: <span class="ident">RefCell::new</span>(<span class="macro">vec!</span>[<span class="ident">action</span>.<span class="ident">operand</span>().<span class="ident">id</span>(); <span class="ident">len</span> <span class="op">+</span> <span class="ident">len</span>]),
-            <span class="ident">def</span>: <span class="ident">RefCell::new</span>(<span class="macro">vec!</span>[<span class="ident">action</span>.<span class="ident">operator</span>().<span class="ident">id</span>(); <span class="ident">len</span>]),
-            <span class="ident">action</span>,
+        <span class="kw">let </span>action = A::default();
+        <span class="self">Self </span>{
+            len,
+            buf: RefCell::new(<span class="macro">vec!</span>[action.operand().id(); len + len]),
+            def: RefCell::new(<span class="macro">vec!</span>[action.operator().id(); len]),
+            action,
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> { <span class="self">self</span>.<span class="ident">len</span> <span class="op">==</span> <span class="number">0</span> }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">len</span> }
+    <span class="kw">pub fn </span>is_empty(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool { <span class="self">self</span>.len == <span class="number">0 </span>}
+    <span class="kw">pub fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize { <span class="self">self</span>.len }
 
-    <span class="kw">fn</span> <span class="ident">arch_pair</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">l</span>: <span class="ident">usize</span>, <span class="ident">r</span>: <span class="ident">usize</span>) -&gt; (<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">l</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span> <span class="op">+</span> <span class="ident">l</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">r</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span> <span class="op">+</span> <span class="ident">r</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vl</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vr</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-        <span class="kw">while</span> <span class="ident">l</span> <span class="op">&lt;</span> <span class="ident">r</span> {
-            <span class="kw">if</span> <span class="ident">l</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">==</span> <span class="number">1</span> {
-                <span class="ident">vl</span>.<span class="ident">push</span>(<span class="ident">l</span>);
-                <span class="ident">l</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+    <span class="kw">fn </span>arch_pair(<span class="kw-2">&amp;</span><span class="self">self</span>, l: usize, r: usize) -&gt; (Vec&lt;usize&gt;, Vec&lt;usize&gt;) {
+        <span class="kw">let </span><span class="kw-2">mut </span>l = <span class="self">self</span>.len + l;
+        <span class="kw">let </span><span class="kw-2">mut </span>r = <span class="self">self</span>.len + r;
+        <span class="kw">let </span><span class="kw-2">mut </span>vl = <span class="macro">vec!</span>[];
+        <span class="kw">let </span><span class="kw-2">mut </span>vr = <span class="macro">vec!</span>[];
+        <span class="kw">while </span>l &lt; r {
+            <span class="kw">if </span>l &amp; <span class="number">1 </span>== <span class="number">1 </span>{
+                vl.push(l);
+                l += <span class="number">1</span>;
             }
-            <span class="kw">if</span> <span class="ident">r</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">==</span> <span class="number">1</span> {
-                <span class="ident">r</span> <span class="op">-</span><span class="op">=</span> <span class="number">1</span>;
-                <span class="ident">vr</span>.<span class="ident">push</span>(<span class="ident">r</span>);
+            <span class="kw">if </span>r &amp; <span class="number">1 </span>== <span class="number">1 </span>{
+                r -= <span class="number">1</span>;
+                vr.push(r);
             }
-            <span class="ident">l</span> <span class="op">&gt;</span><span class="op">&gt;</span><span class="op">=</span> <span class="number">1</span>;
-            <span class="ident">r</span> <span class="op">&gt;</span><span class="op">&gt;</span><span class="op">=</span> <span class="number">1</span>;
+            l &gt;&gt;= <span class="number">1</span>;
+            r &gt;&gt;= <span class="number">1</span>;
         }
-        (<span class="ident">vl</span>, <span class="ident">vr</span>)
+        (vl, vr)
     }
 
-    <span class="kw">fn</span> <span class="ident">arch</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">l</span>: <span class="ident">usize</span>, <span class="ident">r</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> (<span class="kw-2">mut</span> <span class="ident">vl</span>, <span class="ident">vr</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">arch_pair</span>(<span class="ident">l</span>, <span class="ident">r</span>);
-        <span class="ident">vl</span>.<span class="ident">extend</span>(<span class="ident">vr</span>.<span class="ident">into_iter</span>().<span class="ident">rev</span>());
-        <span class="ident">vl</span>
+    <span class="kw">fn </span>arch(<span class="kw-2">&amp;</span><span class="self">self</span>, l: usize, r: usize) -&gt; Vec&lt;usize&gt; {
+        <span class="kw">let </span>(<span class="kw-2">mut </span>vl, vr) = <span class="self">self</span>.arch_pair(l, r);
+        vl.extend(vr.into_iter().rev());
+        vl
     }
 
-    <span class="kw">fn</span> <span class="ident">arch_rev</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">l</span>: <span class="ident">usize</span>, <span class="ident">r</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> (<span class="ident">vl</span>, <span class="kw-2">mut</span> <span class="ident">vr</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">arch_pair</span>(<span class="ident">l</span>, <span class="ident">r</span>);
-        <span class="ident">vr</span>.<span class="ident">extend</span>(<span class="ident">vl</span>.<span class="ident">into_iter</span>().<span class="ident">rev</span>());
-        <span class="ident">vr</span>
+    <span class="kw">fn </span>arch_rev(<span class="kw-2">&amp;</span><span class="self">self</span>, l: usize, r: usize) -&gt; Vec&lt;usize&gt; {
+        <span class="kw">let </span>(vl, <span class="kw-2">mut </span>vr) = <span class="self">self</span>.arch_pair(l, r);
+        vr.extend(vl.into_iter().rev());
+        vr
     }
 
-    <span class="kw">fn</span> <span class="ident">build_range</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">start</span>: <span class="ident">usize</span>, <span class="ident">end</span>: <span class="ident">usize</span>) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow_mut</span>();
-        <span class="kw">let</span> <span class="ident">def</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">def</span>.<span class="ident">borrow</span>();
-        <span class="kw">let</span> <span class="ident">action</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">action</span>;
-        <span class="kw">let</span> <span class="ident">operand</span> <span class="op">=</span> <span class="ident">action</span>.<span class="ident">operand</span>();
-        <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">action</span>.<span class="ident">operator</span>().<span class="ident">id</span>();
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">ancestors_upward</span>(<span class="ident">start</span>, <span class="ident">end</span>).<span class="ident">filter</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">i</span><span class="op">|</span> <span class="ident">def</span>[<span class="ident">i</span>] <span class="op">==</span> <span class="ident">id</span>) {
-            <span class="ident">buf</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">operand</span>.<span class="ident">op</span>(<span class="ident">buf</span>[<span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span>].<span class="ident">clone</span>(), <span class="ident">buf</span>[<span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span> <span class="op">|</span> <span class="number">1</span>].<span class="ident">clone</span>());
-        }
-    }
-
-    <span class="kw">fn</span> <span class="ident">apply</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>, <span class="ident">op</span>: <span class="op">&lt;</span><span class="ident">A::Operator</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow_mut</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">def</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">def</span>.<span class="ident">borrow_mut</span>();
-        <span class="ident">buf</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="self">self</span>.<span class="ident">action</span>.<span class="ident">act</span>(<span class="ident">buf</span>[<span class="ident">i</span>].<span class="ident">clone</span>(), <span class="ident">op</span>.<span class="ident">clone</span>());
-        <span class="kw">if</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">len</span> {
-            <span class="ident">def</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="self">self</span>.<span class="ident">action</span>.<span class="ident">operator</span>().<span class="ident">op</span>(<span class="ident">def</span>[<span class="ident">i</span>].<span class="ident">clone</span>(), <span class="ident">op</span>);
+    <span class="kw">fn </span>build_range(<span class="kw-2">&amp;mut </span><span class="self">self</span>, start: usize, end: usize) {
+        <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="self">self</span>.buf.borrow_mut();
+        <span class="kw">let </span>def = <span class="self">self</span>.def.borrow();
+        <span class="kw">let </span>action = <span class="kw-2">&amp;</span><span class="self">self</span>.action;
+        <span class="kw">let </span>operand = action.operand();
+        <span class="kw">let </span>id = action.operator().id();
+        <span class="kw">for </span>i <span class="kw">in </span><span class="self">self</span>.ancestors_upward(start, end).filter(|<span class="kw-2">&amp;</span>i| def[i] == id) {
+            buf[i] = operand.op(buf[i &lt;&lt; <span class="number">1</span>].clone(), buf[i &lt;&lt; <span class="number">1 </span>| <span class="number">1</span>].clone());
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">force</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) {
-        <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">action</span>.<span class="ident">operator</span>().<span class="ident">id</span>();
-        <span class="kw">let</span> <span class="ident">d</span> <span class="op">=</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">def</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">def</span>.<span class="ident">borrow_mut</span>();
-            <span class="ident">std::mem::replace</span>(<span class="kw-2">&amp;mut</span> <span class="ident">def</span>[<span class="ident">i</span>], <span class="ident">e</span>.<span class="ident">clone</span>())
+    <span class="kw">fn </span>apply(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize, op: &lt;A::Operator <span class="kw">as </span>Magma&gt;::Set) {
+        <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="self">self</span>.buf.borrow_mut();
+        <span class="kw">let </span><span class="kw-2">mut </span>def = <span class="self">self</span>.def.borrow_mut();
+        buf[i] = <span class="self">self</span>.action.act(buf[i].clone(), op.clone());
+        <span class="kw">if </span>i &lt; <span class="self">self</span>.len {
+            def[i] = <span class="self">self</span>.action.operator().op(def[i].clone(), op);
+        }
+    }
+
+    <span class="kw">fn </span>force(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize) {
+        <span class="kw">let </span>e = <span class="self">self</span>.action.operator().id();
+        <span class="kw">let </span>d = {
+            <span class="kw">let </span><span class="kw-2">mut </span>def = <span class="self">self</span>.def.borrow_mut();
+            std::mem::replace(<span class="kw-2">&amp;mut </span>def[i], e.clone())
         };
-        <span class="kw">if</span> <span class="ident">d</span> <span class="op">!</span><span class="op">=</span> <span class="ident">e</span> {
-            <span class="self">self</span>.<span class="ident">apply</span>(<span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span>, <span class="ident">d</span>.<span class="ident">clone</span>());
-            <span class="self">self</span>.<span class="ident">apply</span>(<span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span> <span class="op">|</span> <span class="number">1</span>, <span class="ident">d</span>);
+        <span class="kw">if </span>d != e {
+            <span class="self">self</span>.apply(i &lt;&lt; <span class="number">1</span>, d.clone());
+            <span class="self">self</span>.apply(i &lt;&lt; <span class="number">1 </span>| <span class="number">1</span>, d);
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">parent_root</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> {
-        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span>;
-        <span class="kw">if</span> <span class="ident">n</span>.<span class="ident">is_power_of_two</span>() {
-            <span class="kw">return</span> <span class="number">0</span>;
+    <span class="kw">fn </span>parent_root(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize) -&gt; usize {
+        <span class="kw">let </span>n = <span class="self">self</span>.len;
+        <span class="kw">if </span>n.is_power_of_two() {
+            <span class="kw">return </span><span class="number">0</span>;
         }
-        <span class="kw">let</span> <span class="ident">n2</span> <span class="op">=</span> <span class="number">2</span> <span class="op">*</span> <span class="ident">n</span>;
-        <span class="kw">let</span> <span class="ident">lsb</span> <span class="op">=</span> <span class="ident">n2</span> <span class="op">&amp;</span> <span class="ident">n2</span>.<span class="ident">wrapping_neg</span>();
-        <span class="ident">lcp</span>(<span class="ident">i</span>, <span class="kw">if</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="ident">n2</span> <span class="op">^</span> <span class="ident">lsb</span> { <span class="ident">n2</span> <span class="op">^</span> <span class="ident">lsb</span> } <span class="kw">else</span> { <span class="ident">n2</span> })
+        <span class="kw">let </span>n2 = <span class="number">2 </span>* n;
+        <span class="kw">let </span>lsb = n2 &amp; n2.wrapping_neg();
+        lcp(i, <span class="kw">if </span>i &lt; n2 ^ lsb { n2 ^ lsb } <span class="kw">else </span>{ n2 })
     }
 
-    <span class="kw">fn</span> <span class="ident">ancestors_downward</span>(
+    <span class="kw">fn </span>ancestors_downward(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">start</span>: <span class="ident">usize</span>,
-        <span class="ident">end</span>: <span class="ident">usize</span>,
-    ) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">usize</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">DoubleEndedIterator</span> {
-        <span class="self">self</span>.<span class="ident">ancestors_upward</span>(<span class="ident">start</span>, <span class="ident">end</span>).<span class="ident">rev</span>()
+        start: usize,
+        end: usize,
+    ) -&gt; <span class="kw">impl </span>Iterator&lt;Item = usize&gt; + DoubleEndedIterator {
+        <span class="self">self</span>.ancestors_upward(start, end).rev()
     }
 
-    <span class="kw">fn</span> <span class="ident">ancestors_upward</span>(
+    <span class="kw">fn </span>ancestors_upward(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">start</span>: <span class="ident">usize</span>,
-        <span class="ident">end</span>: <span class="ident">usize</span>,
-    ) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">usize</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">DoubleEndedIterator</span> {
-        <span class="comment">// start &lt;= end</span>
+        start: usize,
+        end: usize,
+    ) -&gt; <span class="kw">impl </span>Iterator&lt;Item = usize&gt; + DoubleEndedIterator {
+        <span class="comment">// start &lt;= end
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-        <span class="kw">let</span> <span class="ident">l</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span> <span class="op">+</span> <span class="ident">start</span>;
-        <span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span> <span class="op">+</span> <span class="ident">end</span>;
-        <span class="kw">let</span> <span class="ident">pl</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parent_root</span>(<span class="ident">l</span>);
-        <span class="kw">let</span> <span class="ident">pr</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parent_root</span>(<span class="ident">r</span> <span class="op">-</span> <span class="number">1</span>);
+        </span><span class="kw">let </span><span class="kw-2">mut </span>res = <span class="macro">vec!</span>[];
+        <span class="kw">let </span>l = <span class="self">self</span>.len + start;
+        <span class="kw">let </span>r = <span class="self">self</span>.len + end;
+        <span class="kw">let </span>pl = <span class="self">self</span>.parent_root(l);
+        <span class="kw">let </span>pr = <span class="self">self</span>.parent_root(r - <span class="number">1</span>);
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">il</span> <span class="op">=</span> <span class="number">1</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ir</span> <span class="op">=</span> <span class="number">1</span>;
-        <span class="kw">while</span> <span class="ident">l</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">il</span> <span class="op">!</span><span class="op">=</span> <span class="ident">pl</span> <span class="op">|</span><span class="op">|</span> (<span class="ident">r</span> <span class="op">-</span> <span class="number">1</span>) <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">ir</span> <span class="op">!</span><span class="op">=</span> <span class="ident">pr</span> {
-            <span class="kw">if</span> <span class="ident">l</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">il</span> <span class="op">!</span><span class="op">=</span> <span class="ident">pl</span> {
-                <span class="kw">if</span> <span class="ident">l</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">il</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">il</span> <span class="op">!</span><span class="op">=</span> <span class="ident">l</span> {
-                    <span class="ident">res</span>.<span class="ident">push</span>(<span class="ident">l</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">il</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>il = <span class="number">1</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>ir = <span class="number">1</span>;
+        <span class="kw">while </span>l &gt;&gt; il != pl || (r - <span class="number">1</span>) &gt;&gt; ir != pr {
+            <span class="kw">if </span>l &gt;&gt; il != pl {
+                <span class="kw">if </span>l &gt;&gt; il &lt;&lt; il != l {
+                    res.push(l &gt;&gt; il);
                 }
-                <span class="ident">il</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+                il += <span class="number">1</span>;
             }
-            <span class="kw">if</span> <span class="ident">r</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">ir</span> <span class="op">!</span><span class="op">=</span> <span class="ident">pr</span> {
-                <span class="kw">if</span> <span class="ident">r</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">ir</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">ir</span> <span class="op">!</span><span class="op">=</span> <span class="ident">r</span> {
-                    <span class="ident">res</span>.<span class="ident">push</span>((<span class="ident">r</span> <span class="op">-</span> <span class="number">1</span>) <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">ir</span>);
+            <span class="kw">if </span>r &gt;&gt; ir != pr {
+                <span class="kw">if </span>r &gt;&gt; ir &lt;&lt; ir != r {
+                    res.push((r - <span class="number">1</span>) &gt;&gt; ir);
                 }
-                <span class="ident">ir</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-            }
-        }
-
-        <span class="ident">res</span>.<span class="ident">dedup</span>();
-        <span class="ident">res</span>.<span class="ident">into_iter</span>()
-    }
-
-    <span class="kw">fn</span> <span class="ident">force_range</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">l</span>: <span class="ident">usize</span>, <span class="ident">r</span>: <span class="ident">usize</span>) {
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">ancestors_downward</span>(<span class="ident">l</span>, <span class="ident">r</span>) {
-            <span class="self">self</span>.<span class="ident">force</span>(<span class="ident">i</span>);
-        }
-    }
-
-    <span class="kw">fn</span> <span class="ident">force_all</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow_mut</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">def</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">def</span>.<span class="ident">borrow_mut</span>();
-        <span class="kw">let</span> <span class="ident">operator</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">action</span>.<span class="ident">operator</span>();
-        <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="ident">operator</span>.<span class="ident">id</span>();
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">1</span>..<span class="self">self</span>.<span class="ident">len</span> {
-            <span class="kw">let</span> <span class="ident">d</span> <span class="op">=</span> <span class="ident">std::mem::replace</span>(<span class="kw-2">&amp;mut</span> <span class="ident">def</span>[<span class="ident">i</span>], <span class="ident">e</span>.<span class="ident">clone</span>());
-            <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">j</span> <span class="kw">in</span> <span class="kw-2">&amp;</span>[<span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span>, <span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span> <span class="op">|</span> <span class="number">1</span>] {
-                <span class="kw">if</span> <span class="ident">j</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">len</span> {
-                    <span class="ident">def</span>[<span class="ident">j</span>] <span class="op">=</span> <span class="ident">operator</span>.<span class="ident">op</span>(<span class="ident">def</span>[<span class="ident">j</span>].<span class="ident">clone</span>(), <span class="ident">d</span>.<span class="ident">clone</span>());
-                }
-                <span class="ident">buf</span>[<span class="ident">j</span>] <span class="op">=</span> <span class="self">self</span>.<span class="ident">action</span>.<span class="ident">act</span>(<span class="ident">buf</span>[<span class="ident">j</span>].<span class="ident">clone</span>(), <span class="ident">d</span>.<span class="ident">clone</span>());
+                ir += <span class="number">1</span>;
             }
         }
+
+        res.dedup();
+        res.into_iter()
     }
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unforced</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">def</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">def</span>.<span class="ident">borrow</span>();
-        <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">action</span>.<span class="ident">operator</span>().<span class="ident">id</span>();
-        (<span class="number">0</span>..<span class="self">self</span>.<span class="ident">len</span>).<span class="ident">filter</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">i</span><span class="op">|</span> <span class="ident">def</span>[<span class="ident">i</span>] <span class="op">!</span><span class="op">=</span> <span class="ident">id</span>).<span class="ident">collect</span>()
-    }
-
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ancestors_sorted</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">start</span>: <span class="ident">usize</span>, <span class="ident">end</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">ancestors_upward</span>(<span class="ident">start</span>, <span class="ident">end</span>).<span class="ident">collect</span>();
-        <span class="ident">res</span>.<span class="ident">sort_unstable</span>();
-        <span class="ident">res</span>
-    }
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">VecActSegtree</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">A</span>: <span class="ident">MonoidAction</span> <span class="op">+</span> <span class="ident">Default</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operator</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
-{
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">v</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident"><span class="self">Self</span>::from</span>((<span class="ident">v</span>, <span class="ident">A::default</span>()))
-    }
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span><span class="op">&gt;</span>, <span class="ident">A</span>)<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">VecActSegtree</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">A</span>: <span class="ident">MonoidAction</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operator</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
-{
-    <span class="kw">fn</span> <span class="ident">from</span>((<span class="kw-2">mut</span> <span class="ident">v</span>, <span class="ident">action</span>): (<span class="ident">Vec</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span><span class="op">&gt;</span>, <span class="ident">A</span>)) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">v</span>.<span class="ident">len</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">action</span>.<span class="ident">operand</span>().<span class="ident">id</span>(); <span class="ident">len</span>];
-        <span class="ident">buf</span>.<span class="ident">append</span>(<span class="kw-2">&amp;mut</span> <span class="ident">v</span>);
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> (<span class="number">0</span>..<span class="ident">len</span>).<span class="ident">rev</span>() {
-            <span class="ident">buf</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">action</span>
-                .<span class="ident">operand</span>()
-                .<span class="ident">op</span>(<span class="ident">buf</span>[<span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span>].<span class="ident">clone</span>(), <span class="ident">buf</span>[<span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span> <span class="op">|</span> <span class="number">1</span>].<span class="ident">clone</span>());
+    <span class="kw">fn </span>force_range(<span class="kw-2">&amp;</span><span class="self">self</span>, l: usize, r: usize) {
+        <span class="kw">for </span>i <span class="kw">in </span><span class="self">self</span>.ancestors_downward(l, r) {
+            <span class="self">self</span>.force(i);
         }
-        <span class="kw">let</span> <span class="ident">buf</span> <span class="op">=</span> <span class="ident">RefCell::new</span>(<span class="ident">buf</span>);
-        <span class="kw">let</span> <span class="ident">def</span> <span class="op">=</span> <span class="ident">RefCell::new</span>(<span class="macro">vec!</span>[<span class="ident">action</span>.<span class="ident">operator</span>().<span class="ident">id</span>(); <span class="ident">len</span>]);
-        <span class="self">Self</span> { <span class="ident">buf</span>, <span class="ident">def</span>, <span class="ident">len</span>, <span class="ident">action</span> }
     }
-}
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">VecActSegtree</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">A</span>: <span class="ident">MonoidAction</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operator</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">Debug</span>,
-{
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">fmt::Formatter</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="self">self</span>.<span class="ident">force_all</span>();
-        <span class="ident">f</span>.<span class="ident">debug_list</span>().<span class="ident">entries</span>(<span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow</span>()[<span class="self">self</span>.<span class="ident">len</span>..].<span class="ident">iter</span>()).<span class="ident">finish</span>()
-    }
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">VecActSegtree</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">A</span>: <span class="ident">MonoidAction</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operator</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
-{
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">v</span>: <span class="ident">VecActSegtree</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">v</span>.<span class="ident">force_all</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">v</span>.<span class="ident">buf</span>.<span class="ident">into_inner</span>();
-        <span class="ident">res</span>.<span class="ident">drain</span>(..<span class="ident">v</span>.<span class="ident">len</span>);
-        <span class="ident">res</span>
-    }
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>, <span class="ident">B</span><span class="op">&gt;</span> <span class="ident">Fold</span><span class="op">&lt;</span><span class="ident">B</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">VecActSegtree</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">A</span>: <span class="ident">MonoidAction</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operator</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
-    <span class="ident">B</span>: <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-{
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">A::Operand</span>;
-    <span class="kw">fn</span> <span class="ident">fold</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">b</span>: <span class="ident">B</span>) -&gt; <span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Output</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span> {
-        <span class="kw">let</span> <span class="ident">Range</span> { <span class="ident">start</span>, <span class="ident">end</span> } <span class="op">=</span> <span class="ident">bounds_within</span>(<span class="ident">b</span>, <span class="self">self</span>.<span class="ident">len</span>);
-        <span class="kw">let</span> <span class="ident">operand</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">action</span>.<span class="ident">operand</span>();
-        <span class="kw">if</span> <span class="ident">start</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">end</span> {
-            <span class="kw">return</span> <span class="ident">operand</span>.<span class="ident">id</span>();
+    <span class="kw">fn </span>force_all(<span class="kw-2">&amp;</span><span class="self">self</span>) {
+        <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="self">self</span>.buf.borrow_mut();
+        <span class="kw">let </span><span class="kw-2">mut </span>def = <span class="self">self</span>.def.borrow_mut();
+        <span class="kw">let </span>operator = <span class="kw-2">&amp;</span><span class="self">self</span>.action.operator();
+        <span class="kw">let </span>e = operator.id();
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..<span class="self">self</span>.len {
+            <span class="kw">let </span>d = std::mem::replace(<span class="kw-2">&amp;mut </span>def[i], e.clone());
+            <span class="kw">for </span><span class="kw-2">&amp;</span>j <span class="kw">in </span><span class="kw-2">&amp;</span>[i &lt;&lt; <span class="number">1</span>, i &lt;&lt; <span class="number">1 </span>| <span class="number">1</span>] {
+                <span class="kw">if </span>j &lt; <span class="self">self</span>.len {
+                    def[j] = operator.op(def[j].clone(), d.clone());
+                }
+                buf[j] = <span class="self">self</span>.action.act(buf[j].clone(), d.clone());
+            }
         }
-        <span class="self">self</span>.<span class="ident">force_range</span>(<span class="ident">start</span>, <span class="ident">end</span>);
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">operand</span>.<span class="ident">id</span>();
-        <span class="kw">let</span> <span class="ident">buf</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow</span>();
-        <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">arch</span>(<span class="ident">start</span>, <span class="ident">end</span>) {
-            <span class="ident">res</span> <span class="op">=</span> <span class="ident">operand</span>.<span class="ident">op</span>(<span class="ident">res</span>, <span class="ident">buf</span>[<span class="ident">v</span>].<span class="ident">clone</span>());
-        }
-        <span class="ident">res</span>
+    }
+
+    <span class="attribute">#[cfg(test)]
+    </span><span class="kw">pub fn </span>unforced(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;usize&gt; {
+        <span class="kw">let </span>def = <span class="self">self</span>.def.borrow();
+        <span class="kw">let </span>id = <span class="self">self</span>.action.operator().id();
+        (<span class="number">0</span>..<span class="self">self</span>.len).filter(|<span class="kw-2">&amp;</span>i| def[i] != id).collect()
+    }
+
+    <span class="attribute">#[cfg(test)]
+    </span><span class="kw">pub fn </span>ancestors_sorted(<span class="kw-2">&amp;</span><span class="self">self</span>, start: usize, end: usize) -&gt; Vec&lt;usize&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>res: Vec&lt;<span class="kw">_</span>&gt; = <span class="self">self</span>.ancestors_upward(start, end).collect();
+        res.sort_unstable();
+        res
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>, <span class="ident">B</span><span class="op">&gt;</span> <span class="ident">Act</span><span class="op">&lt;</span><span class="ident">B</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">VecActSegtree</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">A</span>: <span class="ident">MonoidAction</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operator</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
-    <span class="ident">B</span>: <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;A&gt; From&lt;Vec&lt;&lt;A::Operand <span class="kw">as </span>Magma&gt;::Set&gt;&gt; <span class="kw">for </span>VecActSegtree&lt;A&gt;
+<span class="kw">where
+    </span>A: MonoidAction + Default,
+    &lt;A::Operator <span class="kw">as </span>Magma&gt;::Set: Clone,
+    &lt;A::Operand <span class="kw">as </span>Magma&gt;::Set: Clone,
 {
-    <span class="kw">type</span> <span class="ident">Action</span> <span class="op">=</span> <span class="ident">A</span>;
-    <span class="kw">fn</span> <span class="ident">act</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">b</span>: <span class="ident">B</span>, <span class="ident">op</span>: <span class="op">&lt;</span><span class="ident">A::Operator</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>) {
-        <span class="kw">let</span> <span class="ident">Range</span> { <span class="ident">start</span>, <span class="ident">end</span> } <span class="op">=</span> <span class="ident">bounds_within</span>(<span class="ident">b</span>, <span class="self">self</span>.<span class="ident">len</span>);
-        <span class="kw">if</span> <span class="ident">start</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">end</span> {
+    <span class="kw">fn </span>from(v: Vec&lt;&lt;A::Operand <span class="kw">as </span>Magma&gt;::Set&gt;) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::from((v, A::default()))
+    }
+}
+
+<span class="kw">impl</span>&lt;A&gt; From&lt;(Vec&lt;&lt;A::Operand <span class="kw">as </span>Magma&gt;::Set&gt;, A)&gt; <span class="kw">for </span>VecActSegtree&lt;A&gt;
+<span class="kw">where
+    </span>A: MonoidAction,
+    &lt;A::Operator <span class="kw">as </span>Magma&gt;::Set: Clone,
+    &lt;A::Operand <span class="kw">as </span>Magma&gt;::Set: Clone,
+{
+    <span class="kw">fn </span>from((<span class="kw-2">mut </span>v, action): (Vec&lt;&lt;A::Operand <span class="kw">as </span>Magma&gt;::Set&gt;, A)) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>len = v.len();
+        <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="macro">vec!</span>[action.operand().id(); len];
+        buf.append(<span class="kw-2">&amp;mut </span>v);
+        <span class="kw">for </span>i <span class="kw">in </span>(<span class="number">0</span>..len).rev() {
+            buf[i] = action
+                .operand()
+                .op(buf[i &lt;&lt; <span class="number">1</span>].clone(), buf[i &lt;&lt; <span class="number">1 </span>| <span class="number">1</span>].clone());
+        }
+        <span class="kw">let </span>buf = RefCell::new(buf);
+        <span class="kw">let </span>def = RefCell::new(<span class="macro">vec!</span>[action.operator().id(); len]);
+        <span class="self">Self </span>{ buf, def, len, action }
+    }
+}
+
+<span class="kw">impl</span>&lt;A&gt; Debug <span class="kw">for </span>VecActSegtree&lt;A&gt;
+<span class="kw">where
+    </span>A: MonoidAction,
+    &lt;A::Operator <span class="kw">as </span>Magma&gt;::Set: Clone,
+    &lt;A::Operand <span class="kw">as </span>Magma&gt;::Set: Clone + Debug,
+{
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
+        <span class="self">self</span>.force_all();
+        f.debug_list().entries(<span class="self">self</span>.buf.borrow()[<span class="self">self</span>.len..].iter()).finish()
+    }
+}
+
+<span class="kw">impl</span>&lt;A&gt; From&lt;VecActSegtree&lt;A&gt;&gt; <span class="kw">for </span>Vec&lt;&lt;A::Operand <span class="kw">as </span>Magma&gt;::Set&gt;
+<span class="kw">where
+    </span>A: MonoidAction,
+    &lt;A::Operator <span class="kw">as </span>Magma&gt;::Set: Clone,
+    &lt;A::Operand <span class="kw">as </span>Magma&gt;::Set: Clone,
+{
+    <span class="kw">fn </span>from(v: VecActSegtree&lt;A&gt;) -&gt; <span class="self">Self </span>{
+        v.force_all();
+        <span class="kw">let </span><span class="kw-2">mut </span>res = v.buf.into_inner();
+        res.drain(..v.len);
+        res
+    }
+}
+
+<span class="kw">impl</span>&lt;A, B&gt; Fold&lt;B&gt; <span class="kw">for </span>VecActSegtree&lt;A&gt;
+<span class="kw">where
+    </span>A: MonoidAction,
+    &lt;A::Operator <span class="kw">as </span>Magma&gt;::Set: Clone,
+    &lt;A::Operand <span class="kw">as </span>Magma&gt;::Set: Clone,
+    B: RangeBounds&lt;usize&gt;,
+{
+    <span class="kw">type </span>Output = A::Operand;
+    <span class="kw">fn </span>fold(<span class="kw-2">&amp;</span><span class="self">self</span>, b: B) -&gt; &lt;<span class="self">Self</span>::Output <span class="kw">as </span>Magma&gt;::Set {
+        <span class="kw">let </span>Range { start, end } = bounds_within(b, <span class="self">self</span>.len);
+        <span class="kw">let </span>operand = <span class="self">self</span>.action.operand();
+        <span class="kw">if </span>start &gt;= end {
+            <span class="kw">return </span>operand.id();
+        }
+        <span class="self">self</span>.force_range(start, end);
+        <span class="kw">let </span><span class="kw-2">mut </span>res = operand.id();
+        <span class="kw">let </span>buf = <span class="self">self</span>.buf.borrow();
+        <span class="kw">for </span>v <span class="kw">in </span><span class="self">self</span>.arch(start, end) {
+            res = operand.op(res, buf[v].clone());
+        }
+        res
+    }
+}
+
+<span class="kw">impl</span>&lt;A, B&gt; Act&lt;B&gt; <span class="kw">for </span>VecActSegtree&lt;A&gt;
+<span class="kw">where
+    </span>A: MonoidAction,
+    &lt;A::Operator <span class="kw">as </span>Magma&gt;::Set: Clone,
+    &lt;A::Operand <span class="kw">as </span>Magma&gt;::Set: Clone,
+    B: RangeBounds&lt;usize&gt;,
+{
+    <span class="kw">type </span>Action = A;
+    <span class="kw">fn </span>act(<span class="kw-2">&amp;mut </span><span class="self">self</span>, b: B, op: &lt;A::Operator <span class="kw">as </span>Magma&gt;::Set) {
+        <span class="kw">let </span>Range { start, end } = bounds_within(b, <span class="self">self</span>.len);
+        <span class="kw">if </span>start &gt;= end {
             <span class="kw">return</span>;
         }
-        <span class="self">self</span>.<span class="ident">force_range</span>(<span class="ident">start</span>, <span class="ident">end</span>);
-        <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">arch</span>(<span class="ident">start</span>, <span class="ident">end</span>) {
-            <span class="self">self</span>.<span class="ident">apply</span>(<span class="ident">v</span>, <span class="ident">op</span>.<span class="ident">clone</span>());
+        <span class="self">self</span>.force_range(start, end);
+        <span class="kw">for </span>v <span class="kw">in </span><span class="self">self</span>.arch(start, end) {
+            <span class="self">self</span>.apply(v, op.clone());
         }
-        <span class="self">self</span>.<span class="ident">build_range</span>(<span class="ident">start</span>, <span class="ident">end</span>);
+        <span class="self">self</span>.build_range(start, end);
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> <span class="ident">FoldBisect</span> <span class="kw">for</span> <span class="ident">VecActSegtree</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">A</span>: <span class="ident">MonoidAction</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operator</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;A&gt; FoldBisect <span class="kw">for </span>VecActSegtree&lt;A&gt;
+<span class="kw">where
+    </span>A: MonoidAction,
+    &lt;A::Operator <span class="kw">as </span>Magma&gt;::Set: Clone,
+    &lt;A::Operand <span class="kw">as </span>Magma&gt;::Set: Clone,
 {
-    <span class="kw">fn</span> <span class="ident">fold_bisect</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(
+    <span class="kw">fn </span>fold_bisect&lt;F&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">l</span>: <span class="ident">usize</span>,
-        <span class="ident">pred</span>: <span class="ident">F</span>,
-    ) -&gt; (<span class="ident">usize</span>, <span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>)
-    <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>) -&gt; <span class="ident">bool</span>,
+        l: usize,
+        pred: F,
+    ) -&gt; (usize, &lt;A::Operand <span class="kw">as </span>Magma&gt;::Set)
+    <span class="kw">where
+        </span>F: Fn(<span class="kw-2">&amp;</span>&lt;A::Operand <span class="kw">as </span>Magma&gt;::Set) -&gt; bool,
     {
-        <span class="ident">check_bounds_range</span>(<span class="ident">l</span>, <span class="number">0</span>..<span class="op">=</span><span class="self">self</span>.<span class="ident">len</span>);
+        check_bounds_range(l, <span class="number">0</span>..=<span class="self">self</span>.len);
 
-        <span class="kw">let</span> <span class="ident">operand</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">action</span>.<span class="ident">operand</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">operand</span>.<span class="ident">id</span>();
-        <span class="macro">assert!</span>(<span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>), <span class="string">&quot;`pred(id)` must hold&quot;</span>);
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">fold</span>(<span class="ident">l</span>..) {
-            <span class="ident">x</span> <span class="kw">if</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>) =&gt; <span class="kw">return</span> (<span class="self">self</span>.<span class="ident">len</span>, <span class="ident">x</span>),
-            <span class="kw">_</span> =&gt; {}
+        <span class="kw">let </span>operand = <span class="self">self</span>.action.operand();
+        <span class="kw">let </span><span class="kw-2">mut </span>x = operand.id();
+        <span class="macro">assert!</span>(pred(<span class="kw-2">&amp;</span>x), <span class="string">&quot;`pred(id)` must hold&quot;</span>);
+        <span class="kw">match </span><span class="self">self</span>.fold(l..) {
+            x <span class="kw">if </span>pred(<span class="kw-2">&amp;</span>x) =&gt; <span class="kw">return </span>(<span class="self">self</span>.len, x),
+            <span class="kw">_ </span>=&gt; {}
         }
 
-        <span class="self">self</span>.<span class="ident">force_range</span>(<span class="ident">l</span>, <span class="self">self</span>.<span class="ident">len</span>);
-        <span class="kw">let</span> <span class="ident">buf</span> <span class="op">=</span> <span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow</span>();
-        <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">arch</span>(<span class="ident">l</span>, <span class="self">self</span>.<span class="ident">len</span>) {
-            <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">operand</span>.<span class="ident">op</span>(<span class="ident">x</span>.<span class="ident">clone</span>(), <span class="ident">buf</span>()[<span class="ident">v</span>].<span class="ident">clone</span>());
-            <span class="kw">if</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">tmp</span>) {
-                <span class="ident">x</span> <span class="op">=</span> <span class="ident">tmp</span>;
+        <span class="self">self</span>.force_range(l, <span class="self">self</span>.len);
+        <span class="kw">let </span>buf = || <span class="self">self</span>.buf.borrow();
+        <span class="kw">for </span>v <span class="kw">in </span><span class="self">self</span>.arch(l, <span class="self">self</span>.len) {
+            <span class="kw">let </span>tmp = operand.op(x.clone(), buf()[v].clone());
+            <span class="kw">if </span>pred(<span class="kw-2">&amp;</span>tmp) {
+                x = tmp;
                 <span class="kw">continue</span>;
             }
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">v</span>;
-            <span class="kw">while</span> <span class="ident">v</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">len</span> {
-                <span class="self">self</span>.<span class="ident">force</span>(<span class="ident">v</span>);
-                <span class="ident">v</span> <span class="op">&lt;</span><span class="op">&lt;</span><span class="op">=</span> <span class="number">1</span>;
-                <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">operand</span>.<span class="ident">op</span>(<span class="ident">x</span>.<span class="ident">clone</span>(), <span class="ident">buf</span>()[<span class="ident">v</span>].<span class="ident">clone</span>());
-                <span class="kw">if</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">tmp</span>) {
-                    <span class="ident">x</span> <span class="op">=</span> <span class="ident">tmp</span>;
-                    <span class="ident">v</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+            <span class="kw">let </span><span class="kw-2">mut </span>v = v;
+            <span class="kw">while </span>v &lt; <span class="self">self</span>.len {
+                <span class="self">self</span>.force(v);
+                v &lt;&lt;= <span class="number">1</span>;
+                <span class="kw">let </span>tmp = operand.op(x.clone(), buf()[v].clone());
+                <span class="kw">if </span>pred(<span class="kw-2">&amp;</span>tmp) {
+                    x = tmp;
+                    v += <span class="number">1</span>;
                 }
             }
-            <span class="kw">return</span> (<span class="ident">v</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">len</span>, <span class="ident">x</span>);
+            <span class="kw">return </span>(v - <span class="self">self</span>.len, x);
         }
         <span class="macro">unreachable!</span>();
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> <span class="ident">FoldBisectRev</span> <span class="kw">for</span> <span class="ident">VecActSegtree</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">A</span>: <span class="ident">MonoidAction</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operator</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;A&gt; FoldBisectRev <span class="kw">for </span>VecActSegtree&lt;A&gt;
+<span class="kw">where
+    </span>A: MonoidAction,
+    &lt;A::Operator <span class="kw">as </span>Magma&gt;::Set: Clone,
+    &lt;A::Operand <span class="kw">as </span>Magma&gt;::Set: Clone,
 {
-    <span class="kw">fn</span> <span class="ident">fold_bisect_rev</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(
+    <span class="kw">fn </span>fold_bisect_rev&lt;F&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">r</span>: <span class="ident">usize</span>,
-        <span class="ident">pred</span>: <span class="ident">F</span>,
-    ) -&gt; (<span class="ident">usize</span>, <span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>)
-    <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>) -&gt; <span class="ident">bool</span>,
+        r: usize,
+        pred: F,
+    ) -&gt; (usize, &lt;A::Operand <span class="kw">as </span>Magma&gt;::Set)
+    <span class="kw">where
+        </span>F: Fn(<span class="kw-2">&amp;</span>&lt;A::Operand <span class="kw">as </span>Magma&gt;::Set) -&gt; bool,
     {
-        <span class="ident">check_bounds_range</span>(<span class="ident">r</span>, <span class="number">0</span>..<span class="op">=</span><span class="self">self</span>.<span class="ident">len</span>);
+        check_bounds_range(r, <span class="number">0</span>..=<span class="self">self</span>.len);
 
-        <span class="kw">let</span> <span class="ident">operand</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">action</span>.<span class="ident">operand</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">operand</span>.<span class="ident">id</span>();
-        <span class="macro">assert!</span>(<span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>), <span class="string">&quot;`pred(id)` must hold&quot;</span>);
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">fold</span>(..<span class="ident">r</span>) {
-            <span class="ident">x</span> <span class="kw">if</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>) =&gt; <span class="kw">return</span> (<span class="number">0</span>, <span class="ident">x</span>),
-            <span class="kw">_</span> =&gt; {}
+        <span class="kw">let </span>operand = <span class="self">self</span>.action.operand();
+        <span class="kw">let </span><span class="kw-2">mut </span>x = operand.id();
+        <span class="macro">assert!</span>(pred(<span class="kw-2">&amp;</span>x), <span class="string">&quot;`pred(id)` must hold&quot;</span>);
+        <span class="kw">match </span><span class="self">self</span>.fold(..r) {
+            x <span class="kw">if </span>pred(<span class="kw-2">&amp;</span>x) =&gt; <span class="kw">return </span>(<span class="number">0</span>, x),
+            <span class="kw">_ </span>=&gt; {}
         }
 
-        <span class="self">self</span>.<span class="ident">force_range</span>(<span class="number">0</span>, <span class="ident">r</span>);
-        <span class="kw">let</span> <span class="ident">buf</span> <span class="op">=</span> <span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow</span>();
-        <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">arch_rev</span>(<span class="number">0</span>, <span class="ident">r</span>) {
-            <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">operand</span>.<span class="ident">op</span>(<span class="ident">buf</span>()[<span class="ident">v</span>].<span class="ident">clone</span>(), <span class="ident">x</span>.<span class="ident">clone</span>());
-            <span class="kw">if</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">tmp</span>) {
-                <span class="ident">x</span> <span class="op">=</span> <span class="ident">tmp</span>;
+        <span class="self">self</span>.force_range(<span class="number">0</span>, r);
+        <span class="kw">let </span>buf = || <span class="self">self</span>.buf.borrow();
+        <span class="kw">for </span>v <span class="kw">in </span><span class="self">self</span>.arch_rev(<span class="number">0</span>, r) {
+            <span class="kw">let </span>tmp = operand.op(buf()[v].clone(), x.clone());
+            <span class="kw">if </span>pred(<span class="kw-2">&amp;</span>tmp) {
+                x = tmp;
                 <span class="kw">continue</span>;
             }
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">v</span>;
-            <span class="kw">while</span> <span class="ident">v</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">len</span> {
-                <span class="self">self</span>.<span class="ident">force</span>(<span class="ident">v</span>);
-                <span class="ident">v</span> <span class="op">=</span> <span class="ident">v</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span> <span class="op">|</span> <span class="number">1</span>;
-                <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">operand</span>.<span class="ident">op</span>(<span class="ident">buf</span>()[<span class="ident">v</span>].<span class="ident">clone</span>(), <span class="ident">x</span>.<span class="ident">clone</span>());
-                <span class="kw">if</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">tmp</span>) {
-                    <span class="ident">x</span> <span class="op">=</span> <span class="ident">tmp</span>;
-                    <span class="ident">v</span> <span class="op">-</span><span class="op">=</span> <span class="number">1</span>;
+            <span class="kw">let </span><span class="kw-2">mut </span>v = v;
+            <span class="kw">while </span>v &lt; <span class="self">self</span>.len {
+                <span class="self">self</span>.force(v);
+                v = v &lt;&lt; <span class="number">1 </span>| <span class="number">1</span>;
+                <span class="kw">let </span>tmp = operand.op(buf()[v].clone(), x.clone());
+                <span class="kw">if </span>pred(<span class="kw-2">&amp;</span>tmp) {
+                    x = tmp;
+                    v -= <span class="number">1</span>;
                 }
             }
-            <span class="kw">return</span> (<span class="ident">v</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">len</span> <span class="op">+</span> <span class="number">1</span>, <span class="ident">x</span>);
+            <span class="kw">return </span>(v - <span class="self">self</span>.len + <span class="number">1</span>, x);
         }
         <span class="macro">unreachable!</span>();
     }
 }
 
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetMutIndex</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">A</span>: <span class="ident">MonoidAction</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operator</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
+<span class="attribute">#[doc(hidden)]
+</span><span class="kw">pub struct </span>GetMutIndex&lt;<span class="lifetime">&#39;a</span>, A&gt;
+<span class="kw">where
+    </span>A: MonoidAction,
+    &lt;A::Operator <span class="kw">as </span>Magma&gt;::Set: Clone,
+    &lt;A::Operand <span class="kw">as </span>Magma&gt;::Set: Clone,
 {
-    <span class="ident">tree</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">VecActSegtree</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>,
-    <span class="ident">index</span>: <span class="ident">usize</span>,
-    <span class="ident">elt</span>: <span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>,
+    tree: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>VecActSegtree&lt;A&gt;,
+    index: usize,
+    elt: &lt;A::Operand <span class="kw">as </span>Magma&gt;::Set,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">GetMut</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">VecActSegtree</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">A</span>: <span class="ident">MonoidAction</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operator</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, A: <span class="lifetime">&#39;a</span>&gt; GetMut&lt;<span class="lifetime">&#39;a</span>&gt; <span class="kw">for </span>VecActSegtree&lt;A&gt;
+<span class="kw">where
+    </span>A: MonoidAction,
+    &lt;A::Operator <span class="kw">as </span>Magma&gt;::Set: Clone,
+    &lt;A::Operand <span class="kw">as </span>Magma&gt;::Set: Clone,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">GetMutIndex</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span><span class="op">&gt;</span>;
-    <span class="kw">fn</span> <span class="ident">get_mut</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">GetMutIndex</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">A</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="ident">index</span> <span class="op">&gt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span> {
-            <span class="kw">return</span> <span class="prelude-val">None</span>;
+    <span class="kw">type </span>Output = GetMutIndex&lt;<span class="lifetime">&#39;a</span>, A&gt;;
+    <span class="kw">fn </span>get_mut(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span><span class="self">self</span>, index: usize) -&gt; <span class="prelude-ty">Option</span>&lt;GetMutIndex&lt;<span class="lifetime">&#39;a</span>, A&gt;&gt; {
+        <span class="kw">if </span>index &gt;= <span class="self">self</span>.len {
+            <span class="kw">return </span><span class="prelude-val">None</span>;
         }
 
-        <span class="self">self</span>.<span class="ident">force_range</span>(<span class="ident">index</span>, <span class="ident">index</span> <span class="op">+</span> <span class="number">1</span>);
-        <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span> <span class="op">+</span> <span class="ident">index</span>;
-        <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">action</span>.<span class="ident">operand</span>().<span class="ident">id</span>();
-        <span class="kw">let</span> <span class="ident">elt</span> <span class="op">=</span> <span class="ident">std::mem::replace</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">borrow_mut</span>()[<span class="ident">i</span>], <span class="ident">e</span>);
-        <span class="prelude-val">Some</span>(<span class="ident">GetMutIndex</span> { <span class="ident">tree</span>: <span class="self">self</span>, <span class="ident">index</span>, <span class="ident">elt</span> })
+        <span class="self">self</span>.force_range(index, index + <span class="number">1</span>);
+        <span class="kw">let </span>i = <span class="self">self</span>.len + index;
+        <span class="kw">let </span>e = <span class="self">self</span>.action.operand().id();
+        <span class="kw">let </span>elt = std::mem::replace(<span class="kw-2">&amp;mut </span><span class="self">self</span>.buf.borrow_mut()[i], e);
+        <span class="prelude-val">Some</span>(GetMutIndex { tree: <span class="self">self</span>, index, elt })
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> <span class="ident">Drop</span> <span class="kw">for</span> <span class="ident">GetMutIndex</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">A</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">A</span>: <span class="ident">MonoidAction</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operator</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;A&gt; Drop <span class="kw">for </span>GetMutIndex&lt;<span class="lifetime">&#39;_</span>, A&gt;
+<span class="kw">where
+    </span>A: MonoidAction,
+    &lt;A::Operator <span class="kw">as </span>Magma&gt;::Set: Clone,
+    &lt;A::Operand <span class="kw">as </span>Magma&gt;::Set: Clone,
 {
-    <span class="kw">fn</span> <span class="ident">drop</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="kw">let</span> <span class="self">Self</span> { <span class="ident">index</span>, <span class="ident">tree</span>, <span class="ident">elt</span> } <span class="op">=</span> <span class="self">self</span>;
-        <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">index</span>;
-        <span class="kw">let</span> <span class="ident">elt</span> <span class="op">=</span> <span class="ident">std::mem::replace</span>(<span class="ident">elt</span>, <span class="ident">tree</span>.<span class="ident">action</span>.<span class="ident">operand</span>().<span class="ident">id</span>());
-        <span class="ident">tree</span>.<span class="ident">buf</span>.<span class="ident">borrow_mut</span>()[<span class="ident">tree</span>.<span class="ident">len</span> <span class="op">+</span> <span class="ident">i</span>] <span class="op">=</span> <span class="ident">elt</span>;
-        <span class="ident">tree</span>.<span class="ident">build_range</span>(<span class="ident">i</span>, <span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>);
+    <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="kw">let </span><span class="self">Self </span>{ index, tree, elt } = <span class="self">self</span>;
+        <span class="kw">let </span>i = <span class="kw-2">*</span>index;
+        <span class="kw">let </span>elt = std::mem::replace(elt, tree.action.operand().id());
+        tree.buf.borrow_mut()[tree.len + i] = elt;
+        tree.build_range(i, i + <span class="number">1</span>);
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> <span class="ident">Deref</span> <span class="kw">for</span> <span class="ident">GetMutIndex</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">A</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">A</span>: <span class="ident">MonoidAction</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operator</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;A&gt; Deref <span class="kw">for </span>GetMutIndex&lt;<span class="lifetime">&#39;_</span>, A&gt;
+<span class="kw">where
+    </span>A: MonoidAction,
+    &lt;A::Operator <span class="kw">as </span>Magma&gt;::Set: Clone,
+    &lt;A::Operand <span class="kw">as </span>Magma&gt;::Set: Clone,
 {
-    <span class="kw">type</span> <span class="ident">Target</span> <span class="op">=</span> <span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>;
-    <span class="kw">fn</span> <span class="ident">deref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::Target</span> { <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">elt</span> }
+    <span class="kw">type </span>Target = &lt;A::Operand <span class="kw">as </span>Magma&gt;::Set;
+    <span class="kw">fn </span>deref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Target { <span class="kw-2">&amp;</span><span class="self">self</span>.elt }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span> <span class="ident">DerefMut</span> <span class="kw">for</span> <span class="ident">GetMutIndex</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">A</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">A</span>: <span class="ident">MonoidAction</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operator</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
-    <span class="op">&lt;</span><span class="ident">A::Operand</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;A&gt; DerefMut <span class="kw">for </span>GetMutIndex&lt;<span class="lifetime">&#39;_</span>, A&gt;
+<span class="kw">where
+    </span>A: MonoidAction,
+    &lt;A::Operator <span class="kw">as </span>Magma&gt;::Set: Clone,
+    &lt;A::Operand <span class="kw">as </span>Magma&gt;::Set: Clone,
 {
-    <span class="kw">fn</span> <span class="ident">deref_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="ident"><span class="self">Self</span>::Target</span> { <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">elt</span> }
+    <span class="kw">fn </span>deref_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Target { <span class="kw-2">&amp;mut </span><span class="self">self</span>.elt }
 }
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test_ancestors</span>() {
-    <span class="kw">use</span> <span class="ident">op_closure::OpClosure</span>;
-    <span class="kw">use</span> <span class="ident">op_closure_on_op_closure::OpClosureOnOpClosure</span>;
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test_ancestors() {
+    <span class="kw">use </span>op_closure::OpClosure;
+    <span class="kw">use </span>op_closure_on_op_closure::OpClosureOnOpClosure;
 
-    <span class="kw">for</span> <span class="ident">n</span> <span class="kw">in</span> <span class="number">1</span>..<span class="op">=</span><span class="number">100</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">height</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">n</span> <span class="op">+</span> <span class="ident">n</span>];
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="ident">n</span>..<span class="ident">n</span> <span class="op">+</span> <span class="ident">n</span> {
-            <span class="ident">height</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="number">1</span>;
+    <span class="kw">for </span>n <span class="kw">in </span><span class="number">1</span>..=<span class="number">100 </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>height = <span class="macro">vec!</span>[<span class="number">0</span>; n + n];
+        <span class="kw">for </span>i <span class="kw">in </span>n..n + n {
+            height[i] = <span class="number">1</span>;
         }
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> (<span class="number">1</span>..<span class="ident">n</span>).<span class="ident">rev</span>() {
-            <span class="kw">if</span> <span class="ident">height</span>[<span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span>] <span class="op">==</span> <span class="ident">height</span>[<span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span> <span class="op">|</span> <span class="number">1</span>] {
-                <span class="ident">height</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">height</span>[<span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span>] <span class="op">+</span> <span class="number">1</span>;
+        <span class="kw">for </span>i <span class="kw">in </span>(<span class="number">1</span>..n).rev() {
+            <span class="kw">if </span>height[i &lt;&lt; <span class="number">1</span>] == height[i &lt;&lt; <span class="number">1 </span>| <span class="number">1</span>] {
+                height[i] = height[i &lt;&lt; <span class="number">1</span>] + <span class="number">1</span>;
             }
         }
 
-        <span class="kw">let</span> <span class="ident">action</span> <span class="op">=</span> <span class="ident">OpClosureOnOpClosure::new</span>(
-            <span class="ident">OpClosure::new</span>(<span class="op">|</span><span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> (), <span class="op">|</span><span class="op">|</span> ()),
-            <span class="ident">OpClosure::new</span>(<span class="op">|</span><span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> (), <span class="op">|</span><span class="op">|</span> ()),
-            <span class="op">|</span><span class="kw">_</span>, <span class="kw">_</span><span class="op">|</span> (),
+        <span class="kw">let </span>action = OpClosureOnOpClosure::new(
+            OpClosure::new(|<span class="kw">_</span>, <span class="kw">_</span>| (), || ()),
+            OpClosure::new(|<span class="kw">_</span>, <span class="kw">_</span>| (), || ()),
+            |<span class="kw">_</span>, <span class="kw">_</span>| (),
         );
-        <span class="kw">let</span> <span class="ident">st</span>: <span class="ident">VecActSegtree</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="macro">vec!</span>[(); <span class="ident">n</span>], <span class="ident">action</span>).<span class="ident">into</span>();
-        <span class="kw">for</span> <span class="ident">l</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span> {
-            <span class="kw">for</span> <span class="ident">r</span> <span class="kw">in</span> <span class="ident">l</span>..<span class="ident">n</span> {
-                <span class="kw">let</span> <span class="ident">arch</span> <span class="op">=</span> {
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">arch</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">l</span> <span class="op">=</span> <span class="ident">n</span> <span class="op">+</span> <span class="ident">l</span>;
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">r</span> <span class="op">=</span> <span class="ident">n</span> <span class="op">+</span> <span class="ident">r</span> <span class="op">+</span> <span class="number">1</span>;
-                    <span class="kw">while</span> <span class="ident">l</span> <span class="op">&lt;</span> <span class="ident">r</span> {
-                        <span class="kw">if</span> <span class="ident">l</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">==</span> <span class="number">1</span> {
-                            <span class="ident">arch</span>.<span class="ident">push</span>(<span class="ident">l</span>);
-                            <span class="ident">l</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+        <span class="kw">let </span>st: VecActSegtree&lt;<span class="kw">_</span>&gt; = (<span class="macro">vec!</span>[(); n], action).into();
+        <span class="kw">for </span>l <span class="kw">in </span><span class="number">0</span>..n {
+            <span class="kw">for </span>r <span class="kw">in </span>l..n {
+                <span class="kw">let </span>arch = {
+                    <span class="kw">let </span><span class="kw-2">mut </span>arch = <span class="macro">vec!</span>[];
+                    <span class="kw">let </span><span class="kw-2">mut </span>l = n + l;
+                    <span class="kw">let </span><span class="kw-2">mut </span>r = n + r + <span class="number">1</span>;
+                    <span class="kw">while </span>l &lt; r {
+                        <span class="kw">if </span>l &amp; <span class="number">1 </span>== <span class="number">1 </span>{
+                            arch.push(l);
+                            l += <span class="number">1</span>;
                         }
-                        <span class="kw">if</span> <span class="ident">r</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">==</span> <span class="number">1</span> {
-                            <span class="ident">r</span> <span class="op">-</span><span class="op">=</span> <span class="number">1</span>;
-                            <span class="ident">arch</span>.<span class="ident">push</span>(<span class="ident">r</span>);
+                        <span class="kw">if </span>r &amp; <span class="number">1 </span>== <span class="number">1 </span>{
+                            r -= <span class="number">1</span>;
+                            arch.push(r);
                         }
-                        <span class="ident">l</span> <span class="op">&gt;</span><span class="op">&gt;</span><span class="op">=</span> <span class="number">1</span>;
-                        <span class="ident">r</span> <span class="op">&gt;</span><span class="op">&gt;</span><span class="op">=</span> <span class="number">1</span>;
+                        l &gt;&gt;= <span class="number">1</span>;
+                        r &gt;&gt;= <span class="number">1</span>;
                     }
-                    <span class="ident">arch</span>
+                    arch
                 };
 
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">expected</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-                <span class="kw">for</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="kw">in</span> <span class="ident">arch</span> {
-                    <span class="ident">i</span> <span class="op">&gt;</span><span class="op">&gt;</span><span class="op">=</span> <span class="number">1</span>;
-                    <span class="kw">while</span> <span class="ident">height</span>[<span class="ident">i</span>] <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-                        <span class="ident">expected</span>.<span class="ident">push</span>(<span class="ident">i</span>);
-                        <span class="ident">i</span> <span class="op">&gt;</span><span class="op">&gt;</span><span class="op">=</span> <span class="number">1</span>;
+                <span class="kw">let </span><span class="kw-2">mut </span>expected = <span class="macro">vec!</span>[];
+                <span class="kw">for </span><span class="kw-2">mut </span>i <span class="kw">in </span>arch {
+                    i &gt;&gt;= <span class="number">1</span>;
+                    <span class="kw">while </span>height[i] != <span class="number">0 </span>{
+                        expected.push(i);
+                        i &gt;&gt;= <span class="number">1</span>;
                     }
                 }
-                <span class="ident">expected</span>.<span class="ident">sort_unstable</span>();
-                <span class="ident">expected</span>.<span class="ident">dedup</span>();
+                expected.sort_unstable();
+                expected.dedup();
 
-                <span class="kw">let</span> <span class="ident">actual</span> <span class="op">=</span> <span class="ident">st</span>.<span class="ident">ancestors_sorted</span>(<span class="ident">l</span>, <span class="ident">r</span> <span class="op">+</span> <span class="number">1</span>);
-                <span class="macro">assert_eq!</span>(<span class="ident">actual</span>, <span class="ident">expected</span>);
+                <span class="kw">let </span>actual = st.ancestors_sorted(l, r + <span class="number">1</span>);
+                <span class="macro">assert_eq!</span>(actual, expected);
             }
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
-<span class="kw">fn</span> <span class="ident">dump</span>(<span class="ident">n</span>: <span class="ident">usize</span>, <span class="ident">node</span>: <span class="kw-2">&amp;</span>[<span class="ident">usize</span>]) {
-    <span class="kw">use</span> <span class="ident">std::collections::BTreeSet</span>;
-    <span class="kw">let</span> <span class="ident">node</span>: <span class="ident">BTreeSet</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">node</span>.<span class="ident">iter</span>().<span class="ident">copied</span>().<span class="ident">collect</span>();
+<span class="attribute">#[cfg(test)]
+#[allow(dead_code)]
+</span><span class="kw">fn </span>dump(n: usize, node: <span class="kw-2">&amp;</span>[usize]) {
+    <span class="kw">use </span>std::collections::BTreeSet;
+    <span class="kw">let </span>node: BTreeSet&lt;<span class="kw">_</span>&gt; = node.iter().copied().collect();
 
-    <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">n</span>.<span class="ident">next_power_of_two</span>() <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span>;
-    <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">1</span>..<span class="ident">n</span> <span class="op">+</span> <span class="ident">n</span> {
-        <span class="kw">let</span> <span class="ident">shift</span> <span class="op">=</span> <span class="ident">WORD_SIZE</span> <span class="op">-</span> <span class="number">1</span> <span class="op">-</span> <span class="ident">i</span>.<span class="ident">leading_zeros</span>();
-        <span class="kw">let</span> <span class="ident">ch</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">node</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">i</span>) { <span class="string">&quot;o&quot;</span> } <span class="kw">else</span> { <span class="string">&quot;-&quot;</span> };
-        <span class="macro">eprint!</span>(<span class="string">&quot;[{}]&quot;</span>, <span class="ident">ch</span>.<span class="ident">repeat</span>((<span class="ident">len</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">shift</span>) <span class="op">-</span> <span class="number">2</span>));
-        <span class="kw">if</span> <span class="ident">i</span> <span class="op">+</span> <span class="number">1</span> <span class="op">==</span> <span class="ident">n</span> <span class="op">+</span> <span class="ident">n</span> <span class="op">|</span><span class="op">|</span> (<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>).<span class="ident">is_power_of_two</span>() {
+    <span class="kw">let </span>len = n.next_power_of_two() &lt;&lt; <span class="number">1</span>;
+    <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..n + n {
+        <span class="kw">let </span>shift = WORD_SIZE - <span class="number">1 </span>- i.leading_zeros();
+        <span class="kw">let </span>ch = <span class="kw">if </span>node.contains(<span class="kw-2">&amp;</span>i) { <span class="string">&quot;o&quot; </span>} <span class="kw">else </span>{ <span class="string">&quot;-&quot; </span>};
+        <span class="macro">eprint!</span>(<span class="string">&quot;[{}]&quot;</span>, ch.repeat((len &gt;&gt; shift) - <span class="number">2</span>));
+        <span class="kw">if </span>i + <span class="number">1 </span>== n + n || (i + <span class="number">1</span>).is_power_of_two() {
             <span class="macro">eprintln!</span>();
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test_fold_bisect</span>() {
-    <span class="kw">for</span> <span class="ident">n</span> <span class="kw">in</span> (<span class="number">0</span>..<span class="op">=</span><span class="number">32</span>).<span class="ident">chain</span>(<span class="number">250</span>..<span class="op">=</span><span class="number">260</span>) {
-        <span class="ident">test_fold_bisect_n</span>(<span class="ident">n</span>);
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test_fold_bisect() {
+    <span class="kw">for </span>n <span class="kw">in </span>(<span class="number">0</span>..=<span class="number">32</span>).chain(<span class="number">250</span>..=<span class="number">260</span>) {
+        test_fold_bisect_n(n);
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">fn</span> <span class="ident">test_fold_bisect_n</span>(<span class="ident">n</span>: <span class="ident">usize</span>) {
-    <span class="kw">use</span> <span class="ident">op_affine_on_op_add_count::OpAffineOnOpAddCount</span>;
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">fn </span>test_fold_bisect_n(n: usize) {
+    <span class="kw">use </span>op_affine_on_op_add_count::OpAffineOnOpAddCount;
 
-    <span class="kw">let</span> <span class="ident">init</span> <span class="op">=</span> (<span class="number">1</span>, <span class="number">1</span>);
-    <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">init</span>; <span class="ident">n</span>];
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">st</span>: <span class="ident">VecActSegtree</span><span class="op">&lt;</span><span class="ident">OpAffineOnOpAddCount</span><span class="op">&lt;</span><span class="ident">i128</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">a</span>.<span class="ident">into</span>();
+    <span class="kw">let </span>init = (<span class="number">1</span>, <span class="number">1</span>);
+    <span class="kw">let </span>a = <span class="macro">vec!</span>[init; n];
+    <span class="kw">let </span><span class="kw-2">mut </span>st: VecActSegtree&lt;OpAffineOnOpAddCount&lt;i128&gt;&gt; = a.into();
 
-    <span class="kw">let</span> <span class="ident">range_n</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span>
-        <span class="ident">range</span>(<span class="ident">n</span>).<span class="ident">into_iter</span>().<span class="ident">filter_map</span>(<span class="ident">std::convert::identity</span>).<span class="ident">collect</span>();
+    <span class="kw">let </span>range_n: Vec&lt;<span class="kw">_</span>&gt; =
+        range(n).into_iter().filter_map(std::convert::identity).collect();
 
-    <span class="kw">let</span> <span class="ident">actions</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="ident">range_n</span>.<span class="ident">iter</span>().<span class="ident">rev</span>())
-        .<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span>(<span class="ident">l</span>, <span class="ident">r</span>)<span class="op">|</span> {
-            <span class="kw">let</span> <span class="ident">range</span> <span class="op">=</span> <span class="ident">l</span>..<span class="ident">r</span>;
-            <span class="kw">let</span> <span class="ident">x1</span> <span class="op">=</span> (<span class="ident">r</span> <span class="op">-</span> <span class="ident">l</span>).<span class="ident">trailing_zeros</span>() <span class="op">+</span> <span class="number">1</span>;
-            <span class="kw">let</span> <span class="ident">x0</span> <span class="op">=</span> <span class="ident">l</span>;
-            (<span class="ident">range</span>, (<span class="ident">x1</span> <span class="kw">as</span> <span class="ident">i128</span>, <span class="ident">x0</span> <span class="kw">as</span> <span class="ident">i128</span>))
+    <span class="kw">let </span>actions: Vec&lt;<span class="kw">_</span>&gt; = (range_n.iter().rev())
+        .map(|<span class="kw-2">&amp;</span>(l, r)| {
+            <span class="kw">let </span>range = l..r;
+            <span class="kw">let </span>x1 = (r - l).trailing_zeros() + <span class="number">1</span>;
+            <span class="kw">let </span>x0 = l;
+            (range, (x1 <span class="kw">as </span>i128, x0 <span class="kw">as </span>i128))
         })
-        .<span class="ident">collect</span>();
+        .collect();
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">naive</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">init</span>; <span class="ident">n</span>];
-    <span class="kw">for</span> <span class="kw-2">&amp;</span>(<span class="kw-2">ref</span> <span class="ident">range</span>, <span class="ident">elt</span>) <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">actions</span> {
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="ident">range</span>.<span class="ident">clone</span>() {
-            <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">naive</span>[<span class="ident">i</span>].<span class="number">0</span>;
-            <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="ident">elt</span>;
-            <span class="ident">naive</span>[<span class="ident">i</span>].<span class="number">0</span> <span class="op">=</span> <span class="ident">a</span> <span class="op">*</span> <span class="ident">x</span> <span class="op">+</span> <span class="ident">b</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>naive = <span class="macro">vec!</span>[init; n];
+    <span class="kw">for </span><span class="kw-2">&amp;</span>(<span class="kw-2">ref </span>range, elt) <span class="kw">in </span><span class="kw-2">&amp;</span>actions {
+        <span class="kw">for </span>i <span class="kw">in </span>range.clone() {
+            <span class="kw">let </span>x = naive[i].<span class="number">0</span>;
+            <span class="kw">let </span>(a, b) = elt;
+            naive[i].<span class="number">0 </span>= a * x + b;
         }
-        <span class="ident">st</span>.<span class="ident">act</span>(<span class="ident">range</span>.<span class="ident">clone</span>(), <span class="ident">elt</span>);
+        st.act(range.clone(), elt);
     }
 
-    <span class="macro">assert_eq!</span>(<span class="ident">st</span>.<span class="ident">unforced</span>().<span class="ident">len</span>(), <span class="ident">range_n</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="ident">n</span>);
-    <span class="macro">assert_eq!</span>(<span class="ident">Vec</span>::<span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="ident">::from</span>(<span class="ident">st</span>.<span class="ident">clone</span>()), <span class="ident">naive</span>);
+    <span class="macro">assert_eq!</span>(st.unforced().len(), range_n.len() - n);
+    <span class="macro">assert_eq!</span>(Vec::&lt;<span class="kw">_</span>&gt;::from(st.clone()), naive);
 
-    <span class="kw">let</span> <span class="ident">acc</span> <span class="op">=</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">acc</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">n</span> <span class="op">+</span> <span class="number">1</span>];
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span> {
-            <span class="ident">acc</span>[<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>] <span class="op">=</span> <span class="ident">acc</span>[<span class="ident">i</span>] <span class="op">+</span> <span class="ident">naive</span>[<span class="ident">i</span>].<span class="number">0</span>;
+    <span class="kw">let </span>acc = {
+        <span class="kw">let </span><span class="kw-2">mut </span>acc = <span class="macro">vec!</span>[<span class="number">0</span>; n + <span class="number">1</span>];
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..n {
+            acc[i + <span class="number">1</span>] = acc[i] + naive[i].<span class="number">0</span>;
         }
-        <span class="ident">acc</span>
+        acc
     };
 
-    <span class="kw">for</span> <span class="ident">l</span> <span class="kw">in</span> <span class="number">0</span>..<span class="op">=</span><span class="ident">n</span> {
-        <span class="kw">for</span> <span class="ident">r</span> <span class="kw">in</span> <span class="ident">l</span>..<span class="op">=</span><span class="ident">n</span> {
-            <span class="kw">let</span> <span class="ident">st</span> <span class="op">=</span> <span class="ident">st</span>.<span class="ident">clone</span>();
+    <span class="kw">for </span>l <span class="kw">in </span><span class="number">0</span>..=n {
+        <span class="kw">for </span>r <span class="kw">in </span>l..=n {
+            <span class="kw">let </span>st = st.clone();
 
-            <span class="kw">let</span> <span class="ident">pred</span> <span class="op">=</span> <span class="op">|</span><span class="kw-2">&amp;</span>(<span class="ident">x</span>, <span class="kw">_</span>): <span class="kw-2">&amp;</span>(<span class="ident">i128</span>, <span class="kw">_</span>)<span class="op">|</span> <span class="ident">x</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">acc</span>[<span class="ident">r</span>] <span class="op">-</span> <span class="ident">acc</span>[<span class="ident">l</span>];
-            <span class="kw">let</span> (<span class="ident">index</span>, <span class="ident">folded</span>) <span class="op">=</span> <span class="ident">st</span>.<span class="ident">fold_bisect</span>(<span class="ident">l</span>, <span class="ident">pred</span>);
+            <span class="kw">let </span>pred = |<span class="kw-2">&amp;</span>(x, <span class="kw">_</span>): <span class="kw-2">&amp;</span>(i128, <span class="kw">_</span>)| x &lt;= acc[r] - acc[l];
+            <span class="kw">let </span>(index, folded) = st.fold_bisect(l, pred);
 
-            <span class="comment">// return value</span>
-            <span class="macro">assert_eq!</span>(
-                (<span class="ident">index</span>, <span class="ident">folded</span>),
-                (<span class="ident">r</span>, (<span class="ident">acc</span>[<span class="ident">r</span>] <span class="op">-</span> <span class="ident">acc</span>[<span class="ident">l</span>], (<span class="ident">r</span> <span class="op">-</span> <span class="ident">l</span>) <span class="kw">as</span> <span class="ident">i128</span>))
+            <span class="comment">// return value
+            </span><span class="macro">assert_eq!</span>(
+                (index, folded),
+                (r, (acc[r] - acc[l], (r - l) <span class="kw">as </span>i128))
             );
 
-            <span class="comment">// postcondition</span>
-            <span class="macro">assert!</span>(<span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">st</span>.<span class="ident">fold</span>(<span class="ident">l</span>..<span class="ident">index</span>)));
-            <span class="macro">assert!</span>(<span class="ident">index</span> <span class="op">==</span> <span class="ident">n</span> <span class="op">|</span><span class="op">|</span> <span class="op">!</span><span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">st</span>.<span class="ident">fold</span>(<span class="ident">l</span>..<span class="ident">index</span> <span class="op">+</span> <span class="number">1</span>)));
+            <span class="comment">// postcondition
+            </span><span class="macro">assert!</span>(pred(<span class="kw-2">&amp;</span>st.fold(l..index)));
+            <span class="macro">assert!</span>(index == n || !pred(<span class="kw-2">&amp;</span>st.fold(l..index + <span class="number">1</span>)));
 
-            <span class="comment">// actual values</span>
-            <span class="macro">assert_eq!</span>(<span class="ident">Vec</span>::<span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="ident">::from</span>(<span class="ident">st</span>), <span class="ident">naive</span>);
+            <span class="comment">// actual values
+            </span><span class="macro">assert_eq!</span>(Vec::&lt;<span class="kw">_</span>&gt;::from(st), naive);
         }
     }
 
-    <span class="kw">for</span> <span class="ident">r</span> <span class="kw">in</span> <span class="number">0</span>..<span class="op">=</span><span class="ident">n</span> {
-        <span class="kw">for</span> <span class="ident">l</span> <span class="kw">in</span> <span class="number">0</span>..<span class="op">=</span><span class="ident">r</span> {
-            <span class="comment">// clone to save unforced-ness</span>
-            <span class="kw">let</span> <span class="ident">st</span> <span class="op">=</span> <span class="ident">st</span>.<span class="ident">clone</span>();
+    <span class="kw">for </span>r <span class="kw">in </span><span class="number">0</span>..=n {
+        <span class="kw">for </span>l <span class="kw">in </span><span class="number">0</span>..=r {
+            <span class="comment">// clone to save unforced-ness
+            </span><span class="kw">let </span>st = st.clone();
 
-            <span class="kw">let</span> <span class="ident">pred</span> <span class="op">=</span> <span class="op">|</span><span class="kw-2">&amp;</span>(<span class="ident">x</span>, <span class="kw">_</span>): <span class="kw-2">&amp;</span>(<span class="ident">i128</span>, <span class="kw">_</span>)<span class="op">|</span> <span class="ident">x</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">acc</span>[<span class="ident">r</span>] <span class="op">-</span> <span class="ident">acc</span>[<span class="ident">l</span>];
-            <span class="kw">let</span> (<span class="ident">index</span>, <span class="ident">folded</span>) <span class="op">=</span> <span class="ident">st</span>.<span class="ident">fold_bisect_rev</span>(<span class="ident">r</span>, <span class="ident">pred</span>);
+            <span class="kw">let </span>pred = |<span class="kw-2">&amp;</span>(x, <span class="kw">_</span>): <span class="kw-2">&amp;</span>(i128, <span class="kw">_</span>)| x &lt;= acc[r] - acc[l];
+            <span class="kw">let </span>(index, folded) = st.fold_bisect_rev(r, pred);
 
-            <span class="comment">// return value</span>
-            <span class="macro">assert_eq!</span>(
-                (<span class="ident">index</span>, <span class="ident">folded</span>),
-                (<span class="ident">l</span>, (<span class="ident">acc</span>[<span class="ident">r</span>] <span class="op">-</span> <span class="ident">acc</span>[<span class="ident">l</span>], (<span class="ident">r</span> <span class="op">-</span> <span class="ident">l</span>) <span class="kw">as</span> <span class="ident">i128</span>))
+            <span class="comment">// return value
+            </span><span class="macro">assert_eq!</span>(
+                (index, folded),
+                (l, (acc[r] - acc[l], (r - l) <span class="kw">as </span>i128))
             );
 
-            <span class="comment">// postcondition</span>
-            <span class="macro">assert!</span>(<span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">st</span>.<span class="ident">fold</span>(<span class="ident">index</span>..<span class="ident">r</span>)));
-            <span class="macro">assert!</span>(<span class="ident">index</span> <span class="op">==</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="op">!</span><span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">st</span>.<span class="ident">fold</span>(<span class="ident">index</span> <span class="op">-</span> <span class="number">1</span>..<span class="ident">r</span>)));
+            <span class="comment">// postcondition
+            </span><span class="macro">assert!</span>(pred(<span class="kw-2">&amp;</span>st.fold(index..r)));
+            <span class="macro">assert!</span>(index == <span class="number">0 </span>|| !pred(<span class="kw-2">&amp;</span>st.fold(index - <span class="number">1</span>..r)));
 
-            <span class="comment">// actual values</span>
-            <span class="macro">assert_eq!</span>(<span class="ident">Vec</span>::<span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="ident">::from</span>(<span class="ident">st</span>), <span class="ident">naive</span>);
+            <span class="comment">// actual values
+            </span><span class="macro">assert_eq!</span>(Vec::&lt;<span class="kw">_</span>&gt;::from(st), naive);
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">fn</span> <span class="ident">range</span>(<span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">usize</span>)<span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">a</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="prelude-val">None</span>; <span class="ident">n</span> <span class="op">+</span> <span class="ident">n</span>];
-    <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span> {
-        <span class="ident">a</span>[<span class="ident">n</span> <span class="op">+</span> <span class="ident">i</span>] <span class="op">=</span> <span class="prelude-val">Some</span>((<span class="ident">i</span>, <span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>));
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">fn </span>range(n: usize) -&gt; Vec&lt;<span class="prelude-ty">Option</span>&lt;(usize, usize)&gt;&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>a = <span class="macro">vec!</span>[<span class="prelude-val">None</span>; n + n];
+    <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..n {
+        a[n + i] = <span class="prelude-val">Some</span>((i, i + <span class="number">1</span>));
     }
-    <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> (<span class="number">1</span>..<span class="ident">n</span>).<span class="ident">rev</span>() {
-        <span class="ident">a</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="kw">match</span> (<span class="ident">a</span>[<span class="number">2</span> <span class="op">*</span> <span class="ident">i</span>], <span class="ident">a</span>[<span class="number">2</span> <span class="op">*</span> <span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>]) {
-            (<span class="prelude-val">Some</span>((<span class="ident">ll</span>, <span class="ident">lr</span>)), <span class="prelude-val">Some</span>((<span class="ident">rl</span>, <span class="ident">rr</span>))) <span class="kw">if</span> <span class="ident">lr</span> <span class="op">==</span> <span class="ident">rl</span> =&gt; <span class="prelude-val">Some</span>((<span class="ident">ll</span>, <span class="ident">rr</span>)),
-            <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
+    <span class="kw">for </span>i <span class="kw">in </span>(<span class="number">1</span>..n).rev() {
+        a[i] = <span class="kw">match </span>(a[<span class="number">2 </span>* i], a[<span class="number">2 </span>* i + <span class="number">1</span>]) {
+            (<span class="prelude-val">Some</span>((ll, lr)), <span class="prelude-val">Some</span>((rl, rr))) <span class="kw">if </span>lr == rl =&gt; <span class="prelude-val">Some</span>((ll, rr)),
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
         }
     }
-    <span class="ident">a</span>
+    a
 }
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test_get_mut</span>() {
-    <span class="kw">for</span> <span class="ident">n</span> <span class="kw">in</span> (<span class="number">0</span>..<span class="op">=</span><span class="number">32</span>).<span class="ident">chain</span>(<span class="number">1020</span>..<span class="op">=</span><span class="number">1030</span>) {
-        <span class="ident">test_get_mut_n</span>(<span class="ident">n</span>);
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test_get_mut() {
+    <span class="kw">for </span>n <span class="kw">in </span>(<span class="number">0</span>..=<span class="number">32</span>).chain(<span class="number">1020</span>..=<span class="number">1030</span>) {
+        test_get_mut_n(n);
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">fn</span> <span class="ident">test_get_mut_n</span>(<span class="ident">n</span>: <span class="ident">usize</span>) {
-    <span class="kw">use</span> <span class="ident">op_affine_on_op_add_count::OpAffineOnOpAddCount</span>;
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">fn </span>test_get_mut_n(n: usize) {
+    <span class="kw">use </span>op_affine_on_op_add_count::OpAffineOnOpAddCount;
 
-    <span class="kw">let</span> <span class="ident">init</span> <span class="op">=</span> (<span class="number">1</span>, <span class="number">1</span>);
-    <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">init</span>; <span class="ident">n</span>];
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">st</span>: <span class="ident">VecActSegtree</span><span class="op">&lt;</span><span class="ident">OpAffineOnOpAddCount</span><span class="op">&lt;</span><span class="ident">i128</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">a</span>.<span class="ident">into</span>();
+    <span class="kw">let </span>init = (<span class="number">1</span>, <span class="number">1</span>);
+    <span class="kw">let </span>a = <span class="macro">vec!</span>[init; n];
+    <span class="kw">let </span><span class="kw-2">mut </span>st: VecActSegtree&lt;OpAffineOnOpAddCount&lt;i128&gt;&gt; = a.into();
 
-    <span class="kw">let</span> <span class="ident">range_n</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span>
-        <span class="ident">range</span>(<span class="ident">n</span>).<span class="ident">into_iter</span>().<span class="ident">filter_map</span>(<span class="ident">std::convert::identity</span>).<span class="ident">collect</span>();
+    <span class="kw">let </span>range_n: Vec&lt;<span class="kw">_</span>&gt; =
+        range(n).into_iter().filter_map(std::convert::identity).collect();
 
-    <span class="kw">let</span> <span class="ident">actions</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="ident">range_n</span>.<span class="ident">iter</span>().<span class="ident">rev</span>())
-        .<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span>(<span class="ident">l</span>, <span class="ident">r</span>)<span class="op">|</span> {
-            <span class="kw">let</span> <span class="ident">range</span> <span class="op">=</span> <span class="ident">l</span>..<span class="ident">r</span>;
-            <span class="kw">let</span> <span class="ident">x1</span> <span class="op">=</span> (<span class="ident">r</span> <span class="op">-</span> <span class="ident">l</span>).<span class="ident">trailing_zeros</span>() <span class="op">+</span> <span class="number">1</span>;
-            <span class="kw">let</span> <span class="ident">x0</span> <span class="op">=</span> <span class="ident">l</span>;
-            (<span class="ident">range</span>, (<span class="ident">x1</span> <span class="kw">as</span> <span class="ident">i128</span>, <span class="ident">x0</span> <span class="kw">as</span> <span class="ident">i128</span>))
+    <span class="kw">let </span>actions: Vec&lt;<span class="kw">_</span>&gt; = (range_n.iter().rev())
+        .map(|<span class="kw-2">&amp;</span>(l, r)| {
+            <span class="kw">let </span>range = l..r;
+            <span class="kw">let </span>x1 = (r - l).trailing_zeros() + <span class="number">1</span>;
+            <span class="kw">let </span>x0 = l;
+            (range, (x1 <span class="kw">as </span>i128, x0 <span class="kw">as </span>i128))
         })
-        .<span class="ident">collect</span>();
+        .collect();
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">naive</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">init</span>; <span class="ident">n</span>];
-    <span class="kw">for</span> <span class="kw-2">&amp;</span>(<span class="kw-2">ref</span> <span class="ident">range</span>, <span class="ident">elt</span>) <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">actions</span> {
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="ident">range</span>.<span class="ident">clone</span>() {
-            <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">naive</span>[<span class="ident">i</span>].<span class="number">0</span>;
-            <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="ident">elt</span>;
-            <span class="ident">naive</span>[<span class="ident">i</span>].<span class="number">0</span> <span class="op">=</span> <span class="ident">a</span> <span class="op">*</span> <span class="ident">x</span> <span class="op">+</span> <span class="ident">b</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>naive = <span class="macro">vec!</span>[init; n];
+    <span class="kw">for </span><span class="kw-2">&amp;</span>(<span class="kw-2">ref </span>range, elt) <span class="kw">in </span><span class="kw-2">&amp;</span>actions {
+        <span class="kw">for </span>i <span class="kw">in </span>range.clone() {
+            <span class="kw">let </span>x = naive[i].<span class="number">0</span>;
+            <span class="kw">let </span>(a, b) = elt;
+            naive[i].<span class="number">0 </span>= a * x + b;
         }
-        <span class="ident">st</span>.<span class="ident">act</span>(<span class="ident">range</span>.<span class="ident">clone</span>(), <span class="ident">elt</span>);
+        st.act(range.clone(), elt);
     }
 
-    <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span> {
-        <span class="comment">// clone to save unforced-ness</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">st</span> <span class="op">=</span> <span class="ident">st</span>.<span class="ident">clone</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">naive</span> <span class="op">=</span> <span class="ident">naive</span>.<span class="ident">clone</span>();
+    <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..n {
+        <span class="comment">// clone to save unforced-ness
+        </span><span class="kw">let </span><span class="kw-2">mut </span>st = st.clone();
+        <span class="kw">let </span><span class="kw-2">mut </span>naive = naive.clone();
 
-        <span class="ident">st</span>.<span class="ident">get_mut</span>(<span class="ident">i</span>).<span class="ident">unwrap</span>().<span class="number">0</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="ident">naive</span>[<span class="ident">i</span>].<span class="number">0</span> <span class="op">=</span> <span class="number">0</span>;
+        st.get_mut(i).unwrap().<span class="number">0 </span>= <span class="number">0</span>;
+        naive[i].<span class="number">0 </span>= <span class="number">0</span>;
 
-        <span class="macro">assert_eq!</span>(<span class="ident">Vec</span>::<span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="ident">::from</span>(<span class="ident">st</span>), <span class="ident">naive</span>);
+        <span class="macro">assert_eq!</span>(Vec::&lt;<span class="kw">_</span>&gt;::from(st), naive);
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

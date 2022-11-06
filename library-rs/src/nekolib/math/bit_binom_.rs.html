@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/bit_binom_.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>bit_binom_.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/bit_binom_.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>bit_binom_.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -156,74 +156,74 @@
 <span id="67">67</span>
 <span id="68">68</span>
 <span id="69">69</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 組合せのビット表現。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 組合せのビット表現。
 
-<span class="doccomment">/// 組合せのビット表現。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $n$ bit で表せる整数のうち、$k$ 個の bit が `1` であるものを昇順に生成する。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Idea</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $k$ 個の bit が `1` である整数 `i` が与えられたとき、$k$ 個の bit が `1`</span>
-<span class="doccomment">/// である整数のうち `i` より大きく最小の整数 `j` を考える。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 例として `i = 011001110` とする。</span>
-<span class="doccomment">/// ```text</span>
-<span class="doccomment">/// 011001110  // i</span>
-<span class="doccomment">///     ^~~~</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// `i` のうちで `1` が連続して現れる部分のうち、最も右のものを考える。</span>
-<span class="doccomment">/// これの左にある `0` の位は、`j` においては `1` である必要がある。</span>
-<span class="doccomment">/// ```text</span>
-<span class="doccomment">/// 011001110  // i</span>
-<span class="doccomment">/// 01101....  // j (upper)</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// また、残った下位の領域においては、`i` における `1` の連続個数よりひとつ少ない</span>
-<span class="doccomment">/// `1` を右詰めで入れればよい。</span>
-<span class="doccomment">/// ```text</span>
-<span class="doccomment">/// 011001110  // i</span>
-<span class="doccomment">/// .....0011  // j (lower)</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// あとは、これらを計算する方法について述べる。</span>
-<span class="doccomment">/// ```text</span>
-<span class="doccomment">/// 011001110  // i</span>
-<span class="doccomment">/// 000000010  // x = i &amp; i.wrapping_neg()</span>
-<span class="doccomment">/// 011010000  // y = i + x</span>
-<span class="doccomment">/// 000001110  // i &amp; !y</span>
-<span class="doccomment">/// 000000011  // z = (i &amp; !y) &gt;&gt; (x.trailing_zeros() + 1)</span>
-<span class="doccomment">/// 011010011  // j = y | z</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// 上記では `_ &gt;&gt; (x.trailing_zeros() + 1)` としているが、`x` が 2</span>
-<span class="doccomment">/// べきなので `(_ / x) &gt;&gt; 1` と等しい。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::math::bit_binom;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let mut it = bit_binom(4, 2);</span>
-<span class="doccomment">/// assert_eq!(it.next(), Some(0b_0011));</span>
-<span class="doccomment">/// assert_eq!(it.next(), Some(0b_0101));</span>
-<span class="doccomment">/// assert_eq!(it.next(), Some(0b_0110));</span>
-<span class="doccomment">/// assert_eq!(it.next(), Some(0b_1001));</span>
-<span class="doccomment">/// assert_eq!(it.next(), Some(0b_1010));</span>
-<span class="doccomment">/// assert_eq!(it.next(), Some(0b_1100));</span>
-<span class="doccomment">/// assert_eq!(it.next(), None);</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # References</span>
-<span class="doccomment">/// - 蟻本 p.144</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bit_binom</span>(<span class="ident">n</span>: <span class="ident">usize</span>, <span class="ident">k</span>: <span class="ident">usize</span>) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">usize</span><span class="op">&gt;</span> {
-    <span class="ident">std::iter::successors</span>(<span class="prelude-val">Some</span>(<span class="op">!</span>(<span class="op">!</span><span class="number">0_usize</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">k</span>)), <span class="kw">move</span> <span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">i</span><span class="op">|</span> {
-        <span class="kw">if</span> <span class="ident">k</span> <span class="op">==</span> <span class="number">0</span> {
-            <span class="kw">return</span> <span class="prelude-val">None</span>;
+/// 組合せのビット表現。
+///
+/// $n$ bit で表せる整数のうち、$k$ 個の bit が `1` であるものを昇順に生成する。
+///
+/// # Idea
+///
+/// $k$ 個の bit が `1` である整数 `i` が与えられたとき、$k$ 個の bit が `1`
+/// である整数のうち `i` より大きく最小の整数 `j` を考える。
+///
+/// 例として `i = 011001110` とする。
+/// ```text
+/// 011001110  // i
+///     ^~~~
+/// ```
+/// `i` のうちで `1` が連続して現れる部分のうち、最も右のものを考える。
+/// これの左にある `0` の位は、`j` においては `1` である必要がある。
+/// ```text
+/// 011001110  // i
+/// 01101....  // j (upper)
+/// ```
+/// また、残った下位の領域においては、`i` における `1` の連続個数よりひとつ少ない
+/// `1` を右詰めで入れればよい。
+/// ```text
+/// 011001110  // i
+/// .....0011  // j (lower)
+/// ```
+///
+/// あとは、これらを計算する方法について述べる。
+/// ```text
+/// 011001110  // i
+/// 000000010  // x = i &amp; i.wrapping_neg()
+/// 011010000  // y = i + x
+/// 000001110  // i &amp; !y
+/// 000000011  // z = (i &amp; !y) &gt;&gt; (x.trailing_zeros() + 1)
+/// 011010011  // j = y | z
+/// ```
+/// 上記では `_ &gt;&gt; (x.trailing_zeros() + 1)` としているが、`x` が 2
+/// べきなので `(_ / x) &gt;&gt; 1` と等しい。
+///
+/// # Examples
+/// ```
+/// use nekolib::math::bit_binom;
+///
+/// let mut it = bit_binom(4, 2);
+/// assert_eq!(it.next(), Some(0b_0011));
+/// assert_eq!(it.next(), Some(0b_0101));
+/// assert_eq!(it.next(), Some(0b_0110));
+/// assert_eq!(it.next(), Some(0b_1001));
+/// assert_eq!(it.next(), Some(0b_1010));
+/// assert_eq!(it.next(), Some(0b_1100));
+/// assert_eq!(it.next(), None);
+/// ```
+///
+/// # References
+/// - 蟻本 p.144
+</span><span class="kw">pub fn </span>bit_binom(n: usize, k: usize) -&gt; <span class="kw">impl </span>Iterator&lt;Item = usize&gt; {
+    std::iter::successors(<span class="prelude-val">Some</span>(!(!<span class="number">0_usize </span>&lt;&lt; k)), <span class="kw">move </span>|<span class="kw-2">&amp;</span>i| {
+        <span class="kw">if </span>k == <span class="number">0 </span>{
+            <span class="kw">return </span><span class="prelude-val">None</span>;
         }
-        <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">&amp;</span> <span class="ident">i</span>.<span class="ident">wrapping_neg</span>();
-        <span class="kw">let</span> <span class="ident">y</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">+</span> <span class="ident">x</span>;
-        <span class="kw">let</span> <span class="ident">z</span> <span class="op">=</span> (<span class="ident">i</span> <span class="op">&amp;</span> <span class="op">!</span><span class="ident">y</span>) <span class="op">&gt;</span><span class="op">&gt;</span> (<span class="ident">x</span>.<span class="ident">trailing_zeros</span>() <span class="op">+</span> <span class="number">1</span>);
-        <span class="prelude-val">Some</span>(<span class="ident">y</span> <span class="op">|</span> <span class="ident">z</span>)
+        <span class="kw">let </span>x = i &amp; i.wrapping_neg();
+        <span class="kw">let </span>y = i + x;
+        <span class="kw">let </span>z = (i &amp; !y) &gt;&gt; (x.trailing_zeros() + <span class="number">1</span>);
+        <span class="prelude-val">Some</span>(y | z)
     })
-    .<span class="ident">take_while</span>(<span class="kw">move</span> <span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span> <span class="op">&lt;</span> (<span class="number">1_usize</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">n</span>))
+    .take_while(<span class="kw">move </span>|<span class="kw-2">&amp;</span>i| i &lt; (<span class="number">1_usize </span>&lt;&lt; n))
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/utils/bitop.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>bitop.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/utils/bitop.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>bitop.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -230,148 +230,148 @@
 <span id="141">141</span>
 <span id="142">142</span>
 <span id="143">143</span>
-</pre><pre class="rust"><code><span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PdepPextMaskU8</span>([<span class="ident">u8</span>; <span class="number">3</span>], <span class="ident">u8</span>);
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PdepPextMaskU16</span>([<span class="ident">u16</span>; <span class="number">4</span>], <span class="ident">u16</span>);
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PdepPextMaskU32</span>([<span class="ident">u32</span>; <span class="number">5</span>], <span class="ident">u32</span>);
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PdepPextMaskU64</span>([<span class="ident">u64</span>; <span class="number">6</span>], <span class="ident">u64</span>);
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PdepPextMaskU128</span>([<span class="ident">u128</span>; <span class="number">7</span>], <span class="ident">u128</span>);
+</pre><pre class="rust"><code><span class="attribute">#[derive(Clone, Copy)]
+</span><span class="kw">pub struct </span>PdepPextMaskU8([u8; <span class="number">3</span>], u8);
+<span class="attribute">#[derive(Clone, Copy)]
+</span><span class="kw">pub struct </span>PdepPextMaskU16([u16; <span class="number">4</span>], u16);
+<span class="attribute">#[derive(Clone, Copy)]
+</span><span class="kw">pub struct </span>PdepPextMaskU32([u32; <span class="number">5</span>], u32);
+<span class="attribute">#[derive(Clone, Copy)]
+</span><span class="kw">pub struct </span>PdepPextMaskU64([u64; <span class="number">6</span>], u64);
+<span class="attribute">#[derive(Clone, Copy)]
+</span><span class="kw">pub struct </span>PdepPextMaskU128([u128; <span class="number">7</span>], u128);
 
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Pext</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">pext</span>(<span class="self">self</span>, <span class="ident">mask</span>: <span class="ident">R</span>) -&gt; <span class="self">Self</span>;
+<span class="kw">pub trait </span>Pext&lt;R&gt; {
+    <span class="kw">fn </span>pext(<span class="self">self</span>, mask: R) -&gt; <span class="self">Self</span>;
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_pext</span> {
-    ( (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">maskty</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">basety</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lg</span>:<span class="ident">literal</span>) ) =&gt; {
-        <span class="kw">impl</span> <span class="ident">Pext</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">basety</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">basety</span> {
-            <span class="kw">fn</span> <span class="ident">pext</span>(<span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">m</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">basety</span>) -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">basety</span> {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x</span> <span class="op">=</span> <span class="self">self</span> <span class="op">&amp;</span> <span class="ident">m</span>;
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mk</span> <span class="op">=</span> <span class="op">!</span><span class="ident">m</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span>;
-                <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="macro-nonterminal">$</span><span class="macro-nonterminal">lg</span> {
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mp</span> <span class="op">=</span> <span class="ident">mk</span> <span class="op">^</span> (<span class="ident">mk</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span>);
-                    <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">1</span>..<span class="macro-nonterminal">$</span><span class="macro-nonterminal">lg</span> {
-                        <span class="ident">mp</span> <span class="op">^</span><span class="op">=</span> <span class="ident">mp</span> <span class="op">&lt;</span><span class="op">&lt;</span> (<span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">j</span>);
+<span class="macro">macro_rules! </span>impl_pext {
+    ( (<span class="macro-nonterminal">$maskty</span>:ident, <span class="macro-nonterminal">$basety</span>:ident, <span class="macro-nonterminal">$lg</span>:literal) ) =&gt; {
+        <span class="kw">impl </span>Pext&lt;<span class="macro-nonterminal">$basety</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$basety </span>{
+            <span class="kw">fn </span>pext(<span class="self">self</span>, <span class="kw-2">mut </span>m: <span class="macro-nonterminal">$basety</span>) -&gt; <span class="macro-nonterminal">$basety </span>{
+                <span class="kw">let </span><span class="kw-2">mut </span>x = <span class="self">self </span>&amp; m;
+                <span class="kw">let </span><span class="kw-2">mut </span>mk = !m &lt;&lt; <span class="number">1</span>;
+                <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..<span class="macro-nonterminal">$lg </span>{
+                    <span class="kw">let </span><span class="kw-2">mut </span>mp = mk ^ (mk &lt;&lt; <span class="number">1</span>);
+                    <span class="kw">for </span>j <span class="kw">in </span><span class="number">1</span>..<span class="macro-nonterminal">$lg </span>{
+                        mp ^= mp &lt;&lt; (<span class="number">1 </span>&lt;&lt; j);
                     }
-                    <span class="kw">let</span> <span class="ident">mv</span> <span class="op">=</span> <span class="ident">mp</span> <span class="op">&amp;</span> <span class="ident">m</span>;
-                    <span class="ident">m</span> <span class="op">=</span> <span class="ident">m</span> <span class="op">^</span> <span class="ident">mv</span> <span class="op">|</span> (<span class="ident">mv</span> <span class="op">&gt;</span><span class="op">&gt;</span> (<span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">i</span>));
-                    <span class="kw">let</span> <span class="ident">t</span> <span class="op">=</span> <span class="ident">x</span> <span class="op">&amp;</span> <span class="ident">mv</span>;
-                    <span class="ident">x</span> <span class="op">=</span> (<span class="ident">x</span> <span class="op">^</span> <span class="ident">t</span>) <span class="op">|</span> (<span class="ident">t</span> <span class="op">&gt;</span><span class="op">&gt;</span> (<span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">i</span>));
-                    <span class="ident">mk</span> <span class="op">&amp;=</span> <span class="op">!</span><span class="ident">mp</span>;
+                    <span class="kw">let </span>mv = mp &amp; m;
+                    m = m ^ mv | (mv &gt;&gt; (<span class="number">1 </span>&lt;&lt; i));
+                    <span class="kw">let </span>t = x &amp; mv;
+                    x = (x ^ t) | (t &gt;&gt; (<span class="number">1 </span>&lt;&lt; i));
+                    mk &amp;= !mp;
                 }
-                <span class="ident">x</span>
+                x
             }
         }
-        <span class="kw">impl</span> <span class="ident">Pext</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">maskty</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">basety</span> {
-            <span class="kw">fn</span> <span class="ident">pext</span>(<span class="self">self</span>, <span class="ident">mask</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">maskty</span>) -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">basety</span> {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x</span> <span class="op">=</span> <span class="self">self</span> <span class="op">&amp;</span> <span class="ident">mask</span>.<span class="number">1</span>;
-                <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="macro-nonterminal">$</span><span class="macro-nonterminal">lg</span> {
-                    <span class="kw">let</span> <span class="ident">mv</span> <span class="op">=</span> <span class="ident">mask</span>.<span class="number">0</span>[<span class="ident">i</span>];
-                    <span class="kw">let</span> <span class="ident">t</span> <span class="op">=</span> <span class="ident">x</span> <span class="op">&amp;</span> <span class="ident">mv</span>;
-                    <span class="ident">x</span> <span class="op">=</span> (<span class="ident">x</span> <span class="op">^</span> <span class="ident">t</span>) <span class="op">|</span> (<span class="ident">t</span> <span class="op">&gt;</span><span class="op">&gt;</span> (<span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">i</span>));
+        <span class="kw">impl </span>Pext&lt;<span class="macro-nonterminal">$maskty</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$basety </span>{
+            <span class="kw">fn </span>pext(<span class="self">self</span>, mask: <span class="macro-nonterminal">$maskty</span>) -&gt; <span class="macro-nonterminal">$basety </span>{
+                <span class="kw">let </span><span class="kw-2">mut </span>x = <span class="self">self </span>&amp; mask.<span class="number">1</span>;
+                <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..<span class="macro-nonterminal">$lg </span>{
+                    <span class="kw">let </span>mv = mask.<span class="number">0</span>[i];
+                    <span class="kw">let </span>t = x &amp; mv;
+                    x = (x ^ t) | (t &gt;&gt; (<span class="number">1 </span>&lt;&lt; i));
                 }
-                <span class="ident">x</span>
+                x
             }
         }
     };
-    ( $( ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tt</span>:<span class="ident">tt</span>)<span class="op">*</span> ), )<span class="op">*</span> ) =&gt; { $( <span class="macro">impl_pext!</span>( ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tt</span>)<span class="op">*</span> ) ); )<span class="op">*</span> };
+    ( $( ( $(<span class="macro-nonterminal">$tt</span>:tt)* ), )* ) =&gt; { $( <span class="macro">impl_pext!</span>( ( $(<span class="macro-nonterminal">$tt</span>)* ) ); )* };
 }
 
-<span class="macro">impl_pext!</span> {
-    (<span class="ident">PdepPextMaskU8</span>, <span class="ident">u8</span>, <span class="number">3</span>),
-    (<span class="ident">PdepPextMaskU16</span>, <span class="ident">u16</span>, <span class="number">4</span>),
-    (<span class="ident">PdepPextMaskU32</span>, <span class="ident">u32</span>, <span class="number">5</span>),
-    (<span class="ident">PdepPextMaskU64</span>, <span class="ident">u64</span>, <span class="number">6</span>),
-    (<span class="ident">PdepPextMaskU128</span>, <span class="ident">u128</span>, <span class="number">7</span>),
+<span class="macro">impl_pext! </span>{
+    (PdepPextMaskU8, u8, <span class="number">3</span>),
+    (PdepPextMaskU16, u16, <span class="number">4</span>),
+    (PdepPextMaskU32, u32, <span class="number">5</span>),
+    (PdepPextMaskU64, u64, <span class="number">6</span>),
+    (PdepPextMaskU128, u128, <span class="number">7</span>),
 }
 
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Pdep</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">pdep</span>(<span class="self">self</span>, <span class="ident">mask</span>: <span class="ident">R</span>) -&gt; <span class="self">Self</span>;
+<span class="kw">pub trait </span>Pdep&lt;R&gt; {
+    <span class="kw">fn </span>pdep(<span class="self">self</span>, mask: R) -&gt; <span class="self">Self</span>;
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_pdep</span> {
-    ( (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">maskty</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">basety</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lg</span>:<span class="ident">literal</span>) ) =&gt; {
-        <span class="kw">impl</span> <span class="ident">Pdep</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">basety</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">basety</span> {
-            <span class="kw">fn</span> <span class="ident">pdep</span>(<span class="self">self</span>, <span class="ident">m</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">basety</span>) -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">basety</span> {
-                <span class="self">self</span>.<span class="ident">pdep</span>(<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">maskty</span><span class="op">&gt;</span><span class="ident">::new</span>(<span class="ident">m</span>))
+<span class="macro">macro_rules! </span>impl_pdep {
+    ( (<span class="macro-nonterminal">$maskty</span>:ident, <span class="macro-nonterminal">$basety</span>:ident, <span class="macro-nonterminal">$lg</span>:literal) ) =&gt; {
+        <span class="kw">impl </span>Pdep&lt;<span class="macro-nonterminal">$basety</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$basety </span>{
+            <span class="kw">fn </span>pdep(<span class="self">self</span>, m: <span class="macro-nonterminal">$basety</span>) -&gt; <span class="macro-nonterminal">$basety </span>{
+                <span class="self">self</span>.pdep(&lt;<span class="macro-nonterminal">$maskty</span>&gt;::new(m))
             }
         }
-        <span class="kw">impl</span> <span class="ident">Pdep</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">maskty</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">basety</span> {
-            <span class="kw">fn</span> <span class="ident">pdep</span>(<span class="self">self</span>, <span class="ident">mask</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">maskty</span>) -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">basety</span> {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x</span> <span class="op">=</span> <span class="self">self</span>;
-                <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> (<span class="number">0</span>..<span class="macro-nonterminal">$</span><span class="macro-nonterminal">lg</span>).<span class="ident">rev</span>() {
-                    <span class="kw">let</span> <span class="ident">mv</span> <span class="op">=</span> <span class="ident">mask</span>.<span class="number">0</span>[<span class="ident">i</span>];
-                    <span class="kw">let</span> <span class="ident">t</span> <span class="op">=</span> <span class="ident">x</span> <span class="op">&lt;</span><span class="op">&lt;</span> (<span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">i</span>);
-                    <span class="ident">x</span> <span class="op">=</span> (<span class="ident">x</span> <span class="op">&amp;</span> <span class="op">!</span><span class="ident">mv</span>) <span class="op">|</span> (<span class="ident">t</span> <span class="op">&amp;</span> <span class="ident">mv</span>);
+        <span class="kw">impl </span>Pdep&lt;<span class="macro-nonterminal">$maskty</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$basety </span>{
+            <span class="kw">fn </span>pdep(<span class="self">self</span>, mask: <span class="macro-nonterminal">$maskty</span>) -&gt; <span class="macro-nonterminal">$basety </span>{
+                <span class="kw">let </span><span class="kw-2">mut </span>x = <span class="self">self</span>;
+                <span class="kw">for </span>i <span class="kw">in </span>(<span class="number">0</span>..<span class="macro-nonterminal">$lg</span>).rev() {
+                    <span class="kw">let </span>mv = mask.<span class="number">0</span>[i];
+                    <span class="kw">let </span>t = x &lt;&lt; (<span class="number">1 </span>&lt;&lt; i);
+                    x = (x &amp; !mv) | (t &amp; mv);
                 }
-                <span class="ident">x</span> <span class="op">&amp;</span> <span class="ident">mask</span>.<span class="number">1</span>
-            }
+                x &amp; mask.<span class="number">1
+            </span>}
         }
     };
-    ( $( ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tt</span>:<span class="ident">tt</span>)<span class="op">*</span> ), )<span class="op">*</span> ) =&gt; { $( <span class="macro">impl_pdep!</span>( ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tt</span>)<span class="op">*</span> ) ); )<span class="op">*</span> };
+    ( $( ( $(<span class="macro-nonterminal">$tt</span>:tt)* ), )* ) =&gt; { $( <span class="macro">impl_pdep!</span>( ( $(<span class="macro-nonterminal">$tt</span>)* ) ); )* };
 }
 
-<span class="macro">impl_pdep!</span> {
-    (<span class="ident">PdepPextMaskU8</span>, <span class="ident">u8</span>, <span class="number">3</span>),
-    (<span class="ident">PdepPextMaskU16</span>, <span class="ident">u16</span>, <span class="number">4</span>),
-    (<span class="ident">PdepPextMaskU32</span>, <span class="ident">u32</span>, <span class="number">5</span>),
-    (<span class="ident">PdepPextMaskU64</span>, <span class="ident">u64</span>, <span class="number">6</span>),
-    (<span class="ident">PdepPextMaskU128</span>, <span class="ident">u128</span>, <span class="number">7</span>),
+<span class="macro">impl_pdep! </span>{
+    (PdepPextMaskU8, u8, <span class="number">3</span>),
+    (PdepPextMaskU16, u16, <span class="number">4</span>),
+    (PdepPextMaskU32, u32, <span class="number">5</span>),
+    (PdepPextMaskU64, u64, <span class="number">6</span>),
+    (PdepPextMaskU128, u128, <span class="number">7</span>),
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">pext_loop</span> {
-    ( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">mk</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">m</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">sh</span>:<span class="ident">expr</span> ) =&gt; {{
-        <span class="kw">let</span> <span class="ident">mp</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::mp</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mk</span>);
-        <span class="kw">let</span> <span class="ident">mv</span> <span class="op">=</span> <span class="ident">mp</span> <span class="op">&amp;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">m</span>;
-        <span class="macro-nonterminal">$</span><span class="macro-nonterminal">m</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">m</span> <span class="op">^</span> <span class="ident">mv</span> <span class="op">|</span> (<span class="ident">mv</span> <span class="op">&gt;</span><span class="op">&gt;</span> (<span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">sh</span>));
-        <span class="macro-nonterminal">$</span><span class="macro-nonterminal">mk</span> <span class="op">&amp;=</span> <span class="op">!</span><span class="ident">mp</span>;
-        <span class="ident">mv</span>
+<span class="macro">macro_rules! </span>pext_loop {
+    ( <span class="macro-nonterminal">$mk</span>:ident, <span class="macro-nonterminal">$m</span>:ident, <span class="macro-nonterminal">$sh</span>:expr ) =&gt; {{
+        <span class="kw">let </span>mp = <span class="self">Self</span>::mp(<span class="macro-nonterminal">$mk</span>);
+        <span class="kw">let </span>mv = mp &amp; <span class="macro-nonterminal">$m</span>;
+        <span class="macro-nonterminal">$m </span>= <span class="macro-nonterminal">$m </span>^ mv | (mv &gt;&gt; (<span class="number">1 </span>&lt;&lt; <span class="macro-nonterminal">$sh</span>));
+        <span class="macro-nonterminal">$mk </span>&amp;= !mp;
+        mv
     }};
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_pdep_pext_mask</span> {
-    ( (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">maskty</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">basety</span>:<span class="ident">ident</span>, [$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>:<span class="ident">literal</span>),<span class="kw-2">*</span>], <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lg</span>:<span class="ident">literal</span>) ) =&gt; {
-        <span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">maskty</span> {
-            <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="kw-2">mut</span> <span class="ident">m</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">basety</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> <span class="ident">m0</span> <span class="op">=</span> <span class="ident">m</span>;
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> [<span class="number">0</span>; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lg</span>];
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mk</span> <span class="op">=</span> <span class="op">!</span><span class="ident">m</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span>;
-                $( <span class="ident">res</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>] <span class="op">=</span> <span class="macro">pext_loop!</span>(<span class="ident">mk</span>, <span class="ident">m</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>) );<span class="kw-2">*</span>;
-                <span class="ident">res</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">lg</span> <span class="op">-</span> <span class="number">1</span>] <span class="op">=</span> <span class="ident"><span class="self">Self</span>::mp</span>(<span class="ident">mk</span>) <span class="op">&amp;</span> <span class="ident">m</span>;
-                <span class="self">Self</span>(<span class="ident">res</span>, <span class="ident">m0</span>)
+<span class="macro">macro_rules! </span>impl_pdep_pext_mask {
+    ( (<span class="macro-nonterminal">$maskty</span>:ident, <span class="macro-nonterminal">$basety</span>:ident, [$(<span class="macro-nonterminal">$i</span>:literal),<span class="kw-2">*</span>], <span class="macro-nonterminal">$lg</span>:literal) ) =&gt; {
+        <span class="kw">impl </span><span class="macro-nonterminal">$maskty </span>{
+            <span class="kw">pub const fn </span>new(<span class="kw-2">mut </span>m: <span class="macro-nonterminal">$basety</span>) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span>m0 = m;
+                <span class="kw">let </span><span class="kw-2">mut </span>res = [<span class="number">0</span>; <span class="macro-nonterminal">$lg</span>];
+                <span class="kw">let </span><span class="kw-2">mut </span>mk = !m &lt;&lt; <span class="number">1</span>;
+                $( res[<span class="macro-nonterminal">$i</span>] = <span class="macro">pext_loop!</span>(mk, m, <span class="macro-nonterminal">$i</span>) );<span class="kw-2">*</span>;
+                res[<span class="macro-nonterminal">$lg </span>- <span class="number">1</span>] = <span class="self">Self</span>::mp(mk) &amp; m;
+                <span class="self">Self</span>(res, m0)
             }
-            <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">mp</span>(<span class="ident">mk</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">basety</span>) -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">basety</span> {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mp</span> <span class="op">=</span> <span class="ident">mk</span> <span class="op">^</span> (<span class="ident">mk</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span>);
-                $( <span class="ident">mp</span> <span class="op">^</span><span class="op">=</span> <span class="ident">mp</span> <span class="op">&lt;</span><span class="op">&lt;</span> (<span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> (<span class="number">1</span> <span class="op">+</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>)) );<span class="kw-2">*</span>;
-                <span class="ident">mp</span>
+            <span class="kw">const fn </span>mp(mk: <span class="macro-nonterminal">$basety</span>) -&gt; <span class="macro-nonterminal">$basety </span>{
+                <span class="kw">let </span><span class="kw-2">mut </span>mp = mk ^ (mk &lt;&lt; <span class="number">1</span>);
+                $( mp ^= mp &lt;&lt; (<span class="number">1 </span>&lt;&lt; (<span class="number">1 </span>+ <span class="macro-nonterminal">$i</span>)) );<span class="kw-2">*</span>;
+                mp
             }
-            <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">get</span>(<span class="self">self</span>) -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">basety</span> { <span class="self">self</span>.<span class="number">1</span> }
+            <span class="kw">pub const fn </span>get(<span class="self">self</span>) -&gt; <span class="macro-nonterminal">$basety </span>{ <span class="self">self</span>.<span class="number">1 </span>}
         }
     };
-    ( $( ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tt</span>:<span class="ident">tt</span>)<span class="op">*</span> ), )<span class="op">*</span> ) =&gt; { $( <span class="macro">impl_pdep_pext_mask!</span>( ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tt</span>)<span class="op">*</span> ) ); )<span class="op">*</span> };
+    ( $( ( $(<span class="macro-nonterminal">$tt</span>:tt)* ), )* ) =&gt; { $( <span class="macro">impl_pdep_pext_mask!</span>( ( $(<span class="macro-nonterminal">$tt</span>)* ) ); )* };
 }
 
-<span class="macro">impl_pdep_pext_mask!</span> {
-    (<span class="ident">PdepPextMaskU8</span>, <span class="ident">u8</span>, [<span class="number">0</span>, <span class="number">1</span>], <span class="number">3</span>),
-    (<span class="ident">PdepPextMaskU16</span>, <span class="ident">u16</span>, [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>], <span class="number">4</span>),
-    (<span class="ident">PdepPextMaskU32</span>, <span class="ident">u32</span>, [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], <span class="number">5</span>),
-    (<span class="ident">PdepPextMaskU64</span>, <span class="ident">u64</span>, [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>], <span class="number">6</span>),
-    (<span class="ident">PdepPextMaskU128</span>, <span class="ident">u128</span>, [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>], <span class="number">7</span>),
+<span class="macro">impl_pdep_pext_mask! </span>{
+    (PdepPextMaskU8, u8, [<span class="number">0</span>, <span class="number">1</span>], <span class="number">3</span>),
+    (PdepPextMaskU16, u16, [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>], <span class="number">4</span>),
+    (PdepPextMaskU32, u32, [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], <span class="number">5</span>),
+    (PdepPextMaskU64, u64, [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>], <span class="number">6</span>),
+    (PdepPextMaskU128, u128, [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>], <span class="number">7</span>),
 }
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test</span>() {
-    <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="number">0b_0101_0111_0000_1001_1110_1010_0000_0010_u32</span>;
-    <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="number">0b_0100_1001_1001_1010_0100_0100_0101_0100_u32</span>;
-    <span class="comment">//          1   0  1 0  0 1 0   1    0    0 0  0</span>
-    <span class="kw">let</span> <span class="ident">ext</span> <span class="op">=</span> <span class="number">0b_1010_0101_0000</span>;
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test() {
+    <span class="kw">let </span>x = <span class="number">0b_0101_0111_0000_1001_1110_1010_0000_0010_u32</span>;
+    <span class="kw">let </span>m = <span class="number">0b_0100_1001_1001_1010_0100_0100_0101_0100_u32</span>;
+    <span class="comment">//          1   0  1 0  0 1 0   1    0    0 0  0
+    </span><span class="kw">let </span>ext = <span class="number">0b_1010_0101_0000</span>;
 
-    <span class="macro">assert_eq!</span>(<span class="ident">x</span>.<span class="ident">pext</span>(<span class="ident">m</span>), <span class="ident">ext</span>);
-    <span class="macro">assert_eq!</span>(<span class="ident">x</span>.<span class="ident">pext</span>(<span class="ident">PdepPextMaskU32::new</span>(<span class="ident">m</span>)), <span class="ident">ext</span>);
-    <span class="macro">assert_eq!</span>(<span class="ident">ext</span>.<span class="ident">pdep</span>(<span class="ident">m</span>), <span class="ident">x</span> <span class="op">&amp;</span> <span class="ident">m</span>);
+    <span class="macro">assert_eq!</span>(x.pext(m), ext);
+    <span class="macro">assert_eq!</span>(x.pext(PdepPextMaskU32::new(m)), ext);
+    <span class="macro">assert_eq!</span>(ext.pdep(m), x &amp; m);
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

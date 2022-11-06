@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/sieve_n2_plus_n_plus_1.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>sieve_n2_plus_n_plus_1.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/sieve_n2_plus_n_plus_1.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>sieve_n2_plus_n_plus_1.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -229,147 +229,147 @@
 <span id="140">140</span>
 <span id="141">141</span>
 <span id="142">142</span>
-</pre><pre class="rust"><code><span class="doccomment">//! $n^2+n+1$ 型素数の篩。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! $n^2+n+1$ 型素数の篩。
 
-<span class="kw">use</span> <span class="ident">std::fmt::Debug</span>;
+</span><span class="kw">use </span>std::fmt::Debug;
 
-<span class="doccomment">/// $n^2+n+1$ 型素数の篩。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Idea</span>
-<span class="doccomment">/// `todo!()`</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # References</span>
-<span class="doccomment">/// - &lt;https://inamori.hateblo.jp/entry/20110930/p1&gt;</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SieveN2PlusNPlus1</span> {
-    <span class="ident">a</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-    <span class="ident">f</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">u32</span>)<span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="doccomment">/// $n^2+n+1$ 型素数の篩。
+///
+/// # Idea
+/// `todo!()`
+///
+/// # References
+/// - &lt;https://inamori.hateblo.jp/entry/20110930/p1&gt;
+</span><span class="attribute">#[derive(Clone, Debug)]
+</span><span class="kw">pub struct </span>SieveN2PlusNPlus1 {
+    a: Vec&lt;usize&gt;,
+    f: Vec&lt;Vec&lt;(usize, u32)&gt;&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">SieveN2PlusNPlus1</span> {
-    <span class="doccomment">/// 初期化する。</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">a</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="op">=</span><span class="ident">n</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">k</span><span class="op">|</span> <span class="ident">k</span> <span class="op">*</span> (<span class="ident">k</span> <span class="op">+</span> <span class="number">1</span>) <span class="op">+</span> <span class="number">1</span>).<span class="ident">collect</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">f</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="macro">vec!</span>[]; <span class="ident">n</span> <span class="op">+</span> <span class="number">1</span>];
-        <span class="ident">f</span>[<span class="number">1</span>] <span class="op">=</span> <span class="macro">vec!</span>[(<span class="number">3</span>, <span class="number">1</span>)];
-        <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> (<span class="number">4</span>..<span class="op">=</span><span class="ident">n</span>).<span class="ident">step_by</span>(<span class="number">3</span>) {
-            <span class="kw">let</span> (<span class="ident">d</span>, <span class="ident">e</span>) <span class="op">=</span> <span class="ident"><span class="self">Self</span>::div_pow</span>(<span class="ident">a</span>[<span class="ident">j</span>], <span class="number">3</span>);
-            <span class="ident">f</span>[<span class="ident">j</span>].<span class="ident">push</span>((<span class="number">3</span>, <span class="ident">e</span>));
-            <span class="ident">a</span>[<span class="ident">j</span>] <span class="op">=</span> <span class="ident">d</span>;
+<span class="kw">impl </span>SieveN2PlusNPlus1 {
+    <span class="doccomment">/// 初期化する。
+    </span><span class="kw">pub fn </span>new(n: usize) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>a: Vec&lt;<span class="kw">_</span>&gt; = (<span class="number">0</span>..=n).map(|k| k * (k + <span class="number">1</span>) + <span class="number">1</span>).collect();
+        <span class="kw">let </span><span class="kw-2">mut </span>f = <span class="macro">vec!</span>[<span class="macro">vec!</span>[]; n + <span class="number">1</span>];
+        f[<span class="number">1</span>] = <span class="macro">vec!</span>[(<span class="number">3</span>, <span class="number">1</span>)];
+        <span class="kw">for </span>j <span class="kw">in </span>(<span class="number">4</span>..=n).step_by(<span class="number">3</span>) {
+            <span class="kw">let </span>(d, e) = <span class="self">Self</span>::div_pow(a[j], <span class="number">3</span>);
+            f[j].push((<span class="number">3</span>, e));
+            a[j] = d;
         }
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">2</span>..<span class="op">=</span><span class="ident">n</span> {
-            <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">a</span>[<span class="ident">i</span>];
-            <span class="kw">if</span> <span class="ident">p</span> <span class="op">==</span> <span class="number">1</span> {
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">2</span>..=n {
+            <span class="kw">let </span>p = a[i];
+            <span class="kw">if </span>p == <span class="number">1 </span>{
                 <span class="kw">continue</span>;
             }
-            <span class="kw">if</span> <span class="ident">p</span> <span class="op">==</span> <span class="ident">i</span> <span class="op">*</span> (<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>) <span class="op">+</span> <span class="number">1</span> {
-                <span class="ident">f</span>[<span class="ident">i</span>].<span class="ident">push</span>((<span class="ident">p</span>, <span class="number">1</span>));
+            <span class="kw">if </span>p == i * (i + <span class="number">1</span>) + <span class="number">1 </span>{
+                f[i].push((p, <span class="number">1</span>));
             }
-            <span class="kw">let</span> <span class="ident">init1</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">p</span> <span class="op">==</span> <span class="ident">i</span> <span class="op">*</span> (<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>) <span class="op">+</span> <span class="number">1</span> { <span class="ident">p</span> <span class="op">+</span> <span class="ident">i</span> } <span class="kw">else</span> { <span class="ident">i</span> };
-            <span class="kw">let</span> <span class="ident">init2</span> <span class="op">=</span> (<span class="ident">n</span> <span class="op">+</span> <span class="ident">p</span> <span class="op">-</span> <span class="number">1</span>) <span class="op">/</span> <span class="ident">p</span> <span class="op">*</span> <span class="ident">p</span>;
-            <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> (<span class="ident">init1</span>..<span class="op">=</span><span class="ident">n</span>).<span class="ident">step_by</span>(<span class="ident">p</span>).<span class="ident">chain</span>((<span class="ident">init2</span>..<span class="op">=</span><span class="ident">n</span>).<span class="ident">step_by</span>(<span class="ident">p</span>)) {
-                <span class="kw">let</span> (<span class="ident">d</span>, <span class="ident">e</span>) <span class="op">=</span> <span class="ident"><span class="self">Self</span>::div_pow</span>(<span class="ident">a</span>[<span class="ident">j</span>], <span class="ident">p</span>);
-                <span class="kw">if</span> <span class="ident">e</span> <span class="op">&gt;</span> <span class="number">0</span> {
-                    <span class="ident">f</span>[<span class="ident">j</span>].<span class="ident">push</span>((<span class="ident">p</span>, <span class="ident">e</span>));
-                    <span class="ident">a</span>[<span class="ident">j</span>] <span class="op">=</span> <span class="ident">d</span>;
+            <span class="kw">let </span>init1 = <span class="kw">if </span>p == i * (i + <span class="number">1</span>) + <span class="number">1 </span>{ p + i } <span class="kw">else </span>{ i };
+            <span class="kw">let </span>init2 = (n + p - <span class="number">1</span>) / p * p;
+            <span class="kw">for </span>j <span class="kw">in </span>(init1..=n).step_by(p).chain((init2..=n).step_by(p)) {
+                <span class="kw">let </span>(d, e) = <span class="self">Self</span>::div_pow(a[j], p);
+                <span class="kw">if </span>e &gt; <span class="number">0 </span>{
+                    f[j].push((p, e));
+                    a[j] = d;
                 }
             }
         }
-        <span class="self">Self</span> { <span class="ident">a</span>, <span class="ident">f</span> }
+        <span class="self">Self </span>{ a, f }
     }
 
-    <span class="kw">fn</span> <span class="ident">div_pow</span>(<span class="kw-2">mut</span> <span class="ident">a</span>: <span class="ident">usize</span>, <span class="ident">p</span>: <span class="ident">usize</span>) -&gt; (<span class="ident">usize</span>, <span class="ident">u32</span>) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">e</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">while</span> <span class="ident">a</span> <span class="op">%</span> <span class="ident">p</span> <span class="op">==</span> <span class="number">0</span> {
-            <span class="ident">a</span> <span class="op">/</span><span class="op">=</span> <span class="ident">p</span>;
-            <span class="ident">e</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+    <span class="kw">fn </span>div_pow(<span class="kw-2">mut </span>a: usize, p: usize) -&gt; (usize, u32) {
+        <span class="kw">let </span><span class="kw-2">mut </span>e = <span class="number">0</span>;
+        <span class="kw">while </span>a % p == <span class="number">0 </span>{
+            a /= p;
+            e += <span class="number">1</span>;
         }
-        (<span class="ident">a</span>, <span class="ident">e</span>)
+        (a, e)
     }
 
-    <span class="doccomment">/// $n^2+n+1$ の形の素数を返す。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use nekolib::math::SieveN2PlusNPlus1;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let ss = SieveN2PlusNPlus1::new(10);</span>
-    <span class="doccomment">/// let primes: Vec&lt;_&gt; = ss.primes().collect();</span>
-    <span class="doccomment">/// assert_eq!(primes, [3, 7, 13, 31, 43, 73]);</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">primes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">usize</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;_</span> {
-        (<span class="number">1</span>..<span class="self">self</span>.<span class="ident">a</span>.<span class="ident">len</span>())
-            .<span class="ident">filter</span>(<span class="kw">move</span> <span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">i</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">a</span>[<span class="ident">i</span>] <span class="op">==</span> <span class="ident">i</span> <span class="op">*</span> (<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>) <span class="op">+</span> <span class="number">1</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span> <span class="op">*</span> (<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>) <span class="op">+</span> <span class="number">1</span>)
+    <span class="doccomment">/// $n^2+n+1$ の形の素数を返す。
+    ///
+    /// # Examples
+    /// ```
+    /// use nekolib::math::SieveN2PlusNPlus1;
+    ///
+    /// let ss = SieveN2PlusNPlus1::new(10);
+    /// let primes: Vec&lt;_&gt; = ss.primes().collect();
+    /// assert_eq!(primes, [3, 7, 13, 31, 43, 73]);
+    /// ```
+    </span><span class="kw">pub fn </span>primes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw">impl </span>Iterator&lt;Item = usize&gt; + <span class="lifetime">&#39;_ </span>{
+        (<span class="number">1</span>..<span class="self">self</span>.a.len())
+            .filter(<span class="kw">move </span>|<span class="kw-2">&amp;</span>i| <span class="self">self</span>.a[i] == i * (i + <span class="number">1</span>) + <span class="number">1</span>)
+            .map(|i| i * (i + <span class="number">1</span>) + <span class="number">1</span>)
     }
 
-    <span class="doccomment">/// $n^2+n+1$ が素数のとき真を返す。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use nekolib::math::SieveN2PlusNPlus1;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let ss = SieveN2PlusNPlus1::new(10);</span>
-    <span class="doccomment">/// assert!(ss.is_prime(3));  // 13 is prime</span>
-    <span class="doccomment">/// assert!(!ss.is_prime(4));  // 21 = 3 * 7</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_prime</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="ident">bool</span> {
-        <span class="ident">n</span> <span class="op">&gt;</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">a</span>[<span class="ident">n</span>] <span class="op">==</span> <span class="ident">n</span> <span class="op">*</span> (<span class="ident">n</span> <span class="op">+</span> <span class="number">1</span>) <span class="op">+</span> <span class="number">1</span>
+    <span class="doccomment">/// $n^2+n+1$ が素数のとき真を返す。
+    ///
+    /// # Examples
+    /// ```
+    /// use nekolib::math::SieveN2PlusNPlus1;
+    ///
+    /// let ss = SieveN2PlusNPlus1::new(10);
+    /// assert!(ss.is_prime(3));  // 13 is prime
+    /// assert!(!ss.is_prime(4));  // 21 = 3 * 7
+    /// ```
+    </span><span class="kw">pub fn </span>is_prime(<span class="kw-2">&amp;</span><span class="self">self</span>, n: usize) -&gt; bool {
+        n &gt; <span class="number">0 </span>&amp;&amp; <span class="self">self</span>.a[n] == n * (n + <span class="number">1</span>) + <span class="number">1
+    </span>}
+
+    <span class="doccomment">/// $n^2+n+1$ を素因数分解する。
+    ///
+    /// 底の昇順とは限らないので注意。
+    ///
+    /// # Examples
+    /// ```
+    /// use nekolib::math::SieveN2PlusNPlus1;
+    ///
+    /// let ss = SieveN2PlusNPlus1::new(20);
+    /// assert_eq!(ss.factors(0).next(), None);
+    /// assert_eq!(ss.factors(7).collect::&lt;Vec&lt;_&gt;&gt;(), [(3, 1), (19, 1)]);
+    /// assert_eq!(ss.factors(18).collect::&lt;Vec&lt;_&gt;&gt;(), [(7, 3)]);
+    /// ```
+    </span><span class="kw">pub fn </span>factors(<span class="kw-2">&amp;</span><span class="self">self</span>, n: usize) -&gt; <span class="kw">impl </span>Iterator&lt;Item = (usize, u32)&gt; + <span class="lifetime">&#39;_ </span>{
+        <span class="self">self</span>.f[n].iter().cloned()
     }
 
-    <span class="doccomment">/// $n^2+n+1$ を素因数分解する。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// 底の昇順とは限らないので注意。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use nekolib::math::SieveN2PlusNPlus1;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let ss = SieveN2PlusNPlus1::new(20);</span>
-    <span class="doccomment">/// assert_eq!(ss.factors(0).next(), None);</span>
-    <span class="doccomment">/// assert_eq!(ss.factors(7).collect::&lt;Vec&lt;_&gt;&gt;(), [(3, 1), (19, 1)]);</span>
-    <span class="doccomment">/// assert_eq!(ss.factors(18).collect::&lt;Vec&lt;_&gt;&gt;(), [(7, 3)]);</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">factors</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> (<span class="ident">usize</span>, <span class="ident">u32</span>)<span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;_</span> {
-        <span class="self">self</span>.<span class="ident">f</span>[<span class="ident">n</span>].<span class="ident">iter</span>().<span class="ident">cloned</span>()
-    }
-
-    <span class="doccomment">/// $n^2+1$ を素因数を列挙する。重複あり。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// 底の昇順とは限らないので注意。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use nekolib::math::SieveN2PlusNPlus1;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let ss = SieveN2PlusNPlus1::new(20);</span>
-    <span class="doccomment">/// assert_eq!(ss.factors_dup(0).next(), None);</span>
-    <span class="doccomment">/// assert_eq!(ss.factors_dup(6).collect::&lt;Vec&lt;_&gt;&gt;(), [43]);</span>
-    <span class="doccomment">/// assert_eq!(ss.factors_dup(18).collect::&lt;Vec&lt;_&gt;&gt;(), [7, 7, 7]);</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">factors_dup</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">usize</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;_</span> {
-        <span class="self">self</span>.<span class="ident">factors</span>(<span class="ident">n</span>).<span class="ident">flat_map</span>(<span class="op">|</span>(<span class="ident">p</span>, <span class="ident">e</span>)<span class="op">|</span> <span class="ident">std::iter::repeat</span>(<span class="ident">p</span>).<span class="ident">take</span>(<span class="ident">e</span> <span class="kw">as</span> <span class="ident">usize</span>))
+    <span class="doccomment">/// $n^2+1$ を素因数を列挙する。重複あり。
+    ///
+    /// 底の昇順とは限らないので注意。
+    ///
+    /// # Examples
+    /// ```
+    /// use nekolib::math::SieveN2PlusNPlus1;
+    ///
+    /// let ss = SieveN2PlusNPlus1::new(20);
+    /// assert_eq!(ss.factors_dup(0).next(), None);
+    /// assert_eq!(ss.factors_dup(6).collect::&lt;Vec&lt;_&gt;&gt;(), [43]);
+    /// assert_eq!(ss.factors_dup(18).collect::&lt;Vec&lt;_&gt;&gt;(), [7, 7, 7]);
+    /// ```
+    </span><span class="kw">pub fn </span>factors_dup(<span class="kw-2">&amp;</span><span class="self">self</span>, n: usize) -&gt; <span class="kw">impl </span>Iterator&lt;Item = usize&gt; + <span class="lifetime">&#39;_ </span>{
+        <span class="self">self</span>.factors(n).flat_map(|(p, e)| std::iter::repeat(p).take(e <span class="kw">as </span>usize))
     }
 }
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test</span>() {
-    <span class="kw">use</span> <span class="ident">linear_sieve::LinearSieve</span>;
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test() {
+    <span class="kw">use </span>linear_sieve::LinearSieve;
 
-    <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="number">3000</span>;
-    <span class="kw">let</span> <span class="ident">ls</span> <span class="op">=</span> <span class="ident">LinearSieve::new</span>(<span class="ident">n</span> <span class="op">*</span> (<span class="ident">n</span> <span class="op">+</span> <span class="number">1</span>) <span class="op">+</span> <span class="number">1</span>);
-    <span class="kw">let</span> <span class="ident">ss</span> <span class="op">=</span> <span class="ident">SieveN2PlusNPlus1::new</span>(<span class="ident">n</span>);
-    <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="op">=</span><span class="ident">n</span> {
-        <span class="macro">assert_eq!</span>(<span class="ident">ls</span>.<span class="ident">is_prime</span>(<span class="ident">i</span> <span class="op">*</span> (<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>) <span class="op">+</span> <span class="number">1</span>), <span class="ident">ss</span>.<span class="ident">is_prime</span>(<span class="ident">i</span>));
+    <span class="kw">let </span>n = <span class="number">3000</span>;
+    <span class="kw">let </span>ls = LinearSieve::new(n * (n + <span class="number">1</span>) + <span class="number">1</span>);
+    <span class="kw">let </span>ss = SieveN2PlusNPlus1::new(n);
+    <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..=n {
+        <span class="macro">assert_eq!</span>(ls.is_prime(i * (i + <span class="number">1</span>) + <span class="number">1</span>), ss.is_prime(i));
 
         {
-            <span class="comment">// factors</span>
-            <span class="kw">let</span> <span class="ident">expected</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">ls</span>.<span class="ident">factors_dup</span>(<span class="ident">i</span> <span class="op">*</span> (<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>) <span class="op">+</span> <span class="number">1</span>).<span class="ident">collect</span>();
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">actual</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">ss</span>.<span class="ident">factors_dup</span>(<span class="ident">i</span>).<span class="ident">collect</span>();
-            <span class="ident">actual</span>.<span class="ident">sort_unstable</span>();
-            <span class="macro">assert_eq!</span>(<span class="ident">actual</span>, <span class="ident">expected</span>);
+            <span class="comment">// factors
+            </span><span class="kw">let </span>expected: Vec&lt;<span class="kw">_</span>&gt; = ls.factors_dup(i * (i + <span class="number">1</span>) + <span class="number">1</span>).collect();
+            <span class="kw">let </span><span class="kw-2">mut </span>actual: Vec&lt;<span class="kw">_</span>&gt; = ss.factors_dup(i).collect();
+            actual.sort_unstable();
+            <span class="macro">assert_eq!</span>(actual, expected);
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

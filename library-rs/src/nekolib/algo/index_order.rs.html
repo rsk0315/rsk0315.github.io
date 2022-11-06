@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/algo/index_order.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>index_order.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/algo/index_order.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>index_order.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -159,77 +159,77 @@
 <span id="70">70</span>
 <span id="71">71</span>
 <span id="72">72</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 添字の順序。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 添字の順序。
 
-<span class="kw">use</span> <span class="ident">std::cmp::Ordering</span>;
+</span><span class="kw">use </span>std::cmp::Ordering;
 
-<span class="doccomment">/// 添字の順序。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// See [`index_order_by`].</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [`index_order_by`]: fn.index_order_by.html</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use std::cmp::Reverse;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// use nekolib::algo::index_order_by_key;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let a = [0, 2, 1, 4, 5, 1, 3];</span>
-<span class="doccomment">/// let key = |(i, &amp;ai): (usize, &amp;i32)| (ai, Reverse(i));</span>
-<span class="doccomment">/// assert_eq!(index_order_by_key(&amp;a, key), [0, 5, 2, 1, 6, 3, 4]);</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">index_order_by_key</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">K</span>: <span class="ident">Ord</span><span class="op">&gt;</span>(
-    <span class="ident">buf</span>: <span class="kw-2">&amp;</span>[<span class="ident">T</span>],
-    <span class="kw-2">mut</span> <span class="ident">key</span>: <span class="kw">impl</span> <span class="ident">FnMut</span>((<span class="ident">usize</span>, <span class="kw-2">&amp;</span><span class="ident">T</span>)) -&gt; <span class="ident">K</span>,
-) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-    <span class="ident">index_order_by</span>(<span class="ident">buf</span>, <span class="op">|</span><span class="ident">l</span>, <span class="ident">r</span><span class="op">|</span> <span class="ident">key</span>(<span class="ident">l</span>).<span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>(<span class="ident">r</span>)))
+<span class="doccomment">/// 添字の順序。
+///
+/// See [`index_order_by`].
+///
+/// [`index_order_by`]: fn.index_order_by.html
+///
+/// # Examples
+/// ```
+/// use std::cmp::Reverse;
+///
+/// use nekolib::algo::index_order_by_key;
+///
+/// let a = [0, 2, 1, 4, 5, 1, 3];
+/// let key = |(i, &amp;ai): (usize, &amp;i32)| (ai, Reverse(i));
+/// assert_eq!(index_order_by_key(&amp;a, key), [0, 5, 2, 1, 6, 3, 4]);
+/// ```
+</span><span class="kw">pub fn </span>index_order_by_key&lt;T, K: Ord&gt;(
+    buf: <span class="kw-2">&amp;</span>[T],
+    <span class="kw-2">mut </span>key: <span class="kw">impl </span>FnMut((usize, <span class="kw-2">&amp;</span>T)) -&gt; K,
+) -&gt; Vec&lt;usize&gt; {
+    index_order_by(buf, |l, r| key(l).cmp(<span class="kw-2">&amp;</span>key(r)))
 }
 
-<span class="doccomment">/// 添字の順序。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 次で定義される $b = (b\_0, b\_1, \\dots, b\_{|a|-1})$ を返す。</span>
-<span class="doccomment">/// - $b\_i$ は相異なる</span>
-<span class="doccomment">/// - $b\_i \\in [0, |a|)$</span>
-<span class="doccomment">/// - $a\_{b\_0} \\preceq a\_{b\_1} \\preceq \\cdots \\preceq a\_{b\_{|a|-1}}$</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ただし $\\preceq$ は `compare` による順序とする。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # See also</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [`index_order_by_key`].</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [`index_order_by_key`]: fn.index_order_by_key.html</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use std::cmp::Ordering;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// use nekolib::algo::index_order_by;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// // See &lt;https://ngtkana.hatenablog.com/entry/2021/11/13/202103&gt;</span>
-<span class="doccomment">/// let argcmp = |[x0, y0]: [i64; 2], [x1, y1]: [i64; 2]| {</span>
-<span class="doccomment">///     (([y0, x0] &lt; [0; 2]).cmp(&amp;([y1, x1] &lt; [0; 2])))</span>
-<span class="doccomment">///         .then_with(|| (x1 * y0).cmp(&amp;(x0 * y1)))</span>
-<span class="doccomment">/// };</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let a = [[1, 1], [1, -1], [-1, 0], [0, 1], [1, 0], [0, -1], [-1, 1], [-1, -1]];</span>
-<span class="doccomment">/// let compare =</span>
-<span class="doccomment">///     |(_, &amp;al): (usize, &amp;[i64; 2]), (_, &amp;ar): (usize, &amp;[i64; 2])| argcmp(al, ar);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// // [6] [3] [0]</span>
-<span class="doccomment">/// // [2]  O  [4]</span>
-<span class="doccomment">/// // [7] [5] [1]</span>
-<span class="doccomment">/// assert_eq!(index_order_by(&amp;a, compare), [4, 0, 3, 6, 2, 7, 5, 1]);</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">index_order_by</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(
-    <span class="ident">buf</span>: <span class="kw-2">&amp;</span>[<span class="ident">T</span>],
-    <span class="kw-2">mut</span> <span class="ident">compare</span>: <span class="kw">impl</span> <span class="ident">FnMut</span>((<span class="ident">usize</span>, <span class="kw-2">&amp;</span><span class="ident">T</span>), (<span class="ident">usize</span>, <span class="kw-2">&amp;</span><span class="ident">T</span>)) -&gt; <span class="ident">Ordering</span>,
-) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">len</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">n</span>).<span class="ident">collect</span>();
-    <span class="ident">res</span>.<span class="ident">sort_unstable_by</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">l</span>, <span class="kw-2">&amp;</span><span class="ident">r</span><span class="op">|</span> <span class="ident">compare</span>((<span class="ident">l</span>, <span class="kw-2">&amp;</span><span class="ident">buf</span>[<span class="ident">l</span>]), (<span class="ident">r</span>, <span class="kw-2">&amp;</span><span class="ident">buf</span>[<span class="ident">r</span>])));
-    <span class="ident">res</span>
+<span class="doccomment">/// 添字の順序。
+///
+/// 次で定義される $b = (b\_0, b\_1, \\dots, b\_{|a|-1})$ を返す。
+/// - $b\_i$ は相異なる
+/// - $b\_i \\in [0, |a|)$
+/// - $a\_{b\_0} \\preceq a\_{b\_1} \\preceq \\cdots \\preceq a\_{b\_{|a|-1}}$
+///
+/// ただし $\\preceq$ は `compare` による順序とする。
+///
+/// # See also
+///
+/// [`index_order_by_key`].
+///
+/// [`index_order_by_key`]: fn.index_order_by_key.html
+///
+/// # Examples
+/// ```
+/// use std::cmp::Ordering;
+///
+/// use nekolib::algo::index_order_by;
+///
+/// // See &lt;https://ngtkana.hatenablog.com/entry/2021/11/13/202103&gt;
+/// let argcmp = |[x0, y0]: [i64; 2], [x1, y1]: [i64; 2]| {
+///     (([y0, x0] &lt; [0; 2]).cmp(&amp;([y1, x1] &lt; [0; 2])))
+///         .then_with(|| (x1 * y0).cmp(&amp;(x0 * y1)))
+/// };
+///
+/// let a = [[1, 1], [1, -1], [-1, 0], [0, 1], [1, 0], [0, -1], [-1, 1], [-1, -1]];
+/// let compare =
+///     |(_, &amp;al): (usize, &amp;[i64; 2]), (_, &amp;ar): (usize, &amp;[i64; 2])| argcmp(al, ar);
+///
+/// // [6] [3] [0]
+/// // [2]  O  [4]
+/// // [7] [5] [1]
+/// assert_eq!(index_order_by(&amp;a, compare), [4, 0, 3, 6, 2, 7, 5, 1]);
+/// ```
+</span><span class="kw">pub fn </span>index_order_by&lt;T&gt;(
+    buf: <span class="kw-2">&amp;</span>[T],
+    <span class="kw-2">mut </span>compare: <span class="kw">impl </span>FnMut((usize, <span class="kw-2">&amp;</span>T), (usize, <span class="kw-2">&amp;</span>T)) -&gt; Ordering,
+) -&gt; Vec&lt;usize&gt; {
+    <span class="kw">let </span>n = buf.len();
+    <span class="kw">let </span><span class="kw-2">mut </span>res: Vec&lt;<span class="kw">_</span>&gt; = (<span class="number">0</span>..n).collect();
+    res.sort_unstable_by(|<span class="kw-2">&amp;</span>l, <span class="kw-2">&amp;</span>r| compare((l, <span class="kw-2">&amp;</span>buf[l]), (r, <span class="kw-2">&amp;</span>buf[r])));
+    res
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

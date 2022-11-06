@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/ds/foldable_queue.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>foldable_queue.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/ds/foldable_queue.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>foldable_queue.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -263,181 +263,181 @@
 <span id="174">174</span>
 <span id="175">175</span>
 <span id="176">176</span>
-</pre><pre class="rust"><code><span class="doccomment">//! fold 可能キュー。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! fold 可能キュー。
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::binop</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::fold</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::push_pop</span>;
+</span><span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::traits::binop;
+<span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::traits::fold;
+<span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::traits::push_pop;
 
-<span class="kw">use</span> <span class="ident">std::ops::RangeFull</span>;
+<span class="kw">use </span>std::ops::RangeFull;
 
-<span class="kw">use</span> <span class="ident">binop::Monoid</span>;
-<span class="kw">use</span> <span class="ident">fold::Fold</span>;
-<span class="kw">use</span> <span class="ident">push_pop</span>::{<span class="ident">Pop</span>, <span class="ident">PopFront</span>, <span class="ident">Push</span>, <span class="ident">PushBack</span>};
+<span class="kw">use </span>binop::Monoid;
+<span class="kw">use </span>fold::Fold;
+<span class="kw">use </span>push_pop::{Pop, PopFront, Push, PushBack};
 
-<span class="doccomment">/// fold 可能キュー。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// いわゆる SWAG (*S*liding *W*indow *Ag*gregation)。</span>
-<span class="doccomment">/// モノイドを要素とするキューであって、全体のモノイド積を計算できる。</span>
-<span class="doccomment">/// 逆元がある演算であれば、単に要素を一つ持って計算すればよい。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Idea</span>
-<span class="doccomment">/// スタックを二つ使ってキューを実現できることを応用する。</span>
-<span class="doccomment">/// モノイド積を管理するスタックも二つ用意する。</span>
-<span class="doccomment">/// 後者のスタックそれぞれの top が、対応する前者のスタック中の要素の総積となるように管理する。</span>
-<span class="doccomment">/// これにより、キュー全体としての積は、二つの要素の積として計算できる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Implementation notes</span>
-<span class="doccomment">/// `fold()` だけを考えると front stack には元の値を入れる必要はないが、</span>
-<span class="doccomment">/// `pop()` の際の挙動を標準の [`VecDeque`] などと合わせたかったので、含めることにした。</span>
-<span class="doccomment">/// fold した値を返すということにすれば含めなくて済むが、あまりそうしたくなかったので。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [`VecDeque`]: https://doc.rust-lang.org/std/collections/struct.VecDeque.html#method.pop_front</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// |演算|時間計算量|</span>
-<span class="doccomment">/// |---|---|</span>
-<span class="doccomment">/// |`new`|$\\Theta(1)$|</span>
-<span class="doccomment">/// |`push` (`push_back`)|$\\Theta(1)$|</span>
-<span class="doccomment">/// |`pop` (`pop_front`)|amortized $\\Theta(1)$|</span>
-<span class="doccomment">/// |`fold`|$\\Theta(1)$|</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// `pop` の計算量は、two-stack queue のならし解析から従う。</span>
-<span class="doccomment">/// わかりやすい資料として</span>
-<span class="doccomment">/// [CS166](http://web.stanford.edu/class/archive/cs/cs166/cs166.1206/lectures/07/Small07.pdf)</span>
-<span class="doccomment">/// を挙げておく。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::ds::FoldableQueue;</span>
-<span class="doccomment">/// use nekolib::traits::{Fold, Pop, Push};</span>
-<span class="doccomment">/// use nekolib::utils::OpMin;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let mut fq = FoldableQueue::&lt;OpMin&lt;i32&gt;&gt;::new();</span>
-<span class="doccomment">/// assert_eq!(fq.fold(..), std::i32::MAX);</span>
-<span class="doccomment">/// fq.push(6);</span>
-<span class="doccomment">/// assert_eq!(fq.fold(..), 6);</span>
-<span class="doccomment">/// fq.push(3);</span>
-<span class="doccomment">/// assert_eq!(fq.fold(..), 3);</span>
-<span class="doccomment">/// fq.push(4);</span>
-<span class="doccomment">/// assert_eq!(fq.fold(..), 3);</span>
-<span class="doccomment">/// fq.pop();</span>
-<span class="doccomment">/// assert_eq!(fq.fold(..), 3);</span>
-<span class="doccomment">/// fq.pop();</span>
-<span class="doccomment">/// assert_eq!(fq.fold(..), 4);</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FoldableQueue</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">Monoid</span><span class="op">&gt;</span> {
-    <span class="ident">buf_front</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">M::Set</span><span class="op">&gt;</span>,
-    <span class="ident">buf_folded_front</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">M::Set</span><span class="op">&gt;</span>,
-    <span class="ident">buf_back</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">M::Set</span><span class="op">&gt;</span>,
-    <span class="ident">folded_back</span>: <span class="ident">M::Set</span>,
-    <span class="ident">monoid</span>: <span class="ident">M</span>,
+<span class="doccomment">/// fold 可能キュー。
+///
+/// いわゆる SWAG (*S*liding *W*indow *Ag*gregation)。
+/// モノイドを要素とするキューであって、全体のモノイド積を計算できる。
+/// 逆元がある演算であれば、単に要素を一つ持って計算すればよい。
+///
+/// # Idea
+/// スタックを二つ使ってキューを実現できることを応用する。
+/// モノイド積を管理するスタックも二つ用意する。
+/// 後者のスタックそれぞれの top が、対応する前者のスタック中の要素の総積となるように管理する。
+/// これにより、キュー全体としての積は、二つの要素の積として計算できる。
+///
+/// # Implementation notes
+/// `fold()` だけを考えると front stack には元の値を入れる必要はないが、
+/// `pop()` の際の挙動を標準の [`VecDeque`] などと合わせたかったので、含めることにした。
+/// fold した値を返すということにすれば含めなくて済むが、あまりそうしたくなかったので。
+///
+/// [`VecDeque`]: https://doc.rust-lang.org/std/collections/struct.VecDeque.html#method.pop_front
+///
+/// # Complexity
+/// |演算|時間計算量|
+/// |---|---|
+/// |`new`|$\\Theta(1)$|
+/// |`push` (`push_back`)|$\\Theta(1)$|
+/// |`pop` (`pop_front`)|amortized $\\Theta(1)$|
+/// |`fold`|$\\Theta(1)$|
+///
+/// `pop` の計算量は、two-stack queue のならし解析から従う。
+/// わかりやすい資料として
+/// [CS166](http://web.stanford.edu/class/archive/cs/cs166/cs166.1206/lectures/07/Small07.pdf)
+/// を挙げておく。
+///
+/// # Examples
+/// ```
+/// use nekolib::ds::FoldableQueue;
+/// use nekolib::traits::{Fold, Pop, Push};
+/// use nekolib::utils::OpMin;
+///
+/// let mut fq = FoldableQueue::&lt;OpMin&lt;i32&gt;&gt;::new();
+/// assert_eq!(fq.fold(..), std::i32::MAX);
+/// fq.push(6);
+/// assert_eq!(fq.fold(..), 6);
+/// fq.push(3);
+/// assert_eq!(fq.fold(..), 3);
+/// fq.push(4);
+/// assert_eq!(fq.fold(..), 3);
+/// fq.pop();
+/// assert_eq!(fq.fold(..), 3);
+/// fq.pop();
+/// assert_eq!(fq.fold(..), 4);
+/// ```
+</span><span class="attribute">#[derive(Clone, Debug)]
+</span><span class="kw">pub struct </span>FoldableQueue&lt;M: Monoid&gt; {
+    buf_front: Vec&lt;M::Set&gt;,
+    buf_folded_front: Vec&lt;M::Set&gt;,
+    buf_back: Vec&lt;M::Set&gt;,
+    folded_back: M::Set,
+    monoid: M,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">Monoid</span><span class="op">&gt;</span> <span class="ident">FoldableQueue</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;M: Monoid&gt; FoldableQueue&lt;M&gt;
+<span class="kw">where
+    </span>M::Set: Clone,
 {
-    <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span>
-    <span class="kw">where</span>
-        <span class="ident">M</span>: <span class="ident">Default</span>,
+    <span class="attribute">#[must_use]
+    </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self
+    </span><span class="kw">where
+        </span>M: Default,
     {
-        <span class="ident"><span class="self">Self</span>::with</span>(<span class="ident">M::default</span>())
+        <span class="self">Self</span>::with(M::default())
     }
-    <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with</span>(<span class="ident">monoid</span>: <span class="ident">M</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">buf_front</span>: <span class="macro">vec!</span>[],
-            <span class="ident">buf_folded_front</span>: <span class="macro">vec!</span>[<span class="ident">monoid</span>.<span class="ident">id</span>()],
-            <span class="ident">buf_back</span>: <span class="macro">vec!</span>[],
-            <span class="ident">folded_back</span>: <span class="ident">monoid</span>.<span class="ident">id</span>(),
-            <span class="ident">monoid</span>,
+    <span class="attribute">#[must_use]
+    </span><span class="kw">pub fn </span>with(monoid: M) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            buf_front: <span class="macro">vec!</span>[],
+            buf_folded_front: <span class="macro">vec!</span>[monoid.id()],
+            buf_back: <span class="macro">vec!</span>[],
+            folded_back: monoid.id(),
+            monoid,
         }
     }
-    <span class="kw">fn</span> <span class="ident">rotate</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">buf_front</span>.<span class="ident">is_empty</span>() {
-            <span class="ident">std::mem::swap</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">buf_back</span>, <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">buf_front</span>);
-            <span class="self">self</span>.<span class="ident">buf_front</span>.<span class="ident">reverse</span>();
-            <span class="self">self</span>.<span class="ident">build_folded</span>();
+    <span class="kw">fn </span>rotate(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="kw">if </span><span class="self">self</span>.buf_front.is_empty() {
+            std::mem::swap(<span class="kw-2">&amp;mut </span><span class="self">self</span>.buf_back, <span class="kw-2">&amp;mut </span><span class="self">self</span>.buf_front);
+            <span class="self">self</span>.buf_front.reverse();
+            <span class="self">self</span>.build_folded();
         }
     }
-    <span class="kw">fn</span> <span class="ident">build_folded</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="self">self</span>.<span class="ident">folded_back</span> <span class="op">=</span> (<span class="self">self</span>.<span class="ident">buf_back</span>.<span class="ident">iter</span>())
-            .<span class="ident">fold</span>(<span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">id</span>(), <span class="op">|</span><span class="ident">acc</span>, <span class="ident">x</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">op</span>(<span class="ident">acc</span>, <span class="ident">x</span>.<span class="ident">clone</span>()));
-        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf_front</span>.<span class="ident">len</span>();
-        <span class="self">self</span>.<span class="ident">buf_folded_front</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">id</span>(); <span class="ident">n</span> <span class="op">+</span> <span class="number">1</span>];
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span> {
-            <span class="self">self</span>.<span class="ident">buf_folded_front</span>[<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>] <span class="op">=</span> <span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">op</span>(
-                <span class="self">self</span>.<span class="ident">buf_folded_front</span>[<span class="ident">i</span>].<span class="ident">clone</span>(),
-                <span class="self">self</span>.<span class="ident">buf_front</span>[<span class="ident">i</span>].<span class="ident">clone</span>(),
+    <span class="kw">fn </span>build_folded(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="self">self</span>.folded_back = (<span class="self">self</span>.buf_back.iter())
+            .fold(<span class="self">self</span>.monoid.id(), |acc, x| <span class="self">self</span>.monoid.op(acc, x.clone()));
+        <span class="kw">let </span>n = <span class="self">self</span>.buf_front.len();
+        <span class="self">self</span>.buf_folded_front = <span class="macro">vec!</span>[<span class="self">self</span>.monoid.id(); n + <span class="number">1</span>];
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..n {
+            <span class="self">self</span>.buf_folded_front[i + <span class="number">1</span>] = <span class="self">self</span>.monoid.op(
+                <span class="self">self</span>.buf_folded_front[i].clone(),
+                <span class="self">self</span>.buf_front[i].clone(),
             );
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">Monoid</span><span class="op">&gt;</span> <span class="ident">PushBack</span> <span class="kw">for</span> <span class="ident">FoldableQueue</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;M: Monoid&gt; PushBack <span class="kw">for </span>FoldableQueue&lt;M&gt;
+<span class="kw">where
+    </span>M::Set: Clone,
 {
-    <span class="kw">type</span> <span class="ident">Input</span> <span class="op">=</span> <span class="ident">M::Set</span>;
-    <span class="kw">fn</span> <span class="ident">push_back</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Input</span>) {
-        <span class="self">self</span>.<span class="ident">folded_back</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">op</span>(
-            <span class="ident">std::mem::replace</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">folded_back</span>, <span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">id</span>()),
-            <span class="ident">x</span>.<span class="ident">clone</span>(),
+    <span class="kw">type </span>Input = M::Set;
+    <span class="kw">fn </span>push_back(<span class="kw-2">&amp;mut </span><span class="self">self</span>, x: <span class="self">Self</span>::Input) {
+        <span class="self">self</span>.folded_back = <span class="self">self</span>.monoid.op(
+            std::mem::replace(<span class="kw-2">&amp;mut </span><span class="self">self</span>.folded_back, <span class="self">self</span>.monoid.id()),
+            x.clone(),
         );
-        <span class="self">self</span>.<span class="ident">buf_back</span>.<span class="ident">push</span>(<span class="ident">x</span>);
+        <span class="self">self</span>.buf_back.push(x);
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">Monoid</span><span class="op">&gt;</span> <span class="ident">Push</span> <span class="kw">for</span> <span class="ident">FoldableQueue</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;M: Monoid&gt; Push <span class="kw">for </span>FoldableQueue&lt;M&gt;
+<span class="kw">where
+    </span>M::Set: Clone,
 {
-    <span class="kw">type</span> <span class="ident">Input</span> <span class="op">=</span> <span class="ident">M::Set</span>;
-    <span class="kw">fn</span> <span class="ident">push</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Input</span>) { <span class="self">self</span>.<span class="ident">push_back</span>(<span class="ident">x</span>); }
+    <span class="kw">type </span>Input = M::Set;
+    <span class="kw">fn </span>push(<span class="kw-2">&amp;mut </span><span class="self">self</span>, x: <span class="self">Self</span>::Input) { <span class="self">self</span>.push_back(x); }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">Monoid</span><span class="op">&gt;</span> <span class="ident">PopFront</span> <span class="kw">for</span> <span class="ident">FoldableQueue</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;M: Monoid&gt; PopFront <span class="kw">for </span>FoldableQueue&lt;M&gt;
+<span class="kw">where
+    </span>M::Set: Clone,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">M::Set</span>;
-    <span class="kw">fn</span> <span class="ident">pop_front</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Output</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">rotate</span>();
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">buf_folded_front</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">1</span> {
-            <span class="self">self</span>.<span class="ident">buf_folded_front</span>.<span class="ident">pop</span>();
+    <span class="kw">type </span>Output = M::Set;
+    <span class="kw">fn </span>pop_front(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Output&gt; {
+        <span class="self">self</span>.rotate();
+        <span class="kw">if </span><span class="self">self</span>.buf_folded_front.len() &gt; <span class="number">1 </span>{
+            <span class="self">self</span>.buf_folded_front.pop();
         }
-        <span class="self">self</span>.<span class="ident">buf_front</span>.<span class="ident">pop</span>()
+        <span class="self">self</span>.buf_front.pop()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">Monoid</span><span class="op">&gt;</span> <span class="ident">Pop</span> <span class="kw">for</span> <span class="ident">FoldableQueue</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;M: Monoid&gt; Pop <span class="kw">for </span>FoldableQueue&lt;M&gt;
+<span class="kw">where
+    </span>M::Set: Clone,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">M::Set</span>;
-    <span class="kw">fn</span> <span class="ident">pop</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Output</span><span class="op">&gt;</span> { <span class="self">self</span>.<span class="ident">pop_front</span>() }
+    <span class="kw">type </span>Output = M::Set;
+    <span class="kw">fn </span>pop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Output&gt; { <span class="self">self</span>.pop_front() }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">Monoid</span><span class="op">&gt;</span> <span class="ident">Fold</span><span class="op">&lt;</span><span class="ident">RangeFull</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">FoldableQueue</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;M: Monoid&gt; Fold&lt;RangeFull&gt; <span class="kw">for </span>FoldableQueue&lt;M&gt;
+<span class="kw">where
+    </span>M::Set: Clone,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">M</span>;
-    <span class="kw">fn</span> <span class="ident">fold</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="ident">RangeFull</span>) -&gt; <span class="ident">M::Set</span> {
-        <span class="kw">let</span> <span class="ident">front</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf_folded_front</span>.<span class="ident">last</span>().<span class="ident">unwrap</span>().<span class="ident">clone</span>();
-        <span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">op</span>(<span class="ident">front</span>, <span class="self">self</span>.<span class="ident">folded_back</span>.<span class="ident">clone</span>())
+    <span class="kw">type </span>Output = M;
+    <span class="kw">fn </span>fold(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: RangeFull) -&gt; M::Set {
+        <span class="kw">let </span>front = <span class="self">self</span>.buf_folded_front.last().unwrap().clone();
+        <span class="self">self</span>.monoid.op(front, <span class="self">self</span>.folded_back.clone())
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">Monoid</span><span class="op">&gt;</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">FoldableQueue</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M</span>: <span class="ident">Default</span>,
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;M: Monoid&gt; Default <span class="kw">for </span>FoldableQueue&lt;M&gt;
+<span class="kw">where
+    </span>M: Default,
+    M::Set: Clone,
 {
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> { <span class="ident"><span class="self">Self</span>::new</span>() }
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{ <span class="self">Self</span>::new() }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

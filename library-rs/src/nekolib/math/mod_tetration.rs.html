@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/mod_tetration.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod_tetration.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/mod_tetration.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod_tetration.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -301,219 +301,219 @@
 <span id="212">212</span>
 <span id="213">213</span>
 <span id="214">214</span>
-</pre><pre class="rust"><code><span class="doccomment">//! tetration。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! tetration。
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::euler_phi</span>;
+</span><span class="kw">use </span><span class="kw">super</span>::euler_phi;
 
-<span class="kw">use</span> <span class="ident">euler_phi::EulerPhi</span>;
+<span class="kw">use </span>euler_phi::EulerPhi;
 
-<span class="doccomment">/// tetration。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ${}^b a\\bmod n$ を求める。${}^\\bullet \\bullet$ は次のように定義される。</span>
-<span class="doccomment">/// $$ {}^b a = \\begin{cases}</span>
-<span class="doccomment">/// 1, &amp; \\text{if } b = 0; \\\\</span>
-<span class="doccomment">/// a^{\\left({}^{(b-1)} a\\right)}, &amp; \\text{if } b \\ge 1.</span>
-<span class="doccomment">/// \\end{cases} $$</span>
-<span class="doccomment">/// 直感的に書けば、$\\underbrace{a^{(a^{(\\cdots ^a)})}}\_{b\\text{ many}} \\bmod n$ である。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Idea</span>
-<span class="doccomment">/// 大変大きくなりうる $z$ に対して $a^z\\bmod n$ を求めることを考える。</span>
-<span class="doccomment">/// このとき、[`dlog`] の [Idea] と同じ議論から、ある $\\mu$, $\\lambda$ が存在して</span>
-<span class="doccomment">/// $z\\lt\\mu$ または $z=\\mu+q\\cdot\\lambda+r$ とでき、後者のとき</span>
-<span class="doccomment">/// $a^z\\equiv a^{\\mu+r}\\pmod{n}$ が成り立つ。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ここで、$\\mu\\le\\log\_2(n)$, $\\lambda\\sqsubseteq\\varphi(n)$ である。</span>
-<span class="doccomment">/// さらに、任意の $n$ に対して $\\log\_2(n)\\le\\varphi(n)$ なので、$z\\ge\\varphi(n)$</span>
-<span class="doccomment">/// ならば $z\\ge\\mu$ とわかる。よって、以下のようにできる。</span>
-<span class="doccomment">/// $$ \\begin{aligned}</span>
-<span class="doccomment">/// a^z \\equiv \\begin{cases}</span>
-<span class="doccomment">/// a^z, &amp; \\text{if }z\\lt \\varphi(n); \\\\</span>
-<span class="doccomment">/// a^{(z\\bmod\\varphi(n))+\\varphi(n)}, &amp; \\text{otherwise}.</span>
-<span class="doccomment">/// \\end{cases}</span>
-<span class="doccomment">/// \\end{aligned} $$</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 直感的には、指数部が $\\varphi(n)$ 以上であればすでに周期の中に入っており、入った後は</span>
-<span class="doccomment">/// $\\varphi(n)$ を法として合同かつ $\\varphi(n)$ 以上の値さえ得られれば十分ということである。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [`dlog`]: fn.dlog.html</span>
-<span class="doccomment">/// [Idea]: fn.dlog.html#idea</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ## When $b$ is large</span>
-<span class="doccomment">/// 前述のように、${}^b a\\bmod{n}$ を求める際に ${}^{b-1} a$ を法 ${\\varphi(n)}$ で考える。</span>
-<span class="doccomment">/// その次は $\\varphi(\\varphi(n)), \\varphi(\\varphi(\\varphi(n))), \\dots$ と続く。</span>
-<span class="doccomment">/// $\\varphi^\\star(n)$ 段では考えるべき法が $1$ となり、それより上の段のことは無視できる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// そこで、$\\varphi^\\star(n)$ を考える。奇素数 $p$ に対して $\\varphi(p^e)=p^{e-1}\\cdot(p-1)$</span>
-<span class="doccomment">/// が偶数であることと、$\\varphi(2^e)=2^{e-1}$ であることから、$\\varphi(\\varphi(n))\\lt n/2$</span>
-<span class="doccomment">/// が成り立つ。すなわち、$\\varphi^\\star(n)\\le 2\\log(n)$ である[^1]。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [^1]: ゆるゆるな bound である。実際にはもっと速く減りそう。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// よって、$b\\ge 2\\log(n)$ であれば ${}^{b+1} a\\equiv {}^b a\\pmod{n}$ となる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ## Common bugs</span>
-<span class="doccomment">/// 繰り返し二乗法で $\\varphi(n)$ 以上か判断しつつ $a^z\\bmod\\varphi(n)$ を求める際、</span>
-<span class="doccomment">/// $a^{2^\\bullet}$ が $\\varphi(n)$ 以上になった時点で $a^z\\ge\\varphi(n)$</span>
-<span class="doccomment">/// と判断してしまうと、誤検出してしまう場合がある。</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">/// fn mod_pow(mut a: u64, mut b: u64, n: u64) -&gt; u64 {</span>
-<span class="doccomment">///     let mut res = 1 % n;</span>
-<span class="doccomment">///     let mut large = false;</span>
-<span class="doccomment">///     while b &gt; 0 {</span>
-<span class="doccomment">///         if b &amp; 1 == 1 {</span>
-<span class="doccomment">///             res *= a;</span>
-<span class="doccomment">///             if res &gt;= n { res %= n; large = true; }</span>
-<span class="doccomment">///         }</span>
-<span class="doccomment">///         a *= a;</span>
-<span class="doccomment">///         if a &gt;= n { a %= n; large = true; } // !</span>
-<span class="doccomment">///         b &gt;&gt;= 1;</span>
-<span class="doccomment">///     }</span>
-<span class="doccomment">///     if large { res + n } else { res }</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// 最後のループで初めて `a &gt;= n` になると、`res &lt; n` なのに `res + n` が返ってしまう。</span>
-<span class="doccomment">/// このバグや、あるいはそもそも $z\\ge\\varphi(n)$ を仮定していることなどにより、</span>
-<span class="doccomment">/// ${}^3 2\\bmod 32 = 0$ としてしまうコードがたくさん提出されている。</span>
-<span class="doccomment">/// [$\\bullet$](https://judge.yosupo.jp/submission/4054)</span>
-<span class="doccomment">/// [$\\bullet$](https://judge.yosupo.jp/submission/4564)</span>
-<span class="doccomment">/// [$\\bullet$](https://judge.yosupo.jp/submission/12501)</span>
-<span class="doccomment">/// [$\\bullet$](https://judge.yosupo.jp/submission/18734)</span>
-<span class="doccomment">/// [$\\bullet$](https://judge.yosupo.jp/submission/23725)</span>
-<span class="doccomment">/// [$\\bullet$](https://judge.yosupo.jp/submission/25108)</span>
-<span class="doccomment">/// [$\\bullet$](https://judge.yosupo.jp/submission/28794)</span>
-<span class="doccomment">/// [$\\bullet$](https://judge.yosupo.jp/submission/36536)</span>
-<span class="doccomment">/// [$\\bullet$](https://judge.yosupo.jp/submission/38102)</span>
-<span class="doccomment">/// [$\\bullet$](https://judge.yosupo.jp/submission/39646)</span>
-<span class="doccomment">/// [$\\bullet$](https://judge.yosupo.jp/submission/40708)</span>
-<span class="doccomment">/// [$\\bullet$](https://judge.yosupo.jp/submission/42416)</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// $O(\\sqrt{n})$ time.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 律速は、$\\varphi(n), \\varphi(\\varphi(n)), \\dots$ を求めるパートであり、</span>
-<span class="doccomment">/// $O(\\sum\_{i=0}^{\\varphi^\\star(n)} \\sqrt{n/2^i}) = O(\\sqrt{n})$ である。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::math::ModTetration;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let n = 10_u64.pow(9);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(0_u64.mod_tetration(0, n), 1);</span>
-<span class="doccomment">/// assert_eq!(0_u64.mod_tetration(1, n), 0);</span>
-<span class="doccomment">/// assert_eq!(0_u64.mod_tetration(2, n), 1);</span>
-<span class="doccomment">/// assert_eq!(0_u64.mod_tetration(3, n), 0);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(1_u64.mod_tetration(0, n), 1);</span>
-<span class="doccomment">/// assert_eq!(1_u64.mod_tetration(1, n), 1);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(2_u64.mod_tetration(0, n), 1);</span>
-<span class="doccomment">/// assert_eq!(2_u64.mod_tetration(1, n), 2);</span>
-<span class="doccomment">/// assert_eq!(2_u64.mod_tetration(2, n), 4);</span>
-<span class="doccomment">/// assert_eq!(2_u64.mod_tetration(3, n), 16);</span>
-<span class="doccomment">/// assert_eq!(2_u64.mod_tetration(4, n), 65536);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(3_u64.mod_tetration(9, n), 64_195_387);</span>
-<span class="doccomment">/// assert_eq!(3_u64.mod_tetration(10, n), 464_195_387);</span>
-<span class="doccomment">/// assert_eq!(3_u64.mod_tetration(11, n), 464_195_387);</span>
-<span class="doccomment">/// assert_eq!(3_u64.mod_tetration(99, n), 464_195_387);</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Notations</span>
-<span class="doccomment">/// ${}^b a$ は $a\\uparrow\\uparrow b$ (Knuth&#39;s up-arrow notation) や</span>
-<span class="doccomment">/// $a\\to b\\to 2$ (Conway chained arrow notation) などとも表記される。</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">ModTetration</span> {
-    <span class="kw">fn</span> <span class="ident">mod_tetration</span>(<span class="self">self</span>, <span class="ident">b</span>: <span class="self">Self</span>, <span class="ident">n</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
+<span class="doccomment">/// tetration。
+///
+/// ${}^b a\\bmod n$ を求める。${}^\\bullet \\bullet$ は次のように定義される。
+/// $$ {}^b a = \\begin{cases}
+/// 1, &amp; \\text{if } b = 0; \\\\
+/// a^{\\left({}^{(b-1)} a\\right)}, &amp; \\text{if } b \\ge 1.
+/// \\end{cases} $$
+/// 直感的に書けば、$\\underbrace{a^{(a^{(\\cdots ^a)})}}\_{b\\text{ many}} \\bmod n$ である。
+///
+/// # Idea
+/// 大変大きくなりうる $z$ に対して $a^z\\bmod n$ を求めることを考える。
+/// このとき、[`dlog`] の [Idea] と同じ議論から、ある $\\mu$, $\\lambda$ が存在して
+/// $z\\lt\\mu$ または $z=\\mu+q\\cdot\\lambda+r$ とでき、後者のとき
+/// $a^z\\equiv a^{\\mu+r}\\pmod{n}$ が成り立つ。
+///
+/// ここで、$\\mu\\le\\log\_2(n)$, $\\lambda\\sqsubseteq\\varphi(n)$ である。
+/// さらに、任意の $n$ に対して $\\log\_2(n)\\le\\varphi(n)$ なので、$z\\ge\\varphi(n)$
+/// ならば $z\\ge\\mu$ とわかる。よって、以下のようにできる。
+/// $$ \\begin{aligned}
+/// a^z \\equiv \\begin{cases}
+/// a^z, &amp; \\text{if }z\\lt \\varphi(n); \\\\
+/// a^{(z\\bmod\\varphi(n))+\\varphi(n)}, &amp; \\text{otherwise}.
+/// \\end{cases}
+/// \\end{aligned} $$
+///
+/// 直感的には、指数部が $\\varphi(n)$ 以上であればすでに周期の中に入っており、入った後は
+/// $\\varphi(n)$ を法として合同かつ $\\varphi(n)$ 以上の値さえ得られれば十分ということである。
+///
+/// [`dlog`]: fn.dlog.html
+/// [Idea]: fn.dlog.html#idea
+///
+/// ## When $b$ is large
+/// 前述のように、${}^b a\\bmod{n}$ を求める際に ${}^{b-1} a$ を法 ${\\varphi(n)}$ で考える。
+/// その次は $\\varphi(\\varphi(n)), \\varphi(\\varphi(\\varphi(n))), \\dots$ と続く。
+/// $\\varphi^\\star(n)$ 段では考えるべき法が $1$ となり、それより上の段のことは無視できる。
+///
+/// そこで、$\\varphi^\\star(n)$ を考える。奇素数 $p$ に対して $\\varphi(p^e)=p^{e-1}\\cdot(p-1)$
+/// が偶数であることと、$\\varphi(2^e)=2^{e-1}$ であることから、$\\varphi(\\varphi(n))\\lt n/2$
+/// が成り立つ。すなわち、$\\varphi^\\star(n)\\le 2\\log(n)$ である[^1]。
+///
+/// [^1]: ゆるゆるな bound である。実際にはもっと速く減りそう。
+///
+/// よって、$b\\ge 2\\log(n)$ であれば ${}^{b+1} a\\equiv {}^b a\\pmod{n}$ となる。
+///
+/// ## Common bugs
+/// 繰り返し二乗法で $\\varphi(n)$ 以上か判断しつつ $a^z\\bmod\\varphi(n)$ を求める際、
+/// $a^{2^\\bullet}$ が $\\varphi(n)$ 以上になった時点で $a^z\\ge\\varphi(n)$
+/// と判断してしまうと、誤検出してしまう場合がある。
+/// ```ignore
+/// fn mod_pow(mut a: u64, mut b: u64, n: u64) -&gt; u64 {
+///     let mut res = 1 % n;
+///     let mut large = false;
+///     while b &gt; 0 {
+///         if b &amp; 1 == 1 {
+///             res *= a;
+///             if res &gt;= n { res %= n; large = true; }
+///         }
+///         a *= a;
+///         if a &gt;= n { a %= n; large = true; } // !
+///         b &gt;&gt;= 1;
+///     }
+///     if large { res + n } else { res }
+/// }
+/// ```
+/// 最後のループで初めて `a &gt;= n` になると、`res &lt; n` なのに `res + n` が返ってしまう。
+/// このバグや、あるいはそもそも $z\\ge\\varphi(n)$ を仮定していることなどにより、
+/// ${}^3 2\\bmod 32 = 0$ としてしまうコードがたくさん提出されている。
+/// [$\\bullet$](https://judge.yosupo.jp/submission/4054)
+/// [$\\bullet$](https://judge.yosupo.jp/submission/4564)
+/// [$\\bullet$](https://judge.yosupo.jp/submission/12501)
+/// [$\\bullet$](https://judge.yosupo.jp/submission/18734)
+/// [$\\bullet$](https://judge.yosupo.jp/submission/23725)
+/// [$\\bullet$](https://judge.yosupo.jp/submission/25108)
+/// [$\\bullet$](https://judge.yosupo.jp/submission/28794)
+/// [$\\bullet$](https://judge.yosupo.jp/submission/36536)
+/// [$\\bullet$](https://judge.yosupo.jp/submission/38102)
+/// [$\\bullet$](https://judge.yosupo.jp/submission/39646)
+/// [$\\bullet$](https://judge.yosupo.jp/submission/40708)
+/// [$\\bullet$](https://judge.yosupo.jp/submission/42416)
+///
+/// # Complexity
+/// $O(\\sqrt{n})$ time.
+///
+/// 律速は、$\\varphi(n), \\varphi(\\varphi(n)), \\dots$ を求めるパートであり、
+/// $O(\\sum\_{i=0}^{\\varphi^\\star(n)} \\sqrt{n/2^i}) = O(\\sqrt{n})$ である。
+///
+/// # Examples
+/// ```
+/// use nekolib::math::ModTetration;
+///
+/// let n = 10_u64.pow(9);
+///
+/// assert_eq!(0_u64.mod_tetration(0, n), 1);
+/// assert_eq!(0_u64.mod_tetration(1, n), 0);
+/// assert_eq!(0_u64.mod_tetration(2, n), 1);
+/// assert_eq!(0_u64.mod_tetration(3, n), 0);
+///
+/// assert_eq!(1_u64.mod_tetration(0, n), 1);
+/// assert_eq!(1_u64.mod_tetration(1, n), 1);
+///
+/// assert_eq!(2_u64.mod_tetration(0, n), 1);
+/// assert_eq!(2_u64.mod_tetration(1, n), 2);
+/// assert_eq!(2_u64.mod_tetration(2, n), 4);
+/// assert_eq!(2_u64.mod_tetration(3, n), 16);
+/// assert_eq!(2_u64.mod_tetration(4, n), 65536);
+///
+/// assert_eq!(3_u64.mod_tetration(9, n), 64_195_387);
+/// assert_eq!(3_u64.mod_tetration(10, n), 464_195_387);
+/// assert_eq!(3_u64.mod_tetration(11, n), 464_195_387);
+/// assert_eq!(3_u64.mod_tetration(99, n), 464_195_387);
+/// ```
+///
+/// # Notations
+/// ${}^b a$ は $a\\uparrow\\uparrow b$ (Knuth&#39;s up-arrow notation) や
+/// $a\\to b\\to 2$ (Conway chained arrow notation) などとも表記される。
+</span><span class="kw">pub trait </span>ModTetration {
+    <span class="kw">fn </span>mod_tetration(<span class="self">self</span>, b: <span class="self">Self</span>, n: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
 }
 
-<span class="kw">trait</span> <span class="ident">ModTetrationInternal</span> {
-    <span class="kw">fn</span> <span class="ident">rec</span>(<span class="self">self</span>, <span class="ident">b</span>: <span class="self">Self</span>, <span class="ident">n</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
-    <span class="kw">fn</span> <span class="ident">mod_pow</span>(<span class="self">self</span>, <span class="ident">b</span>: <span class="self">Self</span>, <span class="ident">n</span>: <span class="self">Self</span>, <span class="ident">large</span>: <span class="ident">bool</span>) -&gt; <span class="self">Self</span>;
+<span class="kw">trait </span>ModTetrationInternal {
+    <span class="kw">fn </span>rec(<span class="self">self</span>, b: <span class="self">Self</span>, n: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
+    <span class="kw">fn </span>mod_pow(<span class="self">self</span>, b: <span class="self">Self</span>, n: <span class="self">Self</span>, large: bool) -&gt; <span class="self">Self</span>;
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_uint</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span> <span class="ident">ModTetration</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">mod_tetration</span>(<span class="self">self</span>, <span class="ident">b</span>: <span class="self">Self</span>, <span class="ident">n</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="self">self</span>;
-                <span class="kw">match</span> (<span class="ident">a</span>, <span class="ident">b</span>, <span class="ident">n</span>) {
-                    (.., <span class="number">1</span>) =&gt; <span class="kw">return</span> <span class="number">0</span>,
-                    (<span class="kw">_</span>, <span class="number">0</span>, <span class="kw">_</span>) =&gt; <span class="kw">return</span> <span class="number">1</span>,
-                    (<span class="kw">_</span>, <span class="number">1</span>, <span class="kw">_</span>) =&gt; <span class="kw">return</span> <span class="ident">a</span> <span class="op">%</span> <span class="ident">n</span>,
-                    <span class="kw">_</span> =&gt; <span class="kw">match</span> <span class="ident">a</span>.<span class="ident">rec</span>(<span class="ident">b</span>, <span class="ident">n</span>) {
-                        <span class="ident">z</span> <span class="kw">if</span> <span class="ident">z</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">n</span> =&gt; <span class="ident">z</span> <span class="op">-</span> <span class="ident">n</span>,
-                        <span class="ident">z</span> =&gt; <span class="ident">z</span>,
+<span class="macro">macro_rules! </span>impl_uint {
+    (<span class="macro-nonterminal">$t</span>:ty) =&gt; {
+        <span class="kw">impl </span>ModTetration <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
+            <span class="kw">fn </span>mod_tetration(<span class="self">self</span>, b: <span class="self">Self</span>, n: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span>a = <span class="self">self</span>;
+                <span class="kw">match </span>(a, b, n) {
+                    (.., <span class="number">1</span>) =&gt; <span class="kw">return </span><span class="number">0</span>,
+                    (<span class="kw">_</span>, <span class="number">0</span>, <span class="kw">_</span>) =&gt; <span class="kw">return </span><span class="number">1</span>,
+                    (<span class="kw">_</span>, <span class="number">1</span>, <span class="kw">_</span>) =&gt; <span class="kw">return </span>a % n,
+                    <span class="kw">_ </span>=&gt; <span class="kw">match </span>a.rec(b, n) {
+                        z <span class="kw">if </span>z &gt;= n =&gt; z - n,
+                        z =&gt; z,
                     }
                 }
             }
         }
-        <span class="kw">impl</span> <span class="ident">ModTetrationInternal</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">rec</span>(<span class="self">self</span>, <span class="ident">b</span>: <span class="self">Self</span>, <span class="ident">n</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="self">self</span>;
-                <span class="kw">match</span> (<span class="ident">a</span>, <span class="ident">b</span>, <span class="ident">n</span>) {
-                    (<span class="number">0</span>, ..) =&gt; <span class="kw">return</span> <span class="number">1</span> <span class="op">-</span> <span class="ident">b</span> <span class="op">%</span> <span class="number">2</span>,
-                    (<span class="number">1</span>, ..) =&gt; <span class="kw">return</span> <span class="number">1</span>,
-                    (.., <span class="number">1</span>) =&gt; <span class="kw">return</span> <span class="number">1</span>,
-                    (<span class="kw">_</span>, <span class="number">1</span>, <span class="kw">_</span>) =&gt; <span class="kw">return</span> <span class="ident">a</span>,
-                    <span class="kw">_</span> =&gt; {
-                        <span class="kw">let</span> <span class="ident">phi</span> <span class="op">=</span> <span class="ident">n</span>.<span class="ident">euler_phi</span>();
-                        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">a</span>.<span class="ident">rec</span>(<span class="ident">b</span> <span class="op">-</span> <span class="number">1</span>, <span class="ident">phi</span>);
-                        (<span class="ident">a</span> <span class="op">%</span> <span class="ident">n</span>).<span class="ident">mod_pow</span>(<span class="ident">res</span>, <span class="ident">n</span>, <span class="ident">res</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">phi</span> <span class="op">|</span><span class="op">|</span> <span class="ident">a</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">phi</span>)
+        <span class="kw">impl </span>ModTetrationInternal <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
+            <span class="kw">fn </span>rec(<span class="self">self</span>, b: <span class="self">Self</span>, n: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span>a = <span class="self">self</span>;
+                <span class="kw">match </span>(a, b, n) {
+                    (<span class="number">0</span>, ..) =&gt; <span class="kw">return </span><span class="number">1 </span>- b % <span class="number">2</span>,
+                    (<span class="number">1</span>, ..) =&gt; <span class="kw">return </span><span class="number">1</span>,
+                    (.., <span class="number">1</span>) =&gt; <span class="kw">return </span><span class="number">1</span>,
+                    (<span class="kw">_</span>, <span class="number">1</span>, <span class="kw">_</span>) =&gt; <span class="kw">return </span>a,
+                    <span class="kw">_ </span>=&gt; {
+                        <span class="kw">let </span>phi = n.euler_phi();
+                        <span class="kw">let </span>res = a.rec(b - <span class="number">1</span>, phi);
+                        (a % n).mod_pow(res, n, res &gt;= phi || a &gt;= phi)
                     }
                 }
             }
-            <span class="kw">fn</span> <span class="ident">mod_pow</span>(<span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">b</span>: <span class="self">Self</span>, <span class="ident">n</span>: <span class="self">Self</span>, <span class="kw-2">mut</span> <span class="ident">large</span>: <span class="ident">bool</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">a</span> <span class="op">=</span> <span class="self">self</span>;
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="number">1</span>;
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">large_buf</span> <span class="op">=</span> <span class="bool-val">false</span>;
-                <span class="kw">while</span> <span class="ident">b</span> <span class="op">&gt;</span> <span class="number">0</span> {
-                    <span class="kw">if</span> <span class="ident">b</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">==</span> <span class="number">1</span> {
-                        <span class="ident">res</span> <span class="kw-2">*</span><span class="op">=</span> <span class="ident">a</span>;
-                        <span class="ident">large</span> <span class="op">|</span><span class="op">=</span> <span class="ident">large_buf</span>;
-                        <span class="kw">if</span> <span class="ident">res</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">n</span> {
-                            <span class="ident">res</span> <span class="op">%</span><span class="op">=</span> <span class="ident">n</span>;
-                            <span class="ident">large</span> <span class="op">=</span> <span class="bool-val">true</span>;
+            <span class="kw">fn </span>mod_pow(<span class="self">self</span>, <span class="kw-2">mut </span>b: <span class="self">Self</span>, n: <span class="self">Self</span>, <span class="kw-2">mut </span>large: bool) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span><span class="kw-2">mut </span>a = <span class="self">self</span>;
+                <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="number">1</span>;
+                <span class="kw">let </span><span class="kw-2">mut </span>large_buf = <span class="bool-val">false</span>;
+                <span class="kw">while </span>b &gt; <span class="number">0 </span>{
+                    <span class="kw">if </span>b &amp; <span class="number">1 </span>== <span class="number">1 </span>{
+                        res <span class="kw-2">*</span>= a;
+                        large |= large_buf;
+                        <span class="kw">if </span>res &gt;= n {
+                            res %= n;
+                            large = <span class="bool-val">true</span>;
                         }
                     }
-                    <span class="ident">a</span> <span class="kw-2">*</span><span class="op">=</span> <span class="ident">a</span>;
-                    <span class="kw">if</span> <span class="ident">a</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">n</span> {
-                        <span class="ident">a</span> <span class="op">%</span><span class="op">=</span> <span class="ident">n</span>;
-                        <span class="ident">large_buf</span> <span class="op">=</span> <span class="bool-val">true</span>;
+                    a <span class="kw-2">*</span>= a;
+                    <span class="kw">if </span>a &gt;= n {
+                        a %= n;
+                        large_buf = <span class="bool-val">true</span>;
                     }
-                    <span class="ident">b</span> <span class="op">&gt;</span><span class="op">&gt;</span><span class="op">=</span> <span class="number">1</span>;
+                    b &gt;&gt;= <span class="number">1</span>;
                 }
-                <span class="kw">if</span> <span class="ident">large</span> { <span class="ident">res</span> <span class="op">+</span> <span class="ident">n</span> } <span class="kw">else</span> { <span class="ident">res</span> }
+                <span class="kw">if </span>large { res + n } <span class="kw">else </span>{ res }
             }
         }
     };
-    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
+    ( $(<span class="macro-nonterminal">$t</span>:ty)* ) =&gt; { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$t</span>);)* };
 }
 
-<span class="macro">impl_uint!</span>(<span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span>);
+<span class="macro">impl_uint!</span>(u8 u16 u32 u64 u128 usize);
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test</span>() {
-    <span class="kw">for</span> <span class="ident">n</span> <span class="kw">in</span> <span class="number">1_u64</span>..<span class="number">100000</span> {
-        <span class="kw">if</span> <span class="number">2</span>.<span class="ident">mod_tetration</span>(<span class="number">2</span>, <span class="ident">n</span>) <span class="op">!</span><span class="op">=</span> <span class="number">4</span> <span class="op">%</span> <span class="ident">n</span> {
-            <span class="macro">eprintln!</span>(<span class="string">&quot;{:?}&quot;</span>, (<span class="number">2</span>, <span class="number">2</span>, <span class="ident">n</span>));
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test() {
+    <span class="kw">for </span>n <span class="kw">in </span><span class="number">1_u64</span>..<span class="number">100000 </span>{
+        <span class="kw">if </span><span class="number">2</span>.mod_tetration(<span class="number">2</span>, n) != <span class="number">4 </span>% n {
+            <span class="macro">eprintln!</span>(<span class="string">&quot;{:?}&quot;</span>, (<span class="number">2</span>, <span class="number">2</span>, n));
         }
-        <span class="kw">if</span> <span class="number">2</span>.<span class="ident">mod_tetration</span>(<span class="number">3</span>, <span class="ident">n</span>) <span class="op">!</span><span class="op">=</span> <span class="number">16</span> <span class="op">%</span> <span class="ident">n</span> {
-            <span class="macro">eprintln!</span>(<span class="string">&quot;{:?}&quot;</span>, (<span class="number">2</span>, <span class="number">3</span>, <span class="ident">n</span>));
+        <span class="kw">if </span><span class="number">2</span>.mod_tetration(<span class="number">3</span>, n) != <span class="number">16 </span>% n {
+            <span class="macro">eprintln!</span>(<span class="string">&quot;{:?}&quot;</span>, (<span class="number">2</span>, <span class="number">3</span>, n));
         }
-        <span class="kw">if</span> <span class="number">2</span>.<span class="ident">mod_tetration</span>(<span class="number">4</span>, <span class="ident">n</span>) <span class="op">!</span><span class="op">=</span> <span class="number">65536</span> <span class="op">%</span> <span class="ident">n</span> {
-            <span class="macro">eprintln!</span>(<span class="string">&quot;{:?}&quot;</span>, (<span class="number">2</span>, <span class="number">4</span>, <span class="ident">n</span>));
+        <span class="kw">if </span><span class="number">2</span>.mod_tetration(<span class="number">4</span>, n) != <span class="number">65536 </span>% n {
+            <span class="macro">eprintln!</span>(<span class="string">&quot;{:?}&quot;</span>, (<span class="number">2</span>, <span class="number">4</span>, n));
         }
-        <span class="kw">if</span> <span class="number">2</span>.<span class="ident">mod_tetration</span>(<span class="number">5</span>, <span class="ident">n</span>) <span class="op">!</span><span class="op">=</span> <span class="number">2_u64</span>.<span class="ident">mod_pow</span>(<span class="number">65536</span>, <span class="ident">n</span>, <span class="bool-val">true</span>) <span class="op">-</span> <span class="ident">n</span> {
-            <span class="macro">eprintln!</span>(<span class="string">&quot;{:?}&quot;</span>, (<span class="number">2</span>, <span class="number">5</span>, <span class="ident">n</span>));
+        <span class="kw">if </span><span class="number">2</span>.mod_tetration(<span class="number">5</span>, n) != <span class="number">2_u64</span>.mod_pow(<span class="number">65536</span>, n, <span class="bool-val">true</span>) - n {
+            <span class="macro">eprintln!</span>(<span class="string">&quot;{:?}&quot;</span>, (<span class="number">2</span>, <span class="number">5</span>, n));
         }
 
-        <span class="kw">if</span> <span class="number">3</span>.<span class="ident">mod_tetration</span>(<span class="number">2</span>, <span class="ident">n</span>) <span class="op">!</span><span class="op">=</span> <span class="number">27</span> <span class="op">%</span> <span class="ident">n</span> {
-            <span class="macro">eprintln!</span>(<span class="string">&quot;{:?}&quot;</span>, (<span class="number">3</span>, <span class="number">2</span>, <span class="ident">n</span>));
+        <span class="kw">if </span><span class="number">3</span>.mod_tetration(<span class="number">2</span>, n) != <span class="number">27 </span>% n {
+            <span class="macro">eprintln!</span>(<span class="string">&quot;{:?}&quot;</span>, (<span class="number">3</span>, <span class="number">2</span>, n));
         }
-        <span class="kw">if</span> <span class="number">3</span>.<span class="ident">mod_tetration</span>(<span class="number">3</span>, <span class="ident">n</span>) <span class="op">!</span><span class="op">=</span> <span class="number">7_625_597_484_987</span> <span class="op">%</span> <span class="ident">n</span> {
-            <span class="macro">eprintln!</span>(<span class="string">&quot;{:?}&quot;</span>, (<span class="number">3</span>, <span class="number">3</span>, <span class="ident">n</span>));
+        <span class="kw">if </span><span class="number">3</span>.mod_tetration(<span class="number">3</span>, n) != <span class="number">7_625_597_484_987 </span>% n {
+            <span class="macro">eprintln!</span>(<span class="string">&quot;{:?}&quot;</span>, (<span class="number">3</span>, <span class="number">3</span>, n));
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

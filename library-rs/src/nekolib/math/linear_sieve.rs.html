@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/linear_sieve.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>linear_sieve.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/linear_sieve.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>linear_sieve.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -470,388 +470,388 @@
 <span id="381">381</span>
 <span id="382">382</span>
 <span id="383">383</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 線形篩。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 線形篩。
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::gcd_recip</span>;
+</span><span class="kw">use </span><span class="kw">super</span>::gcd_recip;
 
-<span class="kw">use</span> <span class="ident">gcd_recip::GcdRecip</span>;
+<span class="kw">use </span>gcd_recip::GcdRecip;
 
-<span class="doccomment">/// 線形篩。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Idea</span>
-<span class="doccomment">/// 各整数の最小素因数を求めつつ、素数のリストを作成していく。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $\\gdef\\lpf#1{\\operatorname{lpf}(#1)}$</span>
-<span class="doccomment">/// $i$ の最小素因数を $\\mathrm{lpf}(i)$ と書く。$j \\le \\lpf{i}$</span>
-<span class="doccomment">/// なる各素数 $j$ に対して、$\\lpf{i\\times j} = j$ とわかる。</span>
-<span class="doccomment">/// 素因数分解の一意性から、各整数の最小素因数の更新は一回ずつしか行われず、線形時間で構築できる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// また、$\\lpf{i}$ が $\\lpf{i / \\lpf{i}}$</span>
-<span class="doccomment">/// と等しいかで場合分けしながら DP することで、各 $i$ が $\\lpf{i}$</span>
-<span class="doccomment">/// で何回割り切れるかも求められる。</span>
-<span class="doccomment">/// なお、これは DP せず各 $i$ に対して愚直に計算しても $O(n)$ になることが示せるらしい。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// |演算|時間計算量|</span>
-<span class="doccomment">/// |---|---|</span>
-<span class="doccomment">/// |`new`|$\\Theta(n)$|</span>
-<span class="doccomment">/// |`is_prime`|$\\Theta(1)$|</span>
-<span class="doccomment">/// |`least_factor`|$\\Theta(1)$|</span>
-<span class="doccomment">/// |`factors_dup`|$\\Theta(1)$ delay|</span>
-<span class="doccomment">/// |`factors`|$\\Theta(1)$ delay|</span>
-<span class="doccomment">/// |`euler_phi`|$\\Theta(\\omega(n))$|</span>
-<span class="doccomment">/// |`euler_phi_star`|$O(\\omega(n)\\log(n))$|</span>
-<span class="doccomment">/// |`divisors`|$O(\\sigma(n))$|</span>
-<span class="doccomment">/// |`divisors_count`|$O(\\omega(n))$|</span>
-<span class="doccomment">/// |`divisors_sum`|$O(\\omega(n))$|</span>
-<span class="doccomment">/// |`primes`|$\\Theta(1)$ delay|</span>
-<span class="doccomment">/// |`recips`|$O(n)$|</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $n$ の素因数の個数を $\\omega(n)$ とすると、以下の式が成り立つらしい。</span>
-<span class="doccomment">/// $$ \\sum\_{i\\le n} \\omega(i) = n\\ln(\\ln(n)) + O(n). $$</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// また、$n$ 以下の素数の個数を $\\pi(n)$ とすると、以下の式が成り立つ（素数定理）。</span>
-<span class="doccomment">/// $$ \\pi(n) = \\frac{n}{\\ln(n)} + O{\\left(\\frac{n}{\\ln(n)\^2}\\right)}. $$</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::math::LinearSieve;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let sieve = LinearSieve::new(60);</span>
-<span class="doccomment">/// assert!(!sieve.is_prime(1));</span>
-<span class="doccomment">/// assert!(sieve.is_prime(2));</span>
-<span class="doccomment">/// assert!(sieve.is_prime(23));</span>
-<span class="doccomment">/// assert!(!sieve.is_prime(24));</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(sieve.least_factor(1), None);</span>
-<span class="doccomment">/// assert_eq!(sieve.least_factor(3), Some(3));</span>
-<span class="doccomment">/// assert_eq!(sieve.least_factor(24), Some(2));</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(sieve.factors_dup(1).next(), None);</span>
-<span class="doccomment">/// assert_eq!(sieve.factors_dup(60).collect::&lt;Vec&lt;_&gt;&gt;(), vec![2, 2, 3, 5]);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(</span>
-<span class="doccomment">///     sieve.primes().take(10).collect::&lt;Vec&lt;_&gt;&gt;(),</span>
-<span class="doccomment">///     vec![2, 3, 5, 7, 11, 13, 17, 19, 23, 29]</span>
-<span class="doccomment">/// );</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # References</span>
-<span class="doccomment">/// - &lt;https://cp-algorithms.com/algebra/prime-sieve-linear.html&gt;</span>
-<span class="doccomment">/// - &lt;https://twitter.com/hidesugar2/status/1431243186362458114&gt;</span>
-<span class="doccomment">/// - &lt;https://maspypy.com/%E7%B4%A0%E6%95%B0%E3%81%AB%E9%96%A2%E3%81%99%E3%82%8B%E4%B8%8A%E3%81%8B%E3%82%89%E3%81%AE%E8%A9%95%E4%BE%A1%EF%BC%88%E5%88%9D%E7%AD%89%E7%9A%84%E3%81%AA%E8%A8%BC%E6%98%8E%EF%BC%89&gt;</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">LinearSieve</span> {
-    <span class="ident">lpf</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-    <span class="ident">lpf_e</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">u32</span>)<span class="op">&gt;</span>,
-    <span class="ident">pr</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
+<span class="doccomment">/// 線形篩。
+///
+/// # Idea
+/// 各整数の最小素因数を求めつつ、素数のリストを作成していく。
+///
+/// $\\gdef\\lpf#1{\\operatorname{lpf}(#1)}$
+/// $i$ の最小素因数を $\\mathrm{lpf}(i)$ と書く。$j \\le \\lpf{i}$
+/// なる各素数 $j$ に対して、$\\lpf{i\\times j} = j$ とわかる。
+/// 素因数分解の一意性から、各整数の最小素因数の更新は一回ずつしか行われず、線形時間で構築できる。
+///
+/// また、$\\lpf{i}$ が $\\lpf{i / \\lpf{i}}$
+/// と等しいかで場合分けしながら DP することで、各 $i$ が $\\lpf{i}$
+/// で何回割り切れるかも求められる。
+/// なお、これは DP せず各 $i$ に対して愚直に計算しても $O(n)$ になることが示せるらしい。
+///
+/// # Complexity
+/// |演算|時間計算量|
+/// |---|---|
+/// |`new`|$\\Theta(n)$|
+/// |`is_prime`|$\\Theta(1)$|
+/// |`least_factor`|$\\Theta(1)$|
+/// |`factors_dup`|$\\Theta(1)$ delay|
+/// |`factors`|$\\Theta(1)$ delay|
+/// |`euler_phi`|$\\Theta(\\omega(n))$|
+/// |`euler_phi_star`|$O(\\omega(n)\\log(n))$|
+/// |`divisors`|$O(\\sigma(n))$|
+/// |`divisors_count`|$O(\\omega(n))$|
+/// |`divisors_sum`|$O(\\omega(n))$|
+/// |`primes`|$\\Theta(1)$ delay|
+/// |`recips`|$O(n)$|
+///
+/// $n$ の素因数の個数を $\\omega(n)$ とすると、以下の式が成り立つらしい。
+/// $$ \\sum\_{i\\le n} \\omega(i) = n\\ln(\\ln(n)) + O(n). $$
+///
+/// また、$n$ 以下の素数の個数を $\\pi(n)$ とすると、以下の式が成り立つ（素数定理）。
+/// $$ \\pi(n) = \\frac{n}{\\ln(n)} + O{\\left(\\frac{n}{\\ln(n)\^2}\\right)}. $$
+///
+/// # Examples
+/// ```
+/// use nekolib::math::LinearSieve;
+///
+/// let sieve = LinearSieve::new(60);
+/// assert!(!sieve.is_prime(1));
+/// assert!(sieve.is_prime(2));
+/// assert!(sieve.is_prime(23));
+/// assert!(!sieve.is_prime(24));
+///
+/// assert_eq!(sieve.least_factor(1), None);
+/// assert_eq!(sieve.least_factor(3), Some(3));
+/// assert_eq!(sieve.least_factor(24), Some(2));
+///
+/// assert_eq!(sieve.factors_dup(1).next(), None);
+/// assert_eq!(sieve.factors_dup(60).collect::&lt;Vec&lt;_&gt;&gt;(), vec![2, 2, 3, 5]);
+///
+/// assert_eq!(
+///     sieve.primes().take(10).collect::&lt;Vec&lt;_&gt;&gt;(),
+///     vec![2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
+/// );
+/// ```
+///
+/// # References
+/// - &lt;https://cp-algorithms.com/algebra/prime-sieve-linear.html&gt;
+/// - &lt;https://twitter.com/hidesugar2/status/1431243186362458114&gt;
+/// - &lt;https://maspypy.com/%E7%B4%A0%E6%95%B0%E3%81%AB%E9%96%A2%E3%81%99%E3%82%8B%E4%B8%8A%E3%81%8B%E3%82%89%E3%81%AE%E8%A9%95%E4%BE%A1%EF%BC%88%E5%88%9D%E7%AD%89%E7%9A%84%E3%81%AA%E8%A8%BC%E6%98%8E%EF%BC%89&gt;
+</span><span class="kw">pub struct </span>LinearSieve {
+    lpf: Vec&lt;usize&gt;,
+    lpf_e: Vec&lt;(usize, u32)&gt;,
+    pr: Vec&lt;usize&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">LinearSieve</span> {
-    <span class="doccomment">/// $n$ 以下の自然数に対する篩を用意する。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use nekolib::math::LinearSieve;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let sieve = LinearSieve::new(60);</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">lpf</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">1</span>; <span class="ident">n</span> <span class="op">+</span> <span class="number">1</span>];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pr</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">2</span>..<span class="op">=</span><span class="ident">n</span> {
-            <span class="kw">if</span> <span class="ident">lpf</span>[<span class="ident">i</span>] <span class="op">==</span> <span class="number">1</span> {
-                <span class="ident">lpf</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">i</span>;
-                <span class="ident">pr</span>.<span class="ident">push</span>(<span class="ident">i</span>);
+<span class="kw">impl </span>LinearSieve {
+    <span class="doccomment">/// $n$ 以下の自然数に対する篩を用意する。
+    ///
+    /// # Examples
+    /// ```
+    /// use nekolib::math::LinearSieve;
+    ///
+    /// let sieve = LinearSieve::new(60);
+    /// ```
+    </span><span class="kw">pub fn </span>new(n: usize) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>lpf = <span class="macro">vec!</span>[<span class="number">1</span>; n + <span class="number">1</span>];
+        <span class="kw">let </span><span class="kw-2">mut </span>pr = <span class="macro">vec!</span>[];
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">2</span>..=n {
+            <span class="kw">if </span>lpf[i] == <span class="number">1 </span>{
+                lpf[i] = i;
+                pr.push(i);
             }
-            <span class="kw">let</span> <span class="ident">lpf_i</span> <span class="op">=</span> <span class="ident">lpf</span>[<span class="ident">i</span>];
-            <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">j</span> <span class="kw">in</span> <span class="ident">pr</span>.<span class="ident">iter</span>().<span class="ident">take_while</span>(<span class="op">|</span><span class="op">&amp;&amp;</span><span class="ident">j</span><span class="op">|</span> <span class="ident">j</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">lpf_i</span> <span class="op">&amp;&amp;</span> <span class="ident">i</span> <span class="op">*</span> <span class="ident">j</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">n</span>) {
-                <span class="ident">lpf</span>[<span class="ident">i</span> <span class="op">*</span> <span class="ident">j</span>] <span class="op">=</span> <span class="ident">j</span>;
+            <span class="kw">let </span>lpf_i = lpf[i];
+            <span class="kw">for </span><span class="kw-2">&amp;</span>j <span class="kw">in </span>pr.iter().take_while(|&amp;&amp;j| j &lt;= lpf_i &amp;&amp; i * j &lt;= n) {
+                lpf[i * j] = j;
             }
         }
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">lpf_e</span> <span class="op">=</span> <span class="macro">vec!</span>[(<span class="number">1</span>, <span class="number">0</span>); <span class="ident">n</span> <span class="op">+</span> <span class="number">1</span>];
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">2</span>..<span class="op">=</span><span class="ident">n</span> {
-            <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">lpf</span>[<span class="ident">i</span>];
-            <span class="kw">let</span> <span class="ident">j</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">/</span> <span class="ident">p</span>;
-            <span class="ident">lpf_e</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="kw">if</span> <span class="ident">lpf</span>[<span class="ident">j</span>] <span class="op">==</span> <span class="ident">p</span> {
-                (<span class="ident">lpf_e</span>[<span class="ident">j</span>].<span class="number">0</span> <span class="op">*</span> <span class="ident">p</span>, <span class="ident">lpf_e</span>[<span class="ident">j</span>].<span class="number">1</span> <span class="op">+</span> <span class="number">1</span>)
-            } <span class="kw">else</span> {
-                (<span class="ident">lpf</span>[<span class="ident">i</span>], <span class="number">1</span>)
+        <span class="kw">let </span><span class="kw-2">mut </span>lpf_e = <span class="macro">vec!</span>[(<span class="number">1</span>, <span class="number">0</span>); n + <span class="number">1</span>];
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">2</span>..=n {
+            <span class="kw">let </span>p = lpf[i];
+            <span class="kw">let </span>j = i / p;
+            lpf_e[i] = <span class="kw">if </span>lpf[j] == p {
+                (lpf_e[j].<span class="number">0 </span>* p, lpf_e[j].<span class="number">1 </span>+ <span class="number">1</span>)
+            } <span class="kw">else </span>{
+                (lpf[i], <span class="number">1</span>)
             };
         }
-        <span class="self">Self</span> { <span class="ident">lpf</span>, <span class="ident">lpf_e</span>, <span class="ident">pr</span> }
+        <span class="self">Self </span>{ lpf, lpf_e, pr }
     }
 
-    <span class="doccomment">/// $n$ が素数であれば `true` を返す。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use nekolib::math::LinearSieve;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let sieve = LinearSieve::new(60);</span>
-    <span class="doccomment">/// assert!(!sieve.is_prime(1));</span>
-    <span class="doccomment">/// assert!(sieve.is_prime(2));</span>
-    <span class="doccomment">/// assert!(sieve.is_prime(23));</span>
-    <span class="doccomment">/// assert!(!sieve.is_prime(24));</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_prime</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="ident">bool</span> { <span class="ident">n</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">2</span> <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">lpf</span>[<span class="ident">n</span>] <span class="op">==</span> <span class="ident">n</span> }
+    <span class="doccomment">/// $n$ が素数であれば `true` を返す。
+    ///
+    /// # Examples
+    /// ```
+    /// use nekolib::math::LinearSieve;
+    ///
+    /// let sieve = LinearSieve::new(60);
+    /// assert!(!sieve.is_prime(1));
+    /// assert!(sieve.is_prime(2));
+    /// assert!(sieve.is_prime(23));
+    /// assert!(!sieve.is_prime(24));
+    /// ```
+    </span><span class="kw">pub fn </span>is_prime(<span class="kw-2">&amp;</span><span class="self">self</span>, n: usize) -&gt; bool { n &gt;= <span class="number">2 </span>&amp;&amp; <span class="self">self</span>.lpf[n] == n }
 
-    <span class="doccomment">/// $n$ の最小素因数を返す。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use nekolib::math::LinearSieve;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let sieve = LinearSieve::new(60);</span>
-    <span class="doccomment">/// assert_eq!(sieve.least_factor(1), None);</span>
-    <span class="doccomment">/// assert_eq!(sieve.least_factor(3), Some(3));</span>
-    <span class="doccomment">/// assert_eq!(sieve.least_factor(24), Some(2));</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">least_factor</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span> <span class="number">2</span> {
-            <span class="prelude-val">None</span>
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">lpf</span>[<span class="ident">n</span>])
+    <span class="doccomment">/// $n$ の最小素因数を返す。
+    ///
+    /// # Examples
+    /// ```
+    /// use nekolib::math::LinearSieve;
+    ///
+    /// let sieve = LinearSieve::new(60);
+    /// assert_eq!(sieve.least_factor(1), None);
+    /// assert_eq!(sieve.least_factor(3), Some(3));
+    /// assert_eq!(sieve.least_factor(24), Some(2));
+    /// ```
+    </span><span class="kw">pub fn </span>least_factor(<span class="kw-2">&amp;</span><span class="self">self</span>, n: usize) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt; {
+        <span class="kw">if </span>n &lt; <span class="number">2 </span>{
+            <span class="prelude-val">None
+        </span>} <span class="kw">else </span>{
+            <span class="prelude-val">Some</span>(<span class="self">self</span>.lpf[n])
         }
     }
 
-    <span class="doccomment">/// $n$ の素因数を列挙する。重複あり。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use nekolib::math::LinearSieve;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let sieve = LinearSieve::new(60);</span>
-    <span class="doccomment">/// assert_eq!(sieve.factors_dup(1).next(), None);</span>
-    <span class="doccomment">/// assert_eq!(sieve.factors_dup(60).collect::&lt;Vec&lt;_&gt;&gt;(), vec![2, 2, 3, 5]);</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">factors_dup</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">usize</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;_</span> {
-        <span class="ident">std::iter::successors</span>(<span class="prelude-val">Some</span>(<span class="ident">n</span>), <span class="kw">move</span> <span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">n</span><span class="op">|</span> <span class="prelude-val">Some</span>(<span class="ident">n</span> <span class="op">/</span> <span class="self">self</span>.<span class="ident">lpf</span>[<span class="ident">n</span>]))
-            .<span class="ident">take_while</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">n</span><span class="op">|</span> <span class="ident">n</span> <span class="op">&gt;</span> <span class="number">1</span>)
-            .<span class="ident">map</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">lpf</span>[<span class="ident">n</span>])
+    <span class="doccomment">/// $n$ の素因数を列挙する。重複あり。
+    ///
+    /// # Examples
+    /// ```
+    /// use nekolib::math::LinearSieve;
+    ///
+    /// let sieve = LinearSieve::new(60);
+    /// assert_eq!(sieve.factors_dup(1).next(), None);
+    /// assert_eq!(sieve.factors_dup(60).collect::&lt;Vec&lt;_&gt;&gt;(), vec![2, 2, 3, 5]);
+    /// ```
+    </span><span class="kw">pub fn </span>factors_dup(<span class="kw-2">&amp;</span><span class="self">self</span>, n: usize) -&gt; <span class="kw">impl </span>Iterator&lt;Item = usize&gt; + <span class="lifetime">&#39;_ </span>{
+        std::iter::successors(<span class="prelude-val">Some</span>(n), <span class="kw">move </span>|<span class="kw-2">&amp;</span>n| <span class="prelude-val">Some</span>(n / <span class="self">self</span>.lpf[n]))
+            .take_while(|<span class="kw-2">&amp;</span>n| n &gt; <span class="number">1</span>)
+            .map(<span class="kw">move </span>|n| <span class="self">self</span>.lpf[n])
     }
 
-    <span class="doccomment">/// $n$ を素因数分解する。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use nekolib::math::LinearSieve;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let sieve = LinearSieve::new(60);</span>
-    <span class="doccomment">/// assert_eq!(sieve.factors(1).next(), None);</span>
-    <span class="doccomment">/// assert_eq!(</span>
-    <span class="doccomment">///     sieve.factors(60).collect::&lt;Vec&lt;_&gt;&gt;(),</span>
-    <span class="doccomment">///     vec![(2, 2), (3, 1), (5, 1)]</span>
-    <span class="doccomment">/// );</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">factors</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> (<span class="ident">usize</span>, <span class="ident">u32</span>)<span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;_</span> {
-        <span class="ident">std::iter::successors</span>(<span class="prelude-val">Some</span>(<span class="ident">n</span>), <span class="kw">move</span> <span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">n</span><span class="op">|</span> <span class="prelude-val">Some</span>(<span class="ident">n</span> <span class="op">/</span> <span class="self">self</span>.<span class="ident">lpf_e</span>[<span class="ident">n</span>].<span class="number">0</span>))
-            .<span class="ident">take_while</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">n</span><span class="op">|</span> <span class="ident">n</span> <span class="op">&gt;</span> <span class="number">1</span>)
-            .<span class="ident">map</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">n</span><span class="op">|</span> (<span class="self">self</span>.<span class="ident">lpf</span>[<span class="ident">n</span>], <span class="self">self</span>.<span class="ident">lpf_e</span>[<span class="ident">n</span>].<span class="number">1</span>))
+    <span class="doccomment">/// $n$ を素因数分解する。
+    ///
+    /// # Examples
+    /// ```
+    /// use nekolib::math::LinearSieve;
+    ///
+    /// let sieve = LinearSieve::new(60);
+    /// assert_eq!(sieve.factors(1).next(), None);
+    /// assert_eq!(
+    ///     sieve.factors(60).collect::&lt;Vec&lt;_&gt;&gt;(),
+    ///     vec![(2, 2), (3, 1), (5, 1)]
+    /// );
+    /// ```
+    </span><span class="kw">pub fn </span>factors(<span class="kw-2">&amp;</span><span class="self">self</span>, n: usize) -&gt; <span class="kw">impl </span>Iterator&lt;Item = (usize, u32)&gt; + <span class="lifetime">&#39;_ </span>{
+        std::iter::successors(<span class="prelude-val">Some</span>(n), <span class="kw">move </span>|<span class="kw-2">&amp;</span>n| <span class="prelude-val">Some</span>(n / <span class="self">self</span>.lpf_e[n].<span class="number">0</span>))
+            .take_while(|<span class="kw-2">&amp;</span>n| n &gt; <span class="number">1</span>)
+            .map(<span class="kw">move </span>|n| (<span class="self">self</span>.lpf[n], <span class="self">self</span>.lpf_e[n].<span class="number">1</span>))
     }
 
-    <span class="doccomment">/// $\\phi(n)$ を求める。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use nekolib::math::LinearSieve;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let sieve = LinearSieve::new(60);</span>
-    <span class="doccomment">/// assert_eq!(sieve.euler_phi(1), 1);</span>
-    <span class="doccomment">/// assert_eq!(sieve.euler_phi(35), 24);</span>
-    <span class="doccomment">/// assert_eq!(sieve.euler_phi(60), 16);</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">euler_phi</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> {
-        <span class="ident">std::iter::successors</span>(<span class="prelude-val">Some</span>(<span class="ident">n</span>), <span class="kw">move</span> <span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">n</span><span class="op">|</span> <span class="prelude-val">Some</span>(<span class="ident">n</span> <span class="op">/</span> <span class="self">self</span>.<span class="ident">lpf_e</span>[<span class="ident">n</span>].<span class="number">0</span>))
-            .<span class="ident">take_while</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">n</span><span class="op">|</span> <span class="ident">n</span> <span class="op">&gt;</span> <span class="number">1</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">lpf_e</span>[<span class="ident">n</span>].<span class="number">0</span> <span class="op">/</span> <span class="self">self</span>.<span class="ident">lpf</span>[<span class="ident">n</span>] <span class="op">*</span> (<span class="self">self</span>.<span class="ident">lpf</span>[<span class="ident">n</span>] <span class="op">-</span> <span class="number">1</span>))
-            .<span class="ident">product</span>()
+    <span class="doccomment">/// $\\phi(n)$ を求める。
+    ///
+    /// # Examples
+    /// ```
+    /// use nekolib::math::LinearSieve;
+    ///
+    /// let sieve = LinearSieve::new(60);
+    /// assert_eq!(sieve.euler_phi(1), 1);
+    /// assert_eq!(sieve.euler_phi(35), 24);
+    /// assert_eq!(sieve.euler_phi(60), 16);
+    /// ```
+    </span><span class="kw">pub fn </span>euler_phi(<span class="kw-2">&amp;</span><span class="self">self</span>, n: usize) -&gt; usize {
+        std::iter::successors(<span class="prelude-val">Some</span>(n), <span class="kw">move </span>|<span class="kw-2">&amp;</span>n| <span class="prelude-val">Some</span>(n / <span class="self">self</span>.lpf_e[n].<span class="number">0</span>))
+            .take_while(|<span class="kw-2">&amp;</span>n| n &gt; <span class="number">1</span>)
+            .map(|n| <span class="self">self</span>.lpf_e[n].<span class="number">0 </span>/ <span class="self">self</span>.lpf[n] * (<span class="self">self</span>.lpf[n] - <span class="number">1</span>))
+            .product()
     }
 
-    <span class="doccomment">/// $\\phi^\\star(n)$ を求める。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// $n$ に $\\phi$ を繰り返し適用して $1$ にするために必要な最小回数である。</span>
-    <span class="doccomment">/// $n\\gt 1$ に対して $\\phi(\\phi(n)) \\le n/2$ なので、</span>
-    <span class="doccomment">/// $\\phi^\\star(n) = O(\\log(n))$ である。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use nekolib::math::LinearSieve;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let sieve = LinearSieve::new(60);</span>
-    <span class="doccomment">/// assert_eq!(sieve.euler_phi_star(1), 0);</span>
-    <span class="doccomment">/// assert_eq!(sieve.euler_phi_star(35), 5);</span>
-    <span class="doccomment">/// assert_eq!(sieve.euler_phi_star(60), 5);</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// assert_eq!(sieve.euler_phi(35), 24);</span>
-    <span class="doccomment">/// assert_eq!(sieve.euler_phi(24), 8);</span>
-    <span class="doccomment">/// assert_eq!(sieve.euler_phi(8), 4);</span>
-    <span class="doccomment">/// assert_eq!(sieve.euler_phi(4), 2);</span>
-    <span class="doccomment">/// assert_eq!(sieve.euler_phi(2), 1);</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// assert_eq!(sieve.euler_phi(60), 16);</span>
-    <span class="doccomment">/// assert_eq!(sieve.euler_phi(16), 8);</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">euler_phi_star</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> {
-        <span class="kw">match</span> <span class="ident">n</span> {
-            <span class="number">0</span>..<span class="op">=</span><span class="number">2</span> =&gt; <span class="ident">n</span> <span class="op">/</span> <span class="number">2</span>,
-            <span class="kw">_</span> =&gt; <span class="number">1</span> <span class="op">+</span> <span class="self">self</span>.<span class="ident">euler_phi_star</span>(<span class="self">self</span>.<span class="ident">euler_phi</span>(<span class="ident">n</span>)),
+    <span class="doccomment">/// $\\phi^\\star(n)$ を求める。
+    ///
+    /// $n$ に $\\phi$ を繰り返し適用して $1$ にするために必要な最小回数である。
+    /// $n\\gt 1$ に対して $\\phi(\\phi(n)) \\le n/2$ なので、
+    /// $\\phi^\\star(n) = O(\\log(n))$ である。
+    ///
+    /// # Examples
+    /// ```
+    /// use nekolib::math::LinearSieve;
+    ///
+    /// let sieve = LinearSieve::new(60);
+    /// assert_eq!(sieve.euler_phi_star(1), 0);
+    /// assert_eq!(sieve.euler_phi_star(35), 5);
+    /// assert_eq!(sieve.euler_phi_star(60), 5);
+    ///
+    /// assert_eq!(sieve.euler_phi(35), 24);
+    /// assert_eq!(sieve.euler_phi(24), 8);
+    /// assert_eq!(sieve.euler_phi(8), 4);
+    /// assert_eq!(sieve.euler_phi(4), 2);
+    /// assert_eq!(sieve.euler_phi(2), 1);
+    ///
+    /// assert_eq!(sieve.euler_phi(60), 16);
+    /// assert_eq!(sieve.euler_phi(16), 8);
+    /// ```
+    </span><span class="kw">pub fn </span>euler_phi_star(<span class="kw-2">&amp;</span><span class="self">self</span>, n: usize) -&gt; usize {
+        <span class="kw">match </span>n {
+            <span class="number">0</span>..=<span class="number">2 </span>=&gt; n / <span class="number">2</span>,
+            <span class="kw">_ </span>=&gt; <span class="number">1 </span>+ <span class="self">self</span>.euler_phi_star(<span class="self">self</span>.euler_phi(n)),
         }
     }
 
-    <span class="doccomment">/// $n$ の約数を列挙する。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use nekolib::math::LinearSieve;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let sieve = LinearSieve::new(60);</span>
-    <span class="doccomment">/// assert_eq!(sieve.divisors(1).next(), Some(1));</span>
-    <span class="doccomment">/// assert_eq!(sieve.divisors(1).nth(1), None);</span>
-    <span class="doccomment">/// assert_eq!(</span>
-    <span class="doccomment">///     sieve.divisors(60).collect::&lt;Vec&lt;_&gt;&gt;(),</span>
-    <span class="doccomment">///     vec![1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30, 60]</span>
-    <span class="doccomment">/// );</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">divisors</span>(
+    <span class="doccomment">/// $n$ の約数を列挙する。
+    ///
+    /// # Examples
+    /// ```
+    /// use nekolib::math::LinearSieve;
+    ///
+    /// let sieve = LinearSieve::new(60);
+    /// assert_eq!(sieve.divisors(1).next(), Some(1));
+    /// assert_eq!(sieve.divisors(1).nth(1), None);
+    /// assert_eq!(
+    ///     sieve.divisors(60).collect::&lt;Vec&lt;_&gt;&gt;(),
+    ///     vec![1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30, 60]
+    /// );
+    /// ```
+    </span><span class="kw">pub fn </span>divisors(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">n</span>: <span class="ident">usize</span>,
-    ) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">usize</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">DoubleEndedIterator</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">1</span>];
-        <span class="kw">for</span> (<span class="ident">p</span>, <span class="ident">e</span>) <span class="kw">in</span> <span class="self">self</span>.<span class="ident">factors</span>(<span class="ident">n</span>) {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pp</span> <span class="op">=</span> <span class="number">1</span>;
-            <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">1</span>..<span class="op">=</span><span class="ident">e</span> {
-                <span class="ident">pp</span> <span class="kw-2">*</span><span class="op">=</span> <span class="ident">p</span>;
-                <span class="ident">tmp</span>.<span class="ident">extend</span>(<span class="ident">res</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span> <span class="op">*</span> <span class="ident">pp</span>));
+        n: usize,
+    ) -&gt; <span class="kw">impl </span>Iterator&lt;Item = usize&gt; + DoubleEndedIterator {
+        <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="macro">vec!</span>[<span class="number">1</span>];
+        <span class="kw">for </span>(p, e) <span class="kw">in </span><span class="self">self</span>.factors(n) {
+            <span class="kw">let </span><span class="kw-2">mut </span>tmp = <span class="macro">vec!</span>[];
+            <span class="kw">let </span><span class="kw-2">mut </span>pp = <span class="number">1</span>;
+            <span class="kw">for _ in </span><span class="number">1</span>..=e {
+                pp <span class="kw-2">*</span>= p;
+                tmp.extend(res.iter().map(|<span class="kw-2">&amp;</span>x| x * pp));
             }
-            <span class="ident">res</span>.<span class="ident">extend</span>(<span class="ident">tmp</span>);
+            res.extend(tmp);
         }
-        <span class="ident">res</span>.<span class="ident">sort_unstable</span>();
-        <span class="ident">res</span>.<span class="ident">into_iter</span>()
+        res.sort_unstable();
+        res.into_iter()
     }
 
-    <span class="doccomment">/// $n$ の約数の個数を返す。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use nekolib::math::LinearSieve;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let sieve = LinearSieve::new(60);</span>
-    <span class="doccomment">/// assert_eq!(sieve.divisors_count(1), 1);</span>
-    <span class="doccomment">/// assert_eq!(sieve.divisors_count(60), sieve.divisors(60).count());</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">divisors_count</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> {
-        <span class="self">self</span>.<span class="ident">factors</span>(<span class="ident">n</span>).<span class="ident">map</span>(<span class="op">|</span>(<span class="kw">_</span>, <span class="ident">e</span>)<span class="op">|</span> <span class="ident">e</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">+</span> <span class="number">1</span>).<span class="ident">product</span>()
+    <span class="doccomment">/// $n$ の約数の個数を返す。
+    ///
+    /// # Examples
+    /// ```
+    /// use nekolib::math::LinearSieve;
+    ///
+    /// let sieve = LinearSieve::new(60);
+    /// assert_eq!(sieve.divisors_count(1), 1);
+    /// assert_eq!(sieve.divisors_count(60), sieve.divisors(60).count());
+    /// ```
+    </span><span class="kw">pub fn </span>divisors_count(<span class="kw-2">&amp;</span><span class="self">self</span>, n: usize) -&gt; usize {
+        <span class="self">self</span>.factors(n).map(|(<span class="kw">_</span>, e)| e <span class="kw">as </span>usize + <span class="number">1</span>).product()
     }
 
-    <span class="doccomment">/// $n$ の約数の総和を返す。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use nekolib::math::LinearSieve;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let sieve = LinearSieve::new(60);</span>
-    <span class="doccomment">/// assert_eq!(sieve.divisors_sum(1), 1);</span>
-    <span class="doccomment">/// assert_eq!(sieve.divisors_sum(8), 15);</span>
-    <span class="doccomment">/// assert_eq!(sieve.divisors_sum(60), 168);</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">divisors_sum</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> {
-        <span class="ident">std::iter::successors</span>(<span class="prelude-val">Some</span>(<span class="ident">n</span>), <span class="kw">move</span> <span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">n</span><span class="op">|</span> <span class="prelude-val">Some</span>(<span class="ident">n</span> <span class="op">/</span> <span class="self">self</span>.<span class="ident">lpf_e</span>[<span class="ident">n</span>].<span class="number">0</span>))
-            .<span class="ident">take_while</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">n</span><span class="op">|</span> <span class="ident">n</span> <span class="op">&gt;</span> <span class="number">1</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> (<span class="self">self</span>.<span class="ident">lpf_e</span>[<span class="ident">n</span>].<span class="number">0</span> <span class="op">*</span> <span class="self">self</span>.<span class="ident">lpf</span>[<span class="ident">n</span>] <span class="op">-</span> <span class="number">1</span>) <span class="op">/</span> (<span class="self">self</span>.<span class="ident">lpf</span>[<span class="ident">n</span>] <span class="op">-</span> <span class="number">1</span>))
-            .<span class="ident">product</span>()
+    <span class="doccomment">/// $n$ の約数の総和を返す。
+    ///
+    /// # Examples
+    /// ```
+    /// use nekolib::math::LinearSieve;
+    ///
+    /// let sieve = LinearSieve::new(60);
+    /// assert_eq!(sieve.divisors_sum(1), 1);
+    /// assert_eq!(sieve.divisors_sum(8), 15);
+    /// assert_eq!(sieve.divisors_sum(60), 168);
+    /// ```
+    </span><span class="kw">pub fn </span>divisors_sum(<span class="kw-2">&amp;</span><span class="self">self</span>, n: usize) -&gt; usize {
+        std::iter::successors(<span class="prelude-val">Some</span>(n), <span class="kw">move </span>|<span class="kw-2">&amp;</span>n| <span class="prelude-val">Some</span>(n / <span class="self">self</span>.lpf_e[n].<span class="number">0</span>))
+            .take_while(|<span class="kw-2">&amp;</span>n| n &gt; <span class="number">1</span>)
+            .map(|n| (<span class="self">self</span>.lpf_e[n].<span class="number">0 </span>* <span class="self">self</span>.lpf[n] - <span class="number">1</span>) / (<span class="self">self</span>.lpf[n] - <span class="number">1</span>))
+            .product()
     }
 
-    <span class="doccomment">/// 素数を列挙する。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use nekolib::math::LinearSieve;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let sieve = LinearSieve::new(60);</span>
-    <span class="doccomment">/// assert_eq!(</span>
-    <span class="doccomment">///     sieve.primes().take(10).collect::&lt;Vec&lt;_&gt;&gt;(),</span>
-    <span class="doccomment">///     vec![2, 3, 5, 7, 11, 13, 17, 19, 23, 29]</span>
-    <span class="doccomment">/// );</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">primes</span>(
+    <span class="doccomment">/// 素数を列挙する。
+    ///
+    /// # Examples
+    /// ```
+    /// use nekolib::math::LinearSieve;
+    ///
+    /// let sieve = LinearSieve::new(60);
+    /// assert_eq!(
+    ///     sieve.primes().take(10).collect::&lt;Vec&lt;_&gt;&gt;(),
+    ///     vec![2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
+    /// );
+    /// ```
+    </span><span class="kw">pub fn </span>primes(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-    ) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">usize</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">DoubleEndedIterator</span> <span class="op">+</span> <span class="lifetime">&#39;_</span> {
-        <span class="self">self</span>.<span class="ident">pr</span>.<span class="ident">iter</span>().<span class="ident">copied</span>()
+    ) -&gt; <span class="kw">impl </span>Iterator&lt;Item = usize&gt; + DoubleEndedIterator + <span class="lifetime">&#39;_ </span>{
+        <span class="self">self</span>.pr.iter().copied()
     }
 
-    <span class="doccomment">/// 法 $m$ での逆元を返す。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// $\\gdef\\recip#1#2{#1^{-1}\_{(#2)}}$</span>
-    <span class="doccomment">/// $i^{-1}\\bmod j$ を $\\recip{i}{j}$ と書く。</span>
-    <span class="doccomment">/// 次で定められる $a = (a\_0, a\_1, \\dots, a\_n)$ を返す。</span>
-    <span class="doccomment">/// $$</span>
-    <span class="doccomment">/// a\_i = \\begin{cases}</span>
-    <span class="doccomment">/// \\recip{i}{m}, &amp; \\text{if }\\recip{i}{m}\\text{ exists}; \\\\</span>
-    <span class="doccomment">/// 0, &amp; \\text{otherwise}.</span>
-    <span class="doccomment">/// \\end{cases}</span>
-    <span class="doccomment">/// $$</span>
-    <span class="doccomment">/// Note: $\\recip{i}{m}\\ne 0$。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Idea</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// $$</span>
-    <span class="doccomment">/// \\recip{i}{m} \\equiv \\recip{\\lpf{i}}{m}\\cdot\\recip{(i/\\lpf{i})}{m}\\pmod{m}</span>
-    <span class="doccomment">/// $$</span>
-    <span class="doccomment">/// に基づく。素数は $O(n/\\log(n))$ 個しかないため、互除法で愚直に求めても全体では</span>
-    <span class="doccomment">/// $O(n)$ 時間となる。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # See also</span>
-    <span class="doccomment">/// &lt;https://37zigen.com/linear-sieve/#i-4&gt;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use nekolib::math::LinearSieve;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let sieve = LinearSieve::new(60);</span>
-    <span class="doccomment">/// assert_eq!(sieve.recips(0, 1), [0]);</span>
-    <span class="doccomment">/// assert_eq!(sieve.recips(4, 5), [0, 1, 3, 2, 4]);</span>
-    <span class="doccomment">/// assert_eq!(sieve.recips(9, 10), [0, 1, 0, 7, 0, 0, 0, 3, 0, 9]);</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">recips</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>, <span class="ident">m</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-        <span class="macro">assert!</span>(<span class="ident">m</span> <span class="op">&gt;</span> <span class="number">0</span>);
-        <span class="kw">if</span> <span class="ident">n</span> <span class="op">==</span> <span class="number">0</span> {
-            <span class="kw">return</span> <span class="macro">vec!</span>[<span class="number">0</span>];
+    <span class="doccomment">/// 法 $m$ での逆元を返す。
+    ///
+    /// $\\gdef\\recip#1#2{#1^{-1}\_{(#2)}}$
+    /// $i^{-1}\\bmod j$ を $\\recip{i}{j}$ と書く。
+    /// 次で定められる $a = (a\_0, a\_1, \\dots, a\_n)$ を返す。
+    /// $$
+    /// a\_i = \\begin{cases}
+    /// \\recip{i}{m}, &amp; \\text{if }\\recip{i}{m}\\text{ exists}; \\\\
+    /// 0, &amp; \\text{otherwise}.
+    /// \\end{cases}
+    /// $$
+    /// Note: $\\recip{i}{m}\\ne 0$。
+    ///
+    /// # Idea
+    ///
+    /// $$
+    /// \\recip{i}{m} \\equiv \\recip{\\lpf{i}}{m}\\cdot\\recip{(i/\\lpf{i})}{m}\\pmod{m}
+    /// $$
+    /// に基づく。素数は $O(n/\\log(n))$ 個しかないため、互除法で愚直に求めても全体では
+    /// $O(n)$ 時間となる。
+    ///
+    /// # See also
+    /// &lt;https://37zigen.com/linear-sieve/#i-4&gt;
+    ///
+    /// # Examples
+    /// ```
+    /// use nekolib::math::LinearSieve;
+    ///
+    /// let sieve = LinearSieve::new(60);
+    /// assert_eq!(sieve.recips(0, 1), [0]);
+    /// assert_eq!(sieve.recips(4, 5), [0, 1, 3, 2, 4]);
+    /// assert_eq!(sieve.recips(9, 10), [0, 1, 0, 7, 0, 0, 0, 3, 0, 9]);
+    /// ```
+    </span><span class="kw">pub fn </span>recips(<span class="kw-2">&amp;</span><span class="self">self</span>, n: usize, m: usize) -&gt; Vec&lt;usize&gt; {
+        <span class="macro">assert!</span>(m &gt; <span class="number">0</span>);
+        <span class="kw">if </span>n == <span class="number">0 </span>{
+            <span class="kw">return </span><span class="macro">vec!</span>[<span class="number">0</span>];
         }
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dp</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">n</span> <span class="op">+</span> <span class="number">1</span>];
-        <span class="ident">dp</span>[<span class="number">1</span>] <span class="op">=</span> <span class="number">1</span>;
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">2</span>..<span class="op">=</span><span class="ident">n</span> {
-            <span class="kw">let</span> <span class="ident">lpf_i</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">lpf</span>[<span class="ident">i</span>];
-            <span class="kw">if</span> <span class="ident">lpf_i</span> <span class="op">==</span> <span class="ident">i</span> {
-                <span class="kw">if</span> <span class="kw">let</span> (<span class="number">1</span>, <span class="ident">r</span>) <span class="op">=</span> <span class="ident">i</span>.<span class="ident">gcd_recip</span>(<span class="ident">m</span>) {
-                    <span class="ident">dp</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">r</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>dp = <span class="macro">vec!</span>[<span class="number">0</span>; n + <span class="number">1</span>];
+        dp[<span class="number">1</span>] = <span class="number">1</span>;
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">2</span>..=n {
+            <span class="kw">let </span>lpf_i = <span class="self">self</span>.lpf[i];
+            <span class="kw">if </span>lpf_i == i {
+                <span class="kw">if let </span>(<span class="number">1</span>, r) = i.gcd_recip(m) {
+                    dp[i] = r;
                 }
-            } <span class="kw">else</span> {
-                <span class="ident">dp</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">dp</span>[<span class="ident">lpf_i</span>] <span class="op">*</span> <span class="ident">dp</span>[<span class="ident">i</span> <span class="op">/</span> <span class="ident">lpf_i</span>] <span class="op">%</span> <span class="ident">m</span>;
+            } <span class="kw">else </span>{
+                dp[i] = dp[lpf_i] * dp[i / lpf_i] % m;
             }
         }
-        <span class="ident">dp</span>
+        dp
     }
 }
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test_recips</span>() {
-    <span class="kw">let</span> <span class="ident">m_max</span> <span class="op">=</span> <span class="number">2000</span>;
-    <span class="kw">let</span> <span class="ident">ls</span> <span class="op">=</span> <span class="ident">LinearSieve::new</span>(<span class="ident">m_max</span>);
-    <span class="kw">for</span> <span class="ident">m</span> <span class="kw">in</span> <span class="number">2</span>..<span class="op">=</span><span class="ident">m_max</span> {
-        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">m</span> <span class="op">-</span> <span class="number">1</span>;
-        <span class="kw">let</span> <span class="ident">actual</span> <span class="op">=</span> <span class="ident">ls</span>.<span class="ident">recips</span>(<span class="ident">m_max</span>, <span class="ident">m</span>);
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="op">=</span><span class="ident">n</span> {
-            <span class="kw">let</span> <span class="ident">recip</span> <span class="op">=</span> <span class="ident">actual</span>[<span class="ident">i</span>];
-            <span class="kw">if</span> <span class="ident">recip</span> <span class="op">==</span> <span class="number">0</span> {
-                <span class="macro">assert_ne!</span>(<span class="ident">i</span>.<span class="ident">gcd_recip</span>(<span class="ident">m</span>).<span class="number">0</span>, <span class="number">1</span>);
-            } <span class="kw">else</span> {
-                <span class="macro">assert!</span>(<span class="ident">recip</span> <span class="op">&lt;</span> <span class="ident">m</span>);
-                <span class="macro">assert_eq!</span>(<span class="ident">i</span> <span class="op">*</span> <span class="ident">recip</span> <span class="op">%</span> <span class="ident">m</span>, <span class="number">1</span>);
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test_recips() {
+    <span class="kw">let </span>m_max = <span class="number">2000</span>;
+    <span class="kw">let </span>ls = LinearSieve::new(m_max);
+    <span class="kw">for </span>m <span class="kw">in </span><span class="number">2</span>..=m_max {
+        <span class="kw">let </span>n = m - <span class="number">1</span>;
+        <span class="kw">let </span>actual = ls.recips(m_max, m);
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..=n {
+            <span class="kw">let </span>recip = actual[i];
+            <span class="kw">if </span>recip == <span class="number">0 </span>{
+                <span class="macro">assert_ne!</span>(i.gcd_recip(m).<span class="number">0</span>, <span class="number">1</span>);
+            } <span class="kw">else </span>{
+                <span class="macro">assert!</span>(recip &lt; m);
+                <span class="macro">assert_eq!</span>(i * recip % m, <span class="number">1</span>);
             }
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

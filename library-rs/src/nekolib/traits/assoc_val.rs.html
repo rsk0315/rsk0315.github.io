@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/traits/assoc_val.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>assoc_val.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/traits/assoc_val.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>assoc_val.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -146,64 +146,64 @@
 <span id="57">57</span>
 <span id="58">58</span>
 <span id="59">59</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 型に紐づく値。</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! C++ で言うところの `static` 変数の役割のものが欲しい。</span>
-<span class="doccomment">//! その値の型 `PhantomData` に入れるように実装する（仮）。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 型に紐づく値。
+//!
+//! C++ で言うところの `static` 変数の役割のものが欲しい。
+//! その値の型 `PhantomData` に入れるように実装する（仮）。
 
-<span class="doccomment">/// 値を返す関数を持つ。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Example</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::traits::AssocVal;</span>
-<span class="doccomment">/// use nekolib::impl_mod_int;</span>
-<span class="doccomment">/// use nekolib::math::ModInt;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// impl_mod_int! { Mod119l23p1 =&gt; 998_244_353_i64 }</span>
-<span class="doccomment">/// type Mi = ModInt&lt;Mod119l23p1&gt;;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(Mi::from(2) - Mi::from(3), Mi::from(998_244_352));</span>
-<span class="doccomment">/// assert_eq!(Mi::from(1) / Mi::from(2), Mi::from(499_122_177));</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 法が実行時に決まる場合は、`static` とかを使うしかない気がする。</span>
-<span class="doccomment">/// `lazy_static` に依存しないようにはしたい。</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use std::sync::{Arc, Mutex};</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// use lazy_static::lazy_static;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// use nekolib::traits::AssocVal;</span>
-<span class="doccomment">/// use nekolib::impl_mod_int;</span>
-<span class="doccomment">/// use nekolib::math::ModInt;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// lazy_static! {</span>
-<span class="doccomment">///     static ref MOD: Arc&lt;Mutex&lt;i64&gt;&gt; = Arc::new(Mutex::new(0));</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// let b = 24;</span>
-<span class="doccomment">/// *MOD.lock().unwrap() = b;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// impl_mod_int! { ModRunTime =&gt; *MOD.lock().unwrap() }</span>
-<span class="doccomment">/// type Mi = ModInt&lt;ModRunTime&gt;;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(Mi::from(20) + Mi::from(4), Mi::from(0));</span>
-<span class="doccomment">/// assert_eq!(Mi::from(1) / Mi::from(7), Mi::from(7));</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">AssocVal</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">get</span>() -&gt; <span class="ident">T</span>;
+/// 値を返す関数を持つ。
+///
+/// # Example
+/// ```
+/// use nekolib::traits::AssocVal;
+/// use nekolib::impl_mod_int;
+/// use nekolib::math::ModInt;
+///
+/// impl_mod_int! { Mod119l23p1 =&gt; 998_244_353_i64 }
+/// type Mi = ModInt&lt;Mod119l23p1&gt;;
+///
+/// assert_eq!(Mi::from(2) - Mi::from(3), Mi::from(998_244_352));
+/// assert_eq!(Mi::from(1) / Mi::from(2), Mi::from(499_122_177));
+/// ```
+///
+/// 法が実行時に決まる場合は、`static` とかを使うしかない気がする。
+/// `lazy_static` に依存しないようにはしたい。
+/// ```
+/// use std::sync::{Arc, Mutex};
+///
+/// use lazy_static::lazy_static;
+///
+/// use nekolib::traits::AssocVal;
+/// use nekolib::impl_mod_int;
+/// use nekolib::math::ModInt;
+///
+/// lazy_static! {
+///     static ref MOD: Arc&lt;Mutex&lt;i64&gt;&gt; = Arc::new(Mutex::new(0));
+/// }
+/// let b = 24;
+/// *MOD.lock().unwrap() = b;
+///
+/// impl_mod_int! { ModRunTime =&gt; *MOD.lock().unwrap() }
+/// type Mi = ModInt&lt;ModRunTime&gt;;
+///
+/// assert_eq!(Mi::from(20) + Mi::from(4), Mi::from(0));
+/// assert_eq!(Mi::from(1) / Mi::from(7), Mi::from(7));
+/// ```
+</span><span class="kw">pub trait </span>AssocVal&lt;T&gt; {
+    <span class="kw">fn </span>get() -&gt; T;
 }
 
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">impl_assoc_val</span> {
-    ( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>:<span class="ident">ident</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span><span class="op">&gt;</span> =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">e</span>:<span class="ident">expr</span> ) =&gt; {
-        <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">Ord</span>, <span class="ident">PartialEq</span>, <span class="ident">PartialOrd</span>)]</span>
-        <span class="kw">struct</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span> { <span class="ident">_t</span>: <span class="ident">std::marker::PhantomData</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span> }
-        <span class="kw">impl</span> <span class="ident">AssocVal</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span> {
-            <span class="kw">fn</span> <span class="ident">get</span>() -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">e</span> }
+<span class="attribute">#[macro_export]
+</span><span class="macro">macro_rules! </span>impl_assoc_val {
+    ( <span class="macro-nonterminal">$i</span>:ident&lt;<span class="macro-nonterminal">$t</span>:ty&gt; =&gt; <span class="macro-nonterminal">$e</span>:expr ) =&gt; {
+        <span class="attribute">#[derive(Copy, Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
+        </span><span class="kw">struct </span><span class="macro-nonterminal">$i </span>{ _t: std::marker::PhantomData&lt;<span class="macro-nonterminal">$t</span>&gt; }
+        <span class="kw">impl </span>AssocVal&lt;<span class="macro-nonterminal">$t</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$i </span>{
+            <span class="kw">fn </span>get() -&gt; <span class="macro-nonterminal">$t </span>{ <span class="macro-nonterminal">$e </span>}
         }
     };
-    ( $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>:<span class="ident">ident</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span><span class="op">&gt;</span> =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">m</span>:<span class="ident">expr</span>, )<span class="op">*</span> ) =&gt; { $( <span class="macro">impl_assoc_val!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span> =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">m</span>); )<span class="op">*</span> };
-    ( $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>:<span class="ident">ident</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span><span class="op">&gt;</span> =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">m</span>:<span class="ident">expr</span> ),<span class="op">*</span> ) =&gt; { $( <span class="macro">impl_assoc_val!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span> =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">m</span>); )<span class="op">*</span> };
+    ( $( <span class="macro-nonterminal">$i</span>:ident&lt;<span class="macro-nonterminal">$t</span>:ty&gt; =&gt; <span class="macro-nonterminal">$m</span>:expr, )* ) =&gt; { $( <span class="macro">impl_assoc_val!</span>(<span class="macro-nonterminal">$i</span>&lt;<span class="macro-nonterminal">$t</span>&gt; =&gt; <span class="macro-nonterminal">$m</span>); )* };
+    ( $( <span class="macro-nonterminal">$i</span>:ident&lt;<span class="macro-nonterminal">$t</span>:ty&gt; =&gt; <span class="macro-nonterminal">$m</span>:expr ),* ) =&gt; { $( <span class="macro">impl_assoc_val!</span>(<span class="macro-nonterminal">$i</span>&lt;<span class="macro-nonterminal">$t</span>&gt; =&gt; <span class="macro-nonterminal">$m</span>); )* };
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

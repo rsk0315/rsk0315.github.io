@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/graph/dinic_.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>dinic_.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/graph/dinic_.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>dinic_.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -344,262 +344,262 @@
 <span id="255">255</span>
 <span id="256">256</span>
 <span id="257">257</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 最大流 (Dinic)。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 最大流 (Dinic)。
 
-<span class="kw">use</span> <span class="ident">std::cell::RefCell</span>;
-<span class="kw">use</span> <span class="ident">std::collections::VecDeque</span>;
-<span class="kw">use</span> <span class="ident">std::iter::Peekable</span>;
-<span class="kw">use</span> <span class="ident">std::ops</span>::{<span class="ident">AddAssign</span>, <span class="ident">SubAssign</span>};
-<span class="kw">use</span> <span class="ident">std::rc::Rc</span>;
+</span><span class="kw">use </span>std::cell::RefCell;
+<span class="kw">use </span>std::collections::VecDeque;
+<span class="kw">use </span>std::iter::Peekable;
+<span class="kw">use </span>std::ops::{AddAssign, SubAssign};
+<span class="kw">use </span>std::rc::Rc;
 
-<span class="doccomment">/// Dinic 法に基づく最大流。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Idea</span>
-<span class="doccomment">/// `todo!()`</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// $O(|V|^2|E|)$ 時間。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 辺容量が整数のとき、多くのパラメータによって bound できることが知られている。</span>
-<span class="doccomment">/// 以下の条件は、高々定数個の例外があってもよい。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// - 最大流を $F$ として $O(F|E|)$ 時間。</span>
-<span class="doccomment">/// - 辺容量が高々 $k$ のとき $O(k\\,|E|^{3/2})$ 時間。</span>
-<span class="doccomment">/// - 辺容量が高々 $k$ で多重辺がないとき $O(k\\,|V|^{2/3}|E|)$ 時間。</span>
-<span class="doccomment">/// - 各頂点を通れるフロー量が高々 $k$ のとき $O(k\\,|V|^{1/2}|E|)$ 時間。</span>
-<span class="doccomment">///     - $k \\ge \\max\_v \\min\\{\\sum\_{e\\in\\delta^+(v)} u\_e, \\sum\_{e\\in\\delta^-(v)} u\_e\\}$.</span>
-<span class="doccomment">///     - 二部マッチングであれば $k = 1$ であり、$O(|V|^{1/2}|E|)$ 時間。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 次のようなグラフを考える。</span>
-<span class="doccomment">/// [Wikipedia](https://en.wikipedia.org/wiki/Dinic%27s_algorithm#Example) にある例である。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```text</span>
-<span class="doccomment">///       10           4       10</span>
-<span class="doccomment">///  +--------&gt; [1] ----&gt; [3] -------+</span>
-<span class="doccomment">///  |           | \       ^ 4       |</span>
-<span class="doccomment">///  |           |  \  8   |         v</span>
-<span class="doccomment">/// [0]        2 |   \--&gt; [4] ----&gt; [5]</span>
-<span class="doccomment">///  |           |         ^   10</span>
-<span class="doccomment">///  |    10     v     9   |</span>
-<span class="doccomment">///  +--------&gt; [2] -------+</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 流れるフローは次の通りで、$19$ である。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// - $(0, 1, 3, 5)$ に $4$</span>
-<span class="doccomment">/// - $(0, 1, 4, 5)$ に $6$</span>
-<span class="doccomment">/// - $(0, 2, 4, 5)$ に $4$</span>
-<span class="doccomment">/// - $(0, 2, 4, 3, 5)$ に $5$</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use std::cell::RefCell;</span>
-<span class="doccomment">/// use std::rc::Rc;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// use nekolib::graph::dinic;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let es = vec![</span>
-<span class="doccomment">///     vec![(1, 10), (2, 10)],       // 0</span>
-<span class="doccomment">///     vec![(2, 2), (3, 4), (4, 8)], // 1</span>
-<span class="doccomment">///     vec![(4, 9)],                 // 2</span>
-<span class="doccomment">///     vec![(5, 10)],                // 3</span>
-<span class="doccomment">///     vec![(3, 6), (5, 10)],        // 4</span>
-<span class="doccomment">///     vec![],                       // 5</span>
-<span class="doccomment">/// ];</span>
-<span class="doccomment">/// let n = es.len();</span>
-<span class="doccomment">/// let g = {</span>
-<span class="doccomment">///     let mut g = vec![vec![]; 6]; // [from]: [(to, capacity, rev), ...]</span>
-<span class="doccomment">///     for from in 0..n {</span>
-<span class="doccomment">///         for &amp;(to, capacity) in &amp;es[from] {</span>
-<span class="doccomment">///             let from_len = g[from].len();</span>
-<span class="doccomment">///             let to_len = g[to].len();</span>
-<span class="doccomment">///             g[from].push((to, Rc::new(RefCell::new(capacity)), to_len));</span>
-<span class="doccomment">///             g[to].push((from, Rc::new(RefCell::new(0)), from_len));</span>
-<span class="doccomment">///         }</span>
-<span class="doccomment">///     }</span>
-<span class="doccomment">///     g</span>
-<span class="doccomment">/// };</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let index = |&amp;v: &amp;usize| v;</span>
-<span class="doccomment">/// let delta = |&amp;v: &amp;usize| g[v].iter().map(|&amp;(nv, ref w, r)| (nv, w.clone(), r));</span>
-<span class="doccomment">/// let rev = |&amp;nv: &amp;usize, &amp;r: &amp;usize| g[nv][r].1.clone();</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let s = 0;</span>
-<span class="doccomment">/// let t = n - 1;</span>
-<span class="doccomment">/// let max_flow = dinic(n, s, t, 0..n, 0, index, delta, rev);</span>
-<span class="doccomment">/// assert_eq!(max_flow, 19);</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # References</span>
-<span class="doccomment">/// - &lt;https://misawa.github.io/others/flow/dinic_time_complexity.html&gt;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dinic</span><span class="op">&lt;</span><span class="ident">V</span>, <span class="ident">W</span>, <span class="ident">R</span>, <span class="ident">F</span><span class="op">&gt;</span>(
-    <span class="ident">n</span>: <span class="ident">usize</span>,
-    <span class="ident">s</span>: <span class="ident">V</span>,
-    <span class="ident">t</span>: <span class="ident">V</span>,
-    <span class="ident">vs</span>: <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">V</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Clone</span>,
-    <span class="ident">zero</span>: <span class="ident">W</span>,
-    <span class="ident">index</span>: <span class="kw">impl</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">V</span>) -&gt; <span class="ident">usize</span> <span class="op">+</span> <span class="ident">Copy</span>,
-    <span class="ident">delta</span>: <span class="kw">impl</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">V</span>) -&gt; <span class="ident">F</span> <span class="op">+</span> <span class="ident">Copy</span>,
-    <span class="ident">rev</span>: <span class="kw">impl</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">V</span>, <span class="kw-2">&amp;</span><span class="ident">R</span>) -&gt; <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Copy</span>,
-) -&gt; <span class="ident">W</span>
-<span class="kw">where</span>
-    <span class="ident">V</span>: <span class="ident">Clone</span>,
-    <span class="ident">W</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">AddAssign</span> <span class="op">+</span> <span class="ident">SubAssign</span>,
-    <span class="ident">R</span>: <span class="ident">Clone</span>,
-    <span class="ident">F</span>: <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> (<span class="ident">V</span>, <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">R</span>)<span class="op">&gt;</span>,
+<span class="doccomment">/// Dinic 法に基づく最大流。
+///
+/// # Idea
+/// `todo!()`
+///
+/// # Complexity
+/// $O(|V|^2|E|)$ 時間。
+///
+/// 辺容量が整数のとき、多くのパラメータによって bound できることが知られている。
+/// 以下の条件は、高々定数個の例外があってもよい。
+///
+/// - 最大流を $F$ として $O(F|E|)$ 時間。
+/// - 辺容量が高々 $k$ のとき $O(k\\,|E|^{3/2})$ 時間。
+/// - 辺容量が高々 $k$ で多重辺がないとき $O(k\\,|V|^{2/3}|E|)$ 時間。
+/// - 各頂点を通れるフロー量が高々 $k$ のとき $O(k\\,|V|^{1/2}|E|)$ 時間。
+///     - $k \\ge \\max\_v \\min\\{\\sum\_{e\\in\\delta^+(v)} u\_e, \\sum\_{e\\in\\delta^-(v)} u\_e\\}$.
+///     - 二部マッチングであれば $k = 1$ であり、$O(|V|^{1/2}|E|)$ 時間。
+///
+/// # Examples
+///
+/// 次のようなグラフを考える。
+/// [Wikipedia](https://en.wikipedia.org/wiki/Dinic%27s_algorithm#Example) にある例である。
+///
+/// ```text
+///       10           4       10
+///  +--------&gt; [1] ----&gt; [3] -------+
+///  |           | \       ^ 4       |
+///  |           |  \  8   |         v
+/// [0]        2 |   \--&gt; [4] ----&gt; [5]
+///  |           |         ^   10
+///  |    10     v     9   |
+///  +--------&gt; [2] -------+
+/// ```
+///
+/// 流れるフローは次の通りで、$19$ である。
+///
+/// - $(0, 1, 3, 5)$ に $4$
+/// - $(0, 1, 4, 5)$ に $6$
+/// - $(0, 2, 4, 5)$ に $4$
+/// - $(0, 2, 4, 3, 5)$ に $5$
+///
+/// ```
+/// use std::cell::RefCell;
+/// use std::rc::Rc;
+///
+/// use nekolib::graph::dinic;
+///
+/// let es = vec![
+///     vec![(1, 10), (2, 10)],       // 0
+///     vec![(2, 2), (3, 4), (4, 8)], // 1
+///     vec![(4, 9)],                 // 2
+///     vec![(5, 10)],                // 3
+///     vec![(3, 6), (5, 10)],        // 4
+///     vec![],                       // 5
+/// ];
+/// let n = es.len();
+/// let g = {
+///     let mut g = vec![vec![]; 6]; // [from]: [(to, capacity, rev), ...]
+///     for from in 0..n {
+///         for &amp;(to, capacity) in &amp;es[from] {
+///             let from_len = g[from].len();
+///             let to_len = g[to].len();
+///             g[from].push((to, Rc::new(RefCell::new(capacity)), to_len));
+///             g[to].push((from, Rc::new(RefCell::new(0)), from_len));
+///         }
+///     }
+///     g
+/// };
+///
+/// let index = |&amp;v: &amp;usize| v;
+/// let delta = |&amp;v: &amp;usize| g[v].iter().map(|&amp;(nv, ref w, r)| (nv, w.clone(), r));
+/// let rev = |&amp;nv: &amp;usize, &amp;r: &amp;usize| g[nv][r].1.clone();
+///
+/// let s = 0;
+/// let t = n - 1;
+/// let max_flow = dinic(n, s, t, 0..n, 0, index, delta, rev);
+/// assert_eq!(max_flow, 19);
+/// ```
+///
+/// # References
+/// - &lt;https://misawa.github.io/others/flow/dinic_time_complexity.html&gt;
+</span><span class="kw">pub fn </span>dinic&lt;V, W, R, F&gt;(
+    n: usize,
+    s: V,
+    t: V,
+    vs: <span class="kw">impl </span>Iterator&lt;Item = V&gt; + Clone,
+    zero: W,
+    index: <span class="kw">impl </span>Fn(<span class="kw-2">&amp;</span>V) -&gt; usize + Copy,
+    delta: <span class="kw">impl </span>Fn(<span class="kw-2">&amp;</span>V) -&gt; F + Copy,
+    rev: <span class="kw">impl </span>Fn(<span class="kw-2">&amp;</span>V, <span class="kw-2">&amp;</span>R) -&gt; Rc&lt;RefCell&lt;W&gt;&gt; + Copy,
+) -&gt; W
+<span class="kw">where
+    </span>V: Clone,
+    W: Ord + Clone + AddAssign + SubAssign,
+    R: Clone,
+    F: Iterator&lt;Item = (V, Rc&lt;RefCell&lt;W&gt;&gt;, R)&gt;,
 {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">zero</span>.<span class="ident">clone</span>();
-    <span class="kw">loop</span> {
-        <span class="kw">let</span> <span class="ident">level</span> <span class="op">=</span> <span class="ident">dual</span>(<span class="ident">n</span>, <span class="ident">s</span>.<span class="ident">clone</span>(), <span class="ident">zero</span>.<span class="ident">clone</span>(), <span class="ident">index</span>, <span class="ident">delta</span>);
-        <span class="kw">if</span> <span class="ident">level</span>[<span class="ident">index</span>(<span class="kw-2">&amp;</span><span class="ident">t</span>)] <span class="op">==</span> <span class="ident">n</span> {
+    <span class="kw">let </span><span class="kw-2">mut </span>res = zero.clone();
+    <span class="kw">loop </span>{
+        <span class="kw">let </span>level = dual(n, s.clone(), zero.clone(), index, delta);
+        <span class="kw">if </span>level[index(<span class="kw-2">&amp;</span>t)] == n {
             <span class="kw">break</span>;
         }
-        <span class="kw">let</span> <span class="ident">iter</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">vs</span>
-            .<span class="ident">clone</span>()
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="ident">Rc::new</span>(<span class="ident">RefCell::new</span>(<span class="ident">delta</span>(<span class="kw-2">&amp;</span><span class="ident">v</span>).<span class="ident">peekable</span>())))
-            .<span class="ident">collect</span>();
-        <span class="kw">loop</span> {
-            <span class="kw">match</span> <span class="ident">primal</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>, <span class="kw-2">&amp;</span><span class="ident">t</span>, <span class="ident">zero</span>.<span class="ident">clone</span>(), <span class="kw-2">&amp;</span><span class="ident">level</span>, <span class="ident">index</span>, <span class="ident">rev</span>, <span class="kw-2">&amp;</span><span class="ident">iter</span>) {
-                <span class="prelude-val">Some</span>(<span class="ident">f</span>) =&gt; <span class="ident">res</span> <span class="op">+</span><span class="op">=</span> <span class="ident">f</span>,
-                <span class="prelude-val">None</span> =&gt; <span class="kw">break</span>,
+        <span class="kw">let </span>iter: Vec&lt;<span class="kw">_</span>&gt; = vs
+            .clone()
+            .map(|v| Rc::new(RefCell::new(delta(<span class="kw-2">&amp;</span>v).peekable())))
+            .collect();
+        <span class="kw">loop </span>{
+            <span class="kw">match </span>primal(<span class="kw-2">&amp;</span>s, <span class="kw-2">&amp;</span>t, zero.clone(), <span class="kw-2">&amp;</span>level, index, rev, <span class="kw-2">&amp;</span>iter) {
+                <span class="prelude-val">Some</span>(f) =&gt; res += f,
+                <span class="prelude-val">None </span>=&gt; <span class="kw">break</span>,
             }
         }
     }
-    <span class="ident">res</span>
+    res
 }
 
-<span class="kw">fn</span> <span class="ident">dual</span><span class="op">&lt;</span><span class="ident">V</span>, <span class="ident">W</span>, <span class="ident">R</span>, <span class="ident">F</span><span class="op">&gt;</span>(
-    <span class="ident">n</span>: <span class="ident">usize</span>,
-    <span class="ident">s</span>: <span class="ident">V</span>,
-    <span class="ident">zero</span>: <span class="ident">W</span>,
-    <span class="ident">index</span>: <span class="kw">impl</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">V</span>) -&gt; <span class="ident">usize</span>,
-    <span class="ident">delta</span>: <span class="kw">impl</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">V</span>) -&gt; <span class="ident">F</span>,
-) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">V</span>: <span class="ident">Clone</span>,
-    <span class="ident">W</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">AddAssign</span> <span class="op">+</span> <span class="ident">SubAssign</span>,
-    <span class="ident">R</span>: <span class="ident">Clone</span>,
-    <span class="ident">F</span>: <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> (<span class="ident">V</span>, <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">R</span>)<span class="op">&gt;</span>,
+<span class="kw">fn </span>dual&lt;V, W, R, F&gt;(
+    n: usize,
+    s: V,
+    zero: W,
+    index: <span class="kw">impl </span>Fn(<span class="kw-2">&amp;</span>V) -&gt; usize,
+    delta: <span class="kw">impl </span>Fn(<span class="kw-2">&amp;</span>V) -&gt; F,
+) -&gt; Vec&lt;usize&gt;
+<span class="kw">where
+    </span>V: Clone,
+    W: Ord + Clone + AddAssign + SubAssign,
+    R: Clone,
+    F: Iterator&lt;Item = (V, Rc&lt;RefCell&lt;W&gt;&gt;, R)&gt;,
 {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">level</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">n</span>; <span class="ident">n</span>];
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">q</span> <span class="op">=</span> <span class="ident">VecDeque::new</span>();
-    <span class="ident">level</span>[<span class="ident">index</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>)] <span class="op">=</span> <span class="number">0</span>;
-    <span class="ident">q</span>.<span class="ident">push_back</span>(<span class="ident">s</span>);
-    <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=</span> <span class="ident">q</span>.<span class="ident">pop_front</span>() {
-        <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="ident">index</span>(<span class="kw-2">&amp;</span><span class="ident">v</span>);
-        <span class="kw">for</span> (<span class="ident">nv</span>, <span class="ident">w</span>, <span class="kw">_</span>) <span class="kw">in</span> <span class="ident">delta</span>(<span class="kw-2">&amp;</span><span class="ident">v</span>) {
-            <span class="kw">let</span> <span class="ident">ni</span> <span class="op">=</span> <span class="ident">index</span>(<span class="kw-2">&amp;</span><span class="ident">nv</span>);
-            <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">w</span>.<span class="ident">borrow</span>() <span class="op">&gt;</span> <span class="ident">zero</span> <span class="op">&amp;&amp;</span> <span class="ident">level</span>[<span class="ident">ni</span>] <span class="op">==</span> <span class="ident">n</span> {
-                <span class="ident">level</span>[<span class="ident">ni</span>] <span class="op">=</span> <span class="ident">level</span>[<span class="ident">i</span>] <span class="op">+</span> <span class="number">1</span>;
-                <span class="ident">q</span>.<span class="ident">push_back</span>(<span class="ident">nv</span>);
+    <span class="kw">let </span><span class="kw-2">mut </span>level = <span class="macro">vec!</span>[n; n];
+    <span class="kw">let </span><span class="kw-2">mut </span>q = VecDeque::new();
+    level[index(<span class="kw-2">&amp;</span>s)] = <span class="number">0</span>;
+    q.push_back(s);
+    <span class="kw">while let </span><span class="prelude-val">Some</span>(v) = q.pop_front() {
+        <span class="kw">let </span>i = index(<span class="kw-2">&amp;</span>v);
+        <span class="kw">for </span>(nv, w, <span class="kw">_</span>) <span class="kw">in </span>delta(<span class="kw-2">&amp;</span>v) {
+            <span class="kw">let </span>ni = index(<span class="kw-2">&amp;</span>nv);
+            <span class="kw">if </span><span class="kw-2">*</span>w.borrow() &gt; zero &amp;&amp; level[ni] == n {
+                level[ni] = level[i] + <span class="number">1</span>;
+                q.push_back(nv);
             }
         }
     }
-    <span class="ident">level</span>
+    level
 }
 
-<span class="kw">fn</span> <span class="ident">primal</span><span class="op">&lt;</span><span class="ident">V</span>, <span class="ident">W</span>, <span class="ident">R</span>, <span class="ident">I</span><span class="op">&gt;</span>(
-    <span class="ident">s</span>: <span class="kw-2">&amp;</span><span class="ident">V</span>,
-    <span class="ident">t</span>: <span class="kw-2">&amp;</span><span class="ident">V</span>,
-    <span class="ident">zero</span>: <span class="ident">W</span>,
-    <span class="ident">level</span>: <span class="kw-2">&amp;</span>[<span class="ident">usize</span>],
-    <span class="ident">index</span>: <span class="kw">impl</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">V</span>) -&gt; <span class="ident">usize</span>,
-    <span class="ident">rev</span>: <span class="kw">impl</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">V</span>, <span class="kw-2">&amp;</span><span class="ident">R</span>) -&gt; <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">iter</span>: <span class="kw-2">&amp;</span>[<span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Peekable</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>],
-) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">V</span>: <span class="ident">Clone</span>,
-    <span class="ident">W</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">AddAssign</span> <span class="op">+</span> <span class="ident">SubAssign</span>,
-    <span class="ident">R</span>: <span class="ident">Clone</span>,
-    <span class="ident">I</span>: <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> (<span class="ident">V</span>, <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">R</span>)<span class="op">&gt;</span>,
+<span class="kw">fn </span>primal&lt;V, W, R, I&gt;(
+    s: <span class="kw-2">&amp;</span>V,
+    t: <span class="kw-2">&amp;</span>V,
+    zero: W,
+    level: <span class="kw-2">&amp;</span>[usize],
+    index: <span class="kw">impl </span>Fn(<span class="kw-2">&amp;</span>V) -&gt; usize,
+    rev: <span class="kw">impl </span>Fn(<span class="kw-2">&amp;</span>V, <span class="kw-2">&amp;</span>R) -&gt; Rc&lt;RefCell&lt;W&gt;&gt;,
+    iter: <span class="kw-2">&amp;</span>[Rc&lt;RefCell&lt;Peekable&lt;I&gt;&gt;&gt;],
+) -&gt; <span class="prelude-ty">Option</span>&lt;W&gt;
+<span class="kw">where
+    </span>V: Clone,
+    W: Ord + Clone + AddAssign + SubAssign,
+    R: Clone,
+    I: Iterator&lt;Item = (V, Rc&lt;RefCell&lt;W&gt;&gt;, R)&gt;,
 {
-    <span class="kw">let</span> <span class="ident">ti</span> <span class="op">=</span> <span class="ident">index</span>(<span class="ident">t</span>);
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">es</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vis</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">index</span>(<span class="ident">s</span>)];
-    <span class="lifetime">&#39;find_path</span>: <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">vi</span>) <span class="op">=</span> <span class="ident">vis</span>.<span class="ident">last</span>() {
-        <span class="kw">if</span> <span class="ident">vi</span> <span class="op">==</span> <span class="ident">ti</span> {
+    <span class="kw">let </span>ti = index(t);
+    <span class="kw">let </span><span class="kw-2">mut </span>es = <span class="macro">vec!</span>[];
+    <span class="kw">let </span><span class="kw-2">mut </span>vis = <span class="macro">vec!</span>[index(s)];
+    <span class="lifetime">&#39;find_path</span>: <span class="kw">while let </span><span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>vi) = vis.last() {
+        <span class="kw">if </span>vi == ti {
             <span class="kw">break</span>;
         }
-        <span class="kw">loop</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>((<span class="ident">nv</span>, <span class="ident">w</span>, <span class="ident">r</span>)) <span class="op">=</span> <span class="ident">iter</span>[<span class="ident">vi</span>].<span class="ident">borrow_mut</span>().<span class="ident">peek</span>() {
-                <span class="kw">let</span> <span class="ident">nvi</span> <span class="op">=</span> <span class="ident">index</span>(<span class="kw-2">&amp;</span><span class="ident">nv</span>);
-                <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">w</span>.<span class="ident">borrow</span>() <span class="op">&gt;</span> <span class="ident">zero</span> <span class="op">&amp;&amp;</span> <span class="ident">level</span>[<span class="ident">vi</span>] <span class="op">&lt;</span> <span class="ident">level</span>[<span class="ident">nvi</span>] {
-                    <span class="ident">es</span>.<span class="ident">push</span>((<span class="ident">w</span>.<span class="ident">clone</span>(), <span class="ident">nv</span>.<span class="ident">clone</span>(), <span class="ident">r</span>.<span class="ident">clone</span>()));
-                    <span class="ident">vis</span>.<span class="ident">push</span>(<span class="ident">nvi</span>);
-                    <span class="kw">continue</span> <span class="lifetime">&#39;find_path</span>;
+        <span class="kw">loop </span>{
+            <span class="kw">if let </span><span class="prelude-val">Some</span>((nv, w, r)) = iter[vi].borrow_mut().peek() {
+                <span class="kw">let </span>nvi = index(<span class="kw-2">&amp;</span>nv);
+                <span class="kw">if </span><span class="kw-2">*</span>w.borrow() &gt; zero &amp;&amp; level[vi] &lt; level[nvi] {
+                    es.push((w.clone(), nv.clone(), r.clone()));
+                    vis.push(nvi);
+                    <span class="kw">continue </span><span class="lifetime">&#39;find_path</span>;
                 }
-            } <span class="kw">else</span> {
+            } <span class="kw">else </span>{
                 <span class="kw">break</span>;
             }
 
-            <span class="ident">iter</span>[<span class="ident">vi</span>].<span class="ident">borrow_mut</span>().<span class="ident">next</span>();
+            iter[vi].borrow_mut().next();
         }
-        <span class="ident">es</span>.<span class="ident">pop</span>();
-        <span class="ident">vis</span>.<span class="ident">pop</span>();
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">vi</span>) <span class="op">=</span> <span class="ident">vis</span>.<span class="ident">last</span>() {
-            <span class="ident">iter</span>[<span class="ident">vi</span>].<span class="ident">borrow_mut</span>().<span class="ident">next</span>();
+        es.pop();
+        vis.pop();
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>vi) = vis.last() {
+            iter[vi].borrow_mut().next();
         }
     }
 
-    <span class="kw">if</span> <span class="ident">es</span>.<span class="ident">is_empty</span>() {
-        <span class="kw">return</span> <span class="prelude-val">None</span>;
+    <span class="kw">if </span>es.is_empty() {
+        <span class="kw">return </span><span class="prelude-val">None</span>;
     }
 
-    <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="ident">es</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">e</span>, <span class="kw">_</span>, <span class="kw">_</span>)<span class="op">|</span> <span class="ident">e</span>.<span class="ident">borrow</span>().<span class="ident">clone</span>()).<span class="ident">min</span>().<span class="ident">unwrap</span>();
+    <span class="kw">let </span>f = es.iter().map(|(e, <span class="kw">_</span>, <span class="kw">_</span>)| e.borrow().clone()).min().unwrap();
 
-    <span class="kw">for</span> (<span class="ident">w</span>, <span class="ident">nv</span>, <span class="ident">r</span>) <span class="kw">in</span> <span class="ident">es</span> {
-        <span class="kw-2">*</span><span class="ident">w</span>.<span class="ident">borrow_mut</span>() <span class="op">-</span><span class="op">=</span> <span class="ident">f</span>.<span class="ident">clone</span>();
-        <span class="kw-2">*</span><span class="ident">rev</span>(<span class="kw-2">&amp;</span><span class="ident">nv</span>, <span class="kw-2">&amp;</span><span class="ident">r</span>).<span class="ident">borrow_mut</span>() <span class="op">+</span><span class="op">=</span> <span class="ident">f</span>.<span class="ident">clone</span>();
+    <span class="kw">for </span>(w, nv, r) <span class="kw">in </span>es {
+        <span class="kw-2">*</span>w.borrow_mut() -= f.clone();
+        <span class="kw-2">*</span>rev(<span class="kw-2">&amp;</span>nv, <span class="kw-2">&amp;</span>r).borrow_mut() += f.clone();
     }
 
-    <span class="prelude-val">Some</span>(<span class="ident">f</span>)
+    <span class="prelude-val">Some</span>(f)
 }
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">dinic_misawa_hack</span>() {
-    <span class="comment">// https://gist.github.com/MiSawa/47b1d99c372daffb6891662db1a2b686</span>
-    <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="number">500</span>;
-    <span class="kw">let</span> (<span class="ident">s</span>, <span class="ident">a</span>, <span class="ident">b</span>, <span class="ident">c</span>, <span class="ident">t</span>) <span class="op">=</span> (<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>);
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">uv</span> <span class="op">=</span> (<span class="number">5</span>, <span class="number">6</span>);
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">es</span> <span class="op">=</span> <span class="macro">vec!</span>[
-        (<span class="ident">s</span>, <span class="ident">a</span>, <span class="number">1</span>),
-        (<span class="ident">s</span>, <span class="ident">b</span>, <span class="number">2</span>),
-        (<span class="ident">b</span>, <span class="ident">a</span>, <span class="number">2</span>),
-        (<span class="ident">c</span>, <span class="ident">t</span>, <span class="number">2</span>),
-        (<span class="ident">a</span>, <span class="ident">uv</span>.<span class="number">0</span>, <span class="number">3</span>),
-        (<span class="ident">a</span>, <span class="ident">uv</span>.<span class="number">1</span>, <span class="number">3</span>),
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>dinic_misawa_hack() {
+    <span class="comment">// https://gist.github.com/MiSawa/47b1d99c372daffb6891662db1a2b686
+    </span><span class="kw">let </span>n = <span class="number">500</span>;
+    <span class="kw">let </span>(s, a, b, c, t) = (<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>);
+    <span class="kw">let </span><span class="kw-2">mut </span>uv = (<span class="number">5</span>, <span class="number">6</span>);
+    <span class="kw">let </span><span class="kw-2">mut </span>es = <span class="macro">vec!</span>[
+        (s, a, <span class="number">1</span>),
+        (s, b, <span class="number">2</span>),
+        (b, a, <span class="number">2</span>),
+        (c, t, <span class="number">2</span>),
+        (a, uv.<span class="number">0</span>, <span class="number">3</span>),
+        (a, uv.<span class="number">1</span>, <span class="number">3</span>),
     ];
-    <span class="kw">while</span> <span class="ident">uv</span>.<span class="number">1</span> <span class="op">+</span> <span class="number">2</span> <span class="op">&lt;</span> <span class="ident">n</span> {
-        <span class="kw">let</span> <span class="ident">nuv</span> <span class="op">=</span> (<span class="ident">uv</span>.<span class="number">0</span> <span class="op">+</span> <span class="number">2</span>, <span class="ident">uv</span>.<span class="number">1</span> <span class="op">+</span> <span class="number">2</span>);
-        <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">x</span> <span class="kw">in</span> <span class="kw-2">&amp;</span>[<span class="ident">uv</span>.<span class="number">0</span>, <span class="ident">uv</span>.<span class="number">1</span>] {
-            <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">y</span> <span class="kw">in</span> <span class="kw-2">&amp;</span>[<span class="ident">nuv</span>.<span class="number">0</span>, <span class="ident">nuv</span>.<span class="number">1</span>] {
-                <span class="ident">es</span>.<span class="ident">push</span>((<span class="ident">x</span>, <span class="ident">y</span>, <span class="number">3</span>));
+    <span class="kw">while </span>uv.<span class="number">1 </span>+ <span class="number">2 </span>&lt; n {
+        <span class="kw">let </span>nuv = (uv.<span class="number">0 </span>+ <span class="number">2</span>, uv.<span class="number">1 </span>+ <span class="number">2</span>);
+        <span class="kw">for </span><span class="kw-2">&amp;</span>x <span class="kw">in </span><span class="kw-2">&amp;</span>[uv.<span class="number">0</span>, uv.<span class="number">1</span>] {
+            <span class="kw">for </span><span class="kw-2">&amp;</span>y <span class="kw">in </span><span class="kw-2">&amp;</span>[nuv.<span class="number">0</span>, nuv.<span class="number">1</span>] {
+                es.push((x, y, <span class="number">3</span>));
             }
         }
-        <span class="ident">uv</span> <span class="op">=</span> <span class="ident">nuv</span>;
+        uv = nuv;
     }
-    <span class="ident">es</span>.<span class="ident">push</span>((<span class="ident">uv</span>.<span class="number">0</span>, <span class="ident">c</span>, <span class="number">3</span>));
-    <span class="ident">es</span>.<span class="ident">push</span>((<span class="ident">uv</span>.<span class="number">1</span>, <span class="ident">c</span>, <span class="number">3</span>));
+    es.push((uv.<span class="number">0</span>, c, <span class="number">3</span>));
+    es.push((uv.<span class="number">1</span>, c, <span class="number">3</span>));
 
-    <span class="kw">let</span> <span class="ident">g</span> <span class="op">=</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">g</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="macro">vec!</span>[]; <span class="ident">n</span>];
-        <span class="kw">for</span> (<span class="ident">from</span>, <span class="ident">to</span>, <span class="ident">capacity</span>) <span class="kw">in</span> <span class="ident">es</span> {
-            <span class="kw">let</span> <span class="ident">from_len</span> <span class="op">=</span> <span class="ident">g</span>[<span class="ident">from</span>].<span class="ident">len</span>();
-            <span class="kw">let</span> <span class="ident">to_len</span> <span class="op">=</span> <span class="ident">g</span>[<span class="ident">to</span>].<span class="ident">len</span>();
-            <span class="ident">g</span>[<span class="ident">from</span>].<span class="ident">push</span>((<span class="ident">to</span>, <span class="ident">Rc::new</span>(<span class="ident">RefCell::new</span>(<span class="ident">capacity</span>)), <span class="ident">to_len</span>));
-            <span class="ident">g</span>[<span class="ident">to</span>].<span class="ident">push</span>((<span class="ident">from</span>, <span class="ident">Rc::new</span>(<span class="ident">RefCell::new</span>(<span class="number">0</span>)), <span class="ident">from_len</span>));
+    <span class="kw">let </span>g = {
+        <span class="kw">let </span><span class="kw-2">mut </span>g = <span class="macro">vec!</span>[<span class="macro">vec!</span>[]; n];
+        <span class="kw">for </span>(from, to, capacity) <span class="kw">in </span>es {
+            <span class="kw">let </span>from_len = g[from].len();
+            <span class="kw">let </span>to_len = g[to].len();
+            g[from].push((to, Rc::new(RefCell::new(capacity)), to_len));
+            g[to].push((from, Rc::new(RefCell::new(<span class="number">0</span>)), from_len));
         }
-        <span class="ident">g</span>
+        g
     };
 
-    <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">v</span>: <span class="kw-2">&amp;</span><span class="ident">usize</span><span class="op">|</span> <span class="ident">v</span>;
-    <span class="kw">let</span> <span class="ident">delta</span> <span class="op">=</span>
-        <span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">v</span>: <span class="kw-2">&amp;</span><span class="ident">usize</span><span class="op">|</span> <span class="ident">g</span>[<span class="ident">v</span>].<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span>(<span class="ident">nv</span>, <span class="kw-2">ref</span> <span class="ident">w</span>, <span class="ident">r</span>)<span class="op">|</span> (<span class="ident">nv</span>, <span class="ident">w</span>.<span class="ident">clone</span>(), <span class="ident">r</span>));
-    <span class="kw">let</span> <span class="ident">rev</span> <span class="op">=</span> <span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">nv</span>: <span class="kw-2">&amp;</span><span class="ident">usize</span>, <span class="kw-2">&amp;</span><span class="ident">r</span>: <span class="kw-2">&amp;</span><span class="ident">usize</span><span class="op">|</span> <span class="ident">g</span>[<span class="ident">nv</span>][<span class="ident">r</span>].<span class="number">1</span>.<span class="ident">clone</span>();
-    <span class="kw">let</span> <span class="ident">flow</span> <span class="op">=</span> <span class="ident">dinic</span>(<span class="ident">n</span>, <span class="ident">s</span>, <span class="ident">t</span>, <span class="number">0</span>..<span class="ident">n</span>, <span class="number">0</span>, <span class="ident">index</span>, <span class="ident">delta</span>, <span class="ident">rev</span>);
+    <span class="kw">let </span>index = |<span class="kw-2">&amp;</span>v: <span class="kw-2">&amp;</span>usize| v;
+    <span class="kw">let </span>delta =
+        |<span class="kw-2">&amp;</span>v: <span class="kw-2">&amp;</span>usize| g[v].iter().map(|<span class="kw-2">&amp;</span>(nv, <span class="kw-2">ref </span>w, r)| (nv, w.clone(), r));
+    <span class="kw">let </span>rev = |<span class="kw-2">&amp;</span>nv: <span class="kw-2">&amp;</span>usize, <span class="kw-2">&amp;</span>r: <span class="kw-2">&amp;</span>usize| g[nv][r].<span class="number">1</span>.clone();
+    <span class="kw">let </span>flow = dinic(n, s, t, <span class="number">0</span>..n, <span class="number">0</span>, index, delta, rev);
 
-    <span class="macro">assert_eq!</span>(<span class="ident">flow</span>, <span class="number">2</span>);
+    <span class="macro">assert_eq!</span>(flow, <span class="number">2</span>);
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

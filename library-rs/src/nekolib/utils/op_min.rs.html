@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/utils/op_min.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>op_min.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/utils/op_min.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>op_min.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -129,47 +129,47 @@
 <span id="40">40</span>
 <span id="41">41</span>
 <span id="42">42</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 最小値に関する wrapper クラス。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 最小値に関する wrapper クラス。
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::binop</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::max</span>;
+</span><span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::traits::binop;
+<span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::traits::max;
 
-<span class="kw">use</span> <span class="ident">std::fmt::Debug</span>;
+<span class="kw">use </span>std::fmt::Debug;
 
-<span class="kw">use</span> <span class="ident">binop</span>::{<span class="ident">Associative</span>, <span class="ident">Commutative</span>, <span class="ident">Identity</span>, <span class="ident">Magma</span>};
-<span class="kw">use</span> <span class="ident">max::Max</span>;
+<span class="kw">use </span>binop::{Associative, Commutative, Identity, Magma};
+<span class="kw">use </span>max::Max;
 
-<span class="doccomment">/// 最小値を返す演算を持つ。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 単位元は [`Max`] で定義する。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [`Max`]: ../../traits/max/trait.Max.html</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">OpMin</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="ident">OpMinV</span>,
-    <span class="ident">_Marker</span>(<span class="ident">T</span>),
+<span class="doccomment">/// 最小値を返す演算を持つ。
+///
+/// 単位元は [`Max`] で定義する。
+///
+/// [`Max`]: ../../traits/max/trait.Max.html
+</span><span class="attribute">#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+</span><span class="kw">pub enum </span>OpMin&lt;T&gt; {
+    OpMinV,
+    _Marker(T),
 }
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">OpMin::OpMinV</span>;
+<span class="kw">pub use </span>OpMin::OpMinV;
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">OpMin</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> { <span class="ident">OpMinV</span> }
+<span class="kw">impl</span>&lt;T&gt; Default <span class="kw">for </span>OpMin&lt;T&gt; {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{ OpMinV }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Magma</span> <span class="kw">for</span> <span class="ident">OpMin</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Sized</span>,
+<span class="kw">impl</span>&lt;T&gt; Magma <span class="kw">for </span>OpMin&lt;T&gt;
+<span class="kw">where
+    </span>T: Ord + Eq + Sized,
 {
-    <span class="kw">type</span> <span class="ident">Set</span> <span class="op">=</span> <span class="ident">T</span>;
-    <span class="kw">fn</span> <span class="ident">op</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>, <span class="ident">y</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> { <span class="ident">x</span>.<span class="ident">min</span>(<span class="ident">y</span>) }
+    <span class="kw">type </span>Set = T;
+    <span class="kw">fn </span>op(<span class="kw-2">&amp;</span><span class="self">self</span>, x: <span class="self">Self</span>::Set, y: <span class="self">Self</span>::Set) -&gt; <span class="self">Self</span>::Set { x.min(y) }
 }
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Identity</span> <span class="kw">for</span> <span class="ident">OpMin</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Sized</span> <span class="op">+</span> <span class="ident">Max</span>,
+<span class="kw">impl</span>&lt;T&gt; Identity <span class="kw">for </span>OpMin&lt;T&gt;
+<span class="kw">where
+    </span>T: Ord + Eq + Sized + Max,
 {
-    <span class="kw">fn</span> <span class="ident">id</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> { <span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">Max</span><span class="op">&gt;</span><span class="ident">::max</span>() }
+    <span class="kw">fn </span>id(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self</span>::Set { &lt;T <span class="kw">as </span>Max&gt;::max() }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Associative</span> <span class="kw">for</span> <span class="ident">OpMin</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="ident">T</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Sized</span> {}
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Commutative</span> <span class="kw">for</span> <span class="ident">OpMin</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="ident">T</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Sized</span> {}
+<span class="kw">impl</span>&lt;T&gt; Associative <span class="kw">for </span>OpMin&lt;T&gt; <span class="kw">where </span>T: Ord + Eq + Sized {}
+<span class="kw">impl</span>&lt;T&gt; Commutative <span class="kw">for </span>OpMin&lt;T&gt; <span class="kw">where </span>T: Ord + Eq + Sized {}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

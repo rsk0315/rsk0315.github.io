@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/ds.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>ds.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/ds.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>ds.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -161,79 +161,79 @@
 <span id="72">72</span>
 <span id="73">73</span>
 <span id="74">74</span>
-</pre><pre class="rust"><code><span class="doccomment">//! データ構造たち。</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! 主に抽象化したデータ構造たち。union find や bit set</span>
-<span class="doccomment">//! は抽象化されていないという気もするが...</span>
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">bicremental_median</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">bicremental_median_dev</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">bit_set</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">btree_bimap</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">btree_multiset</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">cuckoo_hash_map</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">cuckoo_hash_set</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">decremental_usize_set</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">disjoint_sparse_table</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">foldable_deque</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">foldable_queue</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">incremental_line_set</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">interval_map</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">interval_set</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">n1_rmq</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">potentialized_union_find</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">removable_heap</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">rs_dict</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">skew_heap</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">union_find</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">vec_act_segtree</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">vec_segtree</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">wavelet_matrix</span>;
+</pre><pre class="rust"><code><span class="doccomment">//! データ構造たち。
+//!
+//! 主に抽象化したデータ構造たち。union find や bit set
+//! は抽象化されていないという気もするが...
+</span><span class="kw">pub mod </span>bicremental_median;
+<span class="kw">pub mod </span>bicremental_median_dev;
+<span class="kw">pub mod </span>bit_set;
+<span class="kw">pub mod </span>btree_bimap;
+<span class="kw">pub mod </span>btree_multiset;
+<span class="kw">pub mod </span>cuckoo_hash_map;
+<span class="kw">pub mod </span>cuckoo_hash_set;
+<span class="kw">pub mod </span>decremental_usize_set;
+<span class="kw">pub mod </span>disjoint_sparse_table;
+<span class="kw">pub mod </span>foldable_deque;
+<span class="kw">pub mod </span>foldable_queue;
+<span class="kw">pub mod </span>incremental_line_set;
+<span class="kw">pub mod </span>interval_map;
+<span class="kw">pub mod </span>interval_set;
+<span class="kw">pub mod </span>n1_rmq;
+<span class="kw">pub mod </span>potentialized_union_find;
+<span class="kw">pub mod </span>removable_heap;
+<span class="kw">pub mod </span>rs_dict;
+<span class="kw">pub mod </span>skew_heap;
+<span class="kw">pub mod </span>union_find;
+<span class="kw">pub mod </span>vec_act_segtree;
+<span class="kw">pub mod </span>vec_segtree;
+<span class="kw">pub mod </span>wavelet_matrix;
 
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">bicremental_median::BicrementalMedian</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">bicremental_median_dev::BicrementalMedianDev</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">bit_set::BitSet</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">btree_bimap::BTreeBimap</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">btree_multiset::BTreeMultiset</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">cuckoo_hash_map::CuckooHashMap</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">cuckoo_hash_set::CuckooHashSet</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">decremental_usize_set::DecrementalUsizeSet</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">disjoint_sparse_table::DisjointSparseTable</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">foldable_deque::FoldableDeque</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">foldable_queue::FoldableQueue</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">incremental_line_set::IncrementalLineSet</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">interval_map::IntervalMap</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">interval_set::IntervalSet</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">n1_rmq::N1Rmq</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">potentialized_union_find::PotentializedUnionFind</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">removable_heap::RemovableHeap</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">rs_dict::RsDict</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">skew_heap::SkewHeap</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">union_find::UnionFind</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">vec_act_segtree::VecActSegtree</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">vec_segtree::VecSegtree</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">wavelet_matrix::WaveletMatrix</span>;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>bicremental_median::BicrementalMedian;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>bicremental_median_dev::BicrementalMedianDev;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>bit_set::BitSet;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>btree_bimap::BTreeBimap;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>btree_multiset::BTreeMultiset;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>cuckoo_hash_map::CuckooHashMap;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>cuckoo_hash_set::CuckooHashSet;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>decremental_usize_set::DecrementalUsizeSet;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>disjoint_sparse_table::DisjointSparseTable;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>foldable_deque::FoldableDeque;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>foldable_queue::FoldableQueue;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>incremental_line_set::IncrementalLineSet;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>interval_map::IntervalMap;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>interval_set::IntervalSet;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>n1_rmq::N1Rmq;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>potentialized_union_find::PotentializedUnionFind;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>removable_heap::RemovableHeap;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>rs_dict::RsDict;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>skew_heap::SkewHeap;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>union_find::UnionFind;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>vec_act_segtree::VecActSegtree;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>vec_segtree::VecSegtree;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>wavelet_matrix::WaveletMatrix;
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

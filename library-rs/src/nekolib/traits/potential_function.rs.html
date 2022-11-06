@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/traits/potential_function.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>potential_function.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/traits/potential_function.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>potential_function.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -125,43 +125,43 @@
 <span id="36">36</span>
 <span id="37">37</span>
 <span id="38">38</span>
-</pre><pre class="rust"><code><span class="doccomment">//! ポテンシャル関数。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! ポテンシャル関数。
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::binop</span>;
+</span><span class="kw">use </span><span class="kw">super</span>::binop;
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">binop</span>::{<span class="ident">CommutativeGroup</span>, <span class="ident">Magma</span>};
+<span class="kw">pub use </span>binop::{CommutativeGroup, Magma};
 
-<span class="doccomment">/// ポテンシャル関数。</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">PotentialFunction</span> {
-    <span class="doccomment">/// 要素の型。</span>
-    <span class="kw">type</span> <span class="ident">Item</span>: <span class="ident">CommutativeGroup</span>;
+<span class="doccomment">/// ポテンシャル関数。
+</span><span class="kw">pub trait </span>PotentialFunction {
+    <span class="doccomment">/// 要素の型。
+    </span><span class="kw">type </span>Item: CommutativeGroup;
 
-    <span class="doccomment">/// 要素数 $n$ の集合 $\\{0, 1, \\dots, n-1\\}$ で初期化する。</span>
-    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">n</span>: <span class="ident">usize</span>, <span class="ident">cgroup</span>: <span class="ident"><span class="self">Self</span>::Item</span>) -&gt; <span class="self">Self</span>;
-    <span class="doccomment">/// 集合の要素数 $n$ を返す。</span>
-    <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span>;
-    <span class="doccomment">/// 集合が空であれば `true` を返す。</span>
-    <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> { <span class="self">self</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">0</span> }
+    <span class="doccomment">/// 要素数 $n$ の集合 $\\{0, 1, \\dots, n-1\\}$ で初期化する。
+    </span><span class="kw">fn </span>new(n: usize, cgroup: <span class="self">Self</span>::Item) -&gt; <span class="self">Self</span>;
+    <span class="doccomment">/// 集合の要素数 $n$ を返す。
+    </span><span class="kw">fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize;
+    <span class="doccomment">/// 集合が空であれば `true` を返す。
+    </span><span class="kw">fn </span>is_empty(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool { <span class="self">self</span>.len() == <span class="number">0 </span>}
 
-    <span class="doccomment">/// ポテンシャルの差を定義する。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// $\\phi(x\_u)-\\phi(x\_v) = w$ とする。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// 呼び出し前の定義と矛盾しない場合、呼び出し前に $\\phi(x\_u)-\\phi(x\_v)$ が未定義なら</span>
-    <span class="doccomment">/// `Some(true)` を、そうでなければ `Some(false)` を返す。</span>
-    <span class="doccomment">/// 矛盾する場合、定義は変化せずに `None` を返す。</span>
-    <span class="kw">fn</span> <span class="ident">relate</span>(
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-        <span class="ident">u</span>: <span class="ident">usize</span>,
-        <span class="ident">v</span>: <span class="ident">usize</span>,
-        <span class="ident">w</span>: <span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>,
-    ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>;
+    <span class="doccomment">/// ポテンシャルの差を定義する。
+    ///
+    /// $\\phi(x\_u)-\\phi(x\_v) = w$ とする。
+    ///
+    /// 呼び出し前の定義と矛盾しない場合、呼び出し前に $\\phi(x\_u)-\\phi(x\_v)$ が未定義なら
+    /// `Some(true)` を、そうでなければ `Some(false)` を返す。
+    /// 矛盾する場合、定義は変化せずに `None` を返す。
+    </span><span class="kw">fn </span>relate(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        u: usize,
+        v: usize,
+        w: &lt;<span class="self">Self</span>::Item <span class="kw">as </span>Magma&gt;::Set,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;bool&gt;;
 
-    <span class="doccomment">/// ポテンシャルの差を求める。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// $\\phi(x\_u)-\\phi(x\_v) = w$ であれば `Some(w)` を返す。</span>
-    <span class="doccomment">/// 未定義ならば `None` を返す。</span>
-    <span class="kw">fn</span> <span class="ident">diff</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">u</span>: <span class="ident">usize</span>, <span class="ident">v</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span><span class="op">&gt;</span>;
+    <span class="doccomment">/// ポテンシャルの差を求める。
+    ///
+    /// $\\phi(x\_u)-\\phi(x\_v) = w$ であれば `Some(w)` を返す。
+    /// 未定義ならば `None` を返す。
+    </span><span class="kw">fn </span>diff(<span class="kw-2">&amp;</span><span class="self">self</span>, u: usize, v: usize) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self</span>::Item <span class="kw">as </span>Magma&gt;::Set&gt;;
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

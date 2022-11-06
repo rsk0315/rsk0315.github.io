@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/graph/tree_cata.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>tree_cata.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/graph/tree_cata.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>tree_cata.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -618,409 +618,409 @@
 <span id="529">529</span>
 <span id="530">530</span>
 <span id="531">531</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 全方位木 DP。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 全方位木 DP。
 
-<span class="kw">use</span> <span class="ident">std::collections::VecDeque</span>;
+</span><span class="kw">use </span>std::collections::VecDeque;
 
-<span class="doccomment">/// 全方位木 DP。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 木の catamorphism。</span>
-<span class="doccomment">/// 各頂点を根としたときのものをまとめて求める。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 二項演算 $\circ: S\\times S\\to S$ と $\star: S\\times T\\to S$ を考える。</span>
-<span class="doccomment">/// $(S, \\circ)$ は単位元 $\\mathrm{id}\_{\\circ}$ を持つモノイドとする。</span>
-<span class="doccomment">/// 木の各辺は一つずつ $T$ の値を持っているとし、辺 $(v, u)$ の値を $e\_{v, u}$</span>
-<span class="doccomment">/// とする。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 頂点 $v$ が葉のとき、$f(v) = \\mathrm{id}\_{\\circ}$ とする[^1]。</span>
-<span class="doccomment">/// そうでないとき、$v$ に隣接する頂点を順に</span>
-<span class="doccomment">/// $\\langle u\_1, u\_2, \\dots, u\_k\\rangle$ とする。$v$ が根のとき、</span>
-<span class="doccomment">/// $$ f(v) = (f\_v(u\_1)\\star e\_{u\_1, v})\\circ\\dots\\circ(f\_v(u\_k)\\star e\_{u\_k, v}) $$</span>
-<span class="doccomment">/// で定める。ただし、$f\_v(u)$ は、「$v$ を取り除いた森において $u$ を含む木で</span>
-<span class="doccomment">/// $u$ を根としたもの」における $f(u)$ とする。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [^1]: すなわち、頂点数 1 の木における $f$ の値が $\\mathrm{id}\_{\\circ}$ となる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// &lt;img src=&quot;../../../../images/tree_cata.png&quot; width=&quot;300&quot; alt=&quot;&quot;&gt;&lt;img src=&quot;../../../../../images/tree_cata.png&quot; width=&quot;300&quot; alt=&quot;&quot;&gt;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 上図グラフにおいて、頂点 $1$ に隣接する頂点のうち、$0$ が最後に来るものとすれば</span>
-<span class="doccomment">/// $$ \\begin{aligned}</span>
-<span class="doccomment">/// f(1) &amp;= f\_0(1)\\circ(f\_1(0)\\star e\_{0, 1}) \\\\</span>
-<span class="doccomment">/// &amp;= f\_0(1) \\circ ((f\_0(2)\\star e\_{2, 0})\\star e\_{0, 1})</span>
-<span class="doccomment">/// \\end{aligned} $$</span>
-<span class="doccomment">/// のようになる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// このように定められる $f$ に対し、$f(0), f(1), \\dots, f(n-1)$ を求める。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Idea</span>
-<span class="doccomment">/// まず、根を $0$ として木をトポロジカルソートしておく。</span>
-<span class="doccomment">/// これにより、ボトムアップの DP を単にループで行うことができ、$f(0)$</span>
-<span class="doccomment">/// が求まる。次に、上で $f(1)$ を求めたときのように、トップダウンに DP</span>
-<span class="doccomment">/// をしながら（ボトムアップの DP での結果を利用して）残りの頂点について求める。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ## Implementation notes</span>
-<span class="doccomment">/// トポロジカルソートの前処理パートは、木が同じであれば $(\\circ, \\star)$</span>
-<span class="doccomment">/// に依らないので使い回しできる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 実装においては、$\\circ: S\\times S\\to S$ を `fold`、$\\mathrm{id}\_{\\circ}$</span>
-<span class="doccomment">/// を `empty`、$\\star: S\\times T\\to S$ を `map` と呼んでいる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// `empty` は葉での値（頂点数 1 の木での値）と `fold` の単位元に対応している。</span>
-<span class="doccomment">/// 葉の値を特別扱いしたいときは、セグ木に半群を乗せるときのように、</span>
-<span class="doccomment">/// フラグを持たせれば対応できる（下記の root-leaf の距離の総和の例を参照）。</span>
-<span class="doccomment">/// 全体の頂点数が 1 だったときの処理を最後に分ける必要があるので注意。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 各頂点における頂点の順序を気にした実装になっているため、「各頂点を根として</span>
-<span class="doccomment">/// DFS したときの post-order で各頂点を並べ、その列に基数 $b$・法 $m$ の</span>
-<span class="doccomment">/// rolling hash を適用したときの値を求めよ」といった問題も処理できるはず。</span>
-<span class="doccomment">/// ハッシュ値 $h$ と、部分木サイズ $k$ に対して $(h, b^k\\bmod m)$</span>
-<span class="doccomment">/// とかを管理すればよさそう。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// $O(n)$ time.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::graph::TreeCata;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let g = vec![</span>
-<span class="doccomment">///     vec![(1, ()), (2, ())],</span>
-<span class="doccomment">///     vec![(0, ()), (3, ()), (4, ()), (5, ())],</span>
-<span class="doccomment">///     vec![(0, ())],</span>
-<span class="doccomment">///     vec![(1, ())],</span>
-<span class="doccomment">///     vec![(1, ())],</span>
-<span class="doccomment">///     vec![(1, ())],</span>
-<span class="doccomment">/// ];</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// //      0 -- 2</span>
-<span class="doccomment">/// //      |</span>
-<span class="doccomment">/// // 4 -- 1 -- 3</span>
-<span class="doccomment">/// //      |</span>
-<span class="doccomment">/// //      5</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let tc: TreeCata&lt;_&gt; = g.into();</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// // max distance</span>
-<span class="doccomment">/// let empty = 0;</span>
-<span class="doccomment">/// let map = |&amp;x: &amp;usize, _: &amp;()| x + 1;</span>
-<span class="doccomment">/// let fold = |&amp;x: &amp;usize, &amp;y: &amp;usize| x.max(y);</span>
-<span class="doccomment">/// assert_eq!(tc.each_root(empty, map, fold), [2, 2, 3, 3, 3, 3]);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// // sum of distance</span>
-<span class="doccomment">/// let empty = (0, 0);</span>
-<span class="doccomment">/// let map = |&amp;(d, c): &amp;(usize, usize), _: &amp;()| (d + c + 1, c + 1);</span>
-<span class="doccomment">/// let fold =</span>
-<span class="doccomment">///     |&amp;x: &amp;(usize, usize), &amp;y: &amp;(usize, usize)| (x.0 + y.0, x.1 + y.1);</span>
-<span class="doccomment">/// assert_eq!(</span>
-<span class="doccomment">///     tc.each_root(empty, map, fold)</span>
-<span class="doccomment">///         .into_iter()</span>
-<span class="doccomment">///         .map(|x| x.0)</span>
-<span class="doccomment">///         .collect::&lt;Vec&lt;_&gt;&gt;(),</span>
-<span class="doccomment">///     [8, 6, 12, 10, 10, 10]</span>
-<span class="doccomment">/// );</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// // (sum of root-leaf distance, # of leaves)</span>
-<span class="doccomment">/// let empty = ((0, 0), false);</span>
-<span class="doccomment">/// let map = |&amp;(x, inner): &amp;((usize, usize), bool), _: &amp;()| {</span>
-<span class="doccomment">///     let (x1, x0) = if inner { x } else { (0, 1) };</span>
-<span class="doccomment">///     ((x1 + 1 * x0, x0), true)</span>
-<span class="doccomment">/// };</span>
-<span class="doccomment">/// let fold = |&amp;x: &amp;((usize, usize), bool), &amp;y: &amp;((usize, usize), bool)| {</span>
-<span class="doccomment">///     let (x1, x0) = x.0;</span>
-<span class="doccomment">///     let (y1, y0) = y.0;</span>
-<span class="doccomment">///     ((x1 + y1, x0 + y0), x.1 | y.1)</span>
-<span class="doccomment">/// };</span>
-<span class="doccomment">/// assert_eq!(</span>
-<span class="doccomment">///     tc.each_root(empty, map, fold)</span>
-<span class="doccomment">///         .into_iter()</span>
-<span class="doccomment">///         .map(|x| if x.1 { x.0 } else { (0, 1) })</span>
-<span class="doccomment">///         .collect::&lt;Vec&lt;_&gt;&gt;(),</span>
-<span class="doccomment">///     [(7, 4), (5, 4), (9, 3), (7, 3), (7, 3), (7, 3)]</span>
-<span class="doccomment">/// );</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::graph::TreeCata;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let g = vec![</span>
-<span class="doccomment">///     vec![(1, 0), (2, 0)],</span>
-<span class="doccomment">///     vec![(0, 1), (3, 1), (4, 1), (5, 1)],</span>
-<span class="doccomment">///     vec![(0, 2)],</span>
-<span class="doccomment">///     vec![(1, 3)],</span>
-<span class="doccomment">///     vec![(1, 4)],</span>
-<span class="doccomment">///     vec![(1, 5)],</span>
-<span class="doccomment">/// ];</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let tc: TreeCata&lt;_&gt; = g.into();</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let empty = &quot;&quot;.to_owned();</span>
-<span class="doccomment">/// let map = |x: &amp;String, c: &amp;usize| {</span>
-<span class="doccomment">///     if x == &quot;&quot; { format!(&quot;{}: []&quot;, c) } else { format!(&quot;{}: [{}]&quot;, c, x) }</span>
-<span class="doccomment">/// };</span>
-<span class="doccomment">/// let fold = |x: &amp;String, y: &amp;String| {</span>
-<span class="doccomment">///     if x == &quot;&quot; &amp;&amp; y == &quot;&quot; {</span>
-<span class="doccomment">///         &quot;&quot;.to_owned()</span>
-<span class="doccomment">///     } else if x != &quot;&quot; &amp;&amp; y != &quot;&quot; {</span>
-<span class="doccomment">///         format!(&quot;{}, {}&quot;, x, y)</span>
-<span class="doccomment">///     } else {</span>
-<span class="doccomment">///         format!(&quot;{}{}&quot;, x, y)</span>
-<span class="doccomment">///     }</span>
-<span class="doccomment">/// };</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let actual = tc</span>
-<span class="doccomment">///     .each_root(empty, map, fold)</span>
-<span class="doccomment">///     .into_iter()</span>
-<span class="doccomment">///     .enumerate()</span>
-<span class="doccomment">///     .map(|(i, x)| format!(&quot;{}: [{}]&quot;, i, x))</span>
-<span class="doccomment">///     .collect::&lt;Vec&lt;_&gt;&gt;();</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(</span>
-<span class="doccomment">///     actual,</span>
-<span class="doccomment">///     [</span>
-<span class="doccomment">///         &quot;0: [1: [3: [], 4: [], 5: []], 2: []]&quot;,</span>
-<span class="doccomment">///         &quot;1: [0: [2: []], 3: [], 4: [], 5: []]&quot;,</span>
-<span class="doccomment">///         &quot;2: [0: [1: [3: [], 4: [], 5: []]]]&quot;,</span>
-<span class="doccomment">///         &quot;3: [1: [0: [2: []], 4: [], 5: []]]&quot;,</span>
-<span class="doccomment">///         &quot;4: [1: [0: [2: []], 3: [], 5: []]]&quot;,</span>
-<span class="doccomment">///         &quot;5: [1: [0: [2: []], 3: [], 4: []]]&quot;,</span>
-<span class="doccomment">///     ]</span>
-<span class="doccomment">/// );</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let empty = &quot;&quot;.to_owned();</span>
-<span class="doccomment">/// let map = |x: &amp;String, c: &amp;usize| format!(&quot;({} {} )&quot;, x, c);</span>
-<span class="doccomment">/// let fold = |x: &amp;String, y: &amp;String| format!(&quot;{}{}&quot;, x, y);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(tc.each_root(empty, map, fold), [</span>
-<span class="doccomment">///     &quot;(( 3 )( 4 )( 5 ) 1 )( 2 )&quot;,</span>
-<span class="doccomment">///     &quot;(( 2 ) 0 )( 3 )( 4 )( 5 )&quot;,</span>
-<span class="doccomment">///     &quot;((( 3 )( 4 )( 5 ) 1 ) 0 )&quot;,</span>
-<span class="doccomment">///     &quot;((( 2 ) 0 )( 4 )( 5 ) 1 )&quot;,</span>
-<span class="doccomment">///     &quot;((( 2 ) 0 )( 3 )( 5 ) 1 )&quot;,</span>
-<span class="doccomment">///     &quot;((( 2 ) 0 )( 3 )( 4 ) 1 )&quot;,</span>
-<span class="doccomment">/// ]);</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ## Applications</span>
-<span class="doccomment">/// AtCoder における利用例。$(S, \\circ, \\mathrm{id}\_{\\circ}, T, \\star)$</span>
-<span class="doccomment">/// の定義と、$\\langle f(0), f(1), \\dots, f(n-1)\\rangle$</span>
-<span class="doccomment">/// を用いて答えを得る部分のみ載せている。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">/// // typical90_am</span>
-<span class="doccomment">/// let empty = (0, 0);</span>
-<span class="doccomment">/// let map = |&amp;x: &amp;(usize, usize), _: &amp;()| (x.0 + x.1 + 1, x.1 + 1);</span>
-<span class="doccomment">/// let fold =</span>
-<span class="doccomment">///     |&amp;x: &amp;(usize, usize), &amp;y: &amp;(usize, usize)| (x.0 + y.0, x.1 + y.1);</span>
-<span class="doccomment">/// let res: usize =</span>
-<span class="doccomment">///     tc.each_root(empty, map, fold).into_iter().map(|x| x.0).sum();</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">/// // abc220_f</span>
-<span class="doccomment">/// let empty = (0, 0);</span>
-<span class="doccomment">/// let map = |&amp;(x1, x0): &amp;(usize, usize), _: &amp;()| (x1 + x0 + 1, x0 + 1);</span>
-<span class="doccomment">/// let fold = |&amp;(x1, x0): &amp;(usize, usize), &amp;(y1, y0): &amp;(usize, usize)| {</span>
-<span class="doccomment">///     (x1 + y1, x0 + y0)</span>
-<span class="doccomment">/// };</span>
-<span class="doccomment">/// let res: Vec&lt;_&gt; =</span>
-<span class="doccomment">///     tc.each_root(empty, map, fold).into_iter().map(|(x1, _)| x1).collect();</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">/// // abc222_f</span>
-<span class="doccomment">/// let empty = 0;</span>
-<span class="doccomment">/// let map = |&amp;x: &amp;i64, &amp;(d, w): &amp;(i64, i64)| x.max(d) + w;</span>
-<span class="doccomment">/// let fold = |&amp;x: &amp;i64, &amp;y: &amp;i64| x.max(y);</span>
-<span class="doccomment">/// let res = tc.each_root(empty, map, fold);</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">/// // abc223_g</span>
-<span class="doccomment">/// let empty = false;</span>
-<span class="doccomment">/// let map = |&amp;x: &amp;bool, _: &amp;()| !x;</span>
-<span class="doccomment">/// let fold = |&amp;x: &amp;bool, &amp;y: &amp;bool| x | y;</span>
-<span class="doccomment">/// let res =</span>
-<span class="doccomment">///     tc.each_root(empty, map, fold).into_iter().filter(|&amp;x| !x).count();</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">/// // s8pc_4_d</span>
-<span class="doccomment">/// let empty = (0.0, 0);</span>
-<span class="doccomment">/// let map = |&amp;x: &amp;(f64, usize), _: &amp;()| (x.0 + 1.0, 1);</span>
-<span class="doccomment">/// let fold = |&amp;x: &amp;(f64, usize), &amp;y: &amp;(f64, usize)| {</span>
-<span class="doccomment">///     let v = x.0 * x.1 as f64 + y.0 * y.1 as f64;</span>
-<span class="doccomment">///     let d = x.1 + y.1;</span>
-<span class="doccomment">///     (v / 1.0_f64.max(d as f64), d)</span>
-<span class="doccomment">/// };</span>
-<span class="doccomment">/// let res = tc.each_root(empty, map, fold);</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">/// // dp_v</span>
-<span class="doccomment">/// let empty = 1;</span>
-<span class="doccomment">/// let map = |&amp;x: &amp;u64, _: &amp;()| (x + 1) % m;</span>
-<span class="doccomment">/// let fold = |&amp;x: &amp;u64, &amp;y: &amp;u64| x * y % m;</span>
-<span class="doccomment">/// let res = tc.each_root(empty, map, fold);</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">/// // dp_p, abc036_d</span>
-<span class="doccomment">/// let empty = (1, 1);</span>
-<span class="doccomment">/// let map = |&amp;x: &amp;(u64, u64), _: &amp;()| ((x.0 + x.1) % MOD, x.0);</span>
-<span class="doccomment">/// let fold =</span>
-<span class="doccomment">///     |&amp;x: &amp;(u64, u64), &amp;y: &amp;(u64, u64)| (x.0 * y.0 % MOD, x.1 * y.1 % MOD);</span>
-<span class="doccomment">/// let res: Vec&lt;_&gt; = tc</span>
-<span class="doccomment">///     .each_root(empty, map, fold)</span>
-<span class="doccomment">///     .into_iter()</span>
-<span class="doccomment">///     .map(|x| (x.0 + x.1) % MOD)</span>
-<span class="doccomment">///     .collect();</span>
-<span class="doccomment">/// assert!(res.iter().all(|&amp;x| x == res[0]));</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">/// // abc160_f</span>
-<span class="doccomment">/// let mfb = ModFactorialBinom::new(n, MOD);</span>
-<span class="doccomment">/// let f = |i| mfb.factorial(i);</span>
-<span class="doccomment">/// let fr = |i| mfb.factorial_recip(i);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let empty = (0, 1, 1);</span>
-<span class="doccomment">/// let map = |&amp;x: &amp;(usize, u64, u64), _: &amp;()| {</span>
-<span class="doccomment">///     (x.0 + 1, fr(x.0 + 1), x.1 * x.2 % MOD * f(x.0) % MOD)</span>
-<span class="doccomment">/// };</span>
-<span class="doccomment">/// let fold = |&amp;x: &amp;(usize, u64, u64), &amp;y: &amp;(usize, u64, u64)| {</span>
-<span class="doccomment">///     (x.0 + y.0, (x.1 * y.1) % MOD, (x.2 * y.2) % MOD)</span>
-<span class="doccomment">/// };</span>
-<span class="doccomment">/// let res: Vec&lt;_&gt; = tc</span>
-<span class="doccomment">///     .each_root(empty, map, fold)</span>
-<span class="doccomment">///     .into_iter()</span>
-<span class="doccomment">///     .map(|x| map(&amp;x, &amp;()).2)</span>
-<span class="doccomment">///     .collect();</span>
-<span class="doccomment">///     </span>
-<span class="doccomment">/// // tdpc_tree</span>
-<span class="doccomment">/// let res =</span>
-<span class="doccomment">///     res.into_iter().fold(0_u64, |x, y| (x + y) % MOD) * mfb.recip(2) % MOD;</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # References</span>
-<span class="doccomment">/// - &lt;https://qiita.com/Kiri8128/items/a011c90d25911bdb3ed3&gt;</span>
-<span class="doccomment">///     - トポロジカルソートで求める話が書かれている。</span>
-<span class="doccomment">/// - &lt;https://fsharpforfunandprofit.com/posts/recursive-types-and-folds-1b/&gt;</span>
-<span class="doccomment">///     - catamorphism の話が載っている。</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TreeCata</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="ident">par</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">T</span>)<span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">order</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-    <span class="ident">child</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">T</span>)<span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">bound</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
+<span class="doccomment">/// 全方位木 DP。
+///
+/// 木の catamorphism。
+/// 各頂点を根としたときのものをまとめて求める。
+///
+/// 二項演算 $\circ: S\\times S\\to S$ と $\star: S\\times T\\to S$ を考える。
+/// $(S, \\circ)$ は単位元 $\\mathrm{id}\_{\\circ}$ を持つモノイドとする。
+/// 木の各辺は一つずつ $T$ の値を持っているとし、辺 $(v, u)$ の値を $e\_{v, u}$
+/// とする。
+///
+/// 頂点 $v$ が葉のとき、$f(v) = \\mathrm{id}\_{\\circ}$ とする[^1]。
+/// そうでないとき、$v$ に隣接する頂点を順に
+/// $\\langle u\_1, u\_2, \\dots, u\_k\\rangle$ とする。$v$ が根のとき、
+/// $$ f(v) = (f\_v(u\_1)\\star e\_{u\_1, v})\\circ\\dots\\circ(f\_v(u\_k)\\star e\_{u\_k, v}) $$
+/// で定める。ただし、$f\_v(u)$ は、「$v$ を取り除いた森において $u$ を含む木で
+/// $u$ を根としたもの」における $f(u)$ とする。
+///
+/// [^1]: すなわち、頂点数 1 の木における $f$ の値が $\\mathrm{id}\_{\\circ}$ となる。
+///
+/// &lt;img src=&quot;../../../../images/tree_cata.png&quot; width=&quot;300&quot; alt=&quot;&quot;&gt;&lt;img src=&quot;../../../../../images/tree_cata.png&quot; width=&quot;300&quot; alt=&quot;&quot;&gt;
+///
+/// 上図グラフにおいて、頂点 $1$ に隣接する頂点のうち、$0$ が最後に来るものとすれば
+/// $$ \\begin{aligned}
+/// f(1) &amp;= f\_0(1)\\circ(f\_1(0)\\star e\_{0, 1}) \\\\
+/// &amp;= f\_0(1) \\circ ((f\_0(2)\\star e\_{2, 0})\\star e\_{0, 1})
+/// \\end{aligned} $$
+/// のようになる。
+///
+/// このように定められる $f$ に対し、$f(0), f(1), \\dots, f(n-1)$ を求める。
+///
+/// # Idea
+/// まず、根を $0$ として木をトポロジカルソートしておく。
+/// これにより、ボトムアップの DP を単にループで行うことができ、$f(0)$
+/// が求まる。次に、上で $f(1)$ を求めたときのように、トップダウンに DP
+/// をしながら（ボトムアップの DP での結果を利用して）残りの頂点について求める。
+///
+/// ## Implementation notes
+/// トポロジカルソートの前処理パートは、木が同じであれば $(\\circ, \\star)$
+/// に依らないので使い回しできる。
+///
+/// 実装においては、$\\circ: S\\times S\\to S$ を `fold`、$\\mathrm{id}\_{\\circ}$
+/// を `empty`、$\\star: S\\times T\\to S$ を `map` と呼んでいる。
+///
+/// `empty` は葉での値（頂点数 1 の木での値）と `fold` の単位元に対応している。
+/// 葉の値を特別扱いしたいときは、セグ木に半群を乗せるときのように、
+/// フラグを持たせれば対応できる（下記の root-leaf の距離の総和の例を参照）。
+/// 全体の頂点数が 1 だったときの処理を最後に分ける必要があるので注意。
+///
+/// 各頂点における頂点の順序を気にした実装になっているため、「各頂点を根として
+/// DFS したときの post-order で各頂点を並べ、その列に基数 $b$・法 $m$ の
+/// rolling hash を適用したときの値を求めよ」といった問題も処理できるはず。
+/// ハッシュ値 $h$ と、部分木サイズ $k$ に対して $(h, b^k\\bmod m)$
+/// とかを管理すればよさそう。
+///
+/// # Complexity
+/// $O(n)$ time.
+///
+/// # Examples
+/// ```
+/// use nekolib::graph::TreeCata;
+///
+/// let g = vec![
+///     vec![(1, ()), (2, ())],
+///     vec![(0, ()), (3, ()), (4, ()), (5, ())],
+///     vec![(0, ())],
+///     vec![(1, ())],
+///     vec![(1, ())],
+///     vec![(1, ())],
+/// ];
+///
+/// //      0 -- 2
+/// //      |
+/// // 4 -- 1 -- 3
+/// //      |
+/// //      5
+///
+/// let tc: TreeCata&lt;_&gt; = g.into();
+///
+/// // max distance
+/// let empty = 0;
+/// let map = |&amp;x: &amp;usize, _: &amp;()| x + 1;
+/// let fold = |&amp;x: &amp;usize, &amp;y: &amp;usize| x.max(y);
+/// assert_eq!(tc.each_root(empty, map, fold), [2, 2, 3, 3, 3, 3]);
+///
+/// // sum of distance
+/// let empty = (0, 0);
+/// let map = |&amp;(d, c): &amp;(usize, usize), _: &amp;()| (d + c + 1, c + 1);
+/// let fold =
+///     |&amp;x: &amp;(usize, usize), &amp;y: &amp;(usize, usize)| (x.0 + y.0, x.1 + y.1);
+/// assert_eq!(
+///     tc.each_root(empty, map, fold)
+///         .into_iter()
+///         .map(|x| x.0)
+///         .collect::&lt;Vec&lt;_&gt;&gt;(),
+///     [8, 6, 12, 10, 10, 10]
+/// );
+///
+/// // (sum of root-leaf distance, # of leaves)
+/// let empty = ((0, 0), false);
+/// let map = |&amp;(x, inner): &amp;((usize, usize), bool), _: &amp;()| {
+///     let (x1, x0) = if inner { x } else { (0, 1) };
+///     ((x1 + 1 * x0, x0), true)
+/// };
+/// let fold = |&amp;x: &amp;((usize, usize), bool), &amp;y: &amp;((usize, usize), bool)| {
+///     let (x1, x0) = x.0;
+///     let (y1, y0) = y.0;
+///     ((x1 + y1, x0 + y0), x.1 | y.1)
+/// };
+/// assert_eq!(
+///     tc.each_root(empty, map, fold)
+///         .into_iter()
+///         .map(|x| if x.1 { x.0 } else { (0, 1) })
+///         .collect::&lt;Vec&lt;_&gt;&gt;(),
+///     [(7, 4), (5, 4), (9, 3), (7, 3), (7, 3), (7, 3)]
+/// );
+/// ```
+///
+/// ```
+/// use nekolib::graph::TreeCata;
+///
+/// let g = vec![
+///     vec![(1, 0), (2, 0)],
+///     vec![(0, 1), (3, 1), (4, 1), (5, 1)],
+///     vec![(0, 2)],
+///     vec![(1, 3)],
+///     vec![(1, 4)],
+///     vec![(1, 5)],
+/// ];
+///
+/// let tc: TreeCata&lt;_&gt; = g.into();
+///
+/// let empty = &quot;&quot;.to_owned();
+/// let map = |x: &amp;String, c: &amp;usize| {
+///     if x == &quot;&quot; { format!(&quot;{}: []&quot;, c) } else { format!(&quot;{}: [{}]&quot;, c, x) }
+/// };
+/// let fold = |x: &amp;String, y: &amp;String| {
+///     if x == &quot;&quot; &amp;&amp; y == &quot;&quot; {
+///         &quot;&quot;.to_owned()
+///     } else if x != &quot;&quot; &amp;&amp; y != &quot;&quot; {
+///         format!(&quot;{}, {}&quot;, x, y)
+///     } else {
+///         format!(&quot;{}{}&quot;, x, y)
+///     }
+/// };
+///
+/// let actual = tc
+///     .each_root(empty, map, fold)
+///     .into_iter()
+///     .enumerate()
+///     .map(|(i, x)| format!(&quot;{}: [{}]&quot;, i, x))
+///     .collect::&lt;Vec&lt;_&gt;&gt;();
+///
+/// assert_eq!(
+///     actual,
+///     [
+///         &quot;0: [1: [3: [], 4: [], 5: []], 2: []]&quot;,
+///         &quot;1: [0: [2: []], 3: [], 4: [], 5: []]&quot;,
+///         &quot;2: [0: [1: [3: [], 4: [], 5: []]]]&quot;,
+///         &quot;3: [1: [0: [2: []], 4: [], 5: []]]&quot;,
+///         &quot;4: [1: [0: [2: []], 3: [], 5: []]]&quot;,
+///         &quot;5: [1: [0: [2: []], 3: [], 4: []]]&quot;,
+///     ]
+/// );
+///
+/// let empty = &quot;&quot;.to_owned();
+/// let map = |x: &amp;String, c: &amp;usize| format!(&quot;({} {} )&quot;, x, c);
+/// let fold = |x: &amp;String, y: &amp;String| format!(&quot;{}{}&quot;, x, y);
+///
+/// assert_eq!(tc.each_root(empty, map, fold), [
+///     &quot;(( 3 )( 4 )( 5 ) 1 )( 2 )&quot;,
+///     &quot;(( 2 ) 0 )( 3 )( 4 )( 5 )&quot;,
+///     &quot;((( 3 )( 4 )( 5 ) 1 ) 0 )&quot;,
+///     &quot;((( 2 ) 0 )( 4 )( 5 ) 1 )&quot;,
+///     &quot;((( 2 ) 0 )( 3 )( 5 ) 1 )&quot;,
+///     &quot;((( 2 ) 0 )( 3 )( 4 ) 1 )&quot;,
+/// ]);
+/// ```
+///
+/// ## Applications
+/// AtCoder における利用例。$(S, \\circ, \\mathrm{id}\_{\\circ}, T, \\star)$
+/// の定義と、$\\langle f(0), f(1), \\dots, f(n-1)\\rangle$
+/// を用いて答えを得る部分のみ載せている。
+///
+/// ```ignore
+/// // typical90_am
+/// let empty = (0, 0);
+/// let map = |&amp;x: &amp;(usize, usize), _: &amp;()| (x.0 + x.1 + 1, x.1 + 1);
+/// let fold =
+///     |&amp;x: &amp;(usize, usize), &amp;y: &amp;(usize, usize)| (x.0 + y.0, x.1 + y.1);
+/// let res: usize =
+///     tc.each_root(empty, map, fold).into_iter().map(|x| x.0).sum();
+/// ```
+/// ```ignore
+/// // abc220_f
+/// let empty = (0, 0);
+/// let map = |&amp;(x1, x0): &amp;(usize, usize), _: &amp;()| (x1 + x0 + 1, x0 + 1);
+/// let fold = |&amp;(x1, x0): &amp;(usize, usize), &amp;(y1, y0): &amp;(usize, usize)| {
+///     (x1 + y1, x0 + y0)
+/// };
+/// let res: Vec&lt;_&gt; =
+///     tc.each_root(empty, map, fold).into_iter().map(|(x1, _)| x1).collect();
+/// ```
+/// ```ignore
+/// // abc222_f
+/// let empty = 0;
+/// let map = |&amp;x: &amp;i64, &amp;(d, w): &amp;(i64, i64)| x.max(d) + w;
+/// let fold = |&amp;x: &amp;i64, &amp;y: &amp;i64| x.max(y);
+/// let res = tc.each_root(empty, map, fold);
+/// ```
+/// ```ignore
+/// // abc223_g
+/// let empty = false;
+/// let map = |&amp;x: &amp;bool, _: &amp;()| !x;
+/// let fold = |&amp;x: &amp;bool, &amp;y: &amp;bool| x | y;
+/// let res =
+///     tc.each_root(empty, map, fold).into_iter().filter(|&amp;x| !x).count();
+/// ```
+/// ```ignore
+/// // s8pc_4_d
+/// let empty = (0.0, 0);
+/// let map = |&amp;x: &amp;(f64, usize), _: &amp;()| (x.0 + 1.0, 1);
+/// let fold = |&amp;x: &amp;(f64, usize), &amp;y: &amp;(f64, usize)| {
+///     let v = x.0 * x.1 as f64 + y.0 * y.1 as f64;
+///     let d = x.1 + y.1;
+///     (v / 1.0_f64.max(d as f64), d)
+/// };
+/// let res = tc.each_root(empty, map, fold);
+/// ```
+/// ```ignore
+/// // dp_v
+/// let empty = 1;
+/// let map = |&amp;x: &amp;u64, _: &amp;()| (x + 1) % m;
+/// let fold = |&amp;x: &amp;u64, &amp;y: &amp;u64| x * y % m;
+/// let res = tc.each_root(empty, map, fold);
+/// ```
+/// ```ignore
+/// // dp_p, abc036_d
+/// let empty = (1, 1);
+/// let map = |&amp;x: &amp;(u64, u64), _: &amp;()| ((x.0 + x.1) % MOD, x.0);
+/// let fold =
+///     |&amp;x: &amp;(u64, u64), &amp;y: &amp;(u64, u64)| (x.0 * y.0 % MOD, x.1 * y.1 % MOD);
+/// let res: Vec&lt;_&gt; = tc
+///     .each_root(empty, map, fold)
+///     .into_iter()
+///     .map(|x| (x.0 + x.1) % MOD)
+///     .collect();
+/// assert!(res.iter().all(|&amp;x| x == res[0]));
+/// ```
+/// ```ignore
+/// // abc160_f
+/// let mfb = ModFactorialBinom::new(n, MOD);
+/// let f = |i| mfb.factorial(i);
+/// let fr = |i| mfb.factorial_recip(i);
+///
+/// let empty = (0, 1, 1);
+/// let map = |&amp;x: &amp;(usize, u64, u64), _: &amp;()| {
+///     (x.0 + 1, fr(x.0 + 1), x.1 * x.2 % MOD * f(x.0) % MOD)
+/// };
+/// let fold = |&amp;x: &amp;(usize, u64, u64), &amp;y: &amp;(usize, u64, u64)| {
+///     (x.0 + y.0, (x.1 * y.1) % MOD, (x.2 * y.2) % MOD)
+/// };
+/// let res: Vec&lt;_&gt; = tc
+///     .each_root(empty, map, fold)
+///     .into_iter()
+///     .map(|x| map(&amp;x, &amp;()).2)
+///     .collect();
+///     
+/// // tdpc_tree
+/// let res =
+///     res.into_iter().fold(0_u64, |x, y| (x + y) % MOD) * mfb.recip(2) % MOD;
+/// ```
+///
+/// # References
+/// - &lt;https://qiita.com/Kiri8128/items/a011c90d25911bdb3ed3&gt;
+///     - トポロジカルソートで求める話が書かれている。
+/// - &lt;https://fsharpforfunandprofit.com/posts/recursive-types-and-folds-1b/&gt;
+///     - catamorphism の話が載っている。
+</span><span class="kw">pub struct </span>TreeCata&lt;T&gt; {
+    par: Vec&lt;<span class="prelude-ty">Option</span>&lt;(usize, T)&gt;&gt;,
+    order: Vec&lt;usize&gt;,
+    child: Vec&lt;Vec&lt;(usize, T)&gt;&gt;,
+    bound: Vec&lt;usize&gt;,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">T</span>)<span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">TreeCata</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="kw-2">mut</span> <span class="ident">g</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">T</span>)<span class="op">&gt;</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">g</span>.<span class="ident">len</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">par</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">n</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="prelude-val">None</span>).<span class="ident">collect</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">q</span>: <span class="ident">VecDeque</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>].<span class="ident">into</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">order</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">child</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">n</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="macro">vec!</span>[]).<span class="ident">collect</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bound</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">n</span>; <span class="ident">n</span>];
+<span class="kw">impl</span>&lt;T&gt; From&lt;Vec&lt;Vec&lt;(usize, T)&gt;&gt;&gt; <span class="kw">for </span>TreeCata&lt;T&gt; {
+    <span class="kw">fn </span>from(<span class="kw-2">mut </span>g: Vec&lt;Vec&lt;(usize, T)&gt;&gt;) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>n = g.len();
+        <span class="kw">let </span><span class="kw-2">mut </span>par: Vec&lt;<span class="kw">_</span>&gt; = (<span class="number">0</span>..n).map(|<span class="kw">_</span>| <span class="prelude-val">None</span>).collect();
+        <span class="kw">let </span><span class="kw-2">mut </span>q: VecDeque&lt;<span class="kw">_</span>&gt; = <span class="macro">vec!</span>[<span class="number">0</span>].into();
+        <span class="kw">let </span><span class="kw-2">mut </span>order = <span class="macro">vec!</span>[];
+        <span class="kw">let </span><span class="kw-2">mut </span>child: Vec&lt;<span class="kw">_</span>&gt; = (<span class="number">0</span>..n).map(|<span class="kw">_</span>| <span class="macro">vec!</span>[]).collect();
+        <span class="kw">let </span><span class="kw-2">mut </span>bound = <span class="macro">vec!</span>[n; n];
 
-        <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=</span> <span class="ident">q</span>.<span class="ident">pop_front</span>() {
-            <span class="ident">order</span>.<span class="ident">push</span>(<span class="ident">v</span>);
-            <span class="kw">let</span> <span class="ident">gv</span> <span class="op">=</span> <span class="ident">std::mem::take</span>(<span class="kw-2">&amp;mut</span> <span class="ident">g</span>[<span class="ident">v</span>]);
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">left</span> <span class="op">=</span> <span class="bool-val">true</span>;
-            <span class="kw">for</span> (<span class="ident">nv</span>, <span class="ident">w</span>) <span class="kw">in</span> <span class="ident">gv</span> {
-                <span class="kw">if</span> <span class="ident">nv</span> <span class="op">==</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">par</span>[<span class="ident">nv</span>].<span class="ident">is_some</span>() {
-                    <span class="ident">par</span>[<span class="ident">v</span>] <span class="op">=</span> <span class="prelude-val">Some</span>((<span class="ident">nv</span>, <span class="ident">w</span>));
-                    <span class="ident">left</span> <span class="op">=</span> <span class="bool-val">false</span>;
-                } <span class="kw">else</span> {
-                    <span class="kw">if</span> <span class="op">!</span><span class="ident">left</span> <span class="op">&amp;&amp;</span> <span class="ident">bound</span>[<span class="ident">v</span>] <span class="op">==</span> <span class="ident">n</span> {
-                        <span class="ident">bound</span>[<span class="ident">v</span>] <span class="op">=</span> <span class="ident">nv</span>;
+        <span class="kw">while let </span><span class="prelude-val">Some</span>(v) = q.pop_front() {
+            order.push(v);
+            <span class="kw">let </span>gv = std::mem::take(<span class="kw-2">&amp;mut </span>g[v]);
+            <span class="kw">let </span><span class="kw-2">mut </span>left = <span class="bool-val">true</span>;
+            <span class="kw">for </span>(nv, w) <span class="kw">in </span>gv {
+                <span class="kw">if </span>nv == <span class="number">0 </span>|| par[nv].is_some() {
+                    par[v] = <span class="prelude-val">Some</span>((nv, w));
+                    left = <span class="bool-val">false</span>;
+                } <span class="kw">else </span>{
+                    <span class="kw">if </span>!left &amp;&amp; bound[v] == n {
+                        bound[v] = nv;
                     }
-                    <span class="ident">child</span>[<span class="ident">v</span>].<span class="ident">push</span>((<span class="ident">nv</span>, <span class="ident">w</span>));
-                    <span class="ident">q</span>.<span class="ident">push_back</span>(<span class="ident">nv</span>);
+                    child[v].push((nv, w));
+                    q.push_back(nv);
                 }
             }
         }
 
-        <span class="self">Self</span> { <span class="ident">par</span>, <span class="ident">order</span>, <span class="ident">child</span>, <span class="ident">bound</span> }
+        <span class="self">Self </span>{ par, order, child, bound }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">TreeCata</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">each_root</span><span class="op">&lt;</span><span class="ident">U</span>: <span class="ident">Clone</span><span class="op">&gt;</span>(
+<span class="kw">impl</span>&lt;T&gt; TreeCata&lt;T&gt; {
+    <span class="kw">pub fn </span>each_root&lt;U: Clone&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">empty</span>: <span class="ident">U</span>,
-        <span class="kw-2">mut</span> <span class="ident">map</span>: <span class="kw">impl</span> <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="ident">U</span>, <span class="kw-2">&amp;</span><span class="ident">T</span>) -&gt; <span class="ident">U</span>,
-        <span class="kw-2">mut</span> <span class="ident">fold</span>: <span class="kw">impl</span> <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="ident">U</span>, <span class="kw-2">&amp;</span><span class="ident">U</span>) -&gt; <span class="ident">U</span>,
-    ) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">U</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">child</span>.<span class="ident">len</span>();
-        <span class="kw">if</span> <span class="ident">n</span> <span class="op">==</span> <span class="number">0</span> {
-            <span class="kw">return</span> <span class="macro">vec!</span>[];
+        empty: U,
+        <span class="kw-2">mut </span>map: <span class="kw">impl </span>FnMut(<span class="kw-2">&amp;</span>U, <span class="kw-2">&amp;</span>T) -&gt; U,
+        <span class="kw-2">mut </span>fold: <span class="kw">impl </span>FnMut(<span class="kw-2">&amp;</span>U, <span class="kw-2">&amp;</span>U) -&gt; U,
+    ) -&gt; Vec&lt;U&gt; {
+        <span class="kw">let </span>n = <span class="self">self</span>.child.len();
+        <span class="kw">if </span>n == <span class="number">0 </span>{
+            <span class="kw">return </span><span class="macro">vec!</span>[];
         }
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ascl</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">empty</span>.<span class="ident">clone</span>(); <span class="ident">n</span>];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ascr</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">empty</span>.<span class="ident">clone</span>(); <span class="ident">n</span>];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dp</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">empty</span>.<span class="ident">clone</span>(); <span class="ident">n</span>];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">right</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">bound</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">bi</span><span class="op">|</span> <span class="ident">bi</span> <span class="op">&lt;</span> <span class="ident">n</span>).<span class="ident">collect</span>();
-        <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">i</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">order</span>[<span class="number">1</span>..].<span class="ident">iter</span>().<span class="ident">rev</span>() {
-            <span class="ident">dp</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">fold</span>(<span class="kw-2">&amp;</span><span class="ident">ascl</span>[<span class="ident">i</span>], <span class="kw-2">&amp;</span><span class="ident">ascr</span>[<span class="ident">i</span>]);
-            <span class="kw">let</span> <span class="kw-2">&amp;</span>(<span class="ident">p</span>, <span class="kw-2">ref</span> <span class="ident">x</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">par</span>[<span class="ident">i</span>].<span class="ident">as_ref</span>().<span class="ident">unwrap</span>();
-            <span class="kw">if</span> <span class="ident">right</span>[<span class="ident">p</span>] {
-                <span class="ident">ascr</span>[<span class="ident">p</span>] <span class="op">=</span> <span class="ident">fold</span>(<span class="kw-2">&amp;</span><span class="ident">map</span>(<span class="kw-2">&amp;</span><span class="ident">dp</span>[<span class="ident">i</span>], <span class="ident">x</span>), <span class="kw-2">&amp;</span><span class="ident">ascr</span>[<span class="ident">p</span>]);
-                <span class="ident">right</span>[<span class="ident">p</span>] <span class="op">=</span> <span class="self">self</span>.<span class="ident">bound</span>[<span class="ident">p</span>] <span class="op">!</span><span class="op">=</span> <span class="ident">i</span>;
-            } <span class="kw">else</span> {
-                <span class="ident">ascl</span>[<span class="ident">p</span>] <span class="op">=</span> <span class="ident">fold</span>(<span class="kw-2">&amp;</span><span class="ident">map</span>(<span class="kw-2">&amp;</span><span class="ident">dp</span>[<span class="ident">i</span>], <span class="ident">x</span>), <span class="kw-2">&amp;</span><span class="ident">ascl</span>[<span class="ident">p</span>]);
+        <span class="kw">let </span><span class="kw-2">mut </span>ascl: Vec&lt;<span class="kw">_</span>&gt; = <span class="macro">vec!</span>[empty.clone(); n];
+        <span class="kw">let </span><span class="kw-2">mut </span>ascr: Vec&lt;<span class="kw">_</span>&gt; = <span class="macro">vec!</span>[empty.clone(); n];
+        <span class="kw">let </span><span class="kw-2">mut </span>dp: Vec&lt;<span class="kw">_</span>&gt; = <span class="macro">vec!</span>[empty.clone(); n];
+        <span class="kw">let </span><span class="kw-2">mut </span>right: Vec&lt;<span class="kw">_</span>&gt; = <span class="self">self</span>.bound.iter().map(|<span class="kw-2">&amp;</span>bi| bi &lt; n).collect();
+        <span class="kw">for </span><span class="kw-2">&amp;</span>i <span class="kw">in </span><span class="self">self</span>.order[<span class="number">1</span>..].iter().rev() {
+            dp[i] = fold(<span class="kw-2">&amp;</span>ascl[i], <span class="kw-2">&amp;</span>ascr[i]);
+            <span class="kw">let </span><span class="kw-2">&amp;</span>(p, <span class="kw-2">ref </span>x) = <span class="self">self</span>.par[i].as_ref().unwrap();
+            <span class="kw">if </span>right[p] {
+                ascr[p] = fold(<span class="kw-2">&amp;</span>map(<span class="kw-2">&amp;</span>dp[i], x), <span class="kw-2">&amp;</span>ascr[p]);
+                right[p] = <span class="self">self</span>.bound[p] != i;
+            } <span class="kw">else </span>{
+                ascl[p] = fold(<span class="kw-2">&amp;</span>map(<span class="kw-2">&amp;</span>dp[i], x), <span class="kw-2">&amp;</span>ascl[p]);
             }
         }
-        <span class="ident">dp</span>[<span class="number">0</span>] <span class="op">=</span> <span class="ident">fold</span>(<span class="kw-2">&amp;</span><span class="ident">ascl</span>[<span class="number">0</span>], <span class="kw-2">&amp;</span><span class="ident">ascr</span>[<span class="number">0</span>]);
+        dp[<span class="number">0</span>] = fold(<span class="kw-2">&amp;</span>ascl[<span class="number">0</span>], <span class="kw-2">&amp;</span>ascr[<span class="number">0</span>]);
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">desc</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">empty</span>.<span class="ident">clone</span>(); <span class="ident">n</span>];
-        <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">i</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">order</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ac</span> <span class="op">=</span> <span class="ident">desc</span>[<span class="ident">i</span>].<span class="ident">clone</span>();
-            <span class="kw">for</span> <span class="kw-2">&amp;</span>(<span class="ident">j</span>, <span class="kw">_</span>) <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">child</span>[<span class="ident">i</span>] {
-                <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">par</span>[<span class="ident">j</span>].<span class="ident">as_ref</span>().<span class="ident">unwrap</span>().<span class="number">1</span>;
-                <span class="ident">desc</span>[<span class="ident">j</span>] <span class="op">=</span> <span class="ident">ac</span>.<span class="ident">clone</span>();
-                <span class="ident">ac</span> <span class="op">=</span> <span class="ident">fold</span>(<span class="kw-2">&amp;</span><span class="ident">ac</span>, <span class="kw-2">&amp;</span><span class="ident">map</span>(<span class="kw-2">&amp;</span><span class="ident">dp</span>[<span class="ident">j</span>], <span class="ident">x</span>));
+        <span class="kw">let </span><span class="kw-2">mut </span>desc: Vec&lt;<span class="kw">_</span>&gt; = <span class="macro">vec!</span>[empty.clone(); n];
+        <span class="kw">for </span><span class="kw-2">&amp;</span>i <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.order {
+            <span class="kw">let </span><span class="kw-2">mut </span>ac = desc[i].clone();
+            <span class="kw">for </span><span class="kw-2">&amp;</span>(j, <span class="kw">_</span>) <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.child[i] {
+                <span class="kw">let </span>x = <span class="kw-2">&amp;</span><span class="self">self</span>.par[j].as_ref().unwrap().<span class="number">1</span>;
+                desc[j] = ac.clone();
+                ac = fold(<span class="kw-2">&amp;</span>ac, <span class="kw-2">&amp;</span>map(<span class="kw-2">&amp;</span>dp[j], x));
             }
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ac</span> <span class="op">=</span> <span class="ident">empty</span>.<span class="ident">clone</span>();
-            <span class="kw">for</span> <span class="kw-2">&amp;</span>(<span class="ident">j</span>, <span class="kw-2">ref</span> <span class="ident">x</span>) <span class="kw">in</span> <span class="self">self</span>.<span class="ident">child</span>[<span class="ident">i</span>].<span class="ident">iter</span>().<span class="ident">rev</span>() {
-                <span class="ident">desc</span>[<span class="ident">j</span>] <span class="op">=</span> <span class="ident">map</span>(<span class="kw-2">&amp;</span><span class="ident">fold</span>(<span class="kw-2">&amp;</span><span class="ident">desc</span>[<span class="ident">j</span>], <span class="kw-2">&amp;</span><span class="ident">ac</span>), <span class="ident">x</span>);
-                <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">par</span>[<span class="ident">j</span>].<span class="ident">as_ref</span>().<span class="ident">unwrap</span>().<span class="number">1</span>;
-                <span class="ident">ac</span> <span class="op">=</span> <span class="ident">fold</span>(<span class="kw-2">&amp;</span><span class="ident">map</span>(<span class="kw-2">&amp;</span><span class="ident">dp</span>[<span class="ident">j</span>], <span class="ident">x</span>), <span class="kw-2">&amp;</span><span class="ident">ac</span>);
-                <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">fold</span>(<span class="kw-2">&amp;</span><span class="ident">desc</span>[<span class="ident">j</span>], <span class="kw-2">&amp;</span><span class="ident">ascr</span>[<span class="ident">j</span>]);
-                <span class="ident">dp</span>[<span class="ident">j</span>] <span class="op">=</span> <span class="ident">fold</span>(<span class="kw-2">&amp;</span><span class="ident">ascl</span>[<span class="ident">j</span>], <span class="kw-2">&amp;</span><span class="ident">tmp</span>);
+            <span class="kw">let </span><span class="kw-2">mut </span>ac = empty.clone();
+            <span class="kw">for </span><span class="kw-2">&amp;</span>(j, <span class="kw-2">ref </span>x) <span class="kw">in </span><span class="self">self</span>.child[i].iter().rev() {
+                desc[j] = map(<span class="kw-2">&amp;</span>fold(<span class="kw-2">&amp;</span>desc[j], <span class="kw-2">&amp;</span>ac), x);
+                <span class="kw">let </span>x = <span class="kw-2">&amp;</span><span class="self">self</span>.par[j].as_ref().unwrap().<span class="number">1</span>;
+                ac = fold(<span class="kw-2">&amp;</span>map(<span class="kw-2">&amp;</span>dp[j], x), <span class="kw-2">&amp;</span>ac);
+                <span class="kw">let </span>tmp = fold(<span class="kw-2">&amp;</span>desc[j], <span class="kw-2">&amp;</span>ascr[j]);
+                dp[j] = fold(<span class="kw-2">&amp;</span>ascl[j], <span class="kw-2">&amp;</span>tmp);
             }
         }
-        <span class="ident">dp</span>
+        dp
     }
 }
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test_value</span>() {
-    <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="number">6</span>;
-    <span class="kw">let</span> <span class="ident">es</span> <span class="op">=</span> <span class="macro">vec!</span>[(<span class="number">0</span>, <span class="number">1</span>), (<span class="number">0</span>, <span class="number">2</span>), (<span class="number">1</span>, <span class="number">3</span>), (<span class="number">1</span>, <span class="number">4</span>), (<span class="number">1</span>, <span class="number">5</span>)];
-    <span class="kw">let</span> <span class="ident">g</span> <span class="op">=</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">g</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="macro">vec!</span>[]; <span class="ident">n</span>];
-        <span class="kw">for</span> <span class="kw-2">&amp;</span>(<span class="ident">u</span>, <span class="ident">v</span>) <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">es</span> {
-            <span class="ident">g</span>[<span class="ident">u</span>].<span class="ident">push</span>((<span class="ident">v</span>, ()));
-            <span class="ident">g</span>[<span class="ident">v</span>].<span class="ident">push</span>((<span class="ident">u</span>, ()));
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test_value() {
+    <span class="kw">let </span>n = <span class="number">6</span>;
+    <span class="kw">let </span>es = <span class="macro">vec!</span>[(<span class="number">0</span>, <span class="number">1</span>), (<span class="number">0</span>, <span class="number">2</span>), (<span class="number">1</span>, <span class="number">3</span>), (<span class="number">1</span>, <span class="number">4</span>), (<span class="number">1</span>, <span class="number">5</span>)];
+    <span class="kw">let </span>g = {
+        <span class="kw">let </span><span class="kw-2">mut </span>g = <span class="macro">vec!</span>[<span class="macro">vec!</span>[]; n];
+        <span class="kw">for </span><span class="kw-2">&amp;</span>(u, v) <span class="kw">in </span><span class="kw-2">&amp;</span>es {
+            g[u].push((v, ()));
+            g[v].push((u, ()));
         }
-        <span class="ident">g</span>
+        g
     };
-    <span class="kw">let</span> <span class="ident">tree_cata</span>: <span class="ident">TreeCata</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">g</span>.<span class="ident">into</span>();
+    <span class="kw">let </span>tree_cata: TreeCata&lt;<span class="kw">_</span>&gt; = g.into();
 
-    <span class="comment">// max distance</span>
-    <span class="kw">let</span> <span class="ident">empty</span> <span class="op">=</span> <span class="number">0</span>;
-    <span class="kw">let</span> <span class="ident">map</span> <span class="op">=</span> <span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">usize</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span>()<span class="op">|</span> <span class="ident">x</span> <span class="op">+</span> <span class="number">1</span>;
-    <span class="kw">let</span> <span class="ident">fold</span> <span class="op">=</span> <span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">usize</span>, <span class="kw-2">&amp;</span><span class="ident">y</span>: <span class="kw-2">&amp;</span><span class="ident">usize</span><span class="op">|</span> <span class="ident">x</span>.<span class="ident">max</span>(<span class="ident">y</span>);
-    <span class="macro">assert_eq!</span>(<span class="ident">tree_cata</span>.<span class="ident">each_root</span>(<span class="ident">empty</span>, <span class="ident">map</span>, <span class="ident">fold</span>), [<span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>]);
+    <span class="comment">// max distance
+    </span><span class="kw">let </span>empty = <span class="number">0</span>;
+    <span class="kw">let </span>map = |<span class="kw-2">&amp;</span>x: <span class="kw-2">&amp;</span>usize, <span class="kw">_</span>: <span class="kw-2">&amp;</span>()| x + <span class="number">1</span>;
+    <span class="kw">let </span>fold = |<span class="kw-2">&amp;</span>x: <span class="kw-2">&amp;</span>usize, <span class="kw-2">&amp;</span>y: <span class="kw-2">&amp;</span>usize| x.max(y);
+    <span class="macro">assert_eq!</span>(tree_cata.each_root(empty, map, fold), [<span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>]);
 
-    <span class="comment">// sum of distance</span>
-    <span class="kw">let</span> <span class="ident">empty</span> <span class="op">=</span> (<span class="number">0</span>, <span class="number">0</span>);
-    <span class="kw">let</span> <span class="ident">map</span> <span class="op">=</span> <span class="op">|</span><span class="kw-2">&amp;</span>(<span class="ident">d</span>, <span class="ident">c</span>): <span class="kw-2">&amp;</span>(<span class="ident">usize</span>, <span class="ident">usize</span>), <span class="kw">_</span>: <span class="kw-2">&amp;</span>()<span class="op">|</span> (<span class="ident">d</span> <span class="op">+</span> <span class="ident">c</span> <span class="op">+</span> <span class="number">1</span>, <span class="ident">c</span> <span class="op">+</span> <span class="number">1</span>);
-    <span class="kw">let</span> <span class="ident">fold</span> <span class="op">=</span>
-        <span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">x</span>: <span class="kw-2">&amp;</span>(<span class="ident">usize</span>, <span class="ident">usize</span>), <span class="kw-2">&amp;</span><span class="ident">y</span>: <span class="kw-2">&amp;</span>(<span class="ident">usize</span>, <span class="ident">usize</span>)<span class="op">|</span> (<span class="ident">x</span>.<span class="number">0</span> <span class="op">+</span> <span class="ident">y</span>.<span class="number">0</span>, <span class="ident">x</span>.<span class="number">1</span> <span class="op">+</span> <span class="ident">y</span>.<span class="number">1</span>);
+    <span class="comment">// sum of distance
+    </span><span class="kw">let </span>empty = (<span class="number">0</span>, <span class="number">0</span>);
+    <span class="kw">let </span>map = |<span class="kw-2">&amp;</span>(d, c): <span class="kw-2">&amp;</span>(usize, usize), <span class="kw">_</span>: <span class="kw-2">&amp;</span>()| (d + c + <span class="number">1</span>, c + <span class="number">1</span>);
+    <span class="kw">let </span>fold =
+        |<span class="kw-2">&amp;</span>x: <span class="kw-2">&amp;</span>(usize, usize), <span class="kw-2">&amp;</span>y: <span class="kw-2">&amp;</span>(usize, usize)| (x.<span class="number">0 </span>+ y.<span class="number">0</span>, x.<span class="number">1 </span>+ y.<span class="number">1</span>);
     <span class="macro">assert_eq!</span>(
-        <span class="ident">tree_cata</span>
-            .<span class="ident">each_root</span>(<span class="ident">empty</span>, <span class="ident">map</span>, <span class="ident">fold</span>)
-            .<span class="ident">into_iter</span>()
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span>.<span class="number">0</span>)
-            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>(),
+        tree_cata
+            .each_root(empty, map, fold)
+            .into_iter()
+            .map(|x| x.<span class="number">0</span>)
+            .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;(),
         [<span class="number">8</span>, <span class="number">6</span>, <span class="number">12</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>]
     );
 
-    <span class="kw">let</span> <span class="ident">g</span> <span class="op">=</span> <span class="macro">vec!</span>[
+    <span class="kw">let </span>g = <span class="macro">vec!</span>[
         <span class="macro">vec!</span>[(<span class="number">1</span>, <span class="number">0</span>), (<span class="number">2</span>, <span class="number">0</span>)],
         <span class="macro">vec!</span>[(<span class="number">0</span>, <span class="number">1</span>), (<span class="number">3</span>, <span class="number">1</span>), (<span class="number">4</span>, <span class="number">1</span>), (<span class="number">5</span>, <span class="number">1</span>)],
         <span class="macro">vec!</span>[(<span class="number">0</span>, <span class="number">2</span>)],
@@ -1028,31 +1028,31 @@
         <span class="macro">vec!</span>[(<span class="number">1</span>, <span class="number">4</span>)],
         <span class="macro">vec!</span>[(<span class="number">1</span>, <span class="number">5</span>)],
     ];
-    <span class="kw">let</span> <span class="ident">tree_cata</span>: <span class="ident">TreeCata</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">g</span>.<span class="ident">into</span>();
+    <span class="kw">let </span>tree_cata: TreeCata&lt;<span class="kw">_</span>&gt; = g.into();
 
-    <span class="comment">// string representation</span>
-    <span class="kw">let</span> <span class="ident">empty</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>.<span class="ident">to_owned</span>();
-    <span class="kw">let</span> <span class="ident">map</span> <span class="op">=</span> <span class="op">|</span><span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">String</span>, <span class="ident">c</span>: <span class="kw-2">&amp;</span><span class="ident">usize</span><span class="op">|</span> {
-        <span class="kw">if</span> <span class="ident">x</span> <span class="op">==</span> <span class="string">&quot;&quot;</span> { <span class="macro">format!</span>(<span class="string">&quot;{}: []&quot;</span>, <span class="ident">c</span>) } <span class="kw">else</span> { <span class="macro">format!</span>(<span class="string">&quot;{}: [{}]&quot;</span>, <span class="ident">c</span>, <span class="ident">x</span>) }
+    <span class="comment">// string representation
+    </span><span class="kw">let </span>empty = <span class="string">&quot;&quot;</span>.to_owned();
+    <span class="kw">let </span>map = |x: <span class="kw-2">&amp;</span>String, c: <span class="kw-2">&amp;</span>usize| {
+        <span class="kw">if </span>x == <span class="string">&quot;&quot; </span>{ <span class="macro">format!</span>(<span class="string">&quot;{}: []&quot;</span>, c) } <span class="kw">else </span>{ <span class="macro">format!</span>(<span class="string">&quot;{}: [{}]&quot;</span>, c, x) }
     };
-    <span class="kw">let</span> <span class="ident">fold</span> <span class="op">=</span> <span class="op">|</span><span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">String</span>, <span class="ident">y</span>: <span class="kw-2">&amp;</span><span class="ident">String</span><span class="op">|</span> {
-        <span class="kw">if</span> <span class="ident">x</span> <span class="op">==</span> <span class="string">&quot;&quot;</span> <span class="op">&amp;&amp;</span> <span class="ident">y</span> <span class="op">==</span> <span class="string">&quot;&quot;</span> {
-            <span class="string">&quot;&quot;</span>.<span class="ident">to_owned</span>()
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">x</span> <span class="op">!</span><span class="op">=</span> <span class="string">&quot;&quot;</span> <span class="op">&amp;&amp;</span> <span class="ident">y</span> <span class="op">!</span><span class="op">=</span> <span class="string">&quot;&quot;</span> {
-            <span class="macro">format!</span>(<span class="string">&quot;{}, {}&quot;</span>, <span class="ident">x</span>, <span class="ident">y</span>)
-        } <span class="kw">else</span> {
-            <span class="macro">format!</span>(<span class="string">&quot;{}{}&quot;</span>, <span class="ident">x</span>, <span class="ident">y</span>)
+    <span class="kw">let </span>fold = |x: <span class="kw-2">&amp;</span>String, y: <span class="kw-2">&amp;</span>String| {
+        <span class="kw">if </span>x == <span class="string">&quot;&quot; </span>&amp;&amp; y == <span class="string">&quot;&quot; </span>{
+            <span class="string">&quot;&quot;</span>.to_owned()
+        } <span class="kw">else if </span>x != <span class="string">&quot;&quot; </span>&amp;&amp; y != <span class="string">&quot;&quot; </span>{
+            <span class="macro">format!</span>(<span class="string">&quot;{}, {}&quot;</span>, x, y)
+        } <span class="kw">else </span>{
+            <span class="macro">format!</span>(<span class="string">&quot;{}{}&quot;</span>, x, y)
         }
     };
 
-    <span class="kw">let</span> <span class="ident">actual</span> <span class="op">=</span> <span class="ident">tree_cata</span>
-        .<span class="ident">each_root</span>(<span class="ident">empty</span>, <span class="ident">map</span>, <span class="ident">fold</span>)
-        .<span class="ident">into_iter</span>()
-        .<span class="ident">enumerate</span>()
-        .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">x</span>)<span class="op">|</span> <span class="macro">format!</span>(<span class="string">&quot;{}: [{}]&quot;</span>, <span class="ident">i</span>, <span class="ident">x</span>))
-        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+    <span class="kw">let </span>actual = tree_cata
+        .each_root(empty, map, fold)
+        .into_iter()
+        .enumerate()
+        .map(|(i, x)| <span class="macro">format!</span>(<span class="string">&quot;{}: [{}]&quot;</span>, i, x))
+        .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
 
-    <span class="kw">let</span> <span class="ident">expected</span> <span class="op">=</span> [
+    <span class="kw">let </span>expected = [
         <span class="string">&quot;0: [1: [3: [], 4: [], 5: []], 2: []]&quot;</span>,
         <span class="string">&quot;1: [0: [2: []], 3: [], 4: [], 5: []]&quot;</span>,
         <span class="string">&quot;2: [0: [1: [3: [], 4: [], 5: []]]]&quot;</span>,
@@ -1060,17 +1060,17 @@
         <span class="string">&quot;4: [1: [0: [2: []], 3: [], 5: []]]&quot;</span>,
         <span class="string">&quot;5: [1: [0: [2: []], 3: [], 4: []]]&quot;</span>,
     ];
-    <span class="macro">assert_eq!</span>(<span class="ident">actual</span>, <span class="ident">expected</span>);
+    <span class="macro">assert_eq!</span>(actual, expected);
 }
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test_order</span>() {
-    <span class="kw">let</span> <span class="ident">empty</span> <span class="op">=</span> <span class="op">|</span><span class="op">|</span> <span class="string">&quot;&quot;</span>.<span class="ident">to_owned</span>();
-    <span class="kw">let</span> <span class="ident">map</span> <span class="op">=</span> <span class="op">|</span><span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">String</span>, <span class="ident">c</span>: <span class="kw-2">&amp;</span><span class="ident">usize</span><span class="op">|</span> <span class="macro">format!</span>(<span class="string">&quot;({} {} )&quot;</span>, <span class="ident">x</span>, <span class="ident">c</span>);
-    <span class="kw">let</span> <span class="ident">fold</span> <span class="op">=</span> <span class="op">|</span><span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">String</span>, <span class="ident">y</span>: <span class="kw-2">&amp;</span><span class="ident">String</span><span class="op">|</span> <span class="macro">format!</span>(<span class="string">&quot;{}{}&quot;</span>, <span class="ident">x</span>, <span class="ident">y</span>);
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test_order() {
+    <span class="kw">let </span>empty = || <span class="string">&quot;&quot;</span>.to_owned();
+    <span class="kw">let </span>map = |x: <span class="kw-2">&amp;</span>String, c: <span class="kw-2">&amp;</span>usize| <span class="macro">format!</span>(<span class="string">&quot;({} {} )&quot;</span>, x, c);
+    <span class="kw">let </span>fold = |x: <span class="kw-2">&amp;</span>String, y: <span class="kw-2">&amp;</span>String| <span class="macro">format!</span>(<span class="string">&quot;{}{}&quot;</span>, x, y);
 
-    <span class="comment">// leftmost</span>
-    <span class="kw">let</span> <span class="ident">g</span> <span class="op">=</span> <span class="macro">vec!</span>[
+    <span class="comment">// leftmost
+    </span><span class="kw">let </span>g = <span class="macro">vec!</span>[
         <span class="macro">vec!</span>[(<span class="number">1</span>, <span class="number">0</span>), (<span class="number">2</span>, <span class="number">0</span>)],
         <span class="macro">vec!</span>[(<span class="number">0</span>, <span class="number">1</span>), (<span class="number">3</span>, <span class="number">1</span>), (<span class="number">4</span>, <span class="number">1</span>), (<span class="number">5</span>, <span class="number">1</span>)],
         <span class="macro">vec!</span>[(<span class="number">0</span>, <span class="number">2</span>)],
@@ -1079,8 +1079,8 @@
         <span class="macro">vec!</span>[(<span class="number">1</span>, <span class="number">5</span>)],
     ];
 
-    <span class="kw">let</span> <span class="ident">tree_cata</span>: <span class="ident">TreeCata</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">g</span>.<span class="ident">into</span>();
-    <span class="macro">assert_eq!</span>(<span class="ident">tree_cata</span>.<span class="ident">each_root</span>(<span class="ident">empty</span>(), <span class="ident">map</span>, <span class="ident">fold</span>), [
+    <span class="kw">let </span>tree_cata: TreeCata&lt;<span class="kw">_</span>&gt; = g.into();
+    <span class="macro">assert_eq!</span>(tree_cata.each_root(empty(), map, fold), [
         <span class="string">&quot;(( 3 )( 4 )( 5 ) 1 )( 2 )&quot;</span>,
         <span class="string">&quot;(( 2 ) 0 )( 3 )( 4 )( 5 )&quot;</span>,
         <span class="string">&quot;((( 3 )( 4 )( 5 ) 1 ) 0 )&quot;</span>,
@@ -1089,8 +1089,8 @@
         <span class="string">&quot;((( 2 ) 0 )( 3 )( 4 ) 1 )&quot;</span>,
     ]);
 
-    <span class="comment">// inner (1)</span>
-    <span class="kw">let</span> <span class="ident">g</span> <span class="op">=</span> <span class="macro">vec!</span>[
+    <span class="comment">// inner (1)
+    </span><span class="kw">let </span>g = <span class="macro">vec!</span>[
         <span class="macro">vec!</span>[(<span class="number">1</span>, <span class="number">0</span>), (<span class="number">2</span>, <span class="number">0</span>)],
         <span class="macro">vec!</span>[(<span class="number">3</span>, <span class="number">1</span>), (<span class="number">0</span>, <span class="number">1</span>), (<span class="number">4</span>, <span class="number">1</span>), (<span class="number">5</span>, <span class="number">1</span>)],
         <span class="macro">vec!</span>[(<span class="number">0</span>, <span class="number">2</span>)],
@@ -1099,8 +1099,8 @@
         <span class="macro">vec!</span>[(<span class="number">1</span>, <span class="number">5</span>)],
     ];
 
-    <span class="kw">let</span> <span class="ident">tree_cata</span>: <span class="ident">TreeCata</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">g</span>.<span class="ident">into</span>();
-    <span class="macro">assert_eq!</span>(<span class="ident">tree_cata</span>.<span class="ident">each_root</span>(<span class="ident">empty</span>(), <span class="ident">map</span>, <span class="ident">fold</span>), [
+    <span class="kw">let </span>tree_cata: TreeCata&lt;<span class="kw">_</span>&gt; = g.into();
+    <span class="macro">assert_eq!</span>(tree_cata.each_root(empty(), map, fold), [
         <span class="string">&quot;(( 3 )( 4 )( 5 ) 1 )( 2 )&quot;</span>,
         <span class="string">&quot;( 3 )(( 2 ) 0 )( 4 )( 5 )&quot;</span>,
         <span class="string">&quot;((( 3 )( 4 )( 5 ) 1 ) 0 )&quot;</span>,
@@ -1109,8 +1109,8 @@
         <span class="string">&quot;((( 2 ) 0 )( 3 )( 4 ) 1 )&quot;</span>,
     ]);
 
-    <span class="comment">// inner (2)</span>
-    <span class="kw">let</span> <span class="ident">g</span> <span class="op">=</span> <span class="macro">vec!</span>[
+    <span class="comment">// inner (2)
+    </span><span class="kw">let </span>g = <span class="macro">vec!</span>[
         <span class="macro">vec!</span>[(<span class="number">1</span>, <span class="number">0</span>), (<span class="number">2</span>, <span class="number">0</span>)],
         <span class="macro">vec!</span>[(<span class="number">3</span>, <span class="number">1</span>), (<span class="number">4</span>, <span class="number">1</span>), (<span class="number">0</span>, <span class="number">1</span>), (<span class="number">5</span>, <span class="number">1</span>)],
         <span class="macro">vec!</span>[(<span class="number">0</span>, <span class="number">2</span>)],
@@ -1119,8 +1119,8 @@
         <span class="macro">vec!</span>[(<span class="number">1</span>, <span class="number">5</span>)],
     ];
 
-    <span class="kw">let</span> <span class="ident">tree_cata</span>: <span class="ident">TreeCata</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">g</span>.<span class="ident">into</span>();
-    <span class="macro">assert_eq!</span>(<span class="ident">tree_cata</span>.<span class="ident">each_root</span>(<span class="ident">empty</span>(), <span class="ident">map</span>, <span class="ident">fold</span>), [
+    <span class="kw">let </span>tree_cata: TreeCata&lt;<span class="kw">_</span>&gt; = g.into();
+    <span class="macro">assert_eq!</span>(tree_cata.each_root(empty(), map, fold), [
         <span class="string">&quot;(( 3 )( 4 )( 5 ) 1 )( 2 )&quot;</span>,
         <span class="string">&quot;( 3 )( 4 )(( 2 ) 0 )( 5 )&quot;</span>,
         <span class="string">&quot;((( 3 )( 4 )( 5 ) 1 ) 0 )&quot;</span>,
@@ -1129,8 +1129,8 @@
         <span class="string">&quot;((( 2 ) 0 )( 3 )( 4 ) 1 )&quot;</span>,
     ]);
 
-    <span class="comment">// rightmost</span>
-    <span class="kw">let</span> <span class="ident">g</span> <span class="op">=</span> <span class="macro">vec!</span>[
+    <span class="comment">// rightmost
+    </span><span class="kw">let </span>g = <span class="macro">vec!</span>[
         <span class="macro">vec!</span>[(<span class="number">1</span>, <span class="number">0</span>), (<span class="number">2</span>, <span class="number">0</span>)],
         <span class="macro">vec!</span>[(<span class="number">3</span>, <span class="number">1</span>), (<span class="number">4</span>, <span class="number">1</span>), (<span class="number">5</span>, <span class="number">1</span>), (<span class="number">0</span>, <span class="number">1</span>)],
         <span class="macro">vec!</span>[(<span class="number">0</span>, <span class="number">2</span>)],
@@ -1139,8 +1139,8 @@
         <span class="macro">vec!</span>[(<span class="number">1</span>, <span class="number">5</span>)],
     ];
 
-    <span class="kw">let</span> <span class="ident">tree_cata</span>: <span class="ident">TreeCata</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">g</span>.<span class="ident">into</span>();
-    <span class="macro">assert_eq!</span>(<span class="ident">tree_cata</span>.<span class="ident">each_root</span>(<span class="ident">empty</span>(), <span class="ident">map</span>, <span class="ident">fold</span>), [
+    <span class="kw">let </span>tree_cata: TreeCata&lt;<span class="kw">_</span>&gt; = g.into();
+    <span class="macro">assert_eq!</span>(tree_cata.each_root(empty(), map, fold), [
         <span class="string">&quot;(( 3 )( 4 )( 5 ) 1 )( 2 )&quot;</span>,
         <span class="string">&quot;( 3 )( 4 )( 5 )(( 2 ) 0 )&quot;</span>,
         <span class="string">&quot;((( 3 )( 4 )( 5 ) 1 ) 0 )&quot;</span>,
@@ -1150,4 +1150,4 @@
     ]);
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

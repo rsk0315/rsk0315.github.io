@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/graph/dijkstra_.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>dijkstra_.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/graph/dijkstra_.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>dijkstra_.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -208,126 +208,126 @@
 <span id="119">119</span>
 <span id="120">120</span>
 <span id="121">121</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 最短距離 (Dijkstra)。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 最短距離 (Dijkstra)。
 
-<span class="kw">use</span> <span class="ident">std::cmp::Reverse</span>;
-<span class="kw">use</span> <span class="ident">std::collections::BinaryHeap</span>;
+</span><span class="kw">use </span>std::cmp::Reverse;
+<span class="kw">use </span>std::collections::BinaryHeap;
 
-<span class="doccomment">/// Dijkstra 法に基づく最短距離。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Parameters</span>
-<span class="doccomment">/// - `n`: 頂点数</span>
-<span class="doccomment">/// - `s`: 始点</span>
-<span class="doccomment">/// - `zero`: 距離を表す型の $0$</span>
-<span class="doccomment">/// - `index`: 頂点から添字への番号づけをする関数</span>
-<span class="doccomment">/// - `delta`: 頂点 `v` と関数 `search` を受け取る関数</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// `delta` は、`v` の各隣接頂点 `nv` とそこへの距離 `ew` に対して、</span>
-<span class="doccomment">/// `search(nv, ew)` を呼び出す必要がある。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// `g[v]` が `v` の隣接頂点を持つ、よくある隣接リストにおける例を載せる。</span>
-<span class="doccomment">/// 次のようなグラフである。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```text</span>
-<span class="doccomment">///      2        3</span>
-<span class="doccomment">/// (0) ---&gt; (1) ---&gt; (2)</span>
-<span class="doccomment">///  ^        |        |</span>
-<span class="doccomment">///  | 1      |        | 4</span>
-<span class="doccomment">///  |        |  9     v</span>
-<span class="doccomment">/// (3)       +-----&gt; (4)</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::graph::dijkstra;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let g = vec![</span>
-<span class="doccomment">///     vec![(1, 2)],</span>
-<span class="doccomment">///     vec![(2, 3), (4, 9)],</span>
-<span class="doccomment">///     vec![(4, 4)],</span>
-<span class="doccomment">///     vec![(0, 1)],</span>
-<span class="doccomment">///     vec![],</span>
-<span class="doccomment">/// ];</span>
-<span class="doccomment">/// let index = |&amp;v: &amp;usize| v;</span>
-<span class="doccomment">/// let delta = |&amp;v: &amp;usize| g[v].iter().cloned();</span>
-<span class="doccomment">/// let dist = dijkstra(5, 0, 0_i32, index, delta);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(dist, vec![Some(0), Some(2), Some(5), None, Some(9)]);</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 頂点数の上限 $n$ さえ既知であれば、`index` は動的に決められる。</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use std::collections::BTreeMap;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// use nekolib::graph::dijkstra;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let n = 10;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let s = 10001;</span>
-<span class="doccomment">/// let t = 10015;</span>
-<span class="doccomment">/// let u = t - 1;</span>
-<span class="doccomment">/// let mut enc = BTreeMap::new();</span>
-<span class="doccomment">/// let index = |&amp;v: &amp;usize| match enc.get(&amp;v) {</span>
-<span class="doccomment">///     Some(&amp;i) =&gt; i,</span>
-<span class="doccomment">///     None =&gt; {</span>
-<span class="doccomment">///         let len = enc.len();</span>
-<span class="doccomment">///         enc.insert(v, len);</span>
-<span class="doccomment">///         len</span>
-<span class="doccomment">///     }</span>
-<span class="doccomment">/// };</span>
-<span class="doccomment">/// let delta =</span>
-<span class="doccomment">///   |&amp;v: &amp;usize| Some((v + 2, 1)).filter(|&amp;(v, _)| v &lt;= t).into_iter();</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let res = dijkstra(n, s, 0, index, delta);</span>
-<span class="doccomment">/// assert_eq!(res[enc[&amp;t]], Some(7));</span>
-<span class="doccomment">/// assert!(!enc.contains_key(&amp;u))</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Notes</span>
-<span class="doccomment">/// 複数のグラフを扱う際に `delta` を使い回すと、意図しないグラフを見てしまいがちなので注意。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// 二分ヒープを用いる実装なので、$O(|E|\\log(|V|))$ 時間。</span>
-<span class="doccomment">/// ここで、$V$ は頂点集合、$E$ は辺集合である。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # References</span>
-<span class="doccomment">/// - &lt;https://niuez.github.io/posts/impl_abstract_dijkstra/&gt;</span>
-<span class="doccomment">///     - これを意識していますが、辺の取得にイテレータを使っているので少々異なります。</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dijkstra</span><span class="op">&lt;</span><span class="ident">V</span>, <span class="ident">W</span>, <span class="ident">E</span><span class="op">&gt;</span>(
-    <span class="ident">n</span>: <span class="ident">usize</span>,
-    <span class="ident">s</span>: <span class="ident">V</span>,
-    <span class="ident">zero</span>: <span class="ident">W</span>,
-    <span class="kw-2">mut</span> <span class="ident">index</span>: <span class="kw">impl</span> <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="ident">V</span>) -&gt; <span class="ident">usize</span>,
-    <span class="kw-2">mut</span> <span class="ident">delta</span>: <span class="kw">impl</span> <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="ident">V</span>) -&gt; <span class="ident">E</span>,
-) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">V</span>: <span class="ident">Ord</span>,
-    <span class="ident">W</span>: <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">std::ops::Add</span><span class="op">&lt;</span><span class="ident">W</span>, <span class="ident">Output</span> <span class="op">=</span> <span class="ident">W</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Clone</span>,
-    <span class="ident">E</span>: <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> (<span class="ident">V</span>, <span class="ident">W</span>)<span class="op">&gt;</span>,
+<span class="doccomment">/// Dijkstra 法に基づく最短距離。
+///
+/// # Parameters
+/// - `n`: 頂点数
+/// - `s`: 始点
+/// - `zero`: 距離を表す型の $0$
+/// - `index`: 頂点から添字への番号づけをする関数
+/// - `delta`: 頂点 `v` と関数 `search` を受け取る関数
+///
+/// `delta` は、`v` の各隣接頂点 `nv` とそこへの距離 `ew` に対して、
+/// `search(nv, ew)` を呼び出す必要がある。
+///
+/// # Examples
+/// `g[v]` が `v` の隣接頂点を持つ、よくある隣接リストにおける例を載せる。
+/// 次のようなグラフである。
+///
+/// ```text
+///      2        3
+/// (0) ---&gt; (1) ---&gt; (2)
+///  ^        |        |
+///  | 1      |        | 4
+///  |        |  9     v
+/// (3)       +-----&gt; (4)
+/// ```
+///
+/// ```
+/// use nekolib::graph::dijkstra;
+///
+/// let g = vec![
+///     vec![(1, 2)],
+///     vec![(2, 3), (4, 9)],
+///     vec![(4, 4)],
+///     vec![(0, 1)],
+///     vec![],
+/// ];
+/// let index = |&amp;v: &amp;usize| v;
+/// let delta = |&amp;v: &amp;usize| g[v].iter().cloned();
+/// let dist = dijkstra(5, 0, 0_i32, index, delta);
+///
+/// assert_eq!(dist, vec![Some(0), Some(2), Some(5), None, Some(9)]);
+/// ```
+///
+/// 頂点数の上限 $n$ さえ既知であれば、`index` は動的に決められる。
+/// ```
+/// use std::collections::BTreeMap;
+///
+/// use nekolib::graph::dijkstra;
+///
+/// let n = 10;
+///
+/// let s = 10001;
+/// let t = 10015;
+/// let u = t - 1;
+/// let mut enc = BTreeMap::new();
+/// let index = |&amp;v: &amp;usize| match enc.get(&amp;v) {
+///     Some(&amp;i) =&gt; i,
+///     None =&gt; {
+///         let len = enc.len();
+///         enc.insert(v, len);
+///         len
+///     }
+/// };
+/// let delta =
+///   |&amp;v: &amp;usize| Some((v + 2, 1)).filter(|&amp;(v, _)| v &lt;= t).into_iter();
+///
+/// let res = dijkstra(n, s, 0, index, delta);
+/// assert_eq!(res[enc[&amp;t]], Some(7));
+/// assert!(!enc.contains_key(&amp;u))
+/// ```
+///
+/// # Notes
+/// 複数のグラフを扱う際に `delta` を使い回すと、意図しないグラフを見てしまいがちなので注意。
+///
+/// # Complexity
+/// 二分ヒープを用いる実装なので、$O(|E|\\log(|V|))$ 時間。
+/// ここで、$V$ は頂点集合、$E$ は辺集合である。
+///
+/// # References
+/// - &lt;https://niuez.github.io/posts/impl_abstract_dijkstra/&gt;
+///     - これを意識していますが、辺の取得にイテレータを使っているので少々異なります。
+</span><span class="kw">pub fn </span>dijkstra&lt;V, W, E&gt;(
+    n: usize,
+    s: V,
+    zero: W,
+    <span class="kw-2">mut </span>index: <span class="kw">impl </span>FnMut(<span class="kw-2">&amp;</span>V) -&gt; usize,
+    <span class="kw-2">mut </span>delta: <span class="kw">impl </span>FnMut(<span class="kw-2">&amp;</span>V) -&gt; E,
+) -&gt; Vec&lt;<span class="prelude-ty">Option</span>&lt;W&gt;&gt;
+<span class="kw">where
+    </span>V: Ord,
+    W: Ord + std::ops::Add&lt;W, Output = W&gt; + Clone,
+    E: Iterator&lt;Item = (V, W)&gt;,
 {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dist</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="prelude-val">None</span>; <span class="ident">n</span>];
-    <span class="kw">let</span> <span class="ident">si</span> <span class="op">=</span> <span class="ident">index</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>);
-    <span class="ident">dist</span>[<span class="ident">si</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">zero</span>);
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pq</span>: <span class="ident">BinaryHeap</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span>
-        <span class="macro">vec!</span>[<span class="ident">Reverse</span>((<span class="ident">dist</span>[<span class="ident">si</span>].<span class="ident">clone</span>().<span class="ident">unwrap</span>(), <span class="ident">s</span>))].<span class="ident">into</span>();
+    <span class="kw">let </span><span class="kw-2">mut </span>dist: Vec&lt;<span class="prelude-ty">Option</span>&lt;W&gt;&gt; = <span class="macro">vec!</span>[<span class="prelude-val">None</span>; n];
+    <span class="kw">let </span>si = index(<span class="kw-2">&amp;</span>s);
+    dist[si] = <span class="prelude-val">Some</span>(zero);
+    <span class="kw">let </span><span class="kw-2">mut </span>pq: BinaryHeap&lt;<span class="kw">_</span>&gt; =
+        <span class="macro">vec!</span>[Reverse((dist[si].clone().unwrap(), s))].into();
 
-    <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">Reverse</span>((<span class="ident">w</span>, <span class="ident">v</span>))) <span class="op">=</span> <span class="ident">pq</span>.<span class="ident">pop</span>() {
-        <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">dist</span>[<span class="ident">index</span>(<span class="kw-2">&amp;</span><span class="ident">v</span>)] {
-            <span class="prelude-val">Some</span>(<span class="ident">cw</span>) <span class="kw">if</span> <span class="ident">cw</span> <span class="op">&lt;</span> <span class="kw-2">&amp;</span><span class="ident">w</span> =&gt; <span class="kw">continue</span>,
-            <span class="kw">_</span> =&gt; {}
+    <span class="kw">while let </span><span class="prelude-val">Some</span>(Reverse((w, v))) = pq.pop() {
+        <span class="kw">match </span><span class="kw-2">&amp;</span>dist[index(<span class="kw-2">&amp;</span>v)] {
+            <span class="prelude-val">Some</span>(cw) <span class="kw">if </span>cw &lt; <span class="kw-2">&amp;</span>w =&gt; <span class="kw">continue</span>,
+            <span class="kw">_ </span>=&gt; {}
         }
-        <span class="kw">for</span> (<span class="ident">nv</span>, <span class="ident">ew</span>) <span class="kw">in</span> <span class="ident">delta</span>(<span class="kw-2">&amp;</span><span class="ident">v</span>) {
-            <span class="kw">let</span> <span class="ident">nw</span> <span class="op">=</span> <span class="ident">w</span>.<span class="ident">clone</span>() <span class="op">+</span> <span class="ident">ew</span>;
-            <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">dist</span>[<span class="ident">index</span>(<span class="kw-2">&amp;</span><span class="ident">nv</span>)] {
-                <span class="prelude-val">Some</span>(<span class="ident">cw</span>) <span class="kw">if</span> <span class="ident">cw</span> <span class="op">&lt;</span><span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">nw</span> =&gt; {}
-                <span class="kw">_</span> =&gt; {
-                    <span class="ident">dist</span>[<span class="ident">index</span>(<span class="kw-2">&amp;</span><span class="ident">nv</span>)] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">nw</span>.<span class="ident">clone</span>());
-                    <span class="ident">pq</span>.<span class="ident">push</span>(<span class="ident">Reverse</span>((<span class="ident">nw</span>, <span class="ident">nv</span>)));
+        <span class="kw">for </span>(nv, ew) <span class="kw">in </span>delta(<span class="kw-2">&amp;</span>v) {
+            <span class="kw">let </span>nw = w.clone() + ew;
+            <span class="kw">match </span><span class="kw-2">&amp;</span>dist[index(<span class="kw-2">&amp;</span>nv)] {
+                <span class="prelude-val">Some</span>(cw) <span class="kw">if </span>cw &lt;= <span class="kw-2">&amp;</span>nw =&gt; {}
+                <span class="kw">_ </span>=&gt; {
+                    dist[index(<span class="kw-2">&amp;</span>nv)] = <span class="prelude-val">Some</span>(nw.clone());
+                    pq.push(Reverse((nw, nv)));
                 }
             }
         }
     }
-    <span class="ident">dist</span>
+    dist
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/mod_pow.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod_pow.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/mod_pow.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod_pow.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -145,63 +145,63 @@
 <span id="56">56</span>
 <span id="57">57</span>
 <span id="58">58</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 冪乗。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 冪乗。
 
-<span class="doccomment">/// 冪乗。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $a^b \\bmod n$ を返す。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// $O(\\log(b))$ time.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::math::ModPow;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(3_u64.mod_pow(14, 10), 9);</span>
-<span class="doccomment">/// assert_eq!(2_u64.mod_pow(11, 1024), 0);</span>
-<span class="doccomment">/// assert_eq!(0_u64.mod_pow(0, 1), 0);</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">ModPow</span> {
-    <span class="kw">fn</span> <span class="ident">mod_pow</span>(<span class="self">self</span>, <span class="ident">b</span>: <span class="self">Self</span>, <span class="ident">n</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
+/// 冪乗。
+///
+/// $a^b \\bmod n$ を返す。
+///
+/// # Complexity
+/// $O(\\log(b))$ time.
+///
+/// # Examples
+/// ```
+/// use nekolib::math::ModPow;
+///
+/// assert_eq!(3_u64.mod_pow(14, 10), 9);
+/// assert_eq!(2_u64.mod_pow(11, 1024), 0);
+/// assert_eq!(0_u64.mod_pow(0, 1), 0);
+/// ```
+</span><span class="kw">pub trait </span>ModPow {
+    <span class="kw">fn </span>mod_pow(<span class="self">self</span>, b: <span class="self">Self</span>, n: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_uint</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span> <span class="ident">ModPow</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">mod_pow</span>(<span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">b</span>: <span class="self">Self</span>, <span class="ident">n</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">if</span> <span class="ident">n</span> <span class="op">==</span> <span class="number">1</span> {
-                    <span class="kw">return</span> <span class="number">0</span>; <span class="comment">// in case 0^0</span>
-                }
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="number">1</span>;
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">a</span> <span class="op">=</span> <span class="self">self</span> <span class="op">%</span> <span class="ident">n</span>;
-                <span class="kw">while</span> <span class="ident">b</span> <span class="op">&gt;</span> <span class="number">0</span> {
-                    <span class="kw">if</span> <span class="ident">b</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">==</span> <span class="number">1</span> {
-                        <span class="ident">res</span> <span class="op">=</span> <span class="ident">res</span> <span class="op">*</span> <span class="ident">a</span> <span class="op">%</span> <span class="ident">n</span>;
+<span class="macro">macro_rules! </span>impl_uint {
+    (<span class="macro-nonterminal">$t</span>:ty) =&gt; {
+        <span class="kw">impl </span>ModPow <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
+            <span class="kw">fn </span>mod_pow(<span class="self">self</span>, <span class="kw-2">mut </span>b: <span class="self">Self</span>, n: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+                <span class="kw">if </span>n == <span class="number">1 </span>{
+                    <span class="kw">return </span><span class="number">0</span>; <span class="comment">// in case 0^0
+                </span>}
+                <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="number">1</span>;
+                <span class="kw">let </span><span class="kw-2">mut </span>a = <span class="self">self </span>% n;
+                <span class="kw">while </span>b &gt; <span class="number">0 </span>{
+                    <span class="kw">if </span>b &amp; <span class="number">1 </span>== <span class="number">1 </span>{
+                        res = res * a % n;
                     }
-                    <span class="ident">a</span> <span class="op">=</span> <span class="ident">a</span> <span class="op">*</span> <span class="ident">a</span> <span class="op">%</span> <span class="ident">n</span>;
-                    <span class="ident">b</span> <span class="op">&gt;</span><span class="op">&gt;</span><span class="op">=</span> <span class="number">1</span>;
+                    a = a * a % n;
+                    b &gt;&gt;= <span class="number">1</span>;
                 }
-                <span class="ident">res</span>
+                res
             }
         }
     };
-    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
+    ( $(<span class="macro-nonterminal">$t</span>:ty)* ) =&gt; { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$t</span>);)* };
 }
 
-<span class="macro">impl_uint!</span>(<span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span>);
+<span class="macro">impl_uint!</span>(u8 u16 u32 u64 u128 usize);
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test</span>() {
-    <span class="kw">for</span> <span class="ident">n</span> <span class="kw">in</span> <span class="number">1_u64</span>..<span class="op">=</span><span class="number">30</span> {
-        <span class="kw">for</span> <span class="ident">a</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">30</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">expected</span> <span class="op">=</span> <span class="number">1</span> <span class="op">%</span> <span class="ident">n</span>;
-            <span class="kw">for</span> <span class="ident">b</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">30</span> {
-                <span class="macro">assert_eq!</span>(<span class="ident">a</span>.<span class="ident">mod_pow</span>(<span class="ident">b</span>, <span class="ident">n</span>), <span class="ident">expected</span>);
-                <span class="ident">expected</span> <span class="op">=</span> <span class="ident">expected</span> <span class="op">*</span> <span class="ident">a</span> <span class="op">%</span> <span class="ident">n</span>;
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test() {
+    <span class="kw">for </span>n <span class="kw">in </span><span class="number">1_u64</span>..=<span class="number">30 </span>{
+        <span class="kw">for </span>a <span class="kw">in </span><span class="number">0</span>..<span class="number">30 </span>{
+            <span class="kw">let </span><span class="kw-2">mut </span>expected = <span class="number">1 </span>% n;
+            <span class="kw">for </span>b <span class="kw">in </span><span class="number">0</span>..<span class="number">30 </span>{
+                <span class="macro">assert_eq!</span>(a.mod_pow(b, n), expected);
+                expected = expected * a % n;
             }
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

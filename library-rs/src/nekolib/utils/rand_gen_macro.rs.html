@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/utils/rand_gen_macro.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>rand_gen_macro.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/utils/rand_gen_macro.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>rand_gen_macro.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -649,166 +649,166 @@
 <span id="560">560</span>
 <span id="561">561</span>
 <span id="562">562</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 乱数生成マクロ。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 乱数生成マクロ。
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::bitop</span>;
+</span><span class="kw">use </span><span class="kw">super</span>::bitop;
 
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">rand_gen_builder</span> {
-    ( @<span class="ident">gen</span> { [ $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">cur</span>:<span class="ident">tt</span>)<span class="op">*</span> ] } ) =&gt; {
-        <span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">vec</span> @<span class="ident">gen</span> {} @<span class="ident">rest</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">cur</span>)<span class="kw-2">*</span>)
+<span class="attribute">#[macro_export]
+</span><span class="macro">macro_rules! </span>rand_gen_builder {
+    ( @gen { [ $(<span class="macro-nonterminal">$cur</span>:tt)* ] } ) =&gt; {
+        <span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">vec </span>@gen {} @rest $(<span class="macro-nonterminal">$cur</span>)<span class="kw-2">*</span>)
     };
-    ( @<span class="ident">gen</span> { [ $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">cur</span>:<span class="ident">tt</span>)<span class="op">*</span> ] <span class="kw">where</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">f</span>:<span class="ident">ident</span> $(<span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span>:<span class="ident">expr</span>)<span class="question-mark">?</span>),<span class="op">*</span> } } ) =&gt; {
-        <span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">vec</span> @<span class="ident">gen</span> {} @<span class="ident">rest</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">cur</span>)<span class="kw-2">*</span>)
-            .<span class="ident">options</span>() $(.<span class="macro-nonterminal">$</span><span class="macro-nonterminal">f</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span>)<span class="question-mark">?</span>))<span class="op">*</span>
+    ( @gen { [ $(<span class="macro-nonterminal">$cur</span>:tt)* ] <span class="kw">where </span>{ $(<span class="macro-nonterminal">$f</span>:ident $(= <span class="macro-nonterminal">$a</span>:expr)<span class="question-mark">?</span>),* } } ) =&gt; {
+        <span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">vec </span>@gen {} @rest $(<span class="macro-nonterminal">$cur</span>)<span class="kw-2">*</span>)
+            .options() $(.<span class="macro-nonterminal">$f</span>($(<span class="macro-nonterminal">$a</span>)<span class="question-mark">?</span>))*
     };
-    ( @<span class="ident">gen</span> { [ $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">cur</span>:<span class="ident">tt</span>)<span class="op">*</span> ] <span class="kw">where</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">f</span>:<span class="ident">ident</span> $(<span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span>:<span class="ident">expr</span>)<span class="question-mark">?</span>),<span class="kw-2">*</span>, } } ) =&gt; {
-        <span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">vec</span> @<span class="ident">gen</span> {} @<span class="ident">rest</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">cur</span>)<span class="kw-2">*</span>)
-            .<span class="ident">options</span>() $(.<span class="macro-nonterminal">$</span><span class="macro-nonterminal">f</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span>)<span class="question-mark">?</span>))<span class="op">*</span>
+    ( @gen { [ $(<span class="macro-nonterminal">$cur</span>:tt)* ] <span class="kw">where </span>{ $(<span class="macro-nonterminal">$f</span>:ident $(= <span class="macro-nonterminal">$a</span>:expr)<span class="question-mark">?</span>),<span class="kw-2">*</span>, } } ) =&gt; {
+        <span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">vec </span>@gen {} @rest $(<span class="macro-nonterminal">$cur</span>)<span class="kw-2">*</span>)
+            .options() $(.<span class="macro-nonterminal">$f</span>($(<span class="macro-nonterminal">$a</span>)<span class="question-mark">?</span>))*
     };
-    ( @<span class="ident">vec</span> @<span class="ident">gen</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">x</span>:<span class="ident">tt</span>)<span class="op">*</span> } @<span class="ident">rest</span> ; $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>:<span class="ident">tt</span>)<span class="op">*</span> ) =&gt; {
-        <span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">vec</span> @<span class="ident">gen</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">x</span>)<span class="op">*</span> } @<span class="ident">len</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="op">*</span> })
+    ( @vec @gen { $(<span class="macro-nonterminal">$x</span>:tt)* } @rest ; $(<span class="macro-nonterminal">$rest</span>:tt)* ) =&gt; {
+        <span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">vec </span>@gen { $(<span class="macro-nonterminal">$x</span>)* } @len { $(<span class="macro-nonterminal">$rest</span>)* })
     };
-    ( @<span class="ident">vec</span> @<span class="ident">gen</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">cur</span>:<span class="ident">tt</span>)<span class="op">*</span> } @<span class="ident">rest</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tt</span>:<span class="ident">tt</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>:<span class="ident">tt</span>)<span class="op">*</span> ) =&gt; {
-        <span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">vec</span> @<span class="ident">gen</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">cur</span>)<span class="op">*</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tt</span> } @<span class="ident">rest</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="kw-2">*</span>)
+    ( @vec @gen { $(<span class="macro-nonterminal">$cur</span>:tt)* } @rest <span class="macro-nonterminal">$tt</span>:tt $(<span class="macro-nonterminal">$rest</span>:tt)* ) =&gt; {
+        <span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">vec </span>@gen { $(<span class="macro-nonterminal">$cur</span>)* <span class="macro-nonterminal">$tt </span>} @rest $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>)
     };
-    ( @<span class="ident">vec</span> @<span class="ident">gen</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">x</span>:<span class="ident">tt</span>)<span class="op">*</span> } @<span class="ident">len</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">len</span>:<span class="ident">tt</span>)<span class="op">*</span> }) =&gt; {
-        <span class="ident">VecMarker::new</span>(<span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">gen</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">x</span>)<span class="op">*</span> }), $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">len</span>)<span class="kw-2">*</span>)
+    ( @vec @gen { $(<span class="macro-nonterminal">$x</span>:tt)* } @len { $(<span class="macro-nonterminal">$len</span>:tt)* }) =&gt; {
+        VecMarker::new(<span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">gen </span>{ $(<span class="macro-nonterminal">$x</span>)* }), $(<span class="macro-nonterminal">$len</span>)<span class="kw-2">*</span>)
     };
 
-    ( @<span class="ident">gen</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">x</span>:<span class="ident">tt</span>)<span class="op">*</span> } ) =&gt; {
-        <span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">gen</span> {} @<span class="ident">rest</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">x</span>)<span class="kw-2">*</span>)
+    ( @gen { $(<span class="macro-nonterminal">$x</span>:tt)* } ) =&gt; {
+        <span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">gen </span>{} @rest $(<span class="macro-nonterminal">$x</span>)<span class="kw-2">*</span>)
     };
-    ( @<span class="ident">gen</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">cur</span>:<span class="ident">tt</span>)<span class="op">*</span> } @<span class="ident">rest</span> <span class="kw">where</span> { $(<span class="macro-nonterminal">$</span><span class="kw">where</span>:<span class="macro-nonterminal">tt</span>)<span class="op">*</span> } ) =&gt; {
-        <span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">gen</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">cur</span>)<span class="op">*</span> } @<span class="kw">where</span> { $(<span class="macro-nonterminal">$</span><span class="kw">where</span>)<span class="op">*</span> } @<span class="macro-nonterminal">rest</span>)
+    ( @gen { $(<span class="macro-nonterminal">$cur</span>:tt)* } @rest <span class="kw">where </span>{ $(<span class="macro-nonterminal">$</span><span class="kw">where</span>:<span class="macro-nonterminal">tt</span>)* } ) =&gt; {
+        <span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">gen </span>{ $(<span class="macro-nonterminal">$cur</span>)* } @<span class="kw">where </span>{ $(<span class="macro-nonterminal">$</span><span class="kw">where</span>)* } @<span class="macro-nonterminal">rest</span>)
     };
-    ( @<span class="ident">gen</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">cur</span>:<span class="ident">tt</span>)<span class="op">*</span> } @<span class="ident">rest</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tt</span>:<span class="ident">tt</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>:<span class="ident">tt</span>)<span class="op">*</span> ) =&gt; {
-        <span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">gen</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">cur</span>)<span class="op">*</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tt</span> } @<span class="ident">rest</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="kw-2">*</span>)
+    ( @gen { $(<span class="macro-nonterminal">$cur</span>:tt)* } @rest <span class="macro-nonterminal">$tt</span>:tt $(<span class="macro-nonterminal">$rest</span>:tt)* ) =&gt; {
+        <span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">gen </span>{ $(<span class="macro-nonterminal">$cur</span>)* <span class="macro-nonterminal">$tt </span>} @rest $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>)
     };
-    ( @<span class="ident">gen</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">cur</span>:<span class="ident">tt</span>)<span class="op">*</span> } @<span class="kw">where</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">f</span>:<span class="ident">ident</span> $(<span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span>:<span class="ident">expr</span>)<span class="question-mark">?</span>),<span class="op">*</span> } @<span class="ident">rest</span> ) =&gt; {
-        <span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">gen</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">cur</span>)<span class="op">*</span> } @<span class="ident">rest</span>)
-            .<span class="ident">options</span>() $(.<span class="macro-nonterminal">$</span><span class="macro-nonterminal">f</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span>)<span class="question-mark">?</span>))<span class="op">*</span>
+    ( @gen { $(<span class="macro-nonterminal">$cur</span>:tt)* } @<span class="kw">where </span>{ $(<span class="macro-nonterminal">$f</span>:ident $(= <span class="macro-nonterminal">$a</span>:expr)<span class="question-mark">?</span>),* } @rest ) =&gt; {
+        <span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">gen </span>{ $(<span class="macro-nonterminal">$cur</span>)* } @rest)
+            .options() $(.<span class="macro-nonterminal">$f</span>($(<span class="macro-nonterminal">$a</span>)<span class="question-mark">?</span>))*
     };
-    ( @<span class="ident">gen</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">cur</span>:<span class="ident">tt</span>)<span class="op">*</span> } @<span class="kw">where</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">f</span>:<span class="ident">ident</span> $(<span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span>:<span class="ident">expr</span>)<span class="question-mark">?</span>),<span class="kw-2">*</span>, } @<span class="ident">rest</span> ) =&gt; {
-        <span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">gen</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">cur</span>)<span class="op">*</span> } @<span class="ident">rest</span>)
-            .<span class="ident">options</span>() $(.<span class="macro-nonterminal">$</span><span class="macro-nonterminal">f</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span>)<span class="question-mark">?</span>))<span class="op">*</span>
+    ( @gen { $(<span class="macro-nonterminal">$cur</span>:tt)* } @<span class="kw">where </span>{ $(<span class="macro-nonterminal">$f</span>:ident $(= <span class="macro-nonterminal">$a</span>:expr)<span class="question-mark">?</span>),<span class="kw-2">*</span>, } @rest ) =&gt; {
+        <span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">gen </span>{ $(<span class="macro-nonterminal">$cur</span>)* } @rest)
+            .options() $(.<span class="macro-nonterminal">$f</span>($(<span class="macro-nonterminal">$a</span>)<span class="question-mark">?</span>))*
     };
-    ( @<span class="ident">gen</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">x</span>:<span class="ident">tt</span>)<span class="op">*</span> } @<span class="ident">rest</span> ) =&gt; {
-        ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">x</span>)<span class="kw-2">*</span>)
+    ( @gen { $(<span class="macro-nonterminal">$x</span>:tt)* } @rest ) =&gt; {
+        ($(<span class="macro-nonterminal">$x</span>)<span class="kw-2">*</span>)
     };
 }
 
-<span class="doccomment">/// 乱数生成マクロ。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Notes</span>
-<span class="doccomment">/// 作りかけなのでいろいろ足りない。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use rand::SeedableRng;</span>
-<span class="doccomment">/// use rand_chacha::ChaCha20Rng;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// use nekolib::rand_gen;</span>
-<span class="doccomment">/// use nekolib::utils::ascii::*;</span>
-<span class="doccomment">/// use nekolib::utils::rand_gen_macro::*;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// rand_gen! {</span>
-<span class="doccomment">///     rng: ChaCha20Rng;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">///     n in 1_usize..=10;</span>
-<span class="doccomment">///     a in [1_i64..=100; n];</span>
-<span class="doccomment">///     s in AsciiString(16) where {</span>
-<span class="doccomment">///         distribution = &amp;[</span>
-<span class="doccomment">///             (ASCII_LOWERCASE, 10),</span>
-<span class="doccomment">///             (ASCII_UPPERCASE, 10),</span>
-<span class="doccomment">///             (ASCII_DIGIT, 6),</span>
-<span class="doccomment">///             (charset(b&quot;~!@#$%+?|()^*_-=[]{};:,./&quot;), 5),</span>
-<span class="doccomment">///         ],</span>
-<span class="doccomment">///     };</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(a.len(), n);</span>
-<span class="doccomment">/// assert!(a.iter().all(|ai| (1..=100).contains(ai)));</span>
-<span class="doccomment">/// assert_eq!(s.len(), 16);</span>
-<span class="doccomment">/// // Possible value of `s`: `&quot;3e)xIjos2^M/XI1T&quot;`, `&quot;X52dhjDk%i6)p1F9&quot;`</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 以下のような出力が得られるため、これを用いて再現することができる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ````text</span>
-<span class="doccomment">/// To reproduce:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// rand_gen! {</span>
-<span class="doccomment">///     rng = ChaCha20Rng::from_seed([250, 120, 31, 164, 15, 176, 41, 144, 61, 59, 224, 119, 135, 238, 14, 193, 149, 124, 228, 39, 107, 208, 243, 180, 7, 177, 21, 88, 19, 5, 225, 3]);</span>
-<span class="doccomment">///     // ...</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// ````</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use rand::SeedableRng;</span>
-<span class="doccomment">/// use rand_chacha::ChaCha20Rng;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// use nekolib::rand_gen;</span>
-<span class="doccomment">/// use nekolib::utils::ascii::*;</span>
-<span class="doccomment">/// use nekolib::utils::rand_gen_macro::*;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// rand_gen! {</span>
-<span class="doccomment">///     rng = ChaCha20Rng::from_seed([250, 120, 31, 164, 15, 176, 41, 144, 61, 59, 224, 119, 135, 238, 14, 193, 149, 124, 228, 39, 107, 208, 243, 180, 7, 177, 21, 88, 19, 5, 225, 3]);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">///     n in 1_usize..=10;</span>
-<span class="doccomment">///     a in [1_i64..=100; n];</span>
-<span class="doccomment">///     s in AsciiString(16) where {</span>
-<span class="doccomment">///         distribution = &amp;[</span>
-<span class="doccomment">///             (ASCII_LOWERCASE, 10),</span>
-<span class="doccomment">///             (ASCII_UPPERCASE, 10),</span>
-<span class="doccomment">///             (ASCII_DIGIT, 6),</span>
-<span class="doccomment">///             (charset(b&quot;~!@#$%+?|()^*_-=[]{};:,./&quot;), 5),</span>
-<span class="doccomment">///         ],</span>
-<span class="doccomment">///     };</span>
-<span class="doccomment">///     b in [[[1_u8..100; 3]; 2]; 2];</span>
-<span class="doccomment">///     p in Permutation(5);</span>
-<span class="doccomment">///     mut x in 1_i64..10;</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// x += 1;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(a, [32, 86, 41, 68, 66, 46, 56, 82, 40, 1]);</span>
-<span class="doccomment">/// assert_eq!(s, &quot;X52dhjDk%i6)p1F9&quot;);</span>
-<span class="doccomment">/// assert_eq!(b, [[[75, 20, 23], [63, 21, 58]], [[12, 6, 57], [51, 95, 70]]]);</span>
-<span class="doccomment">/// assert_eq!(p, [3, 1, 0, 4, 2]);</span>
-<span class="doccomment">/// assert_eq!(x, 5);</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// `oj` を用いて、hack をするのに使うとよい。</span>
-<span class="doccomment">/// 以下の例は、想定解が Rust で標的が Python のプログラムのもの。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```sh</span>
-<span class="doccomment">/// % oj g/i --hack-expected target/release/x --hack-actual &#39;python3 x-to-be-hacked.py&#39; target/release/x-gen</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">rand_gen</span> {
-    ( @<span class="ident">seed</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span>:<span class="ident">ident</span> { <span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span>:<span class="ident">ident</span> <span class="kw">in</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">r</span>:<span class="ident">tt</span>)<span class="op">*</span> } @<span class="ident">rest</span> ) =&gt; {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span>.<span class="ident">generate</span>(<span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">gen</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">r</span>)<span class="op">*</span> }));
+<span class="doccomment">/// 乱数生成マクロ。
+///
+/// # Notes
+/// 作りかけなのでいろいろ足りない。
+///
+/// # Examples
+/// ```
+/// use rand::SeedableRng;
+/// use rand_chacha::ChaCha20Rng;
+///
+/// use nekolib::rand_gen;
+/// use nekolib::utils::ascii::*;
+/// use nekolib::utils::rand_gen_macro::*;
+///
+/// rand_gen! {
+///     rng: ChaCha20Rng;
+///
+///     n in 1_usize..=10;
+///     a in [1_i64..=100; n];
+///     s in AsciiString(16) where {
+///         distribution = &amp;[
+///             (ASCII_LOWERCASE, 10),
+///             (ASCII_UPPERCASE, 10),
+///             (ASCII_DIGIT, 6),
+///             (charset(b&quot;~!@#$%+?|()^*_-=[]{};:,./&quot;), 5),
+///         ],
+///     };
+/// }
+///
+/// assert_eq!(a.len(), n);
+/// assert!(a.iter().all(|ai| (1..=100).contains(ai)));
+/// assert_eq!(s.len(), 16);
+/// // Possible value of `s`: `&quot;3e)xIjos2^M/XI1T&quot;`, `&quot;X52dhjDk%i6)p1F9&quot;`
+/// ```
+///
+/// 以下のような出力が得られるため、これを用いて再現することができる。
+///
+/// ````text
+/// To reproduce:
+///
+/// ```
+/// rand_gen! {
+///     rng = ChaCha20Rng::from_seed([250, 120, 31, 164, 15, 176, 41, 144, 61, 59, 224, 119, 135, 238, 14, 193, 149, 124, 228, 39, 107, 208, 243, 180, 7, 177, 21, 88, 19, 5, 225, 3]);
+///     // ...
+/// }
+/// ```
+/// ````
+///
+/// ```
+/// use rand::SeedableRng;
+/// use rand_chacha::ChaCha20Rng;
+///
+/// use nekolib::rand_gen;
+/// use nekolib::utils::ascii::*;
+/// use nekolib::utils::rand_gen_macro::*;
+///
+/// rand_gen! {
+///     rng = ChaCha20Rng::from_seed([250, 120, 31, 164, 15, 176, 41, 144, 61, 59, 224, 119, 135, 238, 14, 193, 149, 124, 228, 39, 107, 208, 243, 180, 7, 177, 21, 88, 19, 5, 225, 3]);
+///
+///     n in 1_usize..=10;
+///     a in [1_i64..=100; n];
+///     s in AsciiString(16) where {
+///         distribution = &amp;[
+///             (ASCII_LOWERCASE, 10),
+///             (ASCII_UPPERCASE, 10),
+///             (ASCII_DIGIT, 6),
+///             (charset(b&quot;~!@#$%+?|()^*_-=[]{};:,./&quot;), 5),
+///         ],
+///     };
+///     b in [[[1_u8..100; 3]; 2]; 2];
+///     p in Permutation(5);
+///     mut x in 1_i64..10;
+/// }
+/// x += 1;
+///
+/// assert_eq!(a, [32, 86, 41, 68, 66, 46, 56, 82, 40, 1]);
+/// assert_eq!(s, &quot;X52dhjDk%i6)p1F9&quot;);
+/// assert_eq!(b, [[[75, 20, 23], [63, 21, 58]], [[12, 6, 57], [51, 95, 70]]]);
+/// assert_eq!(p, [3, 1, 0, 4, 2]);
+/// assert_eq!(x, 5);
+/// ```
+///
+/// `oj` を用いて、hack をするのに使うとよい。
+/// 以下の例は、想定解が Rust で標的が Python のプログラムのもの。
+///
+/// ```sh
+/// % oj g/i --hack-expected target/release/x --hack-actual &#39;python3 x-to-be-hacked.py&#39; target/release/x-gen
+/// ```
+</span><span class="attribute">#[macro_export]
+</span><span class="macro">macro_rules! </span>rand_gen {
+    ( @seed <span class="macro-nonterminal">$seed</span>:ident { <span class="kw-2">mut </span><span class="macro-nonterminal">$a</span>:ident <span class="kw">in </span>$(<span class="macro-nonterminal">$r</span>:tt)* } @rest ) =&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span><span class="macro-nonterminal">$a </span>= <span class="macro-nonterminal">$seed</span>.generate(<span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">gen </span>{ $(<span class="macro-nonterminal">$r</span>)* }));
     };
-    ( @<span class="ident">seed</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span>:<span class="ident">ident</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span>:<span class="ident">ident</span> <span class="kw">in</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">r</span>:<span class="ident">tt</span>)<span class="op">*</span> } @<span class="ident">rest</span> ) =&gt; {
-        <span class="kw">let</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span>.<span class="ident">generate</span>(<span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">gen</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">r</span>)<span class="op">*</span> }));
+    ( @seed <span class="macro-nonterminal">$seed</span>:ident { <span class="macro-nonterminal">$a</span>:ident <span class="kw">in </span>$(<span class="macro-nonterminal">$r</span>:tt)* } @rest ) =&gt; {
+        <span class="kw">let </span><span class="macro-nonterminal">$a </span>= <span class="macro-nonterminal">$seed</span>.generate(<span class="macro-nonterminal">$</span><span class="macro">crate::rand_gen_builder!</span>(@<span class="macro-nonterminal">gen </span>{ $(<span class="macro-nonterminal">$r</span>)* }));
     };
-    ( @<span class="ident">seed</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span>:<span class="ident">ident</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span>:<span class="ident">ident</span> <span class="kw">in</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">r</span>:<span class="ident">tt</span>)<span class="op">*</span> } @<span class="ident">rest</span> ; $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>:<span class="ident">tt</span>)<span class="op">*</span> ) =&gt; {
-        <span class="macro">rand_gen!</span>(@<span class="ident">seed</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span> <span class="kw">in</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">r</span>)<span class="op">*</span> } @<span class="ident">rest</span>);
-        <span class="macro">rand_gen!</span>(@<span class="ident">seed</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span> {} @<span class="ident">rest</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="kw-2">*</span>);
+    ( @seed <span class="macro-nonterminal">$seed</span>:ident { <span class="macro-nonterminal">$a</span>:ident <span class="kw">in </span>$(<span class="macro-nonterminal">$r</span>:tt)* } @rest ; $(<span class="macro-nonterminal">$rest</span>:tt)* ) =&gt; {
+        <span class="macro">rand_gen!</span>(@seed <span class="macro-nonterminal">$seed </span>{ <span class="macro-nonterminal">$a </span><span class="kw">in </span>$(<span class="macro-nonterminal">$r</span>)* } @rest);
+        <span class="macro">rand_gen!</span>(@seed <span class="macro-nonterminal">$seed </span>{} @rest $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
     };
-    ( @<span class="ident">seed</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span>:<span class="ident">ident</span> { <span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span>:<span class="ident">ident</span> <span class="kw">in</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">r</span>:<span class="ident">tt</span>)<span class="op">*</span> } @<span class="ident">rest</span> ; $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>:<span class="ident">tt</span>)<span class="op">*</span> ) =&gt; {
-        <span class="macro">rand_gen!</span>(@<span class="ident">seed</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span> { <span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span> <span class="kw">in</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">r</span>)<span class="op">*</span> } @<span class="ident">rest</span>);
-        <span class="macro">rand_gen!</span>(@<span class="ident">seed</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span> {} @<span class="ident">rest</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="kw-2">*</span>);
+    ( @seed <span class="macro-nonterminal">$seed</span>:ident { <span class="kw-2">mut </span><span class="macro-nonterminal">$a</span>:ident <span class="kw">in </span>$(<span class="macro-nonterminal">$r</span>:tt)* } @rest ; $(<span class="macro-nonterminal">$rest</span>:tt)* ) =&gt; {
+        <span class="macro">rand_gen!</span>(@seed <span class="macro-nonterminal">$seed </span>{ <span class="kw-2">mut </span><span class="macro-nonterminal">$a </span><span class="kw">in </span>$(<span class="macro-nonterminal">$r</span>)* } @rest);
+        <span class="macro">rand_gen!</span>(@seed <span class="macro-nonterminal">$seed </span>{} @rest $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
     };
-    ( @<span class="ident">seed</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span>:<span class="ident">ident</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">cur</span>:<span class="ident">tt</span>)<span class="op">*</span> } @<span class="ident">rest</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tt</span>:<span class="ident">tt</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>:<span class="ident">tt</span>)<span class="op">*</span> ) =&gt; {
-        <span class="macro">rand_gen!</span>(@<span class="ident">seed</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">cur</span>)<span class="op">*</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tt</span> } @<span class="ident">rest</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="op">*</span> );
+    ( @seed <span class="macro-nonterminal">$seed</span>:ident { $(<span class="macro-nonterminal">$cur</span>:tt)* } @rest <span class="macro-nonterminal">$tt</span>:tt $(<span class="macro-nonterminal">$rest</span>:tt)* ) =&gt; {
+        <span class="macro">rand_gen!</span>(@seed <span class="macro-nonterminal">$seed </span>{ $(<span class="macro-nonterminal">$cur</span>)* <span class="macro-nonterminal">$tt </span>} @rest $(<span class="macro-nonterminal">$rest</span>)* );
     };
-    ( @<span class="ident">seed</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span>:<span class="ident">ident</span> {} @<span class="ident">rest</span> ) =&gt; {};
-    ( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span>:<span class="ident">ident</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>:<span class="ident">ty</span>; $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>:<span class="ident">tt</span>)<span class="op">*</span> ) =&gt; {
-        <span class="comment">// let mut $seed = &lt;$ty as RandomWordGenerator&gt;::auto_init();</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span> <span class="op">=</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span><span class="op">&gt;</span><span class="ident">::from_entropy</span>();
+    ( @seed <span class="macro-nonterminal">$seed</span>:ident {} @rest ) =&gt; {};
+    ( <span class="macro-nonterminal">$seed</span>:ident: <span class="macro-nonterminal">$ty</span>:ty; $(<span class="macro-nonterminal">$rest</span>:tt)* ) =&gt; {
+        <span class="comment">// let mut $seed = &lt;$ty as RandomWordGenerator&gt;::auto_init();
+        </span><span class="kw">let </span><span class="kw-2">mut </span><span class="macro-nonterminal">$seed </span>= &lt;<span class="macro-nonterminal">$ty</span>&gt;::from_entropy();
         <span class="macro">eprintln!</span>(<span class="string">r#&quot;
 To reproduce:
 
@@ -818,398 +818,398 @@ rand_gen! {{
     // ...
 }}
 ```
-&quot;#</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span>), <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span>.<span class="ident">inspect</span>());
-        <span class="macro">rand_gen!</span>(@<span class="ident">seed</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span> {} @<span class="ident">rest</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="kw-2">*</span>);
+&quot;#</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$seed</span>), <span class="macro-nonterminal">$seed</span>.inspect());
+        <span class="macro">rand_gen!</span>(@seed <span class="macro-nonterminal">$seed </span>{} @rest $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
     };
-    ( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span>:<span class="ident">ident</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">s</span>:<span class="ident">expr</span>; $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>:<span class="ident">tt</span>)<span class="op">*</span> ) =&gt; {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">s</span>;
-        <span class="comment">// $seed.inspect(stringify!($seed));</span>
-        <span class="macro">rand_gen!</span>(@<span class="ident">seed</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span> {} @<span class="ident">rest</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="kw-2">*</span>);
+    ( <span class="macro-nonterminal">$seed</span>:ident = <span class="macro-nonterminal">$s</span>:expr; $(<span class="macro-nonterminal">$rest</span>:tt)* ) =&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span><span class="macro-nonterminal">$seed </span>= <span class="macro-nonterminal">$s</span>;
+        <span class="comment">// $seed.inspect(stringify!($seed));
+        </span><span class="macro">rand_gen!</span>(@seed <span class="macro-nonterminal">$seed </span>{} @rest $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
     };
 }
 
-<span class="comment">// .options() いらないかも</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">GenOptions</span> {
-    <span class="kw">type</span> <span class="ident">OptionType</span>;
-    <span class="kw">fn</span> <span class="ident">options</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::OptionType</span>;
+<span class="comment">// .options() いらないかも
+</span><span class="kw">pub trait </span>GenOptions {
+    <span class="kw">type </span>OptionType;
+    <span class="kw">fn </span>options(<span class="self">self</span>) -&gt; <span class="self">Self</span>::OptionType;
 }
 
-<span class="comment">// ---</span>
-<span class="comment">// ```</span>
-<span class="comment">// pub trait RandomGenerator&lt;Input&gt; {</span>
-<span class="comment">//     type Output;</span>
-<span class="comment">//     fn generate(&amp;mut self) -&gt; Self::Output;</span>
-<span class="comment">// }</span>
-<span class="comment">// ```</span>
-<span class="comment">// みたいなのを作って、impl RandChaCha とかする？</span>
-<span class="comment">// Input = RangeInclusive&lt;i64&gt;, Output = i64 とかを想定している。</span>
-<span class="comment">//</span>
-<span class="comment">// 今だと impl RandGen for Input して rand_gen の引数に &amp;mut RandChaCha とかの</span>
-<span class="comment">// を渡すようにしているのか、むー。でもこれが適当な impl trait なのでつらいんだね</span>
-<span class="comment">//</span>
-<span class="comment">// なんかできてそう。</span>
-<span class="comment">// あとは、過去のを消しつつ、options をよしなに解決すればよさそう。</span>
+<span class="comment">// ---
+// ```
+// pub trait RandomGenerator&lt;Input&gt; {
+//     type Output;
+//     fn generate(&amp;mut self) -&gt; Self::Output;
+// }
+// ```
+// みたいなのを作って、impl RandChaCha とかする？
+// Input = RangeInclusive&lt;i64&gt;, Output = i64 とかを想定している。
+//
+// 今だと impl RandGen for Input して rand_gen の引数に &amp;mut RandChaCha とかの
+// を渡すようにしているのか、むー。でもこれが適当な impl trait なのでつらいんだね
+//
+// なんかできてそう。
+// あとは、過去のを消しつつ、options をよしなに解決すればよさそう。
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AsciiString</span>(<span class="kw">pub</span> <span class="ident">usize</span>);
+</span><span class="attribute">#[derive(Clone, Copy)]
+</span><span class="kw">pub struct </span>AsciiString(<span class="kw">pub </span>usize);
 
-<span class="kw">impl</span> <span class="ident">GenOptions</span> <span class="kw">for</span> <span class="ident">AsciiString</span> {
-    <span class="kw">type</span> <span class="ident">OptionType</span> <span class="op">=</span> <span class="self">Self</span>;
-    <span class="kw">fn</span> <span class="ident">options</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> { <span class="self">self</span> }
+<span class="kw">impl </span>GenOptions <span class="kw">for </span>AsciiString {
+    <span class="kw">type </span>OptionType = <span class="self">Self</span>;
+    <span class="kw">fn </span>options(<span class="self">self</span>) -&gt; <span class="self">Self </span>{ <span class="self">self </span>}
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AsciiStringOfCharset</span>(<span class="ident">AsciiGen</span>, <span class="ident">usize</span>);
+<span class="attribute">#[derive(Clone, Copy)]
+</span><span class="kw">pub struct </span>AsciiStringOfCharset(AsciiGen, usize);
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AsciiStringOfDistribution</span>(<span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="ident">AsciiGen</span><span class="op">&gt;</span>, <span class="ident">u32</span>, <span class="ident">usize</span>);
+<span class="attribute">#[derive(Clone)]
+</span><span class="kw">pub struct </span>AsciiStringOfDistribution(BTreeMap&lt;u32, AsciiGen&gt;, u32, usize);
 
-<span class="kw">impl</span> <span class="ident">AsciiString</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">charset</span>(<span class="self">self</span>, <span class="ident">cs</span>: <span class="ident">u128</span>) -&gt; <span class="ident">AsciiStringOfCharset</span> {
-        <span class="ident">AsciiStringOfCharset</span>(<span class="ident">AsciiGen::new</span>(<span class="ident">cs</span>), <span class="self">self</span>.<span class="number">0</span>)
+<span class="kw">impl </span>AsciiString {
+    <span class="kw">pub fn </span>charset(<span class="self">self</span>, cs: u128) -&gt; AsciiStringOfCharset {
+        AsciiStringOfCharset(AsciiGen::new(cs), <span class="self">self</span>.<span class="number">0</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">distribution</span>(<span class="self">self</span>, <span class="ident">d</span>: <span class="kw-2">&amp;</span>[(<span class="ident">u128</span>, <span class="ident">u32</span>)]) -&gt; <span class="ident">AsciiStringOfDistribution</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">map</span> <span class="op">=</span> <span class="ident">BTreeMap::new</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">acc</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">for</span> <span class="kw-2">&amp;</span>(<span class="ident">mask</span>, <span class="ident">p</span>) <span class="kw">in</span> <span class="ident">d</span>.<span class="ident">iter</span>().<span class="ident">filter</span>(<span class="op">|</span><span class="op">&amp;&amp;</span>(<span class="kw">_</span>, <span class="ident">p</span>)<span class="op">|</span> <span class="ident">p</span> <span class="op">&gt;</span> <span class="number">0</span>) {
-            <span class="ident">acc</span> <span class="op">+</span><span class="op">=</span> <span class="ident">p</span>;
-            <span class="ident">map</span>.<span class="ident">insert</span>(<span class="ident">acc</span>, <span class="ident">AsciiGen::new</span>(<span class="ident">mask</span>));
+    <span class="kw">pub fn </span>distribution(<span class="self">self</span>, d: <span class="kw-2">&amp;</span>[(u128, u32)]) -&gt; AsciiStringOfDistribution {
+        <span class="kw">let </span><span class="kw-2">mut </span>map = BTreeMap::new();
+        <span class="kw">let </span><span class="kw-2">mut </span>acc = <span class="number">0</span>;
+        <span class="kw">for </span><span class="kw-2">&amp;</span>(mask, p) <span class="kw">in </span>d.iter().filter(|&amp;&amp;(<span class="kw">_</span>, p)| p &gt; <span class="number">0</span>) {
+            acc += p;
+            map.insert(acc, AsciiGen::new(mask));
         }
-        <span class="ident">AsciiStringOfDistribution</span>(<span class="ident">map</span>, <span class="ident">acc</span>, <span class="self">self</span>.<span class="number">0</span>)
+        AsciiStringOfDistribution(map, acc, <span class="self">self</span>.<span class="number">0</span>)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">RandomGenerator</span><span class="op">&lt;</span><span class="ident">AsciiStringOfCharset</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ChaCha20Rng</span> {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">String</span>;
-    <span class="kw">fn</span> <span class="ident">generate</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">subject</span>: <span class="ident">AsciiStringOfCharset</span>) -&gt; <span class="ident">String</span> {
-        <span class="kw">let</span> <span class="ident">AsciiStringOfCharset</span>(<span class="ident">gen</span>, <span class="ident">len</span>) <span class="op">=</span> <span class="ident">subject</span>;
-        <span class="kw">if</span> <span class="ident">len</span> <span class="op">==</span> <span class="number">0</span> {
-            <span class="string">&quot;&quot;</span>.<span class="ident">to_owned</span>()
-        } <span class="kw">else</span> {
-            (<span class="number">0</span>..<span class="ident">len</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">generate</span>(<span class="ident">gen</span>)).<span class="ident">collect</span>()
+<span class="kw">impl </span>RandomGenerator&lt;AsciiStringOfCharset&gt; <span class="kw">for </span>ChaCha20Rng {
+    <span class="kw">type </span>Output = String;
+    <span class="kw">fn </span>generate(<span class="kw-2">&amp;mut </span><span class="self">self</span>, subject: AsciiStringOfCharset) -&gt; String {
+        <span class="kw">let </span>AsciiStringOfCharset(gen, len) = subject;
+        <span class="kw">if </span>len == <span class="number">0 </span>{
+            <span class="string">&quot;&quot;</span>.to_owned()
+        } <span class="kw">else </span>{
+            (<span class="number">0</span>..len).map(|<span class="kw">_</span>| <span class="self">self</span>.generate(gen)).collect()
         }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">RandomGenerator</span><span class="op">&lt;</span><span class="ident">AsciiStringOfDistribution</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ChaCha20Rng</span> {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">String</span>;
-    <span class="kw">fn</span> <span class="ident">generate</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">subject</span>: <span class="ident">AsciiStringOfDistribution</span>) -&gt; <span class="ident">String</span> {
-        <span class="kw">let</span> <span class="ident">AsciiStringOfDistribution</span>(<span class="kw-2">ref</span> <span class="ident">gen_map</span>, <span class="ident">acc</span>, <span class="ident">len</span>) <span class="op">=</span> <span class="ident">subject</span>;
-        <span class="kw">let</span> <span class="ident">large</span> <span class="op">=</span> <span class="ident">Uniform::from</span>(<span class="number">0</span>..<span class="ident">acc</span>);
-        (<span class="number">0</span>..<span class="ident">len</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> {
-                <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">large</span>.<span class="ident">sample</span>(<span class="self">self</span>);
-                <span class="kw">let</span> <span class="ident">small</span> <span class="op">=</span> <span class="ident">gen_map</span>.<span class="ident">range</span>(<span class="ident">c</span>..).<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="number">1</span>;
-                <span class="self">self</span>.<span class="ident">generate</span>(<span class="kw-2">*</span><span class="ident">small</span>)
+<span class="kw">impl </span>RandomGenerator&lt;AsciiStringOfDistribution&gt; <span class="kw">for </span>ChaCha20Rng {
+    <span class="kw">type </span>Output = String;
+    <span class="kw">fn </span>generate(<span class="kw-2">&amp;mut </span><span class="self">self</span>, subject: AsciiStringOfDistribution) -&gt; String {
+        <span class="kw">let </span>AsciiStringOfDistribution(<span class="kw-2">ref </span>gen_map, acc, len) = subject;
+        <span class="kw">let </span>large = Uniform::from(<span class="number">0</span>..acc);
+        (<span class="number">0</span>..len)
+            .map(|<span class="kw">_</span>| {
+                <span class="kw">let </span>c = large.sample(<span class="self">self</span>);
+                <span class="kw">let </span>small = gen_map.range(c..).next().unwrap().<span class="number">1</span>;
+                <span class="self">self</span>.generate(<span class="kw-2">*</span>small)
             })
-            .<span class="ident">collect</span>()
+            .collect()
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Ascii</span>;
+<span class="attribute">#[derive(Clone, Copy)]
+</span><span class="kw">pub struct </span>Ascii;
 
-<span class="kw">impl</span> <span class="ident">GenOptions</span> <span class="kw">for</span> <span class="ident">Ascii</span> {
-    <span class="kw">type</span> <span class="ident">OptionType</span> <span class="op">=</span> <span class="self">Self</span>;
-    <span class="kw">fn</span> <span class="ident">options</span>(<span class="self">self</span>) -&gt; <span class="ident">Ascii</span> { <span class="self">self</span> }
+<span class="kw">impl </span>GenOptions <span class="kw">for </span>Ascii {
+    <span class="kw">type </span>OptionType = <span class="self">Self</span>;
+    <span class="kw">fn </span>options(<span class="self">self</span>) -&gt; Ascii { <span class="self">self </span>}
 }
 
-<span class="kw">impl</span> <span class="ident">Ascii</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">charset</span>(<span class="self">self</span>, <span class="ident">cs</span>: <span class="ident">u128</span>) -&gt; <span class="ident">AsciiGen</span> { <span class="ident">AsciiGen::new</span>(<span class="ident">cs</span>) }
+<span class="kw">impl </span>Ascii {
+    <span class="kw">pub fn </span>charset(<span class="self">self</span>, cs: u128) -&gt; AsciiGen { AsciiGen::new(cs) }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AsciiGen</span>(<span class="ident">PdepPextMaskU128</span>, <span class="ident">u32</span>);
+<span class="attribute">#[derive(Clone, Copy)]
+</span><span class="kw">pub struct </span>AsciiGen(PdepPextMaskU128, u32);
 
-<span class="kw">impl</span> <span class="ident">AsciiGen</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">mask</span>: <span class="ident">u128</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span>(<span class="ident">PdepPextMaskU128::new</span>(<span class="ident">mask</span>), <span class="ident">mask</span>.<span class="ident">count_ones</span>())
+<span class="kw">impl </span>AsciiGen {
+    <span class="kw">pub fn </span>new(mask: u128) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>(PdepPextMaskU128::new(mask), mask.count_ones())
     }
 }
 
-<span class="kw">impl</span> <span class="ident">RandomGenerator</span><span class="op">&lt;</span><span class="ident">AsciiGen</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ChaCha20Rng</span> {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">char</span>;
-    <span class="kw">fn</span> <span class="ident">generate</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">subject</span>: <span class="ident">AsciiGen</span>) -&gt; <span class="ident">char</span> {
-        <span class="kw">let</span> <span class="ident">AsciiGen</span>(<span class="ident">mask</span>, <span class="ident">pop</span>) <span class="op">=</span> <span class="ident">subject</span>;
-        <span class="macro">assert_ne!</span>(<span class="ident">pop</span>, <span class="number">0</span>, <span class="string">&quot;empty charset&quot;</span>);
-        <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">Uniform::from</span>(<span class="number">0</span>..<span class="ident">pop</span>).<span class="ident">sample</span>(<span class="self">self</span>);
-        (<span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">c</span>).<span class="ident">pdep</span>(<span class="ident">mask</span>).<span class="ident">trailing_zeros</span>() <span class="kw">as</span> <span class="ident">u8</span> <span class="kw">as</span> <span class="ident">char</span>
+<span class="kw">impl </span>RandomGenerator&lt;AsciiGen&gt; <span class="kw">for </span>ChaCha20Rng {
+    <span class="kw">type </span>Output = char;
+    <span class="kw">fn </span>generate(<span class="kw-2">&amp;mut </span><span class="self">self</span>, subject: AsciiGen) -&gt; char {
+        <span class="kw">let </span>AsciiGen(mask, pop) = subject;
+        <span class="macro">assert_ne!</span>(pop, <span class="number">0</span>, <span class="string">&quot;empty charset&quot;</span>);
+        <span class="kw">let </span>c = Uniform::from(<span class="number">0</span>..pop).sample(<span class="self">self</span>);
+        (<span class="number">1 </span>&lt;&lt; c).pdep(mask).trailing_zeros() <span class="kw">as </span>u8 <span class="kw">as </span>char
     }
 }
 
-<span class="kw">use</span> <span class="ident">std::collections</span>::{<span class="ident">BTreeMap</span>, <span class="ident">BTreeSet</span>};
-<span class="kw">use</span> <span class="ident">std::ops</span>::{<span class="ident">Range</span>, <span class="ident">RangeInclusive</span>};
+<span class="kw">use </span>std::collections::{BTreeMap, BTreeSet};
+<span class="kw">use </span>std::ops::{Range, RangeInclusive};
 
-<span class="kw">use</span> <span class="ident">rand::distributions</span>::{<span class="ident">Distribution</span>, <span class="ident">Uniform</span>};
-<span class="kw">use</span> <span class="ident">rand_chacha::ChaCha20Rng</span>;
+<span class="kw">use </span>rand::distributions::{Distribution, Uniform};
+<span class="kw">use </span>rand_chacha::ChaCha20Rng;
 
-<span class="kw">use</span> <span class="ident">bitop</span>::{<span class="ident">Pdep</span>, <span class="ident">PdepPextMaskU128</span>};
+<span class="kw">use </span>bitop::{Pdep, PdepPextMaskU128};
 
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">SeedableRngInspect</span> {
-    <span class="kw">fn</span> <span class="ident">inspect</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">String</span>;
+<span class="kw">pub trait </span>SeedableRngInspect {
+    <span class="kw">fn </span>inspect(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String;
 }
 
-<span class="kw">impl</span> <span class="ident">SeedableRngInspect</span> <span class="kw">for</span> <span class="ident">ChaCha20Rng</span> {
-    <span class="kw">fn</span> <span class="ident">inspect</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">String</span> {
-        <span class="macro">format!</span>(<span class="string">&quot;ChaCha20Rng::from_seed({:?})&quot;</span>, <span class="self">self</span>.<span class="ident">get_seed</span>())
+<span class="kw">impl </span>SeedableRngInspect <span class="kw">for </span>ChaCha20Rng {
+    <span class="kw">fn </span>inspect(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
+        <span class="macro">format!</span>(<span class="string">&quot;ChaCha20Rng::from_seed({:?})&quot;</span>, <span class="self">self</span>.get_seed())
     }
 }
 
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">RandomGenerator</span><span class="op">&lt;</span><span class="ident">Input</span><span class="op">&gt;</span> {
-    <span class="kw">type</span> <span class="ident">Output</span>;
-    <span class="kw">fn</span> <span class="ident">generate</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">subject</span>: <span class="ident">Input</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span>;
+<span class="kw">pub trait </span>RandomGenerator&lt;Input&gt; {
+    <span class="kw">type </span>Output;
+    <span class="kw">fn </span>generate(<span class="kw-2">&amp;mut </span><span class="self">self</span>, subject: Input) -&gt; <span class="self">Self</span>::Output;
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_range</span> {
-    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(
-        <span class="kw">impl</span> <span class="ident">RandomGenerator</span><span class="op">&lt;</span><span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ChaCha20Rng</span> {
-            <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>;
-            <span class="kw">fn</span> <span class="ident">generate</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">s</span>: <span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span>) -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-                <span class="kw">let</span> <span class="ident">between</span> <span class="op">=</span> <span class="ident">Uniform::from</span>(<span class="ident">s</span>);
-                <span class="ident">between</span>.<span class="ident">sample</span>(<span class="self">self</span>)
+<span class="macro">macro_rules! </span>impl_range {
+    ( $(<span class="macro-nonterminal">$t</span>:ty)* ) =&gt; { $(
+        <span class="kw">impl </span>RandomGenerator&lt;RangeInclusive&lt;<span class="macro-nonterminal">$t</span>&gt;&gt; <span class="kw">for </span>ChaCha20Rng {
+            <span class="kw">type </span>Output = <span class="macro-nonterminal">$t</span>;
+            <span class="kw">fn </span>generate(<span class="kw-2">&amp;mut </span><span class="self">self</span>, s: RangeInclusive&lt;<span class="macro-nonterminal">$t</span>&gt;) -&gt; <span class="macro-nonterminal">$t </span>{
+                <span class="kw">let </span>between = Uniform::from(s);
+                between.sample(<span class="self">self</span>)
             }
         }
-        <span class="kw">impl</span> <span class="ident">RandomGenerator</span><span class="op">&lt;</span><span class="ident">Range</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ChaCha20Rng</span> {
-            <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>;
-            <span class="kw">fn</span> <span class="ident">generate</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">s</span>: <span class="ident">Range</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span>) -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-                <span class="kw">let</span> <span class="ident">between</span> <span class="op">=</span> <span class="ident">Uniform::from</span>(<span class="ident">s</span>);
-                <span class="ident">between</span>.<span class="ident">sample</span>(<span class="self">self</span>)
+        <span class="kw">impl </span>RandomGenerator&lt;Range&lt;<span class="macro-nonterminal">$t</span>&gt;&gt; <span class="kw">for </span>ChaCha20Rng {
+            <span class="kw">type </span>Output = <span class="macro-nonterminal">$t</span>;
+            <span class="kw">fn </span>generate(<span class="kw-2">&amp;mut </span><span class="self">self</span>, s: Range&lt;<span class="macro-nonterminal">$t</span>&gt;) -&gt; <span class="macro-nonterminal">$t </span>{
+                <span class="kw">let </span>between = Uniform::from(s);
+                between.sample(<span class="self">self</span>)
             }
         }
-    )<span class="op">*</span> }
+    )* }
 }
 
-<span class="macro">impl_range!</span> { <span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span> <span class="ident">i8</span> <span class="ident">i16</span> <span class="ident">i32</span> <span class="ident">i64</span> <span class="ident">i128</span> <span class="ident">isize</span> }
+<span class="macro">impl_range! </span>{ u8 u16 u32 u64 u128 usize i8 i16 i32 i64 i128 isize }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="ident">inner</span>: <span class="ident">T</span>,
-    <span class="ident">len</span>: <span class="ident">usize</span>,
+<span class="attribute">#[derive(Clone)]
+</span><span class="kw">pub struct </span>VecMarker&lt;T&gt; {
+    inner: T,
+    len: usize,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">inner</span>: <span class="ident">T</span>, <span class="ident">len</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span> { <span class="self">Self</span> { <span class="ident">inner</span>, <span class="ident">len</span> } }
+<span class="kw">impl</span>&lt;T&gt; VecMarker&lt;T&gt; {
+    <span class="kw">pub fn </span>new(inner: T, len: usize) -&gt; <span class="self">Self </span>{ <span class="self">Self </span>{ inner, len } }
 }
 
-<span class="comment">// sorted は Ord、distinct は Eq が必要になるけど、そもそも</span>
-<span class="comment">// 範囲で取ってランダムに生成とか言っている時点でそれらは仮定していそう。</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">VecOptionsMarker</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="ident">inner</span>: <span class="ident">T</span>,
-    <span class="ident">len</span>: <span class="ident">usize</span>,
-    <span class="ident">sorted</span>: <span class="ident">bool</span>,
-    <span class="ident">distinct</span>: <span class="ident">bool</span>,
+<span class="comment">// sorted は Ord、distinct は Eq が必要になるけど、そもそも
+// 範囲で取ってランダムに生成とか言っている時点でそれらは仮定していそう。
+</span><span class="kw">pub struct </span>VecOptionsMarker&lt;T&gt; {
+    inner: T,
+    len: usize,
+    sorted: bool,
+    distinct: bool,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">GenOptions</span> <span class="kw">for</span> <span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">type</span> <span class="ident">OptionType</span> <span class="op">=</span> <span class="ident">VecOptionsMarker</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>;
-    <span class="kw">fn</span> <span class="ident">options</span>(<span class="self">self</span>) -&gt; <span class="ident">VecOptionsMarker</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="self">Self</span> { <span class="ident">inner</span>, <span class="ident">len</span> } <span class="op">=</span> <span class="self">self</span>;
-        <span class="ident">VecOptionsMarker</span> { <span class="ident">inner</span>, <span class="ident">len</span>, <span class="ident">sorted</span>: <span class="bool-val">false</span>, <span class="ident">distinct</span>: <span class="bool-val">false</span> }
+<span class="kw">impl</span>&lt;T&gt; GenOptions <span class="kw">for </span>VecMarker&lt;T&gt; {
+    <span class="kw">type </span>OptionType = VecOptionsMarker&lt;T&gt;;
+    <span class="kw">fn </span>options(<span class="self">self</span>) -&gt; VecOptionsMarker&lt;T&gt; {
+        <span class="kw">let </span><span class="self">Self </span>{ inner, len } = <span class="self">self</span>;
+        VecOptionsMarker { inner, len, sorted: <span class="bool-val">false</span>, distinct: <span class="bool-val">false </span>}
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">VecOptionsMarker</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sorted</span>(<span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">sorted</span> <span class="op">=</span> <span class="bool-val">true</span>;
-        <span class="self">self</span>
-    }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">distinct</span>(<span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">distinct</span> <span class="op">=</span> <span class="bool-val">true</span>;
-        <span class="self">self</span>
-    }
+<span class="kw">impl</span>&lt;T&gt; VecOptionsMarker&lt;T&gt; {
+    <span class="kw">pub fn </span>sorted(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.sorted = <span class="bool-val">true</span>;
+        <span class="self">self
+    </span>}
+    <span class="kw">pub fn </span>distinct(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.distinct = <span class="bool-val">true</span>;
+        <span class="self">self
+    </span>}
 }
 
-<span class="comment">// impl&lt;T&gt; U&lt;Vec&lt;T&gt;&gt; for S where S implements U&lt;T&gt; { ... }</span>
-<span class="comment">// みたいなのってもしかしてできない？</span>
-<span class="comment">// マクロで定数段だけやればとりあえずいいか。</span>
+<span class="comment">// impl&lt;T&gt; U&lt;Vec&lt;T&gt;&gt; for S where S implements U&lt;T&gt; { ... }
+// みたいなのってもしかしてできない？
+// マクロで定数段だけやればとりあえずいいか。
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_vec_range</span> {
-    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(
-        <span class="kw">impl</span> <span class="ident">RandomGenerator</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ChaCha20Rng</span> {
-            <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span>;
-            <span class="kw">fn</span> <span class="ident">generate</span>(
-                <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-                <span class="ident">s</span>: <span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span>
-            ) -&gt; <span class="ident"><span class="self">Self</span>::Output</span> {
-                <span class="kw">let</span> <span class="ident">VecMarker</span> { <span class="ident">inner</span>, <span class="ident">len</span> } <span class="op">=</span> <span class="ident">s</span>;
-                <span class="kw">let</span> <span class="ident">between</span> <span class="op">=</span> <span class="ident">Uniform::from</span>(<span class="ident">inner</span>);
-                (<span class="number">0</span>..<span class="ident">len</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">between</span>.<span class="ident">sample</span>(<span class="self">self</span>)).<span class="ident">collect</span>()
+</span><span class="macro">macro_rules! </span>impl_vec_range {
+    ( $(<span class="macro-nonterminal">$t</span>:ty)* ) =&gt; { $(
+        <span class="kw">impl </span>RandomGenerator&lt;VecMarker&lt;RangeInclusive&lt;<span class="macro-nonterminal">$t</span>&gt;&gt;&gt; <span class="kw">for </span>ChaCha20Rng {
+            <span class="kw">type </span>Output = Vec&lt;<span class="macro-nonterminal">$t</span>&gt;;
+            <span class="kw">fn </span>generate(
+                <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+                s: VecMarker&lt;RangeInclusive&lt;<span class="macro-nonterminal">$t</span>&gt;&gt;
+            ) -&gt; <span class="self">Self</span>::Output {
+                <span class="kw">let </span>VecMarker { inner, len } = s;
+                <span class="kw">let </span>between = Uniform::from(inner);
+                (<span class="number">0</span>..len).map(|<span class="kw">_</span>| between.sample(<span class="self">self</span>)).collect()
             }
         }
-        <span class="kw">impl</span> <span class="ident">RandomGenerator</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">Range</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ChaCha20Rng</span> {
-            <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span>;
-            <span class="kw">fn</span> <span class="ident">generate</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">s</span>: <span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">Range</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span> {
-                <span class="kw">let</span> <span class="ident">VecMarker</span> { <span class="ident">inner</span>, <span class="ident">len</span> } <span class="op">=</span> <span class="ident">s</span>;
-                <span class="kw">let</span> <span class="ident">between</span> <span class="op">=</span> <span class="ident">Uniform::from</span>(<span class="ident">inner</span>);
-                (<span class="number">0</span>..<span class="ident">len</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">between</span>.<span class="ident">sample</span>(<span class="self">self</span>)).<span class="ident">collect</span>()
+        <span class="kw">impl </span>RandomGenerator&lt;VecMarker&lt;Range&lt;<span class="macro-nonterminal">$t</span>&gt;&gt;&gt; <span class="kw">for </span>ChaCha20Rng {
+            <span class="kw">type </span>Output = Vec&lt;<span class="macro-nonterminal">$t</span>&gt;;
+            <span class="kw">fn </span>generate(<span class="kw-2">&amp;mut </span><span class="self">self</span>, s: VecMarker&lt;Range&lt;<span class="macro-nonterminal">$t</span>&gt;&gt;) -&gt; <span class="self">Self</span>::Output {
+                <span class="kw">let </span>VecMarker { inner, len } = s;
+                <span class="kw">let </span>between = Uniform::from(inner);
+                (<span class="number">0</span>..len).map(|<span class="kw">_</span>| between.sample(<span class="self">self</span>)).collect()
             }
         }
-    )<span class="op">*</span> }
+    )* }
 }
 
-<span class="macro">impl_vec_range!</span> { <span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span> <span class="ident">i8</span> <span class="ident">i16</span> <span class="ident">i32</span> <span class="ident">i64</span> <span class="ident">i128</span> <span class="ident">isize</span> }
+<span class="macro">impl_vec_range! </span>{ u8 u16 u32 u64 u128 usize i8 i16 i32 i64 i128 isize }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_vecvec_range</span> {
-    ( $( (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">marker</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vec</span>:<span class="ident">ty</span>), )<span class="op">*</span> ) =&gt; { $(
-        <span class="kw">impl</span> <span class="ident">RandomGenerator</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">marker</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ChaCha20Rng</span> {
-            <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vec</span>;
-            <span class="kw">fn</span> <span class="ident">generate</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">s</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">marker</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span> {
-                <span class="kw">let</span> <span class="ident">VecMarker</span> { <span class="ident">inner</span>, <span class="ident">len</span> } <span class="op">=</span> <span class="ident">s</span>;
-                (<span class="number">0</span>..<span class="ident">len</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">generate</span>(<span class="ident">inner</span>.<span class="ident">clone</span>())).<span class="ident">collect</span>()
+<span class="macro">macro_rules! </span>impl_vecvec_range {
+    ( $( (<span class="macro-nonterminal">$marker</span>:ty, <span class="macro-nonterminal">$vec</span>:ty), )* ) =&gt; { $(
+        <span class="kw">impl </span>RandomGenerator&lt;<span class="macro-nonterminal">$marker</span>&gt; <span class="kw">for </span>ChaCha20Rng {
+            <span class="kw">type </span>Output = <span class="macro-nonterminal">$vec</span>;
+            <span class="kw">fn </span>generate(<span class="kw-2">&amp;mut </span><span class="self">self</span>, s: <span class="macro-nonterminal">$marker</span>) -&gt; <span class="self">Self</span>::Output {
+                <span class="kw">let </span>VecMarker { inner, len } = s;
+                (<span class="number">0</span>..len).map(|<span class="kw">_</span>| <span class="self">self</span>.generate(inner.clone())).collect()
             }
         }
-    )<span class="op">*</span> };
-    ( $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span> )<span class="op">*</span> ) =&gt; { $(
-        <span class="macro">impl_vecvec_range!</span> {
-            <span class="comment">// 2</span>
-            (<span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span>),
-            (<span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">Range</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span>),
+    )* };
+    ( $( <span class="macro-nonterminal">$t</span>:ty )* ) =&gt; { $(
+        <span class="macro">impl_vecvec_range! </span>{
+            <span class="comment">// 2
+            </span>(VecMarker&lt;VecMarker&lt;RangeInclusive&lt;<span class="macro-nonterminal">$t</span>&gt;&gt;&gt;, Vec&lt;Vec&lt;<span class="macro-nonterminal">$t</span>&gt;&gt;),
+            (VecMarker&lt;VecMarker&lt;Range&lt;<span class="macro-nonterminal">$t</span>&gt;&gt;&gt;, Vec&lt;Vec&lt;<span class="macro-nonterminal">$t</span>&gt;&gt;),
 
-            <span class="comment">// 3</span>
-            (
-                <span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-                <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>
+            <span class="comment">// 3
+            </span>(
+                VecMarker&lt;VecMarker&lt;VecMarker&lt;RangeInclusive&lt;<span class="macro-nonterminal">$t</span>&gt;&gt;&gt;&gt;,
+                Vec&lt;Vec&lt;Vec&lt;<span class="macro-nonterminal">$t</span>&gt;&gt;&gt;
             ),
-            (<span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">Range</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>),
+            (VecMarker&lt;VecMarker&lt;VecMarker&lt;Range&lt;<span class="macro-nonterminal">$t</span>&gt;&gt;&gt;&gt;, Vec&lt;Vec&lt;Vec&lt;<span class="macro-nonterminal">$t</span>&gt;&gt;&gt;),
 
-            <span class="comment">// 4</span>
-            (
-                <span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-                <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>
+            <span class="comment">// 4
+            </span>(
+                VecMarker&lt;VecMarker&lt;VecMarker&lt;VecMarker&lt;RangeInclusive&lt;<span class="macro-nonterminal">$t</span>&gt;&gt;&gt;&gt;&gt;,
+                Vec&lt;Vec&lt;Vec&lt;Vec&lt;<span class="macro-nonterminal">$t</span>&gt;&gt;&gt;&gt;
             ),
             (
-                <span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">Range</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-                <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>
+                VecMarker&lt;VecMarker&lt;VecMarker&lt;VecMarker&lt;Range&lt;<span class="macro-nonterminal">$t</span>&gt;&gt;&gt;&gt;&gt;,
+                Vec&lt;Vec&lt;Vec&lt;Vec&lt;<span class="macro-nonterminal">$t</span>&gt;&gt;&gt;&gt;
             ),
         }
-    )<span class="op">*</span> }
+    )* }
 }
 
-<span class="macro">impl_vecvec_range!</span> { <span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span> <span class="ident">i8</span> <span class="ident">i16</span> <span class="ident">i32</span> <span class="ident">i64</span> <span class="ident">i128</span> <span class="ident">isize</span> }
+<span class="macro">impl_vecvec_range! </span>{ u8 u16 u32 u64 u128 usize i8 i16 i32 i64 i128 isize }
 
-<span class="kw">impl</span> <span class="ident">RandomGenerator</span><span class="op">&lt;</span><span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">Permutation</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ChaCha20Rng</span> {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span><span class="op">&gt;</span>;
-    <span class="kw">fn</span> <span class="ident">generate</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">s</span>: <span class="ident">VecMarker</span><span class="op">&lt;</span><span class="ident">Permutation</span><span class="op">&gt;</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span> {
-        <span class="kw">let</span> <span class="ident">VecMarker</span> { <span class="ident">inner</span>, <span class="ident">len</span> } <span class="op">=</span> <span class="ident">s</span>;
-        (<span class="number">0</span>..<span class="ident">len</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">generate</span>(<span class="ident">inner</span>)).<span class="ident">collect</span>()
+<span class="kw">impl </span>RandomGenerator&lt;VecMarker&lt;Permutation&gt;&gt; <span class="kw">for </span>ChaCha20Rng {
+    <span class="kw">type </span>Output = Vec&lt;Vec&lt;usize&gt;&gt;;
+    <span class="kw">fn </span>generate(<span class="kw-2">&amp;mut </span><span class="self">self</span>, s: VecMarker&lt;Permutation&gt;) -&gt; <span class="self">Self</span>::Output {
+        <span class="kw">let </span>VecMarker { inner, len } = s;
+        (<span class="number">0</span>..len).map(|<span class="kw">_</span>| <span class="self">self</span>.generate(inner)).collect()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">RandomGenerator</span><span class="op">&lt;</span><span class="ident">VecOptionsMarker</span><span class="op">&lt;</span><span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ChaCha20Rng</span> {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;</span>;
-    <span class="kw">fn</span> <span class="ident">generate</span>(
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-        <span class="ident">subject</span>: <span class="ident">VecOptionsMarker</span><span class="op">&lt;</span><span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    ) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">VecOptionsMarker</span> { <span class="ident">inner</span>, <span class="ident">len</span>, <span class="ident">sorted</span>, <span class="ident">distinct</span> } <span class="op">=</span> <span class="ident">subject</span>;
+<span class="kw">impl </span>RandomGenerator&lt;VecOptionsMarker&lt;RangeInclusive&lt;i64&gt;&gt;&gt; <span class="kw">for </span>ChaCha20Rng {
+    <span class="kw">type </span>Output = Vec&lt;i64&gt;;
+    <span class="kw">fn </span>generate(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        subject: VecOptionsMarker&lt;RangeInclusive&lt;i64&gt;&gt;,
+    ) -&gt; Vec&lt;i64&gt; {
+        <span class="kw">let </span>VecOptionsMarker { inner, len, sorted, distinct } = subject;
 
-        <span class="kw">if</span> <span class="ident">len</span> <span class="op">==</span> <span class="number">0</span> {
-            <span class="kw">return</span> <span class="macro">vec!</span>[];
+        <span class="kw">if </span>len == <span class="number">0 </span>{
+            <span class="kw">return </span><span class="macro">vec!</span>[];
         }
 
-        <span class="kw">let</span> <span class="ident">start</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">inner</span>.<span class="ident">start</span>();
-        <span class="kw">let</span> <span class="ident">end</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">inner</span>.<span class="ident">end</span>();
-        <span class="kw">if</span> <span class="ident">start</span> <span class="op">&gt;</span> <span class="ident">end</span> {
+        <span class="kw">let </span>start = <span class="kw-2">*</span>inner.start();
+        <span class="kw">let </span>end = <span class="kw-2">*</span>inner.end();
+        <span class="kw">if </span>start &gt; end {
             <span class="macro">panic!</span>(<span class="string">&quot;Emptyset&quot;</span>);
         }
-        <span class="kw">if</span> <span class="ident">distinct</span> {
-            <span class="kw">let</span> <span class="ident">u_len</span> <span class="op">=</span> <span class="ident">end</span> <span class="op">-</span> <span class="ident">start</span>;
-            <span class="comment">// 全域だったらオーバーフローするので +1 しないでおく。</span>
-            <span class="comment">// len == 0 は上で処理しているので、len-1 はオーバーフローしない。</span>
-            <span class="comment">// 符号つきだから u_len の時点でオーバーフローしうるじゃんね。</span>
-            <span class="comment">// 全域でなければ Range の方を使うようにする？ 全域なら別で考える？</span>
-            <span class="comment">// 嫌だけど。</span>
+        <span class="kw">if </span>distinct {
+            <span class="kw">let </span>u_len = end - start;
+            <span class="comment">// 全域だったらオーバーフローするので +1 しないでおく。
+            // len == 0 は上で処理しているので、len-1 はオーバーフローしない。
+            // 符号つきだから u_len の時点でオーバーフローしうるじゃんね。
+            // 全域でなければ Range の方を使うようにする？ 全域なら別で考える？
+            // 嫌だけど。
 
-            <span class="comment">// if end - start + 1 &lt; len {}</span>
-            <span class="kw">if</span> <span class="ident">u_len</span> <span class="op">==</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">len</span> <span class="op">==</span> <span class="number">1</span> {
-                <span class="kw">return</span> <span class="macro">vec!</span>[<span class="ident">start</span>];
+            // if end - start + 1 &lt; len {}
+            </span><span class="kw">if </span>u_len == <span class="number">0 </span>&amp;&amp; len == <span class="number">1 </span>{
+                <span class="kw">return </span><span class="macro">vec!</span>[start];
             }
-            <span class="kw">if</span> (<span class="ident">u_len</span> <span class="kw">as</span> <span class="ident">u128</span>) <span class="op">&lt;</span> <span class="ident">len</span> <span class="kw">as</span> <span class="ident">u128</span> <span class="op">-</span> <span class="number">1</span> {
+            <span class="kw">if </span>(u_len <span class="kw">as </span>u128) &lt; len <span class="kw">as </span>u128 - <span class="number">1 </span>{
                 <span class="macro">panic!</span>(<span class="string">&quot;by pigeonhole principle, it is infeasible&quot;</span>);
             }
 
-            <span class="comment">// (end - start + 1, len)</span>
-            <span class="comment">// (_, 0) =&gt; []</span>
-            <span class="comment">// (1, 1) =&gt; [start]</span>
-            <span class="comment">// (x, y) if x &lt; y =&gt; panic!()</span>
+            <span class="comment">// (end - start + 1, len)
+            // (_, 0) =&gt; []
+            // (1, 1) =&gt; [start]
+            // (x, y) if x &lt; y =&gt; panic!()
 
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-            <span class="comment">// k &gt;~ n/log(n) くらいなら dense だと思っていい？</span>
-            <span class="comment">// ゼロ割りは嫌なので k log(n) &gt;~ n。</span>
-            <span class="kw">let</span> <span class="ident">lg_len</span> <span class="op">=</span> <span class="ident">len</span>.<span class="ident">next_power_of_two</span>().<span class="ident">trailing_zeros</span>() <span class="kw">as</span> <span class="ident">i64</span>;
-            <span class="kw">let</span> <span class="ident">sparse</span> <span class="op">=</span> <span class="ident">u_len</span> <span class="op">*</span> <span class="ident">lg_len</span> <span class="op">&lt;</span> <span class="ident">len</span> <span class="kw">as</span> <span class="ident">i64</span>;
+            </span><span class="kw">let </span><span class="kw-2">mut </span>res = <span class="macro">vec!</span>[];
+            <span class="comment">// k &gt;~ n/log(n) くらいなら dense だと思っていい？
+            // ゼロ割りは嫌なので k log(n) &gt;~ n。
+            </span><span class="kw">let </span>lg_len = len.next_power_of_two().trailing_zeros() <span class="kw">as </span>i64;
+            <span class="kw">let </span>sparse = u_len * lg_len &lt; len <span class="kw">as </span>i64;
 
-            <span class="kw">if</span> <span class="ident">sparse</span> {
-                <span class="kw">let</span> <span class="ident">between</span> <span class="op">=</span> <span class="ident">Uniform::from</span>(<span class="ident">inner</span>);
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">seen</span> <span class="op">=</span> <span class="ident">BTreeSet::new</span>();
-                <span class="kw">while</span> <span class="ident">res</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="ident">len</span> {
-                    <span class="comment">// 失敗しまくったら下のやり方に fallback した方がいい？</span>
-                    <span class="kw">let</span> <span class="ident">cur</span> <span class="op">=</span> <span class="ident">between</span>.<span class="ident">sample</span>(<span class="self">self</span>);
-                    <span class="kw">if</span> <span class="ident">seen</span>.<span class="ident">insert</span>(<span class="ident">cur</span>) {
-                        <span class="ident">res</span>.<span class="ident">push</span>(<span class="ident">cur</span>);
+            <span class="kw">if </span>sparse {
+                <span class="kw">let </span>between = Uniform::from(inner);
+                <span class="kw">let </span><span class="kw-2">mut </span>seen = BTreeSet::new();
+                <span class="kw">while </span>res.len() &lt; len {
+                    <span class="comment">// 失敗しまくったら下のやり方に fallback した方がいい？
+                    </span><span class="kw">let </span>cur = between.sample(<span class="self">self</span>);
+                    <span class="kw">if </span>seen.insert(cur) {
+                        res.push(cur);
                     }
                 }
-            } <span class="kw">else</span> {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pool</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="ident">start</span>..<span class="op">=</span><span class="ident">end</span>).<span class="ident">collect</span>();
-                <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">len</span> {
-                    <span class="kw">let</span> <span class="ident">u</span> <span class="op">=</span> <span class="ident">Uniform::from</span>(<span class="number">0</span>..<span class="ident">pool</span>.<span class="ident">len</span>());
-                    <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="ident">u</span>.<span class="ident">sample</span>(<span class="self">self</span>);
-                    <span class="ident">res</span>.<span class="ident">push</span>(<span class="ident">pool</span>.<span class="ident">swap_remove</span>(<span class="ident">i</span>));
+            } <span class="kw">else </span>{
+                <span class="kw">let </span><span class="kw-2">mut </span>pool: Vec&lt;<span class="kw">_</span>&gt; = (start..=end).collect();
+                <span class="kw">for _ in </span><span class="number">0</span>..len {
+                    <span class="kw">let </span>u = Uniform::from(<span class="number">0</span>..pool.len());
+                    <span class="kw">let </span>i = u.sample(<span class="self">self</span>);
+                    res.push(pool.swap_remove(i));
                 }
             }
 
-            <span class="kw">if</span> <span class="ident">sorted</span> {
-                <span class="ident">res</span>.<span class="ident">sort_unstable</span>();
+            <span class="kw">if </span>sorted {
+                res.sort_unstable();
             }
-            <span class="kw">return</span> <span class="ident">res</span>;
+            <span class="kw">return </span>res;
         }
 
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">sorted</span> {
-            <span class="kw">return</span> <span class="self">self</span>.<span class="ident">generate</span>(<span class="ident">VecMarker</span> { <span class="ident">inner</span>, <span class="ident">len</span> });
+        <span class="kw">if </span>!sorted {
+            <span class="kw">return </span><span class="self">self</span>.generate(VecMarker { inner, len });
         }
 
-        <span class="comment">// todo うまくやる</span>
-        <span class="comment">// distinct のオプションがあるとやりやすいかも</span>
-        <span class="comment">// 関数が同じだから再帰でやるかどうしようか</span>
-        <span class="comment">// [start..=end + len - 1; len] where { distinct }</span>
-        <span class="comment">// を作り、ソートして、a[i] -= i して返す。</span>
-        <span class="comment">//</span>
-        <span class="comment">// distinct に作るパートが難しくて、sparse か dense かで分ける？</span>
-        <span class="comment">// infeasible なら panic!() で。</span>
+        <span class="comment">// todo うまくやる
+        // distinct のオプションがあるとやりやすいかも
+        // 関数が同じだから再帰でやるかどうしようか
+        // [start..=end + len - 1; len] where { distinct }
+        // を作り、ソートして、a[i] -= i して返す。
+        //
+        // distinct に作るパートが難しくて、sparse か dense かで分ける？
+        // infeasible なら panic!() で。
 
-        <span class="comment">// let mut tmp = self.generate(VecMarker { inner, len });</span>
-        <span class="comment">// tmp.sort_unstable();</span>
-        <span class="comment">// tmp</span>
+        // let mut tmp = self.generate(VecMarker { inner, len });
+        // tmp.sort_unstable();
+        // tmp
 
-        <span class="kw">let</span> <span class="ident">start</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">inner</span>.<span class="ident">start</span>();
-        <span class="kw">let</span> <span class="ident">end</span> <span class="op">=</span> <span class="ident">inner</span>.<span class="ident">end</span>() <span class="op">+</span> <span class="ident">len</span> <span class="kw">as</span> <span class="ident">i64</span> <span class="op">-</span> <span class="number">1</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">generate</span>(<span class="ident">VecOptionsMarker</span> {
-            <span class="ident">inner</span>: <span class="ident">start</span>..<span class="op">=</span><span class="ident">end</span>,
-            <span class="ident">len</span>,
-            <span class="ident">sorted</span>: <span class="bool-val">true</span>,
-            <span class="ident">distinct</span>: <span class="bool-val">true</span>,
+        </span><span class="kw">let </span>start = <span class="kw-2">*</span>inner.start();
+        <span class="kw">let </span>end = inner.end() + len <span class="kw">as </span>i64 - <span class="number">1</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="self">self</span>.generate(VecOptionsMarker {
+            inner: start..=end,
+            len,
+            sorted: <span class="bool-val">true</span>,
+            distinct: <span class="bool-val">true</span>,
         });
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">len</span> {
-            <span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span><span class="op">=</span> <span class="ident">i</span> <span class="kw">as</span> <span class="ident">i64</span>;
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..len {
+            res[i] -= i <span class="kw">as </span>i64;
         }
-        <span class="ident">res</span>
+        res
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Permutation</span>(<span class="kw">pub</span> <span class="ident">usize</span>);
+<span class="attribute">#[derive(Clone, Copy)]
+</span><span class="kw">pub struct </span>Permutation(<span class="kw">pub </span>usize);
 
-<span class="kw">impl</span> <span class="ident">RandomGenerator</span><span class="op">&lt;</span><span class="ident">Permutation</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ChaCha20Rng</span> {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>;
-    <span class="kw">fn</span> <span class="ident">generate</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">subject</span>: <span class="ident">Permutation</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">subject</span>.<span class="number">0</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">n</span>).<span class="ident">collect</span>();
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> (<span class="number">1</span>..<span class="ident">n</span>).<span class="ident">rev</span>() {
-            <span class="kw">let</span> <span class="ident">j</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">generate</span>(<span class="number">0</span>..<span class="op">=</span><span class="ident">i</span>);
-            <span class="ident">res</span>.<span class="ident">swap</span>(<span class="ident">j</span>, <span class="ident">i</span>);
+<span class="kw">impl </span>RandomGenerator&lt;Permutation&gt; <span class="kw">for </span>ChaCha20Rng {
+    <span class="kw">type </span>Output = Vec&lt;usize&gt;;
+    <span class="kw">fn </span>generate(<span class="kw-2">&amp;mut </span><span class="self">self</span>, subject: Permutation) -&gt; Vec&lt;usize&gt; {
+        <span class="kw">let </span>n = subject.<span class="number">0</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>res: Vec&lt;<span class="kw">_</span>&gt; = (<span class="number">0</span>..n).collect();
+        <span class="kw">for </span>i <span class="kw">in </span>(<span class="number">1</span>..n).rev() {
+            <span class="kw">let </span>j = <span class="self">self</span>.generate(<span class="number">0</span>..=i);
+            res.swap(j, i);
         }
-        <span class="ident">res</span>
+        res
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

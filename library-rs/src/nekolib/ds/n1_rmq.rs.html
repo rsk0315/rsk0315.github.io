@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/ds/n1_rmq.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>n1_rmq.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/ds/n1_rmq.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>n1_rmq.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -253,171 +253,171 @@
 <span id="164">164</span>
 <span id="165">165</span>
 <span id="166">166</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 線形 RMQ。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 線形 RMQ。
 
-<span class="doccomment">/// $\\langle O(n), O(1)\\rangle$ RMQ。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Idea</span>
-<span class="doccomment">/// 簡潔データ構造の文脈でよくあるように、配列を数個ずつの要素からなるブロックに区切り、</span>
-<span class="doccomment">/// 各ブロック内では表引きを行う。ここでは特に簡潔の実装にはしていないことに注意。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ブロックサイズは $b = \\frac{1}{4}\\log\_2(n)$ とする。</span>
-<span class="doccomment">/// ブロック内の最小値たちを、$\\langle O(n\\log(n)), O(1)\\rangle$ の RMQ である sparse table</span>
-<span class="doccomment">/// で管理する。$O(n/\\log(n)\\cdot \\log(n/\\log(n))) = O(n)$ なので ok。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $b = \\frac{1}{4}\\log\_2(n)$ サイズの小ブロックたちについて、それらの argmin</span>
-<span class="doccomment">/// を表引きすることを考える。Cartesian tree を考えると、argmin のテーブルは $2^{2b} = \\sqrt{n}$</span>
-<span class="doccomment">/// 種類しかないことがわかる。よって、各種類ごとに愚直に求めても $O(\\sqrt{n}\\,\\log(n)^2)$</span>
-<span class="doccomment">/// 時間なので、こちらも ok。</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">N1Rmq</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="ident">base</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
-    <span class="ident">large</span>: <span class="ident">SparseTable</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
-    <span class="ident">small</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="ident">types</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-    <span class="ident">b</span>: <span class="ident">usize</span>,
+/// $\\langle O(n), O(1)\\rangle$ RMQ。
+///
+/// # Idea
+/// 簡潔データ構造の文脈でよくあるように、配列を数個ずつの要素からなるブロックに区切り、
+/// 各ブロック内では表引きを行う。ここでは特に簡潔の実装にはしていないことに注意。
+///
+/// ブロックサイズは $b = \\frac{1}{4}\\log\_2(n)$ とする。
+/// ブロック内の最小値たちを、$\\langle O(n\\log(n)), O(1)\\rangle$ の RMQ である sparse table
+/// で管理する。$O(n/\\log(n)\\cdot \\log(n/\\log(n))) = O(n)$ なので ok。
+///
+/// $b = \\frac{1}{4}\\log\_2(n)$ サイズの小ブロックたちについて、それらの argmin
+/// を表引きすることを考える。Cartesian tree を考えると、argmin のテーブルは $2^{2b} = \\sqrt{n}$
+/// 種類しかないことがわかる。よって、各種類ごとに愚直に求めても $O(\\sqrt{n}\\,\\log(n)^2)$
+/// 時間なので、こちらも ok。
+</span><span class="kw">pub struct </span>N1Rmq&lt;T&gt; {
+    base: Vec&lt;T&gt;,
+    large: SparseTable&lt;T&gt;,
+    small: Vec&lt;u8&gt;,
+    types: Vec&lt;usize&gt;,
+    b: usize,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">N1Rmq</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">base</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">base</span>.<span class="ident">len</span>();
-        <span class="kw">let</span> <span class="ident">lg_n</span> <span class="op">=</span> <span class="ident">n</span>.<span class="ident">next_power_of_two</span>().<span class="ident">trailing_zeros</span>();
-        <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="number">1</span>.<span class="ident">max</span>(<span class="ident">lg_n</span> <span class="op">/</span> <span class="number">4</span>) <span class="kw">as</span> <span class="ident">usize</span>;
+<span class="kw">impl</span>&lt;T: Clone + Ord&gt; From&lt;Vec&lt;T&gt;&gt; <span class="kw">for </span>N1Rmq&lt;T&gt; {
+    <span class="kw">fn </span>from(base: Vec&lt;T&gt;) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>n = base.len();
+        <span class="kw">let </span>lg_n = n.next_power_of_two().trailing_zeros();
+        <span class="kw">let </span>b = <span class="number">1</span>.max(lg_n / <span class="number">4</span>) <span class="kw">as </span>usize;
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">large</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">small</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; (<span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> (<span class="number">2</span> <span class="op">*</span> <span class="ident">b</span>)) <span class="op">*</span> <span class="ident">b</span> <span class="op">*</span> <span class="ident">b</span>];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">types</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">seen</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="bool-val">false</span>; <span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> (<span class="number">2</span> <span class="op">*</span> <span class="ident">b</span>)];
-        <span class="kw">for</span> <span class="ident">ch</span> <span class="kw">in</span> <span class="ident">base</span>.<span class="ident">chunks</span>(<span class="ident">b</span>) {
-            <span class="ident">large</span>.<span class="ident">push</span>(<span class="ident">ch</span>.<span class="ident">iter</span>().<span class="ident">min</span>().<span class="ident">unwrap</span>().<span class="ident">clone</span>());
-            <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">cartesian_tree</span>(<span class="ident">ch</span>);
-            <span class="ident">types</span>.<span class="ident">push</span>(<span class="ident">ty</span>);
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">seen</span>[<span class="ident">ty</span>] {
-                <span class="kw">for</span> <span class="ident">l</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">ch</span>.<span class="ident">len</span>() {
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">j</span> <span class="op">=</span> <span class="ident">l</span>;
-                    <span class="kw">for</span> <span class="ident">r</span> <span class="kw">in</span> <span class="ident">l</span>..<span class="ident">ch</span>.<span class="ident">len</span>() {
-                        <span class="kw">if</span> <span class="ident">ch</span>[<span class="ident">j</span>] <span class="op">&gt;</span> <span class="ident">ch</span>[<span class="ident">r</span>] {
-                            <span class="ident">j</span> <span class="op">=</span> <span class="ident">r</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>large = <span class="macro">vec!</span>[];
+        <span class="kw">let </span><span class="kw-2">mut </span>small = <span class="macro">vec!</span>[<span class="number">0</span>; (<span class="number">1 </span>&lt;&lt; (<span class="number">2 </span>* b)) * b * b];
+        <span class="kw">let </span><span class="kw-2">mut </span>types = <span class="macro">vec!</span>[];
+        <span class="kw">let </span><span class="kw-2">mut </span>seen = <span class="macro">vec!</span>[<span class="bool-val">false</span>; <span class="number">1 </span>&lt;&lt; (<span class="number">2 </span>* b)];
+        <span class="kw">for </span>ch <span class="kw">in </span>base.chunks(b) {
+            large.push(ch.iter().min().unwrap().clone());
+            <span class="kw">let </span>ty = cartesian_tree(ch);
+            types.push(ty);
+            <span class="kw">if </span>!seen[ty] {
+                <span class="kw">for </span>l <span class="kw">in </span><span class="number">0</span>..ch.len() {
+                    <span class="kw">let </span><span class="kw-2">mut </span>j = l;
+                    <span class="kw">for </span>r <span class="kw">in </span>l..ch.len() {
+                        <span class="kw">if </span>ch[j] &gt; ch[r] {
+                            j = r;
                         }
-                        <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> (<span class="ident">ty</span> <span class="op">*</span> <span class="ident">b</span> <span class="op">+</span> <span class="ident">l</span>) <span class="op">*</span> <span class="ident">b</span> <span class="op">+</span> <span class="ident">r</span>;
-                        <span class="ident">small</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">j</span> <span class="kw">as</span> <span class="ident">u8</span>;
+                        <span class="kw">let </span>i = (ty * b + l) * b + r;
+                        small[i] = j <span class="kw">as </span>u8;
                     }
                 }
-                <span class="ident">seen</span>[<span class="ident">ty</span>] <span class="op">=</span> <span class="bool-val">true</span>;
+                seen[ty] = <span class="bool-val">true</span>;
             }
         }
-        <span class="kw">let</span> <span class="ident">large</span>: <span class="ident">SparseTable</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">large</span>.<span class="ident">into</span>();
-        <span class="self">Self</span> { <span class="ident">base</span>, <span class="ident">large</span>, <span class="ident">small</span>, <span class="ident">types</span>, <span class="ident">b</span> }
+        <span class="kw">let </span>large: SparseTable&lt;<span class="kw">_</span>&gt; = large.into();
+        <span class="self">Self </span>{ base, large, small, types, b }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">N1Rmq</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">index</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">bucket</span>: <span class="ident">usize</span>, <span class="ident">start</span>: <span class="ident">usize</span>, <span class="ident">end</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> {
-        <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">b</span>;
-        (<span class="self">self</span>.<span class="ident">types</span>[<span class="ident">bucket</span>] <span class="op">*</span> <span class="ident">b</span> <span class="op">+</span> <span class="ident">start</span>) <span class="op">*</span> <span class="ident">b</span> <span class="op">+</span> <span class="ident">end</span>
+<span class="kw">impl</span>&lt;T: Clone + Ord&gt; N1Rmq&lt;T&gt; {
+    <span class="kw">fn </span>index(<span class="kw-2">&amp;</span><span class="self">self</span>, bucket: usize, start: usize, end: usize) -&gt; usize {
+        <span class="kw">let </span>b = <span class="self">self</span>.b;
+        (<span class="self">self</span>.types[bucket] * b + start) * b + end
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">min</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">l</span>: <span class="ident">usize</span>, <span class="ident">r</span>: <span class="ident">usize</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">T</span> {
-        <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">b</span>;
-        <span class="kw">let</span> <span class="ident">lb</span> <span class="op">=</span> <span class="ident">l</span> <span class="op">/</span> <span class="ident">b</span>;
-        <span class="kw">let</span> <span class="ident">rb</span> <span class="op">=</span> (<span class="ident">r</span> <span class="op">-</span> <span class="number">1</span>) <span class="op">/</span> <span class="ident">b</span>;
-        <span class="kw">if</span> <span class="ident">lb</span> <span class="op">==</span> <span class="ident">rb</span> {
-            <span class="kw">let</span> <span class="ident">j</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">small</span>[<span class="self">self</span>.<span class="ident">index</span>(<span class="ident">lb</span>, <span class="ident">l</span> <span class="op">%</span> <span class="ident">b</span>, (<span class="ident">r</span> <span class="op">-</span> <span class="number">1</span>) <span class="op">%</span> <span class="ident">b</span>)] <span class="kw">as</span> <span class="ident">usize</span>;
-            <span class="kw">return</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">base</span>[<span class="ident">lb</span> <span class="op">*</span> <span class="ident">b</span> <span class="op">+</span> <span class="ident">j</span>];
+    <span class="kw">pub fn </span>min(<span class="kw-2">&amp;</span><span class="self">self</span>, l: usize, r: usize) -&gt; <span class="kw-2">&amp;</span>T {
+        <span class="kw">let </span>b = <span class="self">self</span>.b;
+        <span class="kw">let </span>lb = l / b;
+        <span class="kw">let </span>rb = (r - <span class="number">1</span>) / b;
+        <span class="kw">if </span>lb == rb {
+            <span class="kw">let </span>j = <span class="self">self</span>.small[<span class="self">self</span>.index(lb, l % b, (r - <span class="number">1</span>) % b)] <span class="kw">as </span>usize;
+            <span class="kw">return </span><span class="kw-2">&amp;</span><span class="self">self</span>.base[lb * b + j];
         }
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">l</span> <span class="op">%</span> <span class="ident">b</span> <span class="op">==</span> <span class="number">0</span> {
-            <span class="self">self</span>.<span class="ident">large</span>.<span class="ident">min</span>(<span class="ident">lb</span>, <span class="ident">lb</span> <span class="op">+</span> <span class="number">1</span>)
-        } <span class="kw">else</span> {
-            <span class="kw">let</span> <span class="ident">j</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">small</span>[<span class="self">self</span>.<span class="ident">index</span>(<span class="ident">lb</span>, <span class="ident">l</span> <span class="op">%</span> <span class="ident">b</span>, <span class="ident">b</span> <span class="op">-</span> <span class="number">1</span>)] <span class="kw">as</span> <span class="ident">usize</span>;
-            <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">base</span>[<span class="ident">lb</span> <span class="op">*</span> <span class="ident">b</span> <span class="op">+</span> <span class="ident">j</span>]
+        <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="kw">if </span>l % b == <span class="number">0 </span>{
+            <span class="self">self</span>.large.min(lb, lb + <span class="number">1</span>)
+        } <span class="kw">else </span>{
+            <span class="kw">let </span>j = <span class="self">self</span>.small[<span class="self">self</span>.index(lb, l % b, b - <span class="number">1</span>)] <span class="kw">as </span>usize;
+            <span class="kw-2">&amp;</span><span class="self">self</span>.base[lb * b + j]
         };
 
-        <span class="ident">res</span> <span class="op">=</span> <span class="ident">res</span>.<span class="ident">min</span>(<span class="kw">if</span> <span class="ident">r</span> <span class="op">%</span> <span class="ident">b</span> <span class="op">==</span> <span class="number">0</span> {
-            <span class="self">self</span>.<span class="ident">large</span>.<span class="ident">min</span>(<span class="ident">rb</span>, <span class="ident">rb</span> <span class="op">+</span> <span class="number">1</span>)
-        } <span class="kw">else</span> {
-            <span class="kw">let</span> <span class="ident">j</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">small</span>[<span class="self">self</span>.<span class="ident">index</span>(<span class="ident">rb</span>, <span class="number">0</span>, (<span class="ident">r</span> <span class="op">-</span> <span class="number">1</span>) <span class="op">%</span> <span class="ident">b</span>)] <span class="kw">as</span> <span class="ident">usize</span>;
-            <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">base</span>[<span class="ident">rb</span> <span class="op">*</span> <span class="ident">b</span> <span class="op">+</span> <span class="ident">j</span>]
+        res = res.min(<span class="kw">if </span>r % b == <span class="number">0 </span>{
+            <span class="self">self</span>.large.min(rb, rb + <span class="number">1</span>)
+        } <span class="kw">else </span>{
+            <span class="kw">let </span>j = <span class="self">self</span>.small[<span class="self">self</span>.index(rb, <span class="number">0</span>, (r - <span class="number">1</span>) % b)] <span class="kw">as </span>usize;
+            <span class="kw-2">&amp;</span><span class="self">self</span>.base[rb * b + j]
         });
 
-        <span class="kw">if</span> <span class="ident">lb</span> <span class="op">+</span> <span class="number">1</span> <span class="op">&lt;</span> <span class="ident">rb</span> {
-            <span class="ident">res</span> <span class="op">=</span> <span class="ident">res</span>.<span class="ident">min</span>(<span class="self">self</span>.<span class="ident">large</span>.<span class="ident">min</span>(<span class="ident">lb</span> <span class="op">+</span> <span class="number">1</span>, <span class="ident">rb</span>));
+        <span class="kw">if </span>lb + <span class="number">1 </span>&lt; rb {
+            res = res.min(<span class="self">self</span>.large.min(lb + <span class="number">1</span>, rb));
         }
 
-        <span class="ident">res</span>
+        res
     }
 }
 
-<span class="kw">fn</span> <span class="ident">cartesian_tree</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span>(<span class="ident">a</span>: <span class="kw-2">&amp;</span>[<span class="ident">T</span>]) -&gt; <span class="ident">usize</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">stack</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="number">1</span>;
-    <span class="kw">for</span> <span class="ident">ai</span> <span class="kw">in</span> <span class="ident">a</span> {
-        <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">last</span>) <span class="op">=</span> <span class="ident">stack</span>.<span class="ident">last</span>() {
-            <span class="kw">if</span> <span class="ident">last</span> <span class="op">&gt;</span> <span class="ident">ai</span> {
-                <span class="ident">stack</span>.<span class="ident">pop</span>();
-                <span class="ident">res</span> <span class="op">&lt;</span><span class="op">&lt;</span><span class="op">=</span> <span class="number">1</span>;
-            } <span class="kw">else</span> {
+<span class="kw">fn </span>cartesian_tree&lt;T: Ord&gt;(a: <span class="kw-2">&amp;</span>[T]) -&gt; usize {
+    <span class="kw">let </span><span class="kw-2">mut </span>stack = <span class="macro">vec!</span>[];
+    <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="number">1</span>;
+    <span class="kw">for </span>ai <span class="kw">in </span>a {
+        <span class="kw">while let </span><span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>last) = stack.last() {
+            <span class="kw">if </span>last &gt; ai {
+                stack.pop();
+                res &lt;&lt;= <span class="number">1</span>;
+            } <span class="kw">else </span>{
                 <span class="kw">break</span>;
             }
         }
-        <span class="ident">stack</span>.<span class="ident">push</span>(<span class="ident">ai</span>);
-        <span class="ident">res</span> <span class="op">=</span> <span class="ident">res</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span> <span class="op">|</span> <span class="number">1</span>;
+        stack.push(ai);
+        res = res &lt;&lt; <span class="number">1 </span>| <span class="number">1</span>;
     }
-    <span class="ident">res</span> <span class="op">&lt;</span><span class="op">&lt;</span> (<span class="ident">stack</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>)
+    res &lt;&lt; (stack.len() - <span class="number">1</span>)
 }
 
-<span class="kw">struct</span> <span class="ident">SparseTable</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="ident">base</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
-    <span class="ident">table</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="kw">struct </span>SparseTable&lt;T&gt; {
+    base: Vec&lt;T&gt;,
+    table: Vec&lt;Vec&lt;usize&gt;&gt;,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SparseTable</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">base</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">table</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">base</span>.<span class="ident">len</span>();
-        <span class="ident">table</span>.<span class="ident">push</span>((<span class="number">0</span>..<span class="ident">n</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>());
-        <span class="kw">for</span> <span class="ident">sh</span> <span class="kw">in</span> <span class="number">1</span>.. {
-            <span class="kw">let</span> <span class="ident">last</span> <span class="op">=</span> <span class="ident">table</span>.<span class="ident">last</span>().<span class="ident">unwrap</span>();
-            <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">sh</span>;
-            <span class="kw">if</span> <span class="ident">len</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">n</span> {
+<span class="kw">impl</span>&lt;T: Ord&gt; From&lt;Vec&lt;T&gt;&gt; <span class="kw">for </span>SparseTable&lt;T&gt; {
+    <span class="kw">fn </span>from(base: Vec&lt;T&gt;) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>table = <span class="macro">vec!</span>[];
+        <span class="kw">let </span>n = base.len();
+        table.push((<span class="number">0</span>..n).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;());
+        <span class="kw">for </span>sh <span class="kw">in </span><span class="number">1</span>.. {
+            <span class="kw">let </span>last = table.last().unwrap();
+            <span class="kw">let </span>len = <span class="number">1 </span>&lt;&lt; sh;
+            <span class="kw">if </span>len &gt;= n {
                 <span class="kw">break</span>;
             }
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cur</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">n</span> <span class="op">-</span> <span class="ident">len</span> <span class="op">+</span> <span class="number">1</span>];
-            <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="ident">len</span>..<span class="op">=</span><span class="ident">n</span> {
-                <span class="kw">let</span> (<span class="ident">il</span>, <span class="ident">ir</span>) <span class="op">=</span> (<span class="ident">last</span>[<span class="ident">i</span> <span class="op">-</span> <span class="ident">len</span>], <span class="ident">last</span>[<span class="ident">i</span> <span class="op">-</span> <span class="ident">len</span> <span class="op">+</span> (<span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> (<span class="ident">sh</span> <span class="op">-</span> <span class="number">1</span>))]);
-                <span class="ident">cur</span>[<span class="ident">i</span> <span class="op">-</span> <span class="ident">len</span>] <span class="op">=</span> <span class="kw">if</span> <span class="ident">base</span>[<span class="ident">il</span>] <span class="op">&lt;</span> <span class="ident">base</span>[<span class="ident">ir</span>] { <span class="ident">il</span> } <span class="kw">else</span> { <span class="ident">ir</span> };
+            <span class="kw">let </span><span class="kw-2">mut </span>cur = <span class="macro">vec!</span>[<span class="number">0</span>; n - len + <span class="number">1</span>];
+            <span class="kw">for </span>i <span class="kw">in </span>len..=n {
+                <span class="kw">let </span>(il, ir) = (last[i - len], last[i - len + (<span class="number">1 </span>&lt;&lt; (sh - <span class="number">1</span>))]);
+                cur[i - len] = <span class="kw">if </span>base[il] &lt; base[ir] { il } <span class="kw">else </span>{ ir };
             }
-            <span class="ident">table</span>.<span class="ident">push</span>(<span class="ident">cur</span>);
+            table.push(cur);
         }
-        <span class="self">Self</span> { <span class="ident">base</span>, <span class="ident">table</span> }
+        <span class="self">Self </span>{ base, table }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">SparseTable</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">min</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>, <span class="ident">j</span>: <span class="ident">usize</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">T</span> {
-        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">j</span> <span class="op">-</span> <span class="ident">i</span>;
-        <span class="kw">if</span> <span class="ident">len</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">1</span> {
-            <span class="kw">return</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">base</span>[<span class="ident">i</span>];
+<span class="kw">impl</span>&lt;T: Ord&gt; SparseTable&lt;T&gt; {
+    <span class="kw">pub fn </span>min(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize, j: usize) -&gt; <span class="kw-2">&amp;</span>T {
+        <span class="kw">let </span>len = j - i;
+        <span class="kw">if </span>len &lt;= <span class="number">1 </span>{
+            <span class="kw">return </span><span class="kw-2">&amp;</span><span class="self">self</span>.base[i];
         }
-        <span class="kw">let</span> <span class="ident">sh</span> <span class="op">=</span> <span class="ident">len</span>.<span class="ident">next_power_of_two</span>().<span class="ident">trailing_zeros</span>() <span class="kw">as</span> <span class="ident">usize</span> <span class="op">-</span> <span class="number">1</span>;
-        <span class="kw">let</span> [<span class="ident">il</span>, <span class="ident">ir</span>] <span class="op">=</span> [<span class="self">self</span>.<span class="ident">table</span>[<span class="ident">sh</span>][<span class="ident">i</span>], <span class="self">self</span>.<span class="ident">table</span>[<span class="ident">sh</span>][<span class="ident">j</span> <span class="op">-</span> (<span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">sh</span>)]];
-        (<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">base</span>[<span class="ident">il</span>]).<span class="ident">min</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">base</span>[<span class="ident">ir</span>])
+        <span class="kw">let </span>sh = len.next_power_of_two().trailing_zeros() <span class="kw">as </span>usize - <span class="number">1</span>;
+        <span class="kw">let </span>[il, ir] = [<span class="self">self</span>.table[sh][i], <span class="self">self</span>.table[sh][j - (<span class="number">1 </span>&lt;&lt; sh)]];
+        (<span class="kw-2">&amp;</span><span class="self">self</span>.base[il]).min(<span class="kw-2">&amp;</span><span class="self">self</span>.base[ir])
     }
 }
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test</span>() {
-    <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="number">20000</span>;
-    <span class="kw">let</span> <span class="ident">it</span> <span class="op">=</span> <span class="ident">std::iter::successors</span>(<span class="prelude-val">Some</span>(<span class="number">3_usize</span>), <span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="prelude-val">Some</span>(<span class="number">3</span> <span class="op">*</span> <span class="ident">x</span> <span class="op">%</span> <span class="number">46337</span>));
-    <span class="kw">let</span> <span class="ident">a</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">it</span>.<span class="ident">take</span>(<span class="ident">n</span>).<span class="ident">collect</span>();
-    <span class="kw">let</span> <span class="ident">rmq</span>: <span class="ident">N1Rmq</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">a</span>.<span class="ident">clone</span>().<span class="ident">into</span>();
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test() {
+    <span class="kw">let </span>n = <span class="number">20000</span>;
+    <span class="kw">let </span>it = std::iter::successors(<span class="prelude-val">Some</span>(<span class="number">3_usize</span>), |x| <span class="prelude-val">Some</span>(<span class="number">3 </span>* x % <span class="number">46337</span>));
+    <span class="kw">let </span>a: Vec&lt;<span class="kw">_</span>&gt; = it.take(n).collect();
+    <span class="kw">let </span>rmq: N1Rmq&lt;<span class="kw">_</span>&gt; = a.clone().into();
 
-    <span class="kw">for</span> <span class="ident">l</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">min</span> <span class="op">=</span> <span class="ident">a</span>[<span class="ident">l</span>];
-        <span class="kw">for</span> <span class="ident">r</span> <span class="kw">in</span> <span class="ident">l</span>..<span class="ident">n</span> <span class="op">-</span> <span class="number">1</span> {
-            <span class="ident">min</span> <span class="op">=</span> <span class="ident">min</span>.<span class="ident">min</span>(<span class="ident">a</span>[<span class="ident">r</span>]);
-            <span class="macro">assert_eq!</span>(<span class="ident">rmq</span>.<span class="ident">min</span>(<span class="ident">l</span>, <span class="ident">r</span> <span class="op">+</span> <span class="number">1</span>), <span class="kw-2">&amp;</span><span class="ident">min</span>);
+    <span class="kw">for </span>l <span class="kw">in </span><span class="number">0</span>..n {
+        <span class="kw">let </span><span class="kw-2">mut </span>min = a[l];
+        <span class="kw">for </span>r <span class="kw">in </span>l..n - <span class="number">1 </span>{
+            min = min.min(a[r]);
+            <span class="macro">assert_eq!</span>(rmq.min(l, r + <span class="number">1</span>), <span class="kw-2">&amp;</span>min);
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

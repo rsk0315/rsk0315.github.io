@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/seq/z_algo.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>z_algo.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/seq/z_algo.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>z_algo.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -208,126 +208,126 @@
 <span id="119">119</span>
 <span id="120">120</span>
 <span id="121">121</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Z algorithm。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Z algorithm。
 
-<span class="kw">use</span> <span class="ident">std::fmt::Debug</span>;
-<span class="kw">use</span> <span class="ident">std::ops::Range</span>;
+</span><span class="kw">use </span>std::fmt::Debug;
+<span class="kw">use </span>std::ops::Range;
 
-<span class="doccomment">/// Z algorithm。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 文字列 $S$ について、$Z\[i\]$ ($0\\le i &lt; |S|$) が</span>
-<span class="doccomment">/// $S$ と $S\[i\\dots\]$ の最長共通接頭辞の長さであるような配列 $Z$ を構築する。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Implementation notes</span>
-<span class="doccomment">/// テキスト `T` 中のパターン `P` を探すとき、`T` と `P` に含まれない文字 `&#39;$&#39;`</span>
-<span class="doccomment">/// を用いて作った文字列 `P + &#39;$&#39; + T` の Z value を計算することで求められる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 一方、この方法においては `&#39;$&#39;` を適切に探す必要がある。</span>
-<span class="doccomment">/// caller 側が探すのは面倒・バグの元であり、callee 側が探すのはコストがかかる。</span>
-<span class="doccomment">/// あるいは、そういう元が存在しない場合もなくはない。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// さて、`P + &#39;$&#39; + T` を読み込んだ場合の挙動は `&#39;$&#39;` を仮定しなくても模倣できる。</span>
-<span class="doccomment">/// よって、多少の実装量には目をつぶりつつそういう実装にした。</span>
-<span class="doccomment">/// テキストがパターン構築時には与えられないような場合や、</span>
-<span class="doccomment">/// 複数の処理がオンラインに与えられる場合にも対応しやすいと思う。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Suggestions</span>
-<span class="doccomment">/// [`std::str::matches`](https://doc.rust-lang.org/std/primitive.str.html#method.matches)</span>
-<span class="doccomment">/// の実装を参考にするなどして、`fn occurrences(&amp;self)` を持つような trait</span>
-<span class="doccomment">/// を作るとよさそう。テストを KMP に対して再利用できるので。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// 構築は $O(|S|)$ 時間。検索は、テキスト $T$ に対して $O(|T|)$ 時間。</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ZSearcher</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Eq</span><span class="op">&gt;</span> {
-    <span class="ident">pat</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
-    <span class="ident">z</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
+<span class="doccomment">/// Z algorithm。
+///
+/// 文字列 $S$ について、$Z\[i\]$ ($0\\le i &lt; |S|$) が
+/// $S$ と $S\[i\\dots\]$ の最長共通接頭辞の長さであるような配列 $Z$ を構築する。
+///
+/// # Implementation notes
+/// テキスト `T` 中のパターン `P` を探すとき、`T` と `P` に含まれない文字 `&#39;$&#39;`
+/// を用いて作った文字列 `P + &#39;$&#39; + T` の Z value を計算することで求められる。
+///
+/// 一方、この方法においては `&#39;$&#39;` を適切に探す必要がある。
+/// caller 側が探すのは面倒・バグの元であり、callee 側が探すのはコストがかかる。
+/// あるいは、そういう元が存在しない場合もなくはない。
+///
+/// さて、`P + &#39;$&#39; + T` を読み込んだ場合の挙動は `&#39;$&#39;` を仮定しなくても模倣できる。
+/// よって、多少の実装量には目をつぶりつつそういう実装にした。
+/// テキストがパターン構築時には与えられないような場合や、
+/// 複数の処理がオンラインに与えられる場合にも対応しやすいと思う。
+///
+/// # Suggestions
+/// [`std::str::matches`](https://doc.rust-lang.org/std/primitive.str.html#method.matches)
+/// の実装を参考にするなどして、`fn occurrences(&amp;self)` を持つような trait
+/// を作るとよさそう。テストを KMP に対して再利用できるので。
+///
+/// # Complexity
+/// 構築は $O(|S|)$ 時間。検索は、テキスト $T$ に対して $O(|T|)$ 時間。
+</span><span class="attribute">#[derive(Clone, Debug, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>ZSearcher&lt;T: Eq&gt; {
+    pat: Vec&lt;T&gt;,
+    z: Vec&lt;usize&gt;,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">Eq</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ZSearcher</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">pat</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">pat</span>.<span class="ident">len</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">z</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">len</span>; <span class="ident">len</span>];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="number">1</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">j</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">while</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="ident">len</span> {
-            <span class="kw">while</span> <span class="ident">i</span> <span class="op">+</span> <span class="ident">j</span> <span class="op">&lt;</span> <span class="ident">len</span> <span class="op">&amp;&amp;</span> <span class="ident">pat</span>[<span class="ident">j</span>] <span class="op">==</span> <span class="ident">pat</span>[<span class="ident">i</span> <span class="op">+</span> <span class="ident">j</span>] {
-                <span class="ident">j</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+<span class="kw">impl</span>&lt;T: Clone + Eq&gt; From&lt;Vec&lt;T&gt;&gt; <span class="kw">for </span>ZSearcher&lt;T&gt; {
+    <span class="kw">fn </span>from(pat: Vec&lt;T&gt;) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>len = pat.len();
+        <span class="kw">let </span><span class="kw-2">mut </span>z = <span class="macro">vec!</span>[len; len];
+        <span class="kw">let </span><span class="kw-2">mut </span>i = <span class="number">1</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>j = <span class="number">0</span>;
+        <span class="kw">while </span>i &lt; len {
+            <span class="kw">while </span>i + j &lt; len &amp;&amp; pat[j] == pat[i + j] {
+                j += <span class="number">1</span>;
             }
-            <span class="ident">z</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">j</span>;
-            <span class="kw">if</span> <span class="ident">j</span> <span class="op">==</span> <span class="number">0</span> {
-                <span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+            z[i] = j;
+            <span class="kw">if </span>j == <span class="number">0 </span>{
+                i += <span class="number">1</span>;
                 <span class="kw">continue</span>;
             }
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">k</span> <span class="op">=</span> <span class="number">1</span>;
-            <span class="kw">while</span> <span class="ident">i</span> <span class="op">+</span> <span class="ident">k</span> <span class="op">&lt;</span> <span class="ident">len</span> <span class="op">&amp;&amp;</span> <span class="ident">k</span> <span class="op">+</span> <span class="ident">z</span>[<span class="ident">k</span>] <span class="op">&lt;</span> <span class="ident">j</span> {
-                <span class="ident">z</span>[<span class="ident">i</span> <span class="op">+</span> <span class="ident">k</span>] <span class="op">=</span> <span class="ident">z</span>[<span class="ident">k</span>];
-                <span class="ident">k</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+            <span class="kw">let </span><span class="kw-2">mut </span>k = <span class="number">1</span>;
+            <span class="kw">while </span>i + k &lt; len &amp;&amp; k + z[k] &lt; j {
+                z[i + k] = z[k];
+                k += <span class="number">1</span>;
             }
-            <span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="ident">k</span>;
-            <span class="ident">j</span> <span class="op">-</span><span class="op">=</span> <span class="ident">k</span>;
+            i += k;
+            j -= k;
         }
-        <span class="self">Self</span> { <span class="ident">pat</span>, <span class="ident">z</span> }
+        <span class="self">Self </span>{ pat, z }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Eq</span><span class="op">&gt;</span> <span class="ident">ZSearcher</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">occurrences</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>, <span class="ident">s</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">T</span>]) -&gt; <span class="ident">Occurrences</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="ident">Occurrences</span> { <span class="ident">text_index</span>: <span class="number">0</span>, <span class="ident">match_len</span>: <span class="number">0</span>, <span class="ident">z</span>: <span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">text</span>: <span class="ident">s</span> }
+<span class="kw">impl</span>&lt;T: Eq&gt; ZSearcher&lt;T&gt; {
+    <span class="kw">pub fn </span>occurrences&lt;<span class="lifetime">&#39;a</span>&gt;(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">self</span>, s: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[T]) -&gt; Occurrences&lt;<span class="lifetime">&#39;a</span>, T&gt; {
+        Occurrences { text_index: <span class="number">0</span>, match_len: <span class="number">0</span>, z: <span class="kw-2">&amp;</span><span class="self">self</span>, text: s }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">z</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">z</span>[<span class="ident">i</span>] }
+    <span class="kw">pub fn </span>z(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize) -&gt; usize { <span class="self">self</span>.z[i] }
 }
 
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Occurrences</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span>: <span class="ident">Eq</span><span class="op">&gt;</span> {
-    <span class="ident">text_index</span>: <span class="ident">usize</span>,
-    <span class="ident">match_len</span>: <span class="ident">usize</span>,
-    <span class="ident">z</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">ZSearcher</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
-    <span class="ident">text</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">T</span>],
+<span class="kw">pub struct </span>Occurrences&lt;<span class="lifetime">&#39;a</span>, T: Eq&gt; {
+    text_index: usize,
+    match_len: usize,
+    z: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>ZSearcher&lt;T&gt;,
+    text: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[T],
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Eq</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">Occurrences</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>;
-    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">text</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">text</span>;
-        <span class="kw">let</span> <span class="ident">pat</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">z</span>.<span class="ident">pat</span>;
-        <span class="kw">let</span> <span class="ident">z</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">z</span>.<span class="ident">z</span>;
+<span class="kw">impl</span>&lt;T: Eq&gt; Iterator <span class="kw">for </span>Occurrences&lt;<span class="lifetime">&#39;_</span>, T&gt; {
+    <span class="kw">type </span>Item = Range&lt;usize&gt;;
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
+        <span class="kw">let </span>text = <span class="self">self</span>.text;
+        <span class="kw">let </span>pat = <span class="kw-2">&amp;</span><span class="self">self</span>.z.pat;
+        <span class="kw">let </span>z = <span class="kw-2">&amp;</span><span class="self">self</span>.z.z;
 
-        <span class="kw">if</span> <span class="ident">pat</span>.<span class="ident">is_empty</span>() {
-            <span class="kw">return</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">text_index</span> <span class="op">&lt;</span> <span class="ident">text</span>.<span class="ident">len</span>() {
-                <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">text_index</span>;
-                <span class="self">self</span>.<span class="ident">text_index</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-                <span class="prelude-val">Some</span>(<span class="ident">i</span>..<span class="ident">i</span>)
-            } <span class="kw">else</span> {
-                <span class="prelude-val">None</span>
-            };
+        <span class="kw">if </span>pat.is_empty() {
+            <span class="kw">return if </span><span class="self">self</span>.text_index &lt; text.len() {
+                <span class="kw">let </span>i = <span class="self">self</span>.text_index;
+                <span class="self">self</span>.text_index += <span class="number">1</span>;
+                <span class="prelude-val">Some</span>(i..i)
+            } <span class="kw">else </span>{
+                <span class="prelude-val">None
+            </span>};
         }
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">text_index</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">j</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">match_len</span>;
-        <span class="kw">while</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="ident">text</span>.<span class="ident">len</span>() {
-            <span class="kw">while</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="ident">text</span>.<span class="ident">len</span>() <span class="op">&amp;&amp;</span> <span class="ident">j</span> <span class="op">&lt;</span> <span class="ident">pat</span>.<span class="ident">len</span>() <span class="op">&amp;&amp;</span> <span class="ident">pat</span>[<span class="ident">j</span>] <span class="op">==</span> <span class="ident">text</span>[<span class="ident">i</span>] {
-                <span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-                <span class="ident">j</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>i = <span class="self">self</span>.text_index;
+        <span class="kw">let </span><span class="kw-2">mut </span>j = <span class="self">self</span>.match_len;
+        <span class="kw">while </span>i &lt; text.len() {
+            <span class="kw">while </span>i &lt; text.len() &amp;&amp; j &lt; pat.len() &amp;&amp; pat[j] == text[i] {
+                i += <span class="number">1</span>;
+                j += <span class="number">1</span>;
             }
-            <span class="kw">if</span> <span class="ident">j</span> <span class="op">==</span> <span class="number">0</span> {
-                <span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+            <span class="kw">if </span>j == <span class="number">0 </span>{
+                i += <span class="number">1</span>;
                 <span class="kw">continue</span>;
             }
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">k</span> <span class="op">=</span> <span class="number">1</span>;
-            <span class="kw">while</span> <span class="ident">k</span> <span class="op">&lt;</span> <span class="ident">pat</span>.<span class="ident">len</span>() <span class="op">&amp;&amp;</span> <span class="ident">k</span> <span class="op">+</span> <span class="ident">z</span>[<span class="ident">k</span>] <span class="op">&lt;</span> <span class="ident">j</span> {
-                <span class="ident">k</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+            <span class="kw">let </span><span class="kw-2">mut </span>k = <span class="number">1</span>;
+            <span class="kw">while </span>k &lt; pat.len() &amp;&amp; k + z[k] &lt; j {
+                k += <span class="number">1</span>;
             }
-            <span class="kw">if</span> <span class="ident">j</span> <span class="op">==</span> <span class="ident">pat</span>.<span class="ident">len</span>() {
-                <span class="self">self</span>.<span class="ident">text_index</span> <span class="op">=</span> <span class="ident">i</span>;
-                <span class="self">self</span>.<span class="ident">match_len</span> <span class="op">=</span> <span class="ident">j</span> <span class="op">-</span> <span class="ident">k</span>;
-                <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">i</span> <span class="op">-</span> <span class="ident">j</span>..<span class="ident">i</span>);
+            <span class="kw">if </span>j == pat.len() {
+                <span class="self">self</span>.text_index = i;
+                <span class="self">self</span>.match_len = j - k;
+                <span class="kw">return </span><span class="prelude-val">Some</span>(i - j..i);
             }
-            <span class="ident">j</span> <span class="op">-</span><span class="op">=</span> <span class="ident">k</span>;
+            j -= k;
         }
-        <span class="self">self</span>.<span class="ident">text_index</span> <span class="op">=</span> <span class="ident">text</span>.<span class="ident">len</span>();
-        <span class="prelude-val">None</span>
-    }
+        <span class="self">self</span>.text_index = text.len();
+        <span class="prelude-val">None
+    </span>}
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

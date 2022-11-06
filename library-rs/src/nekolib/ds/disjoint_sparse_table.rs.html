@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/ds/disjoint_sparse_table.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>disjoint_sparse_table.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/ds/disjoint_sparse_table.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>disjoint_sparse_table.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -293,211 +293,211 @@
 <span id="204">204</span>
 <span id="205">205</span>
 <span id="206">206</span>
-</pre><pre class="rust"><code><span class="doccomment">//! disjoint sparse table。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! disjoint sparse table。
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::binop</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::fold</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::utils::buf_range</span>;
+</span><span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::traits::binop;
+<span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::traits::fold;
+<span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::utils::buf_range;
 
-<span class="kw">use</span> <span class="ident">std::convert::From</span>;
-<span class="kw">use</span> <span class="ident">std::ops</span>::{<span class="ident">Index</span>, <span class="ident">Range</span>, <span class="ident">RangeBounds</span>};
+<span class="kw">use </span>std::convert::From;
+<span class="kw">use </span>std::ops::{Index, Range, RangeBounds};
 
-<span class="kw">use</span> <span class="ident">binop::Monoid</span>;
-<span class="kw">use</span> <span class="ident">buf_range::bounds_within</span>;
-<span class="kw">use</span> <span class="ident">fold::Fold</span>;
+<span class="kw">use </span>binop::Monoid;
+<span class="kw">use </span>buf_range::bounds_within;
+<span class="kw">use </span>fold::Fold;
 
-<span class="doccomment">/// disjoint sparse table。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 要素数 $n$ の配列の任意の区間について、モノイド積の値を計算できる。</span>
-<span class="doccomment">/// 値の更新はできない。</span>
-<span class="doccomment">/// 半群を返すことにしてもよいが、要検討。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Idea</span>
-<span class="doccomment">/// 各 $k$ ($1\\le k\&lt; \\log\_2(n)$) について、区間</span>
-<span class="doccomment">/// $[i\\cdot 2\^k-j, i\\cdot 2\^k)$ および $[i\\cdot 2\^k, i\\cdot 2\^k+j)$</span>
-<span class="doccomment">/// ($2\\le j\\le 2\^k$、$i$ は区間の終端が $n$ 以下になる各奇数)</span>
-<span class="doccomment">/// におけるモノイド積を予め計算しておく。</span>
-<span class="doccomment">/// 任意の区間は、上記の区間を高々 $2$ つ合わせることで表現できる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Implementation notes</span>
-<span class="doccomment">/// 前処理では、異なる段で同じ区間のモノイド積を複数回計算するのを避けるための工夫をしている。</span>
-<span class="doccomment">/// その処理のオーバーヘッドにより、モノイド積のコストが高くない場合は、</span>
-<span class="doccomment">/// 毎回計算する方が高速かもしれない。クエリ処理についても同様の工夫をしている。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// |演算|時間計算量|</span>
-<span class="doccomment">/// |---|---|</span>
-<span class="doccomment">/// |`from`|$\\Theta(n\\log(n))$|</span>
-<span class="doccomment">/// |`fold`|$\\Theta(1)$|</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Precise analysis</span>
-<span class="doccomment">/// 前処理におけるモノイド積の計算回数は以下の値で上から抑えられる。</span>
-<span class="doccomment">/// $$ n\\cdot\\lceil{\\log\_2(n)-3}\\rceil + 2\\cdot\\lceil{\\log\_2(n)}\\rceil + 2. $$</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// これは、$n = 1000$ で $7022$ であり、</span>
-<span class="doccomment">/// [Secret](http://s3-ap-northeast-1.amazonaws.com/data.cms.ioi-jp.org/open-2014/2014-open-d2-secret.pdf)</span>
-<span class="doccomment">/// の「$n = 1000$ でクエリ $8000$ 回以下」に余裕を持って間に合う。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// クエリ処理の際には、</span>
-<span class="doccomment">/// 与えられた区間が前処理で計算した区間であるか、長さが $1$ 以下の場合は、</span>
-<span class="doccomment">/// 新たにモノイド積は計算せずに答えを返す。</span>
-<span class="doccomment">/// そうでない場合はちょうど $1$ 回のモノイド積を計算する。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ## More precise analysis</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 前処理の実際の計算回数は、以下のコードにより $O(\\log(n))$ 時間で計算できるはず。</span>
-<span class="doccomment">/// コード長が長いので隔離したいかも。</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// /// 要素数 `n` での前処理における計算回数を返す。</span>
-<span class="doccomment">/// fn count(n: usize) -&gt; usize {</span>
-<span class="doccomment">///     if n &lt;= 2 {</span>
-<span class="doccomment">///         return 0;</span>
-<span class="doccomment">///     }</span>
-<span class="doccomment">///     g(n - 1)</span>
-<span class="doccomment">///         + if n.is_power_of_two() {</span>
-<span class="doccomment">///             n.trailing_zeros() as usize</span>
-<span class="doccomment">///         } else {</span>
-<span class="doccomment">///             n.next_power_of_two() / 2</span>
-<span class="doccomment">///         }</span>
-<span class="doccomment">///         - 1</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(count(3), 1);</span>
-<span class="doccomment">/// assert_eq!(count(10), 14);</span>
-<span class="doccomment">/// assert_eq!(count(1000), 7008);</span>
-<span class="doccomment">/// assert_eq!(count(1_000_000), 16_980_635);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// /// 各段における寄与分の和を返す。</span>
-<span class="doccomment">/// fn g(n: usize) -&gt; usize {</span>
-<span class="doccomment">///     (0..)</span>
-<span class="doccomment">///         .take_while(|&amp;k| n &gt;= 2_usize.pow(k + 1))</span>
-<span class="doccomment">///         .map(|k| f(k, n - 2_usize.pow(k + 1)))</span>
-<span class="doccomment">///         .sum()</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// /// k 段目における寄与分を返す。</span>
-<span class="doccomment">/// fn f(k: u32, n: usize) -&gt; usize {</span>
-<span class="doccomment">///     let p = 2_usize.pow(k);</span>
-<span class="doccomment">///     n / (2 * p) * p</span>
-<span class="doccomment">///         + if n / p % 2 == 1 { n % p + 1 } else { 0 }</span>
-<span class="doccomment">///         + (n + 1) / (2 * p) * (p - 1)</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::ds::DisjointSparseTable;</span>
-<span class="doccomment">/// use nekolib::traits::Fold;</span>
-<span class="doccomment">/// use nekolib::utils::OpRollHash;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let op_rh = OpRollHash::&lt;998244353&gt;::default();</span>
-<span class="doccomment">/// let value_of = |s| op_rh.value_of(s);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let base: Vec&lt;_&gt; = [&quot;abra&quot;, &quot;cad&quot;, &quot;abra&quot;].iter().map(|s| value_of(s)).collect();</span>
-<span class="doccomment">/// let dst: DisjointSparseTable&lt;_&gt; = (base, op_rh).into();</span>
-<span class="doccomment">/// assert_eq!(dst.fold(1..=2), value_of(&quot;cadabra&quot;));</span>
-<span class="doccomment">/// assert_eq!(dst.fold(..), value_of(&quot;abracadabra&quot;));</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DisjointSparseTable</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">Monoid</span><span class="op">&gt;</span> {
-    <span class="ident">buf</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">M::Set</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">monoid</span>: <span class="ident">M</span>,
+<span class="doccomment">/// disjoint sparse table。
+///
+/// 要素数 $n$ の配列の任意の区間について、モノイド積の値を計算できる。
+/// 値の更新はできない。
+/// 半群を返すことにしてもよいが、要検討。
+///
+/// # Idea
+/// 各 $k$ ($1\\le k\&lt; \\log\_2(n)$) について、区間
+/// $[i\\cdot 2\^k-j, i\\cdot 2\^k)$ および $[i\\cdot 2\^k, i\\cdot 2\^k+j)$
+/// ($2\\le j\\le 2\^k$、$i$ は区間の終端が $n$ 以下になる各奇数)
+/// におけるモノイド積を予め計算しておく。
+/// 任意の区間は、上記の区間を高々 $2$ つ合わせることで表現できる。
+///
+/// # Implementation notes
+/// 前処理では、異なる段で同じ区間のモノイド積を複数回計算するのを避けるための工夫をしている。
+/// その処理のオーバーヘッドにより、モノイド積のコストが高くない場合は、
+/// 毎回計算する方が高速かもしれない。クエリ処理についても同様の工夫をしている。
+///
+/// # Complexity
+/// |演算|時間計算量|
+/// |---|---|
+/// |`from`|$\\Theta(n\\log(n))$|
+/// |`fold`|$\\Theta(1)$|
+///
+/// # Precise analysis
+/// 前処理におけるモノイド積の計算回数は以下の値で上から抑えられる。
+/// $$ n\\cdot\\lceil{\\log\_2(n)-3}\\rceil + 2\\cdot\\lceil{\\log\_2(n)}\\rceil + 2. $$
+///
+/// これは、$n = 1000$ で $7022$ であり、
+/// [Secret](http://s3-ap-northeast-1.amazonaws.com/data.cms.ioi-jp.org/open-2014/2014-open-d2-secret.pdf)
+/// の「$n = 1000$ でクエリ $8000$ 回以下」に余裕を持って間に合う。
+///
+/// クエリ処理の際には、
+/// 与えられた区間が前処理で計算した区間であるか、長さが $1$ 以下の場合は、
+/// 新たにモノイド積は計算せずに答えを返す。
+/// そうでない場合はちょうど $1$ 回のモノイド積を計算する。
+///
+/// ## More precise analysis
+///
+/// 前処理の実際の計算回数は、以下のコードにより $O(\\log(n))$ 時間で計算できるはず。
+/// コード長が長いので隔離したいかも。
+/// ```
+/// /// 要素数 `n` での前処理における計算回数を返す。
+/// fn count(n: usize) -&gt; usize {
+///     if n &lt;= 2 {
+///         return 0;
+///     }
+///     g(n - 1)
+///         + if n.is_power_of_two() {
+///             n.trailing_zeros() as usize
+///         } else {
+///             n.next_power_of_two() / 2
+///         }
+///         - 1
+/// }
+///
+/// assert_eq!(count(3), 1);
+/// assert_eq!(count(10), 14);
+/// assert_eq!(count(1000), 7008);
+/// assert_eq!(count(1_000_000), 16_980_635);
+///
+/// /// 各段における寄与分の和を返す。
+/// fn g(n: usize) -&gt; usize {
+///     (0..)
+///         .take_while(|&amp;k| n &gt;= 2_usize.pow(k + 1))
+///         .map(|k| f(k, n - 2_usize.pow(k + 1)))
+///         .sum()
+/// }
+///
+/// /// k 段目における寄与分を返す。
+/// fn f(k: u32, n: usize) -&gt; usize {
+///     let p = 2_usize.pow(k);
+///     n / (2 * p) * p
+///         + if n / p % 2 == 1 { n % p + 1 } else { 0 }
+///         + (n + 1) / (2 * p) * (p - 1)
+/// }
+/// ```
+///
+/// # Examples
+/// ```
+/// use nekolib::ds::DisjointSparseTable;
+/// use nekolib::traits::Fold;
+/// use nekolib::utils::OpRollHash;
+///
+/// let op_rh = OpRollHash::&lt;998244353&gt;::default();
+/// let value_of = |s| op_rh.value_of(s);
+///
+/// let base: Vec&lt;_&gt; = [&quot;abra&quot;, &quot;cad&quot;, &quot;abra&quot;].iter().map(|s| value_of(s)).collect();
+/// let dst: DisjointSparseTable&lt;_&gt; = (base, op_rh).into();
+/// assert_eq!(dst.fold(1..=2), value_of(&quot;cadabra&quot;));
+/// assert_eq!(dst.fold(..), value_of(&quot;abracadabra&quot;));
+/// ```
+</span><span class="kw">pub struct </span>DisjointSparseTable&lt;M: Monoid&gt; {
+    buf: Vec&lt;Vec&lt;M::Set&gt;&gt;,
+    monoid: M,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span>, <span class="ident">B</span><span class="op">&gt;</span> <span class="ident">Fold</span><span class="op">&lt;</span><span class="ident">B</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">DisjointSparseTable</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M</span>: <span class="ident">Monoid</span>,
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
-    <span class="ident">B</span>: <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;M, B&gt; Fold&lt;B&gt; <span class="kw">for </span>DisjointSparseTable&lt;M&gt;
+<span class="kw">where
+    </span>M: Monoid,
+    M::Set: Clone,
+    B: RangeBounds&lt;usize&gt;,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">M</span>;
-    <span class="kw">fn</span> <span class="ident">fold</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">b</span>: <span class="ident">B</span>) -&gt; <span class="ident">M::Set</span> {
-        <span class="kw">let</span> <span class="ident">Range</span> { <span class="ident">start</span>, <span class="ident">end</span> } <span class="op">=</span> <span class="ident">bounds_within</span>(<span class="ident">b</span>, <span class="self">self</span>.<span class="ident">buf</span>[<span class="number">0</span>].<span class="ident">len</span>());
-        <span class="kw">if</span> <span class="ident">start</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">end</span> {
-            <span class="kw">return</span> <span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">id</span>();
+    <span class="kw">type </span>Output = M;
+    <span class="kw">fn </span>fold(<span class="kw-2">&amp;</span><span class="self">self</span>, b: B) -&gt; M::Set {
+        <span class="kw">let </span>Range { start, end } = bounds_within(b, <span class="self">self</span>.buf[<span class="number">0</span>].len());
+        <span class="kw">if </span>start &gt;= end {
+            <span class="kw">return </span><span class="self">self</span>.monoid.id();
         }
-        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">end</span> <span class="op">-</span> <span class="ident">start</span>;
-        <span class="kw">let</span> <span class="ident">end</span> <span class="op">=</span> <span class="ident">end</span> <span class="op">-</span> <span class="number">1</span>;
-        <span class="kw">if</span> <span class="ident">start</span> <span class="op">==</span> <span class="ident">end</span> {
-            <span class="kw">return</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="number">0</span>][<span class="ident">start</span>].<span class="ident">clone</span>();
+        <span class="kw">let </span>len = end - start;
+        <span class="kw">let </span>end = end - <span class="number">1</span>;
+        <span class="kw">if </span>start == end {
+            <span class="kw">return </span><span class="self">self</span>.buf[<span class="number">0</span>][start].clone();
         }
-        <span class="kw">let</span> <span class="ident">row</span> <span class="op">=</span> ((<span class="ident">start</span> <span class="op">^</span> <span class="ident">end</span>) <span class="op">+</span> <span class="number">1</span>).<span class="ident">next_power_of_two</span>().<span class="ident">trailing_zeros</span>() <span class="op">-</span> <span class="number">1</span>;
-        <span class="kw">let</span> <span class="ident">row_len</span> <span class="op">=</span> <span class="number">1_usize</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">row</span>;
-        <span class="kw">let</span> <span class="ident">row</span> <span class="op">=</span> <span class="ident">row</span> <span class="kw">as</span> <span class="ident">usize</span>;
+        <span class="kw">let </span>row = ((start ^ end) + <span class="number">1</span>).next_power_of_two().trailing_zeros() - <span class="number">1</span>;
+        <span class="kw">let </span>row_len = <span class="number">1_usize </span>&lt;&lt; row;
+        <span class="kw">let </span>row = row <span class="kw">as </span>usize;
 
-        <span class="kw">if</span> <span class="ident">len</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">2</span> <span class="op">*</span> <span class="ident">row_len</span> <span class="op">&amp;&amp;</span> <span class="ident">row</span> <span class="op">+</span> <span class="number">1</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">len</span>() {
-            <span class="kw">if</span> <span class="ident">start</span>.<span class="ident">is_power_of_two</span>() <span class="op">&amp;&amp;</span> <span class="ident">end</span> <span class="op">&gt;</span><span class="op">&gt;</span> (<span class="ident">row</span> <span class="op">+</span> <span class="number">1</span>) <span class="op">==</span> <span class="number">1</span> {
-                <span class="kw">return</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">row</span> <span class="op">+</span> <span class="number">1</span>][<span class="ident">end</span>].<span class="ident">clone</span>();
+        <span class="kw">if </span>len &lt;= <span class="number">2 </span>* row_len &amp;&amp; row + <span class="number">1 </span>&lt; <span class="self">self</span>.buf.len() {
+            <span class="kw">if </span>start.is_power_of_two() &amp;&amp; end &gt;&gt; (row + <span class="number">1</span>) == <span class="number">1 </span>{
+                <span class="kw">return </span><span class="self">self</span>.buf[row + <span class="number">1</span>][end].clone();
             }
-            <span class="kw">if</span> (<span class="ident">end</span> <span class="op">+</span> <span class="number">1</span>).<span class="ident">is_power_of_two</span>() <span class="op">&amp;&amp;</span> <span class="ident">start</span> <span class="op">&gt;</span><span class="op">&gt;</span> (<span class="ident">row</span> <span class="op">+</span> <span class="number">1</span>) <span class="op">==</span> <span class="number">0</span> {
-                <span class="kw">return</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">row</span> <span class="op">+</span> <span class="number">1</span>][<span class="ident">start</span>].<span class="ident">clone</span>();
+            <span class="kw">if </span>(end + <span class="number">1</span>).is_power_of_two() &amp;&amp; start &gt;&gt; (row + <span class="number">1</span>) == <span class="number">0 </span>{
+                <span class="kw">return </span><span class="self">self</span>.buf[row + <span class="number">1</span>][start].clone();
             }
         }
 
-        <span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">op</span>(<span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">row</span>][<span class="ident">start</span>].<span class="ident">clone</span>(), <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">row</span>][<span class="ident">end</span>].<span class="ident">clone</span>())
+        <span class="self">self</span>.monoid.op(<span class="self">self</span>.buf[row][start].clone(), <span class="self">self</span>.buf[row][end].clone())
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">M::Set</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">DisjointSparseTable</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M</span>: <span class="ident">Monoid</span> <span class="op">+</span> <span class="ident">Default</span>,
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;M&gt; From&lt;Vec&lt;M::Set&gt;&gt; <span class="kw">for </span>DisjointSparseTable&lt;M&gt;
+<span class="kw">where
+    </span>M: Monoid + Default,
+    M::Set: Clone,
 {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">base</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">M::Set</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> { <span class="ident"><span class="self">Self</span>::from</span>((<span class="ident">base</span>, <span class="ident">M::default</span>())) }
+    <span class="kw">fn </span>from(base: Vec&lt;M::Set&gt;) -&gt; <span class="self">Self </span>{ <span class="self">Self</span>::from((base, M::default())) }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">M::Set</span><span class="op">&gt;</span>, <span class="ident">M</span>)<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">DisjointSparseTable</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M</span>: <span class="ident">Monoid</span>,
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;M&gt; From&lt;(Vec&lt;M::Set&gt;, M)&gt; <span class="kw">for </span>DisjointSparseTable&lt;M&gt;
+<span class="kw">where
+    </span>M: Monoid,
+    M::Set: Clone,
 {
-    <span class="kw">fn</span> <span class="ident">from</span>((<span class="ident">base</span>, <span class="ident">monoid</span>): (<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">M::Set</span><span class="op">&gt;</span>, <span class="ident">M</span>)) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">base</span>.<span class="ident">len</span>();
+    <span class="kw">fn </span>from((base, monoid): (Vec&lt;M::Set&gt;, M)) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>len = base.len();
 
-        <span class="kw">let</span> <span class="ident">height</span> <span class="op">=</span> <span class="ident">len</span>.<span class="ident">next_power_of_two</span>().<span class="ident">trailing_zeros</span>().<span class="ident">max</span>(<span class="number">1</span>) <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">base</span>; <span class="ident">height</span>];
+        <span class="kw">let </span>height = len.next_power_of_two().trailing_zeros().max(<span class="number">1</span>) <span class="kw">as </span>usize;
+        <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="macro">vec!</span>[base; height];
 
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">1</span>..<span class="ident">height</span> {
-            <span class="kw">let</span> <span class="ident">w</span> <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">i</span>;
-            <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> (<span class="number">1</span>..).<span class="ident">step_by</span>(<span class="number">2</span>).<span class="ident">take_while</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">j</span><span class="op">|</span> <span class="ident">j</span> <span class="op">*</span> <span class="ident">w</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">len</span>) {
-                <span class="kw">let</span> <span class="ident">mid</span> <span class="op">=</span> <span class="ident">j</span> <span class="op">*</span> <span class="ident">w</span>;
-                <span class="kw">for</span> <span class="ident">r</span> <span class="kw">in</span> (<span class="number">1</span>..<span class="ident">w</span>).<span class="ident">take_while</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">mid</span> <span class="op">+</span> <span class="ident">r</span> <span class="op">&lt;</span> <span class="ident">len</span>) {
-                    <span class="ident">buf</span>[<span class="ident">i</span>][<span class="ident">mid</span> <span class="op">+</span> <span class="ident">r</span>] <span class="op">=</span> <span class="ident">monoid</span>.<span class="ident">op</span>(
-                        <span class="ident">buf</span>[<span class="ident">i</span>][<span class="ident">mid</span> <span class="op">+</span> <span class="ident">r</span> <span class="op">-</span> <span class="number">1</span>].<span class="ident">clone</span>(),
-                        <span class="ident">buf</span>[<span class="number">0</span>][<span class="ident">mid</span> <span class="op">+</span> <span class="ident">r</span>].<span class="ident">clone</span>(),
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..height {
+            <span class="kw">let </span>w = <span class="number">1 </span>&lt;&lt; i;
+            <span class="kw">for </span>j <span class="kw">in </span>(<span class="number">1</span>..).step_by(<span class="number">2</span>).take_while(|<span class="kw-2">&amp;</span>j| j * w &lt;= len) {
+                <span class="kw">let </span>mid = j * w;
+                <span class="kw">for </span>r <span class="kw">in </span>(<span class="number">1</span>..w).take_while(|r| mid + r &lt; len) {
+                    buf[i][mid + r] = monoid.op(
+                        buf[i][mid + r - <span class="number">1</span>].clone(),
+                        buf[<span class="number">0</span>][mid + r].clone(),
                     );
                 }
             }
         }
 
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">1</span>..<span class="ident">height</span> {
-            <span class="kw">let</span> <span class="ident">w</span> <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">i</span>;
-            <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> (<span class="number">1</span>..).<span class="ident">step_by</span>(<span class="number">2</span>).<span class="ident">take_while</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">j</span><span class="op">|</span> <span class="ident">j</span> <span class="op">*</span> <span class="ident">w</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">len</span>) {
-                <span class="kw">let</span> <span class="ident">mid</span> <span class="op">=</span> <span class="ident">j</span> <span class="op">*</span> <span class="ident">w</span> <span class="op">-</span> <span class="number">1</span>;
-                <span class="kw">for</span> <span class="ident">l</span> <span class="kw">in</span> <span class="number">1</span>..<span class="ident">w</span> {
-                    <span class="ident">buf</span>[<span class="ident">i</span>][<span class="ident">mid</span> <span class="op">-</span> <span class="ident">l</span>] <span class="op">=</span> <span class="kw">if</span> <span class="ident">mid</span> <span class="op">&gt;</span> <span class="ident">l</span> <span class="op">&amp;&amp;</span> (<span class="ident">l</span> <span class="op">+</span> <span class="number">1</span>).<span class="ident">is_power_of_two</span>() {
-                        <span class="kw">let</span> <span class="ident">ei</span> <span class="op">=</span> (<span class="ident">mid</span> <span class="op">-</span> <span class="ident">l</span>).<span class="ident">trailing_zeros</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-                        <span class="kw">let</span> <span class="ident">ej</span> <span class="op">=</span> <span class="ident">mid</span>;
-                        <span class="ident">buf</span>[<span class="ident">ei</span>][<span class="ident">ej</span>].<span class="ident">clone</span>()
-                    } <span class="kw">else</span> {
-                        <span class="ident">monoid</span>.<span class="ident">op</span>(
-                            <span class="ident">buf</span>[<span class="number">0</span>][<span class="ident">mid</span> <span class="op">-</span> <span class="ident">l</span>].<span class="ident">clone</span>(),
-                            <span class="ident">buf</span>[<span class="ident">i</span>][<span class="ident">mid</span> <span class="op">-</span> <span class="ident">l</span> <span class="op">+</span> <span class="number">1</span>].<span class="ident">clone</span>(),
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..height {
+            <span class="kw">let </span>w = <span class="number">1 </span>&lt;&lt; i;
+            <span class="kw">for </span>j <span class="kw">in </span>(<span class="number">1</span>..).step_by(<span class="number">2</span>).take_while(|<span class="kw-2">&amp;</span>j| j * w &lt;= len) {
+                <span class="kw">let </span>mid = j * w - <span class="number">1</span>;
+                <span class="kw">for </span>l <span class="kw">in </span><span class="number">1</span>..w {
+                    buf[i][mid - l] = <span class="kw">if </span>mid &gt; l &amp;&amp; (l + <span class="number">1</span>).is_power_of_two() {
+                        <span class="kw">let </span>ei = (mid - l).trailing_zeros() <span class="kw">as </span>usize;
+                        <span class="kw">let </span>ej = mid;
+                        buf[ei][ej].clone()
+                    } <span class="kw">else </span>{
+                        monoid.op(
+                            buf[<span class="number">0</span>][mid - l].clone(),
+                            buf[i][mid - l + <span class="number">1</span>].clone(),
                         )
                     };
                 }
             }
         }
-        <span class="self">Self</span> { <span class="ident">buf</span>, <span class="ident">monoid</span> }
+        <span class="self">Self </span>{ buf, monoid }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> <span class="ident">Index</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">DisjointSparseTable</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M</span>: <span class="ident">Monoid</span>,
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;M&gt; Index&lt;usize&gt; <span class="kw">for </span>DisjointSparseTable&lt;M&gt;
+<span class="kw">where
+    </span>M: Monoid,
+    M::Set: Clone,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">M::Set</span>;
-    <span class="kw">fn</span> <span class="ident">index</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::Output</span> { <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">buf</span>[<span class="number">0</span>][<span class="ident">i</span>] }
+    <span class="kw">type </span>Output = M::Set;
+    <span class="kw">fn </span>index(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Output { <span class="kw-2">&amp;</span><span class="self">self</span>.buf[<span class="number">0</span>][i] }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

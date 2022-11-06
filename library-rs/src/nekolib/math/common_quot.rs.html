@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/common_quot.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>common_quot.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/common_quot.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>common_quot.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -236,73 +236,73 @@
 <span id="147">147</span>
 <span id="148">148</span>
 <span id="149">149</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 商が共通の区間の列挙。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 商が共通の区間の列挙。
 
-<span class="doccomment">/// 商が共通の区間の列挙。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $\gdef\floor#1{\\lfloor#1\\rfloor}$</span>
-<span class="doccomment">/// 以下の条件を満たす $(i\_l, i\_r)$ を $i\_l$ の昇順に列挙する。</span>
-<span class="doccomment">/// - $1\\le i\_l \\wedge i\_r \\le n$,</span>
-<span class="doccomment">/// - $j\\in [i\_l, i\_r] \\implies \\floor{n/j} = \\floor{n/i\_l}$, and</span>
-<span class="doccomment">/// - $j\\notin [i\_l, i\_r] \\implies j=0 \\vee \\floor{n/j} \\ne \\floor{n/i\_l}$.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// $O(\\sqrt{n})$ time, $O(1)$ space.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::math::CommonQuot;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(</span>
-<span class="doccomment">///     60_u64.common_quot().collect::&lt;Vec&lt;_&gt;&gt;(),</span>
-<span class="doccomment">///     [</span>
-<span class="doccomment">///         (1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8),</span>
-<span class="doccomment">///         (9, 10), (11, 12), (13, 15), (16, 20), (21, 30), (31, 60)</span>
-<span class="doccomment">///     ]</span>
-<span class="doccomment">/// );</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ## See also</span>
-<span class="doccomment">/// - [ABC 044 D](https://atcoder.jp/contests/abc044/tasks/arc060_b)</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">CommonQuot</span> {
-    <span class="kw">type</span> <span class="ident">Output</span>;
-    <span class="kw">fn</span> <span class="ident">common_quot</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span>;
+/// 商が共通の区間の列挙。
+///
+/// $\gdef\floor#1{\\lfloor#1\\rfloor}$
+/// 以下の条件を満たす $(i\_l, i\_r)$ を $i\_l$ の昇順に列挙する。
+/// - $1\\le i\_l \\wedge i\_r \\le n$,
+/// - $j\\in [i\_l, i\_r] \\implies \\floor{n/j} = \\floor{n/i\_l}$, and
+/// - $j\\notin [i\_l, i\_r] \\implies j=0 \\vee \\floor{n/j} \\ne \\floor{n/i\_l}$.
+///
+/// # Complexity
+/// $O(\\sqrt{n})$ time, $O(1)$ space.
+///
+/// # Examples
+/// ```
+/// use nekolib::math::CommonQuot;
+///
+/// assert_eq!(
+///     60_u64.common_quot().collect::&lt;Vec&lt;_&gt;&gt;(),
+///     [
+///         (1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8),
+///         (9, 10), (11, 12), (13, 15), (16, 20), (21, 30), (31, 60)
+///     ]
+/// );
+/// ```
+///
+/// ## See also
+/// - [ABC 044 D](https://atcoder.jp/contests/abc044/tasks/arc060_b)
+</span><span class="kw">pub trait </span>CommonQuot {
+    <span class="kw">type </span>Output;
+    <span class="kw">fn </span>common_quot(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Output;
 }
 
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CommonQuotStruct</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> {
-    <span class="ident">i</span>: <span class="ident">I</span>,
-    <span class="ident">n</span>: <span class="ident">I</span>,
+<span class="kw">pub struct </span>CommonQuotStruct&lt;I&gt; {
+    i: I,
+    n: I,
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_common_quot_unit</span> {
-    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(
-        <span class="kw">impl</span> <span class="ident">CommonQuot</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span> {
-            <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">CommonQuotStruct</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span><span class="op">&gt;</span>;
-            <span class="kw">fn</span> <span class="ident">common_quot</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span> {
-                <span class="ident"><span class="self">Self</span>::Output</span> { <span class="ident">i</span>: <span class="number">1</span>, <span class="ident">n</span>: <span class="self">self</span> }
+<span class="macro">macro_rules! </span>impl_common_quot_unit {
+    ( $(<span class="macro-nonterminal">$ty</span>:ty)* ) =&gt; { $(
+        <span class="kw">impl </span>CommonQuot <span class="kw">for </span><span class="macro-nonterminal">$ty </span>{
+            <span class="kw">type </span>Output = CommonQuotStruct&lt;<span class="macro-nonterminal">$ty</span>&gt;;
+            <span class="kw">fn </span>common_quot(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Output {
+                <span class="self">Self</span>::Output { i: <span class="number">1</span>, n: <span class="self">self </span>}
             }
         }
-        <span class="kw">impl</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">CommonQuotStruct</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span><span class="op">&gt;</span> {
-            <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>);
-            <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>)<span class="op">&gt;</span> {
-                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">i</span> <span class="op">&lt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">n</span> {
-                    <span class="kw">let</span> <span class="ident">l</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">i</span>;
-                    <span class="kw">let</span> <span class="ident">q</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">n</span> <span class="op">/</span> <span class="ident">l</span>;
-                    <span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">n</span> <span class="op">/</span> <span class="ident">q</span>;
-                    <span class="self">self</span>.<span class="ident">i</span> <span class="op">=</span> <span class="ident">r</span> <span class="op">+</span> <span class="number">1</span>;
-                    <span class="kw">return</span> <span class="prelude-val">Some</span>((<span class="ident">l</span>, <span class="ident">r</span>));
+        <span class="kw">impl </span>Iterator <span class="kw">for </span>CommonQuotStruct&lt;<span class="macro-nonterminal">$ty</span>&gt; {
+            <span class="kw">type </span>Item = (<span class="macro-nonterminal">$ty</span>, <span class="macro-nonterminal">$ty</span>);
+            <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;(<span class="macro-nonterminal">$ty</span>, <span class="macro-nonterminal">$ty</span>)&gt; {
+                <span class="kw">if </span><span class="self">self</span>.i &lt;= <span class="self">self</span>.n {
+                    <span class="kw">let </span>l = <span class="self">self</span>.i;
+                    <span class="kw">let </span>q = <span class="self">self</span>.n / l;
+                    <span class="kw">let </span>r = <span class="self">self</span>.n / q;
+                    <span class="self">self</span>.i = r + <span class="number">1</span>;
+                    <span class="kw">return </span><span class="prelude-val">Some</span>((l, r));
                 }
-                <span class="prelude-val">None</span>
-            }
+                <span class="prelude-val">None
+            </span>}
         }
-    )<span class="op">*</span> };
+    )* };
 }
 
-<span class="macro">impl_common_quot_unit!</span> { <span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span> }
+<span class="macro">impl_common_quot_unit! </span>{ u8 u16 u32 u64 u128 usize }
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test_small</span>() {
-    <span class="kw">let</span> <span class="ident">suite</span>: <span class="kw-2">&amp;</span>[(<span class="ident">u64</span>, <span class="kw-2">&amp;</span>[(<span class="ident">u64</span>, <span class="ident">u64</span>)])] <span class="op">=</span> <span class="kw-2">&amp;</span>[
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test_small() {
+    <span class="kw">let </span>suite: <span class="kw-2">&amp;</span>[(u64, <span class="kw-2">&amp;</span>[(u64, u64)])] = <span class="kw-2">&amp;</span>[
         (<span class="number">0</span>, <span class="kw-2">&amp;</span>[]),
         (<span class="number">1</span>, <span class="kw-2">&amp;</span>[(<span class="number">1</span>, <span class="number">1</span>)]),
         (<span class="number">2</span>, <span class="kw-2">&amp;</span>[(<span class="number">1</span>, <span class="number">1</span>), (<span class="number">2</span>, <span class="number">2</span>)]),
@@ -361,29 +361,29 @@
             (<span class="number">101</span>, <span class="number">200</span>),
         ]),
     ];
-    <span class="kw">for</span> (<span class="ident">n</span>, <span class="ident">expected</span>) <span class="kw">in</span> <span class="ident">suite</span> {
-        <span class="kw">let</span> <span class="ident">actual</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">n</span>.<span class="ident">common_quot</span>().<span class="ident">collect</span>();
-        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="ident">actual</span>, <span class="ident">expected</span>);
+    <span class="kw">for </span>(n, expected) <span class="kw">in </span>suite {
+        <span class="kw">let </span>actual: Vec&lt;<span class="kw">_</span>&gt; = n.common_quot().collect();
+        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>actual, expected);
     }
 }
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test</span>() {
-    <span class="kw">let</span> <span class="ident">n_max</span> <span class="op">=</span> <span class="number">10000_u64</span>;
-    <span class="kw">for</span> <span class="ident">n</span> <span class="kw">in</span> <span class="number">1</span>..<span class="op">=</span><span class="ident">n_max</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">l</span> <span class="op">=</span> <span class="number">1</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">expected</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-        <span class="kw">while</span> <span class="ident">l</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">n</span> {
-            <span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> (<span class="ident">l</span>..).<span class="ident">take_while</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">r</span><span class="op">|</span> <span class="ident">n</span> <span class="op">/</span> <span class="ident">r</span> <span class="op">==</span> <span class="ident">n</span> <span class="op">/</span> <span class="ident">l</span>).<span class="ident">last</span>().<span class="ident">unwrap</span>();
-            <span class="ident">expected</span>.<span class="ident">push</span>((<span class="ident">l</span>, <span class="ident">r</span>));
-            <span class="ident">l</span> <span class="op">=</span> <span class="ident">r</span> <span class="op">+</span> <span class="number">1</span>;
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test() {
+    <span class="kw">let </span>n_max = <span class="number">10000_u64</span>;
+    <span class="kw">for </span>n <span class="kw">in </span><span class="number">1</span>..=n_max {
+        <span class="kw">let </span><span class="kw-2">mut </span>l = <span class="number">1</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>expected = <span class="macro">vec!</span>[];
+        <span class="kw">while </span>l &lt;= n {
+            <span class="kw">let </span>r = (l..).take_while(|<span class="kw-2">&amp;</span>r| n / r == n / l).last().unwrap();
+            expected.push((l, r));
+            l = r + <span class="number">1</span>;
         }
-        <span class="kw">let</span> <span class="ident">actual</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">n</span>.<span class="ident">common_quot</span>().<span class="ident">collect</span>();
-        <span class="kw">if</span> <span class="ident">n</span> <span class="op">==</span> <span class="number">60</span> {
-            <span class="macro">eprintln!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">actual</span>);
+        <span class="kw">let </span>actual: Vec&lt;<span class="kw">_</span>&gt; = n.common_quot().collect();
+        <span class="kw">if </span>n == <span class="number">60 </span>{
+            <span class="macro">eprintln!</span>(<span class="string">&quot;{:?}&quot;</span>, actual);
         }
-        <span class="macro">assert_eq!</span>(<span class="ident">actual</span>, <span class="ident">expected</span>);
+        <span class="macro">assert_eq!</span>(actual, expected);
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

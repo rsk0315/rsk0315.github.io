@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/ds/interval_set.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>interval_set.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/ds/interval_set.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>interval_set.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -417,335 +417,335 @@
 <span id="328">328</span>
 <span id="329">329</span>
 <span id="330">330</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 区間の集合。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 区間の集合。
 
-<span class="kw">use</span> <span class="ident">std::cmp::Ordering</span>::{<span class="self">self</span>, <span class="kw-2">*</span>};
-<span class="kw">use</span> <span class="ident">std::collections::BTreeSet</span>;
-<span class="kw">use</span> <span class="ident">std::fmt::Debug</span>;
-<span class="kw">use</span> <span class="ident">std::ops</span>::{
-    <span class="ident">Bound</span>::{<span class="self">self</span>, <span class="kw-2">*</span>},
-    <span class="ident">RangeBounds</span>,
+</span><span class="kw">use </span>std::cmp::Ordering::{<span class="self">self</span>, <span class="kw-2">*</span>};
+<span class="kw">use </span>std::collections::BTreeSet;
+<span class="kw">use </span>std::fmt::Debug;
+<span class="kw">use </span>std::ops::{
+    Bound::{<span class="self">self</span>, <span class="kw-2">*</span>},
+    RangeBounds,
 };
 
-<span class="doccomment">/// 区間の集合。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Notes</span>
-<span class="doccomment">/// 整数のとき、Excluded(x) と Included(x-1) などの扱いに注意。</span>
-<span class="doccomment">/// あくまで実数の区間であるかのように扱われる。</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>)]</span>
-<span class="kw">struct</span> <span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span>(<span class="ident">Bound</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">Bound</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
+<span class="doccomment">/// 区間の集合。
+///
+/// # Notes
+/// 整数のとき、Excluded(x) と Included(x-1) などの扱いに注意。
+/// あくまで実数の区間であるかのように扱われる。
+</span><span class="attribute">#[derive(Clone, Debug, Eq)]
+</span><span class="kw">struct </span>Interval&lt;T: Ord&gt;(Bound&lt;T&gt;, Bound&lt;T&gt;);
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span>(<span class="ident">Bound</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">Bound</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">T</span><span class="op">&gt;</span>)<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">r</span>: (<span class="ident">Bound</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">Bound</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">T</span><span class="op">&gt;</span>)) -&gt; <span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">r</span>.<span class="number">0</span> {
-            <span class="ident">Included</span>(<span class="ident">lo</span>) =&gt; <span class="ident">Included</span>(<span class="ident">lo</span>.<span class="ident">clone</span>()),
-            <span class="ident">Excluded</span>(<span class="ident">lo</span>) =&gt; <span class="ident">Excluded</span>(<span class="ident">lo</span>.<span class="ident">clone</span>()),
-            <span class="ident">Unbounded</span> =&gt; <span class="ident">Unbounded</span>,
+<span class="kw">impl</span>&lt;T: Clone + Ord&gt; From&lt;(Bound&lt;<span class="kw-2">&amp;</span>T&gt;, Bound&lt;<span class="kw-2">&amp;</span>T&gt;)&gt; <span class="kw">for </span>Interval&lt;T&gt; {
+    <span class="kw">fn </span>from(r: (Bound&lt;<span class="kw-2">&amp;</span>T&gt;, Bound&lt;<span class="kw-2">&amp;</span>T&gt;)) -&gt; Interval&lt;T&gt; {
+        <span class="kw">let </span>s = <span class="kw">match </span>r.<span class="number">0 </span>{
+            Included(lo) =&gt; Included(lo.clone()),
+            Excluded(lo) =&gt; Excluded(lo.clone()),
+            Unbounded =&gt; Unbounded,
         };
-        <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">r</span>.<span class="number">1</span> {
-            <span class="ident">Included</span>(<span class="ident">hi</span>) =&gt; <span class="ident">Included</span>(<span class="ident">hi</span>.<span class="ident">clone</span>()),
-            <span class="ident">Excluded</span>(<span class="ident">hi</span>) =&gt; <span class="ident">Excluded</span>(<span class="ident">hi</span>.<span class="ident">clone</span>()),
-            <span class="ident">Unbounded</span> =&gt; <span class="ident">Unbounded</span>,
+        <span class="kw">let </span>e = <span class="kw">match </span>r.<span class="number">1 </span>{
+            Included(hi) =&gt; Included(hi.clone()),
+            Excluded(hi) =&gt; Excluded(hi.clone()),
+            Unbounded =&gt; Unbounded,
         };
-        <span class="ident">Interval</span>(<span class="ident">s</span>, <span class="ident">e</span>)
+        Interval(s, e)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">match</span> (<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">1</span>) {
-            (<span class="ident">Unbounded</span>, <span class="kw">_</span>) <span class="op">|</span> (<span class="kw">_</span>, <span class="ident">Unbounded</span>) =&gt; <span class="bool-val">false</span>,
-            (<span class="ident">Included</span>(<span class="ident">lo</span>), <span class="ident">Included</span>(<span class="ident">hi</span>)) =&gt; <span class="op">!</span>(<span class="ident">lo</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">hi</span>),
-            (<span class="ident">Included</span>(<span class="ident">lo</span>), <span class="ident">Excluded</span>(<span class="ident">hi</span>))
-            <span class="op">|</span> (<span class="ident">Excluded</span>(<span class="ident">lo</span>), <span class="ident">Included</span>(<span class="ident">hi</span>))
-            <span class="op">|</span> (<span class="ident">Excluded</span>(<span class="ident">lo</span>), <span class="ident">Excluded</span>(<span class="ident">hi</span>)) =&gt; <span class="op">!</span>(<span class="ident">lo</span> <span class="op">&lt;</span> <span class="ident">hi</span>),
+<span class="kw">impl</span>&lt;T: Ord&gt; Interval&lt;T&gt; {
+    <span class="kw">fn </span>is_empty(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">match </span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">1</span>) {
+            (Unbounded, <span class="kw">_</span>) | (<span class="kw">_</span>, Unbounded) =&gt; <span class="bool-val">false</span>,
+            (Included(lo), Included(hi)) =&gt; !(lo &lt;= hi),
+            (Included(lo), Excluded(hi))
+            | (Excluded(lo), Included(hi))
+            | (Excluded(lo), Excluded(hi)) =&gt; !(lo &lt; hi),
         }
     }
-    <span class="kw">fn</span> <span class="ident">is_superset</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">if</span> <span class="ident">other</span>.<span class="ident">is_empty</span>() {
-            <span class="kw">return</span> <span class="bool-val">true</span>;
+    <span class="kw">fn </span>is_superset(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; bool {
+        <span class="kw">if </span>other.is_empty() {
+            <span class="kw">return </span><span class="bool-val">true</span>;
         }
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_empty</span>() {
-            <span class="kw">return</span> <span class="bool-val">false</span>;
+        <span class="kw">if </span><span class="self">self</span>.is_empty() {
+            <span class="kw">return </span><span class="bool-val">false</span>;
         }
 
-        <span class="comment">// self.0 &lt;= other.0</span>
-        <span class="kw">match</span> (<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="number">0</span>) {
-            (<span class="ident">Unbounded</span>, <span class="kw">_</span>) =&gt; {}
-            (<span class="kw">_</span>, <span class="ident">Unbounded</span>) =&gt; <span class="kw">return</span> <span class="bool-val">false</span>,
-            (<span class="ident">Excluded</span>(<span class="ident">lhs</span>), <span class="ident">Included</span>(<span class="ident">rhs</span>)) <span class="kw">if</span> <span class="ident">lhs</span> <span class="op">==</span> <span class="ident">rhs</span> =&gt; <span class="kw">return</span> <span class="bool-val">false</span>,
-            (<span class="ident">Included</span>(<span class="ident">lhs</span>), <span class="ident">Included</span>(<span class="ident">rhs</span>))
-            <span class="op">|</span> (<span class="ident">Included</span>(<span class="ident">lhs</span>), <span class="ident">Excluded</span>(<span class="ident">rhs</span>))
-            <span class="op">|</span> (<span class="ident">Excluded</span>(<span class="ident">lhs</span>), <span class="ident">Included</span>(<span class="ident">rhs</span>))
-            <span class="op">|</span> (<span class="ident">Excluded</span>(<span class="ident">lhs</span>), <span class="ident">Excluded</span>(<span class="ident">rhs</span>))
-                <span class="kw">if</span> <span class="ident">lhs</span> <span class="op">&gt;</span> <span class="ident">rhs</span> =&gt;
+        <span class="comment">// self.0 &lt;= other.0
+        </span><span class="kw">match </span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>, <span class="kw-2">&amp;</span>other.<span class="number">0</span>) {
+            (Unbounded, <span class="kw">_</span>) =&gt; {}
+            (<span class="kw">_</span>, Unbounded) =&gt; <span class="kw">return </span><span class="bool-val">false</span>,
+            (Excluded(lhs), Included(rhs)) <span class="kw">if </span>lhs == rhs =&gt; <span class="kw">return </span><span class="bool-val">false</span>,
+            (Included(lhs), Included(rhs))
+            | (Included(lhs), Excluded(rhs))
+            | (Excluded(lhs), Included(rhs))
+            | (Excluded(lhs), Excluded(rhs))
+                <span class="kw">if </span>lhs &gt; rhs =&gt;
             {
-                <span class="kw">return</span> <span class="bool-val">false</span>
-            }
-            <span class="kw">_</span> =&gt; {}
+                <span class="kw">return </span><span class="bool-val">false
+            </span>}
+            <span class="kw">_ </span>=&gt; {}
         }
 
-        <span class="comment">// other.1 &lt;= self.1</span>
-        <span class="kw">match</span> (<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">1</span>, <span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="number">1</span>) {
-            (<span class="ident">Unbounded</span>, <span class="kw">_</span>) =&gt; <span class="bool-val">true</span>,
-            (<span class="kw">_</span>, <span class="ident">Unbounded</span>) =&gt; <span class="bool-val">false</span>,
-            (<span class="ident">Excluded</span>(<span class="ident">lhs</span>), <span class="ident">Included</span>(<span class="ident">rhs</span>)) =&gt; <span class="ident">lhs</span> <span class="op">&gt;</span> <span class="ident">rhs</span>,
-            (<span class="ident">Included</span>(<span class="ident">lhs</span>), <span class="ident">Included</span>(<span class="ident">rhs</span>))
-            <span class="op">|</span> (<span class="ident">Included</span>(<span class="ident">lhs</span>), <span class="ident">Excluded</span>(<span class="ident">rhs</span>))
-            <span class="op">|</span> (<span class="ident">Excluded</span>(<span class="ident">lhs</span>), <span class="ident">Excluded</span>(<span class="ident">rhs</span>)) =&gt; <span class="ident">lhs</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">rhs</span>,
+        <span class="comment">// other.1 &lt;= self.1
+        </span><span class="kw">match </span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">1</span>, <span class="kw-2">&amp;</span>other.<span class="number">1</span>) {
+            (Unbounded, <span class="kw">_</span>) =&gt; <span class="bool-val">true</span>,
+            (<span class="kw">_</span>, Unbounded) =&gt; <span class="bool-val">false</span>,
+            (Excluded(lhs), Included(rhs)) =&gt; lhs &gt; rhs,
+            (Included(lhs), Included(rhs))
+            | (Included(lhs), Excluded(rhs))
+            | (Excluded(lhs), Excluded(rhs)) =&gt; lhs &gt;= rhs,
         }
     }
-    <span class="kw">fn</span> <span class="ident">touches</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">let</span> (<span class="ident">left</span>, <span class="ident">right</span>) <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="ident">other</span>) {
-            <span class="ident">Less</span> =&gt; (<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">&amp;</span><span class="ident">other</span>),
-            <span class="ident">Equal</span> =&gt; <span class="kw">return</span> <span class="bool-val">true</span>,
-            <span class="ident">Greater</span> =&gt; (<span class="kw-2">&amp;</span><span class="ident">other</span>, <span class="kw-2">&amp;</span><span class="self">self</span>),
+    <span class="kw">fn </span>touches(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; bool {
+        <span class="kw">let </span>(left, right) = <span class="kw">match </span><span class="self">self</span>.cmp(<span class="kw-2">&amp;</span>other) {
+            Less =&gt; (<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">&amp;</span>other),
+            Equal =&gt; <span class="kw">return </span><span class="bool-val">true</span>,
+            Greater =&gt; (<span class="kw-2">&amp;</span>other, <span class="kw-2">&amp;</span><span class="self">self</span>),
         };
-        <span class="kw">match</span> (<span class="kw-2">&amp;</span><span class="ident">left</span>.<span class="number">1</span>, <span class="kw-2">&amp;</span><span class="ident">right</span>.<span class="number">0</span>) {
-            (<span class="ident">Unbounded</span>, <span class="kw">_</span>) <span class="op">|</span> (<span class="kw">_</span>, <span class="ident">Unbounded</span>) =&gt; <span class="bool-val">true</span>,
-            (<span class="ident">Included</span>(<span class="ident">le</span>), <span class="ident">Included</span>(<span class="ident">rs</span>))
-            <span class="op">|</span> (<span class="ident">Included</span>(<span class="ident">le</span>), <span class="ident">Excluded</span>(<span class="ident">rs</span>))
-            <span class="op">|</span> (<span class="ident">Excluded</span>(<span class="ident">le</span>), <span class="ident">Included</span>(<span class="ident">rs</span>)) =&gt; <span class="ident">rs</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">le</span>,
-            (<span class="ident">Excluded</span>(<span class="ident">le</span>), <span class="ident">Excluded</span>(<span class="ident">rs</span>)) =&gt; <span class="ident">rs</span> <span class="op">&lt;</span> <span class="ident">le</span>,
+        <span class="kw">match </span>(<span class="kw-2">&amp;</span>left.<span class="number">1</span>, <span class="kw-2">&amp;</span>right.<span class="number">0</span>) {
+            (Unbounded, <span class="kw">_</span>) | (<span class="kw">_</span>, Unbounded) =&gt; <span class="bool-val">true</span>,
+            (Included(le), Included(rs))
+            | (Included(le), Excluded(rs))
+            | (Excluded(le), Included(rs)) =&gt; rs &lt;= le,
+            (Excluded(le), Excluded(rs)) =&gt; rs &lt; le,
         }
     }
 }
 
-<span class="kw">fn</span> <span class="ident">toggle_bound</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span>(<span class="ident">b</span>: <span class="ident">Bound</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) -&gt; <span class="ident">Bound</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="ident">b</span> {
-        <span class="ident">Included</span>(<span class="ident">x</span>) =&gt; <span class="ident">Excluded</span>(<span class="ident">x</span>),
-        <span class="ident">Excluded</span>(<span class="ident">x</span>) =&gt; <span class="ident">Included</span>(<span class="ident">x</span>),
-        <span class="ident">Unbounded</span> =&gt; <span class="ident">Unbounded</span>,
+<span class="kw">fn </span>toggle_bound&lt;T: Ord&gt;(b: Bound&lt;T&gt;) -&gt; Bound&lt;T&gt; {
+    <span class="kw">match </span>b {
+        Included(x) =&gt; Excluded(x),
+        Excluded(x) =&gt; Included(x),
+        Unbounded =&gt; Unbounded,
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">Ord</span> <span class="kw">for</span> <span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="ident">Ordering</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_empty</span>() <span class="op">&amp;&amp;</span> <span class="ident">other</span>.<span class="ident">is_empty</span>() {
-            <span class="kw">return</span> <span class="ident">Equal</span>;
+<span class="kw">impl</span>&lt;T: Ord&gt; Ord <span class="kw">for </span>Interval&lt;T&gt; {
+    <span class="kw">fn </span>cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; Ordering {
+        <span class="kw">if </span><span class="self">self</span>.is_empty() &amp;&amp; other.is_empty() {
+            <span class="kw">return </span>Equal;
         }
-        <span class="kw">if</span> <span class="self">self</span>.<span class="number">0</span> <span class="op">!</span><span class="op">=</span> <span class="ident">other</span>.<span class="number">0</span> {
-            <span class="kw">return</span> <span class="kw">match</span> (<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="number">0</span>) {
-                (<span class="ident">Unbounded</span>, <span class="kw">_</span>) =&gt; <span class="ident">Less</span>,
-                (<span class="kw">_</span>, <span class="ident">Unbounded</span>) =&gt; <span class="ident">Greater</span>,
-                (<span class="ident">Included</span>(<span class="ident">lhs</span>), <span class="ident">Excluded</span>(<span class="ident">rhs</span>)) <span class="kw">if</span> <span class="ident">lhs</span> <span class="op">==</span> <span class="ident">rhs</span> =&gt; <span class="ident">Less</span>,
-                (<span class="ident">Excluded</span>(<span class="ident">lhs</span>), <span class="ident">Included</span>(<span class="ident">rhs</span>)) <span class="kw">if</span> <span class="ident">lhs</span> <span class="op">==</span> <span class="ident">rhs</span> =&gt; <span class="ident">Greater</span>,
-                (<span class="ident">Included</span>(<span class="ident">lhs</span>), <span class="ident">Included</span>(<span class="ident">rhs</span>))
-                <span class="op">|</span> (<span class="ident">Included</span>(<span class="ident">lhs</span>), <span class="ident">Excluded</span>(<span class="ident">rhs</span>))
-                <span class="op">|</span> (<span class="ident">Excluded</span>(<span class="ident">lhs</span>), <span class="ident">Included</span>(<span class="ident">rhs</span>))
-                <span class="op">|</span> (<span class="ident">Excluded</span>(<span class="ident">lhs</span>), <span class="ident">Excluded</span>(<span class="ident">rhs</span>)) =&gt; <span class="ident">lhs</span>.<span class="ident">cmp</span>(<span class="ident">rhs</span>),
+        <span class="kw">if </span><span class="self">self</span>.<span class="number">0 </span>!= other.<span class="number">0 </span>{
+            <span class="kw">return match </span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>, <span class="kw-2">&amp;</span>other.<span class="number">0</span>) {
+                (Unbounded, <span class="kw">_</span>) =&gt; Less,
+                (<span class="kw">_</span>, Unbounded) =&gt; Greater,
+                (Included(lhs), Excluded(rhs)) <span class="kw">if </span>lhs == rhs =&gt; Less,
+                (Excluded(lhs), Included(rhs)) <span class="kw">if </span>lhs == rhs =&gt; Greater,
+                (Included(lhs), Included(rhs))
+                | (Included(lhs), Excluded(rhs))
+                | (Excluded(lhs), Included(rhs))
+                | (Excluded(lhs), Excluded(rhs)) =&gt; lhs.cmp(rhs),
             };
         }
-        <span class="kw">if</span> <span class="self">self</span>.<span class="number">1</span> <span class="op">!</span><span class="op">=</span> <span class="ident">other</span>.<span class="number">1</span> {
-            <span class="kw">return</span> <span class="kw">match</span> (<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">1</span>, <span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="number">1</span>) {
-                (<span class="kw">_</span>, <span class="ident">Unbounded</span>) =&gt; <span class="ident">Less</span>,
-                (<span class="ident">Unbounded</span>, <span class="kw">_</span>) =&gt; <span class="ident">Greater</span>,
-                (<span class="ident">Excluded</span>(<span class="ident">lhs</span>), <span class="ident">Included</span>(<span class="ident">rhs</span>)) <span class="kw">if</span> <span class="ident">lhs</span> <span class="op">==</span> <span class="ident">rhs</span> =&gt; <span class="ident">Less</span>,
-                (<span class="ident">Included</span>(<span class="ident">lhs</span>), <span class="ident">Excluded</span>(<span class="ident">rhs</span>)) <span class="kw">if</span> <span class="ident">lhs</span> <span class="op">==</span> <span class="ident">rhs</span> =&gt; <span class="ident">Greater</span>,
-                (<span class="ident">Included</span>(<span class="ident">lhs</span>), <span class="ident">Included</span>(<span class="ident">rhs</span>))
-                <span class="op">|</span> (<span class="ident">Included</span>(<span class="ident">lhs</span>), <span class="ident">Excluded</span>(<span class="ident">rhs</span>))
-                <span class="op">|</span> (<span class="ident">Excluded</span>(<span class="ident">lhs</span>), <span class="ident">Included</span>(<span class="ident">rhs</span>))
-                <span class="op">|</span> (<span class="ident">Excluded</span>(<span class="ident">lhs</span>), <span class="ident">Excluded</span>(<span class="ident">rhs</span>)) =&gt; <span class="ident">lhs</span>.<span class="ident">cmp</span>(<span class="ident">rhs</span>),
+        <span class="kw">if </span><span class="self">self</span>.<span class="number">1 </span>!= other.<span class="number">1 </span>{
+            <span class="kw">return match </span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">1</span>, <span class="kw-2">&amp;</span>other.<span class="number">1</span>) {
+                (<span class="kw">_</span>, Unbounded) =&gt; Less,
+                (Unbounded, <span class="kw">_</span>) =&gt; Greater,
+                (Excluded(lhs), Included(rhs)) <span class="kw">if </span>lhs == rhs =&gt; Less,
+                (Included(lhs), Excluded(rhs)) <span class="kw">if </span>lhs == rhs =&gt; Greater,
+                (Included(lhs), Included(rhs))
+                | (Included(lhs), Excluded(rhs))
+                | (Excluded(lhs), Included(rhs))
+                | (Excluded(lhs), Excluded(rhs)) =&gt; lhs.cmp(rhs),
             };
         }
-        <span class="ident">Equal</span>
+        Equal
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">PartialOrd</span> <span class="kw">for</span> <span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Ordering</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">cmp</span>(<span class="ident">other</span>))
+<span class="kw">impl</span>&lt;T: Ord&gt; PartialOrd <span class="kw">for </span>Interval&lt;T&gt; {
+    <span class="kw">fn </span>partial_cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Ordering&gt; {
+        <span class="prelude-val">Some</span>(<span class="self">self</span>.cmp(other))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="ident">bool</span> { <span class="self">self</span>.<span class="ident">cmp</span>(<span class="ident">other</span>) <span class="op">==</span> <span class="ident">Equal</span> }
+<span class="kw">impl</span>&lt;T: Ord&gt; PartialEq <span class="kw">for </span>Interval&lt;T&gt; {
+    <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; bool { <span class="self">self</span>.cmp(other) == Equal }
 }
 
-<span class="doccomment">/// 区間の集合。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 区間の追加・削除を行うことができる。</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">IntervalSet</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> {
-    <span class="ident">buf</span>: <span class="ident">BTreeSet</span><span class="op">&lt;</span><span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="doccomment">/// 区間の集合。
+///
+/// 区間の追加・削除を行うことができる。
+</span><span class="attribute">#[derive(Clone, Debug, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>IntervalSet&lt;T: Ord&gt; {
+    buf: BTreeSet&lt;Interval&lt;T&gt;&gt;,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">Debug</span> <span class="op">+</span> <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">IntervalSet</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// 空集合で初期化する。</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span> { <span class="self">Self</span> { <span class="ident">buf</span>: <span class="ident">BTreeSet::new</span>() } }
+<span class="kw">impl</span>&lt;T: Clone + Debug + Ord&gt; IntervalSet&lt;T&gt; {
+    <span class="doccomment">/// 空集合で初期化する。
+    </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{ <span class="self">Self </span>{ buf: BTreeSet::new() } }
 
-    <span class="doccomment">/// 集合が空であれば `true` を返す。</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> { <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">is_empty</span>() }
+    <span class="doccomment">/// 集合が空であれば `true` を返す。
+    </span><span class="kw">pub fn </span>is_empty(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool { <span class="self">self</span>.buf.is_empty() }
 
-    <span class="doccomment">/// 区間 `r` を追加する。</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">insert</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">r</span>: <span class="ident">R</span>) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">r</span>: <span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="ident">r</span>.<span class="ident">start_bound</span>(), <span class="ident">r</span>.<span class="ident">end_bound</span>()).<span class="ident">into</span>();
-        <span class="kw">if</span> <span class="ident">r</span>.<span class="ident">is_empty</span>() {
+    <span class="doccomment">/// 区間 `r` を追加する。
+    </span><span class="kw">pub fn </span>insert&lt;R: RangeBounds&lt;T&gt;&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, r: R) {
+        <span class="kw">let </span><span class="kw-2">mut </span>r: Interval&lt;T&gt; = (r.start_bound(), r.end_bound()).into();
+        <span class="kw">if </span>r.is_empty() {
             <span class="kw">return</span>;
         }
-        <span class="self">self</span>.<span class="ident">remove_subset</span>(<span class="kw-2">&amp;</span><span class="ident">r</span>);
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">range</span>(..<span class="kw-2">&amp;</span><span class="ident">r</span>).<span class="ident">cloned</span>().<span class="ident">next_back</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="kw">if</span> <span class="ident">x</span>.<span class="ident">is_superset</span>(<span class="kw-2">&amp;</span><span class="ident">r</span>) =&gt; <span class="kw">return</span>,
-            <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="kw">if</span> <span class="ident">x</span>.<span class="ident">touches</span>(<span class="kw-2">&amp;</span><span class="ident">r</span>) =&gt; {
-                <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>);
-                <span class="ident">r</span>.<span class="number">0</span> <span class="op">=</span> <span class="ident">x</span>.<span class="number">0</span>;
+        <span class="self">self</span>.remove_subset(<span class="kw-2">&amp;</span>r);
+        <span class="kw">match </span><span class="self">self</span>.buf.range(..<span class="kw-2">&amp;</span>r).cloned().next_back() {
+            <span class="prelude-val">Some</span>(x) <span class="kw">if </span>x.is_superset(<span class="kw-2">&amp;</span>r) =&gt; <span class="kw">return</span>,
+            <span class="prelude-val">Some</span>(x) <span class="kw">if </span>x.touches(<span class="kw-2">&amp;</span>r) =&gt; {
+                <span class="self">self</span>.buf.remove(<span class="kw-2">&amp;</span>x);
+                r.<span class="number">0 </span>= x.<span class="number">0</span>;
             }
-            <span class="kw">_</span> =&gt; {}
+            <span class="kw">_ </span>=&gt; {}
         }
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">range</span>(<span class="kw-2">&amp;</span><span class="ident">r</span>..).<span class="ident">cloned</span>().<span class="ident">next</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="kw">if</span> <span class="ident">x</span>.<span class="ident">touches</span>(<span class="kw-2">&amp;</span><span class="ident">r</span>) =&gt; {
-                <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>);
-                <span class="ident">r</span>.<span class="number">1</span> <span class="op">=</span> <span class="ident">x</span>.<span class="number">1</span>;
+        <span class="kw">match </span><span class="self">self</span>.buf.range(<span class="kw-2">&amp;</span>r..).cloned().next() {
+            <span class="prelude-val">Some</span>(x) <span class="kw">if </span>x.touches(<span class="kw-2">&amp;</span>r) =&gt; {
+                <span class="self">self</span>.buf.remove(<span class="kw-2">&amp;</span>x);
+                r.<span class="number">1 </span>= x.<span class="number">1</span>;
             }
-            <span class="kw">_</span> =&gt; {}
+            <span class="kw">_ </span>=&gt; {}
         }
-        <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">insert</span>(<span class="ident">r</span>);
+        <span class="self">self</span>.buf.insert(r);
     }
 
-    <span class="kw">fn</span> <span class="ident">insert_if_nonempty</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">x</span>: <span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) {
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">x</span>.<span class="ident">is_empty</span>() {
-            <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">insert</span>(<span class="ident">x</span>);
+    <span class="kw">fn </span>insert_if_nonempty(<span class="kw-2">&amp;mut </span><span class="self">self</span>, x: Interval&lt;T&gt;) {
+        <span class="kw">if </span>!x.is_empty() {
+            <span class="self">self</span>.buf.insert(x);
         }
     }
 
-    <span class="doccomment">/// 区間 `r` を削除する。</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">remove</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">r</span>: <span class="ident">R</span>) {
-        <span class="kw">let</span> <span class="ident">r</span>: <span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="ident">r</span>.<span class="ident">start_bound</span>(), <span class="ident">r</span>.<span class="ident">end_bound</span>()).<span class="ident">into</span>();
-        <span class="kw">if</span> <span class="ident">r</span>.<span class="ident">is_empty</span>() {
+    <span class="doccomment">/// 区間 `r` を削除する。
+    </span><span class="kw">pub fn </span>remove&lt;R: RangeBounds&lt;T&gt;&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, r: R) {
+        <span class="kw">let </span>r: Interval&lt;T&gt; = (r.start_bound(), r.end_bound()).into();
+        <span class="kw">if </span>r.is_empty() {
             <span class="kw">return</span>;
         }
-        <span class="self">self</span>.<span class="ident">remove_subset</span>(<span class="kw-2">&amp;</span><span class="ident">r</span>);
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">range</span>(..<span class="kw-2">&amp;</span><span class="ident">r</span>).<span class="ident">cloned</span>().<span class="ident">next_back</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="kw">if</span> <span class="ident">x</span>.<span class="ident">is_superset</span>(<span class="kw-2">&amp;</span><span class="ident">r</span>) =&gt; {
-                <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>);
-                <span class="kw">let</span> <span class="ident">Interval</span>(<span class="ident">r0</span>, <span class="ident">r1</span>) <span class="op">=</span> <span class="ident">r</span>;
-                <span class="self">self</span>.<span class="ident">insert_if_nonempty</span>(<span class="ident">Interval</span>(<span class="ident">x</span>.<span class="number">0</span>, <span class="ident">toggle_bound</span>(<span class="ident">r0</span>)));
-                <span class="self">self</span>.<span class="ident">insert_if_nonempty</span>(<span class="ident">Interval</span>(<span class="ident">toggle_bound</span>(<span class="ident">r1</span>), <span class="ident">x</span>.<span class="number">1</span>));
+        <span class="self">self</span>.remove_subset(<span class="kw-2">&amp;</span>r);
+        <span class="kw">match </span><span class="self">self</span>.buf.range(..<span class="kw-2">&amp;</span>r).cloned().next_back() {
+            <span class="prelude-val">Some</span>(x) <span class="kw">if </span>x.is_superset(<span class="kw-2">&amp;</span>r) =&gt; {
+                <span class="self">self</span>.buf.remove(<span class="kw-2">&amp;</span>x);
+                <span class="kw">let </span>Interval(r0, r1) = r;
+                <span class="self">self</span>.insert_if_nonempty(Interval(x.<span class="number">0</span>, toggle_bound(r0)));
+                <span class="self">self</span>.insert_if_nonempty(Interval(toggle_bound(r1), x.<span class="number">1</span>));
                 <span class="kw">return</span>;
             }
-            <span class="prelude-val">Some</span>(<span class="kw-2">mut</span> <span class="ident">x</span>) <span class="kw">if</span> <span class="ident">x</span>.<span class="ident">touches</span>(<span class="kw-2">&amp;</span><span class="ident">r</span>) =&gt; {
-                <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>);
-                <span class="ident">x</span>.<span class="number">1</span> <span class="op">=</span> <span class="ident">toggle_bound</span>(<span class="ident">r</span>.<span class="number">0</span>.<span class="ident">clone</span>());
-                <span class="self">self</span>.<span class="ident">insert_if_nonempty</span>(<span class="ident">x</span>);
+            <span class="prelude-val">Some</span>(<span class="kw-2">mut </span>x) <span class="kw">if </span>x.touches(<span class="kw-2">&amp;</span>r) =&gt; {
+                <span class="self">self</span>.buf.remove(<span class="kw-2">&amp;</span>x);
+                x.<span class="number">1 </span>= toggle_bound(r.<span class="number">0</span>.clone());
+                <span class="self">self</span>.insert_if_nonempty(x);
             }
-            <span class="kw">_</span> =&gt; {}
+            <span class="kw">_ </span>=&gt; {}
         }
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">range</span>(<span class="kw-2">&amp;</span><span class="ident">r</span>..).<span class="ident">cloned</span>().<span class="ident">next</span>() {
-            <span class="prelude-val">Some</span>(<span class="kw-2">mut</span> <span class="ident">x</span>) <span class="kw">if</span> <span class="ident">x</span>.<span class="ident">touches</span>(<span class="kw-2">&amp;</span><span class="ident">r</span>) =&gt; {
-                <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>);
-                <span class="ident">x</span>.<span class="number">0</span> <span class="op">=</span> <span class="ident">toggle_bound</span>(<span class="ident">r</span>.<span class="number">1</span>);
-                <span class="self">self</span>.<span class="ident">insert_if_nonempty</span>(<span class="ident">x</span>);
+        <span class="kw">match </span><span class="self">self</span>.buf.range(<span class="kw-2">&amp;</span>r..).cloned().next() {
+            <span class="prelude-val">Some</span>(<span class="kw-2">mut </span>x) <span class="kw">if </span>x.touches(<span class="kw-2">&amp;</span>r) =&gt; {
+                <span class="self">self</span>.buf.remove(<span class="kw-2">&amp;</span>x);
+                x.<span class="number">0 </span>= toggle_bound(r.<span class="number">1</span>);
+                <span class="self">self</span>.insert_if_nonempty(x);
             }
-            <span class="kw">_</span> =&gt; {}
+            <span class="kw">_ </span>=&gt; {}
         }
     }
 
-    <span class="doccomment">/// 空集合に戻す。</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">clear</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) { <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">clear</span>(); }
+    <span class="doccomment">/// 空集合に戻す。
+    </span><span class="kw">pub fn </span>clear(<span class="kw-2">&amp;mut </span><span class="self">self</span>) { <span class="self">self</span>.buf.clear(); }
 
-    <span class="doccomment">/// `x` 以上の値で、集合中の区間に含まれない最小のものを返す。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use std::ops::Bound::{Included, Excluded, Unbounded};</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// use nekolib::ds::IntervalSet;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let mut s = IntervalSet::new();</span>
-    <span class="doccomment">/// s.insert(1..5);</span>
-    <span class="doccomment">/// s.insert(7..=10);</span>
-    <span class="doccomment">/// s.insert(15..);</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// assert_eq!(s.mex(&amp;0), Included(&amp;0));</span>
-    <span class="doccomment">/// assert_eq!(s.mex(&amp;1), Included(&amp;5));</span>
-    <span class="doccomment">/// assert_eq!(s.mex(&amp;6), Included(&amp;6));</span>
-    <span class="doccomment">/// assert_eq!(s.mex(&amp;7), Excluded(&amp;10));</span>
-    <span class="doccomment">/// assert_eq!(s.mex(&amp;15), Unbounded);</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mex</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>, <span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">T</span>) -&gt; <span class="ident">Bound</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">is_empty</span>() {
-            <span class="kw">return</span> <span class="ident">Included</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>);
+    <span class="doccomment">/// `x` 以上の値で、集合中の区間に含まれない最小のものを返す。
+    ///
+    /// # Examples
+    /// ```
+    /// use std::ops::Bound::{Included, Excluded, Unbounded};
+    ///
+    /// use nekolib::ds::IntervalSet;
+    ///
+    /// let mut s = IntervalSet::new();
+    /// s.insert(1..5);
+    /// s.insert(7..=10);
+    /// s.insert(15..);
+    ///
+    /// assert_eq!(s.mex(&amp;0), Included(&amp;0));
+    /// assert_eq!(s.mex(&amp;1), Included(&amp;5));
+    /// assert_eq!(s.mex(&amp;6), Included(&amp;6));
+    /// assert_eq!(s.mex(&amp;7), Excluded(&amp;10));
+    /// assert_eq!(s.mex(&amp;15), Unbounded);
+    /// ```
+    </span><span class="kw">pub fn </span>mex&lt;<span class="lifetime">&#39;a</span>&gt;(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">self</span>, x: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>T) -&gt; Bound&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>T&gt; {
+        <span class="kw">if </span><span class="self">self</span>.buf.is_empty() {
+            <span class="kw">return </span>Included(<span class="kw-2">&amp;</span>x);
         }
-        <span class="kw">match</span> <span class="self">self</span>
-            .<span class="ident">buf</span>
-            .<span class="ident">range</span>(..<span class="op">=</span><span class="ident">Interval</span>(<span class="ident">Included</span>(<span class="ident">x</span>.<span class="ident">clone</span>()), <span class="ident">Unbounded</span>))
-            .<span class="ident">next_back</span>()
+        <span class="kw">match </span><span class="self">self
+            </span>.buf
+            .range(..=Interval(Included(x.clone()), Unbounded))
+            .next_back()
         {
-            <span class="prelude-val">Some</span>(<span class="ident">Interval</span>(<span class="kw">_</span>, <span class="ident">Included</span>(<span class="ident">y</span>))) <span class="kw">if</span> <span class="ident">y</span> <span class="op">&lt;</span> <span class="ident">x</span> =&gt; <span class="ident">Included</span>(<span class="ident">x</span>),
-            <span class="prelude-val">Some</span>(<span class="ident">Interval</span>(<span class="kw">_</span>, <span class="ident">Included</span>(<span class="ident">y</span>))) =&gt; <span class="ident">Excluded</span>(<span class="ident">y</span>),
-            <span class="prelude-val">Some</span>(<span class="ident">Interval</span>(<span class="kw">_</span>, <span class="ident">Excluded</span>(<span class="ident">y</span>))) <span class="kw">if</span> <span class="ident">y</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">x</span> =&gt; <span class="ident">Included</span>(<span class="ident">x</span>),
-            <span class="prelude-val">Some</span>(<span class="ident">Interval</span>(<span class="kw">_</span>, <span class="ident">Excluded</span>(<span class="ident">y</span>))) =&gt; <span class="ident">Included</span>(<span class="ident">y</span>),
-            <span class="prelude-val">Some</span>(<span class="ident">Interval</span>(<span class="kw">_</span>, <span class="ident">Unbounded</span>)) =&gt; <span class="ident">Unbounded</span>,
-            <span class="prelude-val">None</span> =&gt; <span class="ident">Included</span>(<span class="ident">x</span>),
+            <span class="prelude-val">Some</span>(Interval(<span class="kw">_</span>, Included(y))) <span class="kw">if </span>y &lt; x =&gt; Included(x),
+            <span class="prelude-val">Some</span>(Interval(<span class="kw">_</span>, Included(y))) =&gt; Excluded(y),
+            <span class="prelude-val">Some</span>(Interval(<span class="kw">_</span>, Excluded(y))) <span class="kw">if </span>y &lt;= x =&gt; Included(x),
+            <span class="prelude-val">Some</span>(Interval(<span class="kw">_</span>, Excluded(y))) =&gt; Included(y),
+            <span class="prelude-val">Some</span>(Interval(<span class="kw">_</span>, Unbounded)) =&gt; Unbounded,
+            <span class="prelude-val">None </span>=&gt; Included(x),
         }
     }
 
-    <span class="doccomment">/// 区間 `r` を含む区間の両端を返す。</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">covering</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span>(
+    <span class="doccomment">/// 区間 `r` を含む区間の両端を返す。
+    </span><span class="kw">pub fn </span>covering&lt;R: RangeBounds&lt;T&gt;&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">r</span>: <span class="kw-2">&amp;</span><span class="ident">R</span>,
-    ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="kw-2">&amp;</span><span class="ident">Bound</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="kw-2">&amp;</span><span class="ident">Bound</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>)<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">r</span>: <span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="ident">r</span>.<span class="ident">start_bound</span>(), <span class="ident">r</span>.<span class="ident">end_bound</span>()).<span class="ident">into</span>();
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">is_empty</span>() {
-            <span class="kw">return</span> <span class="prelude-val">None</span>;
+        r: <span class="kw-2">&amp;</span>R,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;(<span class="kw-2">&amp;</span>Bound&lt;T&gt;, <span class="kw-2">&amp;</span>Bound&lt;T&gt;)&gt; {
+        <span class="kw">let </span>r: Interval&lt;T&gt; = (r.start_bound(), r.end_bound()).into();
+        <span class="kw">if </span><span class="self">self</span>.buf.is_empty() {
+            <span class="kw">return </span><span class="prelude-val">None</span>;
         }
-        (<span class="kw">if</span> <span class="ident">r</span>.<span class="ident">is_empty</span>() {
-            <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">range</span>(..).<span class="ident">next</span>()
-        } <span class="kw">else</span> {
-            <span class="kw">match</span> <span class="self">self</span>
-                .<span class="ident">buf</span>
-                .<span class="ident">range</span>(..<span class="op">=</span><span class="kw-2">&amp;</span><span class="ident">Interval</span>(<span class="ident">r</span>.<span class="number">0</span>.<span class="ident">clone</span>(), <span class="ident">Unbounded</span>))
-                .<span class="ident">next_back</span>()
+        (<span class="kw">if </span>r.is_empty() {
+            <span class="self">self</span>.buf.range(..).next()
+        } <span class="kw">else </span>{
+            <span class="kw">match </span><span class="self">self
+                </span>.buf
+                .range(..=<span class="kw-2">&amp;</span>Interval(r.<span class="number">0</span>.clone(), Unbounded))
+                .next_back()
             {
-                <span class="prelude-val">Some</span>(<span class="ident">s</span>) <span class="kw">if</span> <span class="ident">s</span>.<span class="ident">is_superset</span>(<span class="kw-2">&amp;</span><span class="ident">r</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">s</span>),
-                <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
+                <span class="prelude-val">Some</span>(s) <span class="kw">if </span>s.is_superset(<span class="kw-2">&amp;</span>r) =&gt; <span class="prelude-val">Some</span>(s),
+                <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
             }
         })
-        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> (<span class="kw-2">&amp;</span><span class="ident">r</span>.<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="ident">r</span>.<span class="number">1</span>))
+        .map(|r| (<span class="kw-2">&amp;</span>r.<span class="number">0</span>, <span class="kw-2">&amp;</span>r.<span class="number">1</span>))
     }
 
-    <span class="doccomment">/// 区間 `r` を含んでいれば `true` を返す。</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">has_range</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">r</span>: <span class="kw-2">&amp;</span><span class="ident">R</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">covering</span>(<span class="ident">r</span>).<span class="ident">is_some</span>()
+    <span class="doccomment">/// 区間 `r` を含んでいれば `true` を返す。
+    </span><span class="kw">pub fn </span>has_range&lt;R: RangeBounds&lt;T&gt;&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, r: <span class="kw-2">&amp;</span>R) -&gt; bool {
+        <span class="self">self</span>.covering(r).is_some()
     }
 
-    <span class="kw">fn</span> <span class="ident">remove_subset</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">r</span>: <span class="kw-2">&amp;</span><span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) {
-        <span class="kw">let</span> <span class="ident">rem</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Interval</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">r</span> {
-            <span class="ident">Interval</span>(<span class="ident">Unbounded</span>, <span class="ident">Unbounded</span>) =&gt; {
-                <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">clear</span>();
+    <span class="kw">fn </span>remove_subset(<span class="kw-2">&amp;mut </span><span class="self">self</span>, r: <span class="kw-2">&amp;</span>Interval&lt;T&gt;) {
+        <span class="kw">let </span>rem: Vec&lt;Interval&lt;T&gt;&gt; = <span class="kw">match </span>r {
+            Interval(Unbounded, Unbounded) =&gt; {
+                <span class="self">self</span>.buf.clear();
                 <span class="kw">return</span>;
             }
-            <span class="ident">Interval</span>(<span class="ident">Included</span>(<span class="ident">lo</span>), <span class="ident">Unbounded</span>)
-            <span class="op">|</span> <span class="ident">Interval</span>(<span class="ident">Excluded</span>(<span class="ident">lo</span>), <span class="ident">Unbounded</span>) =&gt; <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">range</span>((
-                <span class="ident">Included</span>(<span class="ident">Interval</span>(<span class="ident">Included</span>(<span class="ident">lo</span>.<span class="ident">clone</span>()), <span class="ident">Included</span>(<span class="ident">lo</span>.<span class="ident">clone</span>()))),
-                <span class="ident">Unbounded</span>,
+            Interval(Included(lo), Unbounded)
+            | Interval(Excluded(lo), Unbounded) =&gt; <span class="self">self</span>.buf.range((
+                Included(Interval(Included(lo.clone()), Included(lo.clone()))),
+                Unbounded,
             )),
-            <span class="ident">Interval</span>(<span class="ident">Unbounded</span>, <span class="ident">Included</span>(<span class="ident">hi</span>))
-            <span class="op">|</span> <span class="ident">Interval</span>(<span class="ident">Unbounded</span>, <span class="ident">Excluded</span>(<span class="ident">hi</span>)) =&gt; <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">range</span>((
-                <span class="ident">Unbounded</span>,
-                <span class="ident">Included</span>(<span class="ident">Interval</span>(<span class="ident">Included</span>(<span class="ident">hi</span>.<span class="ident">clone</span>()), <span class="ident">Included</span>(<span class="ident">hi</span>.<span class="ident">clone</span>()))),
+            Interval(Unbounded, Included(hi))
+            | Interval(Unbounded, Excluded(hi)) =&gt; <span class="self">self</span>.buf.range((
+                Unbounded,
+                Included(Interval(Included(hi.clone()), Included(hi.clone()))),
             )),
-            <span class="ident">Interval</span>(<span class="ident">Included</span>(<span class="ident">lo</span>), <span class="ident">Included</span>(<span class="ident">hi</span>))
-            <span class="op">|</span> <span class="ident">Interval</span>(<span class="ident">Included</span>(<span class="ident">lo</span>), <span class="ident">Excluded</span>(<span class="ident">hi</span>))
-            <span class="op">|</span> <span class="ident">Interval</span>(<span class="ident">Excluded</span>(<span class="ident">lo</span>), <span class="ident">Included</span>(<span class="ident">hi</span>))
-            <span class="op">|</span> <span class="ident">Interval</span>(<span class="ident">Excluded</span>(<span class="ident">lo</span>), <span class="ident">Excluded</span>(<span class="ident">hi</span>)) =&gt; <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">range</span>((
-                <span class="ident">Included</span>(<span class="ident">Interval</span>(<span class="ident">Included</span>(<span class="ident">lo</span>.<span class="ident">clone</span>()), <span class="ident">Included</span>(<span class="ident">lo</span>.<span class="ident">clone</span>()))),
-                <span class="ident">Included</span>(<span class="ident">Interval</span>(<span class="ident">Included</span>(<span class="ident">hi</span>.<span class="ident">clone</span>()), <span class="ident">Included</span>(<span class="ident">hi</span>.<span class="ident">clone</span>()))),
+            Interval(Included(lo), Included(hi))
+            | Interval(Included(lo), Excluded(hi))
+            | Interval(Excluded(lo), Included(hi))
+            | Interval(Excluded(lo), Excluded(hi)) =&gt; <span class="self">self</span>.buf.range((
+                Included(Interval(Included(lo.clone()), Included(lo.clone()))),
+                Included(Interval(Included(hi.clone()), Included(hi.clone()))),
             )),
         }
-        .<span class="ident">cloned</span>()
-        .<span class="ident">collect</span>();
-        <span class="kw">for</span> <span class="ident">k</span> <span class="kw">in</span> <span class="ident">rem</span>.<span class="ident">into_iter</span>().<span class="ident">filter</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">is_superset</span>(<span class="ident">x</span>)) {
-            <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">k</span>);
+        .cloned()
+        .collect();
+        <span class="kw">for </span>k <span class="kw">in </span>rem.into_iter().filter(|x| r.is_superset(x)) {
+            <span class="self">self</span>.buf.remove(<span class="kw-2">&amp;</span>k);
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iter</span>(
+    <span class="kw">pub fn </span>iter(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-    ) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> (<span class="kw-2">&amp;</span><span class="ident">Bound</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="kw-2">&amp;</span><span class="ident">Bound</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>)<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">DoubleEndedIterator</span> <span class="op">+</span> <span class="lifetime">&#39;_</span>
-    {
-        <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> (<span class="kw-2">&amp;</span><span class="ident">x</span>.<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="ident">x</span>.<span class="number">1</span>))
+    ) -&gt; <span class="kw">impl </span>Iterator&lt;Item = (<span class="kw-2">&amp;</span>Bound&lt;T&gt;, <span class="kw-2">&amp;</span>Bound&lt;T&gt;)&gt; + DoubleEndedIterator + <span class="lifetime">&#39;_
+    </span>{
+        <span class="self">self</span>.buf.iter().map(|x| (<span class="kw-2">&amp;</span>x.<span class="number">0</span>, <span class="kw-2">&amp;</span>x.<span class="number">1</span>))
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

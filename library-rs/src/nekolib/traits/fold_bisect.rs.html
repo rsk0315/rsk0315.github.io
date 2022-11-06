@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/traits/fold_bisect.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>fold_bisect.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/traits/fold_bisect.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>fold_bisect.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -175,93 +175,93 @@
 <span id="86">86</span>
 <span id="87">87</span>
 <span id="88">88</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 区間和の二分探索に関するトレイトたち。</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! 区間のモノイド積が述語を満たすような区間のうち、最大のものを返す。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 区間和の二分探索に関するトレイトたち。
+//!
+//! 区間のモノイド積が述語を満たすような区間のうち、最大のものを返す。
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::binop</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::fold</span>;
+</span><span class="kw">use </span><span class="kw">super</span>::binop;
+<span class="kw">use </span><span class="kw">super</span>::fold;
 
-<span class="kw">use</span> <span class="ident">std::ops::Range</span>;
+<span class="kw">use </span>std::ops::Range;
 
-<span class="kw">use</span> <span class="ident">binop::Magma</span>;
-<span class="kw">use</span> <span class="ident">fold::Fold</span>;
+<span class="kw">use </span>binop::Magma;
+<span class="kw">use </span>fold::Fold;
 
-<span class="doccomment">/// 左端を固定したときの境界を求める。</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">FoldBisect</span>: <span class="ident">Fold</span><span class="op">&lt;</span><span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// 添字 `l` と述語 `pred` を引数に取り、次の条件を満たす `r` を返す。</span>
-    <span class="doccomment">/// ただし、区間長を `n` とする。</span>
-    <span class="doccomment">/// - `pred(&amp;self.fold(l..r))`</span>
-    <span class="doccomment">/// - `r == n || !pred(&amp;self.fold(l..r + 1))`</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Requirements</span>
-    <span class="doccomment">/// 対象のモノイドの単位元を `e` とするとき、 `pred(e)` が成り立つ。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use nekolib::ds::VecSegtree;</span>
-    <span class="doccomment">/// use nekolib::traits::{Fold, FoldBisect};</span>
-    <span class="doccomment">/// use nekolib::utils::OpAdd;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let vs: VecSegtree&lt;OpAdd&lt;i32&gt;&gt; = vec![2, 4, 1, 3, 5].into();</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt; 4), (1_usize, 0));</span>
-    <span class="doccomment">/// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt;= 4), (2_usize, 4));</span>
-    <span class="doccomment">/// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt; 13), (4_usize, 8));</span>
-    <span class="doccomment">/// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt;= 13), (5_usize, 13));</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let l = 1;</span>
-    <span class="doccomment">/// let pred = |&amp;x: &amp;i32| x &lt;= 12;</span>
-    <span class="doccomment">/// let (r, x) = vs.fold_bisect(l, pred);</span>
-    <span class="doccomment">/// assert_eq!(vs.fold(l..r), x);</span>
-    <span class="doccomment">/// assert!(pred(&amp;x));</span>
-    <span class="doccomment">/// assert!(r == vs.len() || !pred(&amp;vs.fold(l..r + 1)));</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">fold_bisect</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(
+<span class="doccomment">/// 左端を固定したときの境界を求める。
+</span><span class="kw">pub trait </span>FoldBisect: Fold&lt;Range&lt;usize&gt;&gt; {
+    <span class="doccomment">/// 添字 `l` と述語 `pred` を引数に取り、次の条件を満たす `r` を返す。
+    /// ただし、区間長を `n` とする。
+    /// - `pred(&amp;self.fold(l..r))`
+    /// - `r == n || !pred(&amp;self.fold(l..r + 1))`
+    ///
+    /// # Requirements
+    /// 対象のモノイドの単位元を `e` とするとき、 `pred(e)` が成り立つ。
+    ///
+    /// # Examples
+    /// ```
+    /// use nekolib::ds::VecSegtree;
+    /// use nekolib::traits::{Fold, FoldBisect};
+    /// use nekolib::utils::OpAdd;
+    ///
+    /// let vs: VecSegtree&lt;OpAdd&lt;i32&gt;&gt; = vec![2, 4, 1, 3, 5].into();
+    ///
+    /// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt; 4), (1_usize, 0));
+    /// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt;= 4), (2_usize, 4));
+    /// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt; 13), (4_usize, 8));
+    /// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt;= 13), (5_usize, 13));
+    ///
+    /// let l = 1;
+    /// let pred = |&amp;x: &amp;i32| x &lt;= 12;
+    /// let (r, x) = vs.fold_bisect(l, pred);
+    /// assert_eq!(vs.fold(l..r), x);
+    /// assert!(pred(&amp;x));
+    /// assert!(r == vs.len() || !pred(&amp;vs.fold(l..r + 1)));
+    /// ```
+    </span><span class="kw">fn </span>fold_bisect&lt;F&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">l</span>: <span class="ident">usize</span>,
-        <span class="ident">pred</span>: <span class="ident">F</span>,
-    ) -&gt; (<span class="ident">usize</span>, <span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Output</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>)
-    <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Output</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>) -&gt; <span class="ident">bool</span>;
+        l: usize,
+        pred: F,
+    ) -&gt; (usize, &lt;<span class="self">Self</span>::Output <span class="kw">as </span>Magma&gt;::Set)
+    <span class="kw">where
+        </span>F: Fn(<span class="kw-2">&amp;</span>&lt;<span class="self">Self</span>::Output <span class="kw">as </span>Magma&gt;::Set) -&gt; bool;
 }
 
-<span class="doccomment">/// 右端を固定したときの境界を求める。</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">FoldBisectRev</span>: <span class="ident">Fold</span><span class="op">&lt;</span><span class="ident">Range</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// 添字 `r` と述語 `pred` を引数に取り、次の条件を満たす `l` を返す。</span>
-    <span class="doccomment">/// - `pred(&amp;self.fold(l..r))`</span>
-    <span class="doccomment">/// - `l == 0 || !pred(&amp;self.fold(l - 1..r))`</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Requirements</span>
-    <span class="doccomment">/// 対象のモノイドの単位元を `e` とするとき、`pred(e)` が成り立つ。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use nekolib::ds::VecSegtree;</span>
-    <span class="doccomment">/// use nekolib::traits::{Fold, FoldBisectRev};</span>
-    <span class="doccomment">/// use nekolib::utils::OpAdd;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let vs: VecSegtree&lt;OpAdd&lt;i32&gt;&gt; = vec![2, 4, 1, 3, 5].into();</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// assert_eq!(vs.fold(..), 15);</span>
-    <span class="doccomment">/// assert_eq!(vs.fold_bisect_rev(5, |&amp;x| x &lt;= 0), (5_usize, 0));</span>
-    <span class="doccomment">/// assert_eq!(vs.fold_bisect_rev(5, |&amp;x| x &lt; 15), (1_usize, 13));</span>
-    <span class="doccomment">/// assert_eq!(vs.fold_bisect_rev(5, |&amp;x| x &lt;= 15), (0_usize, 15));</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let r = 5;</span>
-    <span class="doccomment">/// let pred = |&amp;x: &amp;i32| x &lt;= 12;</span>
-    <span class="doccomment">/// let (l, x) = vs.fold_bisect_rev(r, pred);</span>
-    <span class="doccomment">/// assert_eq!(vs.fold(l..r), x);</span>
-    <span class="doccomment">/// assert!(pred(&amp;x));</span>
-    <span class="doccomment">/// assert!(l == 0 || !pred(&amp;vs.fold(l - 1..r)));</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">fold_bisect_rev</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(
+<span class="doccomment">/// 右端を固定したときの境界を求める。
+</span><span class="kw">pub trait </span>FoldBisectRev: Fold&lt;Range&lt;usize&gt;&gt; {
+    <span class="doccomment">/// 添字 `r` と述語 `pred` を引数に取り、次の条件を満たす `l` を返す。
+    /// - `pred(&amp;self.fold(l..r))`
+    /// - `l == 0 || !pred(&amp;self.fold(l - 1..r))`
+    ///
+    /// # Requirements
+    /// 対象のモノイドの単位元を `e` とするとき、`pred(e)` が成り立つ。
+    ///
+    /// # Examples
+    /// ```
+    /// use nekolib::ds::VecSegtree;
+    /// use nekolib::traits::{Fold, FoldBisectRev};
+    /// use nekolib::utils::OpAdd;
+    ///
+    /// let vs: VecSegtree&lt;OpAdd&lt;i32&gt;&gt; = vec![2, 4, 1, 3, 5].into();
+    ///
+    /// assert_eq!(vs.fold(..), 15);
+    /// assert_eq!(vs.fold_bisect_rev(5, |&amp;x| x &lt;= 0), (5_usize, 0));
+    /// assert_eq!(vs.fold_bisect_rev(5, |&amp;x| x &lt; 15), (1_usize, 13));
+    /// assert_eq!(vs.fold_bisect_rev(5, |&amp;x| x &lt;= 15), (0_usize, 15));
+    ///
+    /// let r = 5;
+    /// let pred = |&amp;x: &amp;i32| x &lt;= 12;
+    /// let (l, x) = vs.fold_bisect_rev(r, pred);
+    /// assert_eq!(vs.fold(l..r), x);
+    /// assert!(pred(&amp;x));
+    /// assert!(l == 0 || !pred(&amp;vs.fold(l - 1..r)));
+    /// ```
+    </span><span class="kw">fn </span>fold_bisect_rev&lt;F&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">r</span>: <span class="ident">usize</span>,
-        <span class="ident">pred</span>: <span class="ident">F</span>,
-    ) -&gt; (<span class="ident">usize</span>, <span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Output</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>)
-    <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Output</span> <span class="kw">as</span> <span class="ident">Magma</span><span class="op">&gt;</span><span class="ident">::Set</span>) -&gt; <span class="ident">bool</span>;
+        r: usize,
+        pred: F,
+    ) -&gt; (usize, &lt;<span class="self">Self</span>::Output <span class="kw">as </span>Magma&gt;::Set)
+    <span class="kw">where
+        </span>F: Fn(<span class="kw-2">&amp;</span>&lt;<span class="self">Self</span>::Output <span class="kw">as </span>Magma&gt;::Set) -&gt; bool;
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

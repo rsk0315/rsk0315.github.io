@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/prime_pi_.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>prime_pi_.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/prime_pi_.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>prime_pi_.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -237,155 +237,155 @@
 <span id="148">148</span>
 <span id="149">149</span>
 <span id="150">150</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 素数の数え上げ。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 素数の数え上げ。
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::linear_sieve</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::bisect</span>;
+</span><span class="kw">use </span><span class="kw">super</span>::linear_sieve;
+<span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::traits::bisect;
 
-<span class="kw">use</span> <span class="ident">std::ops::RangeFrom</span>;
+<span class="kw">use </span>std::ops::RangeFrom;
 
-<span class="kw">use</span> <span class="ident">bisect::Bisect</span>;
-<span class="kw">use</span> <span class="ident">linear_sieve::LinearSieve</span>;
+<span class="kw">use </span>bisect::Bisect;
+<span class="kw">use </span>linear_sieve::LinearSieve;
 
-<span class="doccomment">/// 素数の数え上げ。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $n$ 以下の素数の個数 $\\pi(n)$ を返す。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// $O(\\sqrt{n})$ space, $O(n^{2/3} / \\log(n)^{1/3})$ time.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::math::prime_pi;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(prime_pi(10), 4);</span>
-<span class="doccomment">/// assert_eq!(prime_pi(100), 25);</span>
-<span class="doccomment">/// assert_eq!(prime_pi(1000), 168);</span>
-<span class="doccomment">/// assert_eq!(prime_pi(10000), 1229);</span>
-<span class="doccomment">/// assert_eq!(prime_pi(100_000_000_000), 4118054813);</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # References</span>
-<span class="doccomment">/// - &lt;https://rsk0315.github.io/slides/prime-counting.pdf&gt;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # See also</span>
-<span class="doccomment">/// - &lt;https://rsk0315.hatenablog.com/entry/2021/05/18/015511&gt;</span>
-<span class="doccomment">/// - &lt;https://judge.yosupo.jp/submission/7976&gt;</span>
-<span class="doccomment">/// - &lt;https://math314.hateblo.jp/entry/2016/06/05/004332&gt;</span>
-<span class="doccomment">/// - &lt;https://projecteuler.net/thread=10;page=5#111677&gt;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">prime_pi</span>(<span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> {
-    <span class="kw">let</span> <span class="ident">n_2</span> <span class="op">=</span> (<span class="number">1_usize</span>..).<span class="ident">bisect</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">pow</span>(<span class="number">2</span>) <span class="op">&lt;</span><span class="op">=</span> <span class="ident">n</span>) <span class="op">-</span> <span class="number">1</span>;
-    <span class="kw">let</span> <span class="ident">n_6</span> <span class="op">=</span> (<span class="number">1_usize</span>..).<span class="ident">bisect</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">pow</span>(<span class="number">6</span>) <span class="op">&lt;</span><span class="op">=</span> <span class="ident">n</span>) <span class="op">-</span> <span class="number">1</span>;
+<span class="doccomment">/// 素数の数え上げ。
+///
+/// $n$ 以下の素数の個数 $\\pi(n)$ を返す。
+///
+/// # Complexity
+/// $O(\\sqrt{n})$ space, $O(n^{2/3} / \\log(n)^{1/3})$ time.
+///
+/// # Examples
+/// ```
+/// use nekolib::math::prime_pi;
+///
+/// assert_eq!(prime_pi(10), 4);
+/// assert_eq!(prime_pi(100), 25);
+/// assert_eq!(prime_pi(1000), 168);
+/// assert_eq!(prime_pi(10000), 1229);
+/// assert_eq!(prime_pi(100_000_000_000), 4118054813);
+/// ```
+///
+/// # References
+/// - &lt;https://rsk0315.github.io/slides/prime-counting.pdf&gt;
+///
+/// # See also
+/// - &lt;https://rsk0315.hatenablog.com/entry/2021/05/18/015511&gt;
+/// - &lt;https://judge.yosupo.jp/submission/7976&gt;
+/// - &lt;https://math314.hateblo.jp/entry/2016/06/05/004332&gt;
+/// - &lt;https://projecteuler.net/thread=10;page=5#111677&gt;
+</span><span class="kw">pub fn </span>prime_pi(n: usize) -&gt; usize {
+    <span class="kw">let </span>n_2 = (<span class="number">1_usize</span>..).bisect(|i| i.pow(<span class="number">2</span>) &lt;= n) - <span class="number">1</span>;
+    <span class="kw">let </span>n_6 = (<span class="number">1_usize</span>..).bisect(|i| i.pow(<span class="number">6</span>) &lt;= n) - <span class="number">1</span>;
 
-    <span class="kw">let</span> <span class="ident">lg</span> <span class="op">=</span> <span class="number">1</span>.<span class="ident">max</span>(<span class="ident">n</span>.<span class="ident">next_power_of_two</span>().<span class="ident">trailing_zeros</span>() <span class="kw">as</span> <span class="ident">usize</span>);
-    <span class="kw">let</span> <span class="ident">nlg_3</span> <span class="op">=</span> (<span class="number">1_usize</span>..).<span class="ident">bisect</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">pow</span>(<span class="number">3</span>) <span class="op">&lt;</span><span class="op">=</span> <span class="ident">n</span> <span class="op">*</span> <span class="ident">lg</span>) <span class="op">-</span> <span class="number">1</span>;
-    <span class="kw">let</span> <span class="ident">n_lg2_3</span> <span class="op">=</span> (<span class="number">1_usize</span>..).<span class="ident">bisect</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">pow</span>(<span class="number">3</span>) <span class="op">*</span> <span class="ident">lg</span>.<span class="ident">pow</span>(<span class="number">2</span>) <span class="op">&lt;</span><span class="op">=</span> <span class="ident">n</span>) <span class="op">-</span> <span class="number">1</span>;
+    <span class="kw">let </span>lg = <span class="number">1</span>.max(n.next_power_of_two().trailing_zeros() <span class="kw">as </span>usize);
+    <span class="kw">let </span>nlg_3 = (<span class="number">1_usize</span>..).bisect(|i| i.pow(<span class="number">3</span>) &lt;= n * lg) - <span class="number">1</span>;
+    <span class="kw">let </span>n_lg2_3 = (<span class="number">1_usize</span>..).bisect(|i| i.pow(<span class="number">3</span>) * lg.pow(<span class="number">2</span>) &lt;= n) - <span class="number">1</span>;
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">h</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>];
-    <span class="ident">h</span>.<span class="ident">extend</span>((<span class="number">1</span>..<span class="op">=</span><span class="ident">n_2</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">n</span> <span class="op">/</span> <span class="ident">i</span>));
-    <span class="ident">h</span>.<span class="ident">extend</span>((<span class="number">1</span>..<span class="ident">n</span> <span class="op">/</span> <span class="ident">n_2</span>).<span class="ident">rev</span>());
-    <span class="kw">let</span> <span class="ident">ns</span> <span class="op">=</span> <span class="ident">h</span>.<span class="ident">clone</span>();
-    <span class="kw">for</span> <span class="ident">hi</span> <span class="kw">in</span> <span class="kw-2">&amp;mut</span> <span class="ident">h</span>[<span class="number">1</span>..] {
-        <span class="kw-2">*</span><span class="ident">hi</span> <span class="op">-</span><span class="op">=</span> <span class="number">1</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>h = <span class="macro">vec!</span>[<span class="number">0</span>];
+    h.extend((<span class="number">1</span>..=n_2).map(|i| n / i));
+    h.extend((<span class="number">1</span>..n / n_2).rev());
+    <span class="kw">let </span>ns = h.clone();
+    <span class="kw">for </span>hi <span class="kw">in </span><span class="kw-2">&amp;mut </span>h[<span class="number">1</span>..] {
+        <span class="kw-2">*</span>hi -= <span class="number">1</span>;
     }
 
-    <span class="kw">let</span> <span class="ident">primes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">LinearSieve::new</span>(<span class="ident">n_2</span>).<span class="ident">primes</span>().<span class="ident">collect</span>();
+    <span class="kw">let </span>primes: Vec&lt;<span class="kw">_</span>&gt; = LinearSieve::new(n_2).primes().collect();
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pi</span> <span class="op">=</span> <span class="number">0</span>;
-    <span class="kw">while</span> <span class="ident">pi</span> <span class="op">&lt;</span> <span class="ident">primes</span>.<span class="ident">len</span>() <span class="op">&amp;&amp;</span> <span class="ident">primes</span>[<span class="ident">pi</span>] <span class="op">&lt;</span><span class="op">=</span> <span class="ident">n_6</span> {
-        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">primes</span>[<span class="ident">pi</span>];
-        <span class="kw">let</span> <span class="ident">pp</span> <span class="op">=</span> <span class="ident">p</span> <span class="op">*</span> <span class="ident">p</span>;
-        <span class="kw">for</span> (<span class="kw-2">&amp;</span><span class="ident">n_i</span>, <span class="ident">i</span>) <span class="kw">in</span> <span class="ident">ns</span>[<span class="number">1</span>..].<span class="ident">iter</span>().<span class="ident">take_while</span>(<span class="op">|</span><span class="op">&amp;&amp;</span><span class="ident">n_i</span><span class="op">|</span> <span class="ident">n_i</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">pp</span>).<span class="ident">zip</span>(<span class="number">1</span>..) {
-            <span class="kw">let</span> <span class="ident">ip</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">*</span> <span class="ident">p</span>;
-            <span class="ident">h</span>[<span class="ident">i</span>] <span class="op">-</span><span class="op">=</span> <span class="ident">h</span>[<span class="kw">if</span> <span class="ident">ip</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">n_2</span> { <span class="ident">ip</span> } <span class="kw">else</span> { <span class="ident">ns</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="ident">n_i</span> <span class="op">/</span> <span class="ident">p</span> }] <span class="op">-</span> <span class="ident">pi</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>pi = <span class="number">0</span>;
+    <span class="kw">while </span>pi &lt; primes.len() &amp;&amp; primes[pi] &lt;= n_6 {
+        <span class="kw">let </span>p = primes[pi];
+        <span class="kw">let </span>pp = p * p;
+        <span class="kw">for </span>(<span class="kw-2">&amp;</span>n_i, i) <span class="kw">in </span>ns[<span class="number">1</span>..].iter().take_while(|&amp;&amp;n_i| n_i &gt;= pp).zip(<span class="number">1</span>..) {
+            <span class="kw">let </span>ip = i * p;
+            h[i] -= h[<span class="kw">if </span>ip &lt;= n_2 { ip } <span class="kw">else </span>{ ns.len() - n_i / p }] - pi;
         }
-        <span class="ident">pi</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+        pi += <span class="number">1</span>;
     }
 
-    <span class="kw">let</span> <span class="ident">thresh</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">nlg_3</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">n_2</span> { <span class="ident">nlg_3</span> } <span class="kw">else</span> { <span class="ident">ns</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="ident">n</span> <span class="op">/</span> <span class="ident">nlg_3</span> };
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rsq</span> <span class="op">=</span> <span class="ident">FenwickTree::new</span>(<span class="ident">ns</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="ident">thresh</span>);
-    <span class="kw">while</span> <span class="ident">pi</span> <span class="op">&lt;</span> <span class="ident">primes</span>.<span class="ident">len</span>() <span class="op">&amp;&amp;</span> <span class="ident">primes</span>[<span class="ident">pi</span>] <span class="op">&lt;</span><span class="op">=</span> <span class="ident">n_lg2_3</span> {
-        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">primes</span>[<span class="ident">pi</span>];
-        <span class="kw">let</span> <span class="ident">pp</span> <span class="op">=</span> <span class="ident">p</span> <span class="op">*</span> <span class="ident">p</span>;
-        <span class="kw">for</span> (<span class="kw-2">&amp;</span><span class="ident">n_i</span>, <span class="ident">i</span>) <span class="kw">in</span>
-            <span class="ident">ns</span>[<span class="number">1</span>..].<span class="ident">iter</span>().<span class="ident">take_while</span>(<span class="op">|</span><span class="op">&amp;&amp;</span><span class="ident">n_i</span><span class="op">|</span> <span class="ident">n_i</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">pp</span>).<span class="ident">zip</span>(<span class="number">1</span>..<span class="op">=</span><span class="ident">thresh</span>)
+    <span class="kw">let </span>thresh = <span class="kw">if </span>nlg_3 &lt;= n_2 { nlg_3 } <span class="kw">else </span>{ ns.len() - n / nlg_3 };
+    <span class="kw">let </span><span class="kw-2">mut </span>rsq = FenwickTree::new(ns.len() - thresh);
+    <span class="kw">while </span>pi &lt; primes.len() &amp;&amp; primes[pi] &lt;= n_lg2_3 {
+        <span class="kw">let </span>p = primes[pi];
+        <span class="kw">let </span>pp = p * p;
+        <span class="kw">for </span>(<span class="kw-2">&amp;</span>n_i, i) <span class="kw">in
+            </span>ns[<span class="number">1</span>..].iter().take_while(|&amp;&amp;n_i| n_i &gt;= pp).zip(<span class="number">1</span>..=thresh)
         {
-            <span class="kw">let</span> <span class="ident">ip</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">*</span> <span class="ident">p</span>;
-            <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">ip</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">n_2</span> { <span class="ident">ip</span> } <span class="kw">else</span> { <span class="ident">ns</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="ident">n_i</span> <span class="op">/</span> <span class="ident">p</span> };
+            <span class="kw">let </span>ip = i * p;
+            <span class="kw">let </span>index = <span class="kw">if </span>ip &lt;= n_2 { ip } <span class="kw">else </span>{ ns.len() - n_i / p };
 
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sum</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="ident">h</span>[<span class="ident">index</span>];
-            <span class="kw">if</span> <span class="ident">index</span> <span class="op">&gt;</span> <span class="ident">thresh</span> {
-                <span class="ident">sum</span> <span class="op">-</span><span class="op">=</span> <span class="ident">rsq</span>.<span class="ident">sum</span>(<span class="ident">index</span> <span class="op">-</span> <span class="ident">thresh</span>..);
+            <span class="kw">let </span><span class="kw-2">mut </span>sum: usize = h[index];
+            <span class="kw">if </span>index &gt; thresh {
+                sum -= rsq.sum(index - thresh..);
             }
-            <span class="ident">h</span>[<span class="ident">i</span>] <span class="op">-</span><span class="op">=</span> <span class="ident">sum</span> <span class="op">-</span> <span class="ident">pi</span>;
+            h[i] -= sum - pi;
         }
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">st</span> <span class="op">=</span> <span class="macro">vec!</span>[(<span class="ident">p</span>, <span class="ident">pi</span>)];
-        <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>((<span class="ident">cur</span>, <span class="ident">i</span>)) <span class="op">=</span> <span class="ident">st</span>.<span class="ident">pop</span>() {
-            <span class="kw">for</span> (<span class="ident">cur</span>, <span class="ident">j</span>) <span class="kw">in</span> <span class="ident">primes</span>[<span class="ident">i</span>..]
-                .<span class="ident">iter</span>()
-                .<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">p_j</span><span class="op">|</span> <span class="ident">cur</span> <span class="op">*</span> <span class="ident">p_j</span>)
-                .<span class="ident">take_while</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">cur</span><span class="op">|</span> <span class="ident">cur</span> <span class="op">&lt;</span> <span class="ident">n</span> <span class="op">/</span> <span class="ident">nlg_3</span>)
-                .<span class="ident">zip</span>(<span class="ident">i</span>..)
+        <span class="kw">let </span><span class="kw-2">mut </span>st = <span class="macro">vec!</span>[(p, pi)];
+        <span class="kw">while let </span><span class="prelude-val">Some</span>((cur, i)) = st.pop() {
+            <span class="kw">for </span>(cur, j) <span class="kw">in </span>primes[i..]
+                .iter()
+                .map(|<span class="kw-2">&amp;</span>p_j| cur * p_j)
+                .take_while(|<span class="kw-2">&amp;</span>cur| cur &lt; n / nlg_3)
+                .zip(i..)
             {
-                <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">cur</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">n_2</span> { <span class="ident">ns</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="ident">cur</span> } <span class="kw">else</span> { <span class="ident">n</span> <span class="op">/</span> <span class="ident">cur</span> };
-                <span class="kw">if</span> <span class="ident">index</span> <span class="op">&gt;</span> <span class="ident">thresh</span> {
-                    <span class="ident">rsq</span>.<span class="ident">add</span>(<span class="ident">index</span> <span class="op">-</span> <span class="ident">thresh</span>, <span class="number">1</span>);
+                <span class="kw">let </span>index = <span class="kw">if </span>cur &lt;= n_2 { ns.len() - cur } <span class="kw">else </span>{ n / cur };
+                <span class="kw">if </span>index &gt; thresh {
+                    rsq.add(index - thresh, <span class="number">1</span>);
                 }
-                <span class="ident">st</span>.<span class="ident">push</span>((<span class="ident">cur</span>, <span class="ident">j</span>));
+                st.push((cur, j));
             }
         }
 
-        <span class="ident">pi</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+        pi += <span class="number">1</span>;
     }
 
-    <span class="kw">let</span> <span class="ident">rsq</span> <span class="op">=</span> <span class="ident">rsq</span>.<span class="ident">into_suffix_sum</span>();
-    <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">rsq</span>.<span class="ident">len</span>() {
-        <span class="ident">h</span>[<span class="ident">i</span> <span class="op">+</span> <span class="ident">thresh</span>] <span class="op">-</span><span class="op">=</span> <span class="ident">rsq</span>[<span class="ident">i</span>];
+    <span class="kw">let </span>rsq = rsq.into_suffix_sum();
+    <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..rsq.len() {
+        h[i + thresh] -= rsq[i];
     }
 
-    <span class="kw">while</span> <span class="ident">pi</span> <span class="op">&lt;</span> <span class="ident">primes</span>.<span class="ident">len</span>() <span class="op">&amp;&amp;</span> <span class="ident">primes</span>[<span class="ident">pi</span>] <span class="op">&lt;</span><span class="op">=</span> <span class="ident">n_2</span> {
-        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">primes</span>[<span class="ident">pi</span>];
-        <span class="kw">let</span> <span class="ident">pp</span> <span class="op">=</span> <span class="ident">p</span> <span class="op">*</span> <span class="ident">p</span>;
-        <span class="kw">for</span> (<span class="kw-2">&amp;</span><span class="ident">n_i</span>, <span class="ident">i</span>) <span class="kw">in</span> <span class="ident">ns</span>[<span class="number">1</span>..].<span class="ident">iter</span>().<span class="ident">take_while</span>(<span class="op">|</span><span class="op">&amp;&amp;</span><span class="ident">n_i</span><span class="op">|</span> <span class="ident">n_i</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">pp</span>).<span class="ident">zip</span>(<span class="number">1</span>..) {
-            <span class="kw">let</span> <span class="ident">ip</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">*</span> <span class="ident">p</span>;
-            <span class="ident">h</span>[<span class="ident">i</span>] <span class="op">-</span><span class="op">=</span> <span class="ident">h</span>[<span class="kw">if</span> <span class="ident">ip</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">n_2</span> { <span class="ident">ip</span> } <span class="kw">else</span> { <span class="ident">ns</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="ident">n_i</span> <span class="op">/</span> <span class="ident">p</span> }] <span class="op">-</span> <span class="ident">pi</span>;
+    <span class="kw">while </span>pi &lt; primes.len() &amp;&amp; primes[pi] &lt;= n_2 {
+        <span class="kw">let </span>p = primes[pi];
+        <span class="kw">let </span>pp = p * p;
+        <span class="kw">for </span>(<span class="kw-2">&amp;</span>n_i, i) <span class="kw">in </span>ns[<span class="number">1</span>..].iter().take_while(|&amp;&amp;n_i| n_i &gt;= pp).zip(<span class="number">1</span>..) {
+            <span class="kw">let </span>ip = i * p;
+            h[i] -= h[<span class="kw">if </span>ip &lt;= n_2 { ip } <span class="kw">else </span>{ ns.len() - n_i / p }] - pi;
         }
-        <span class="ident">pi</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+        pi += <span class="number">1</span>;
     }
 
-    <span class="ident">h</span>[<span class="number">1</span>]
+    h[<span class="number">1</span>]
 }
 
-<span class="kw">struct</span> <span class="ident">FenwickTree</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>);
+<span class="kw">struct </span>FenwickTree(Vec&lt;usize&gt;);
 
-<span class="kw">impl</span> <span class="ident">FenwickTree</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span> { <span class="self">Self</span>(<span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">n</span>]) }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sum</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rf</span>: <span class="ident">RangeFrom</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) -&gt; <span class="ident">usize</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="ident">rf</span>.<span class="ident">start</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">while</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">len</span>() {
-            <span class="ident">res</span> <span class="op">+</span><span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>[<span class="ident">i</span>];
-            <span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="ident">i</span> <span class="op">&amp;</span> <span class="ident">i</span>.<span class="ident">wrapping_neg</span>();
+<span class="kw">impl </span>FenwickTree {
+    <span class="kw">pub fn </span>new(n: usize) -&gt; <span class="self">Self </span>{ <span class="self">Self</span>(<span class="macro">vec!</span>[<span class="number">0</span>; n]) }
+    <span class="kw">pub fn </span>sum(<span class="kw-2">&amp;</span><span class="self">self</span>, rf: RangeFrom&lt;usize&gt;) -&gt; usize {
+        <span class="kw">let </span><span class="kw-2">mut </span>i = rf.start;
+        <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="number">0</span>;
+        <span class="kw">while </span>i &lt; <span class="self">self</span>.<span class="number">0</span>.len() {
+            res += <span class="self">self</span>.<span class="number">0</span>[i];
+            i += i &amp; i.wrapping_neg();
         }
-        <span class="ident">res</span>
+        res
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">i</span>: <span class="ident">usize</span>, <span class="ident">d</span>: <span class="ident">usize</span>) {
-        <span class="kw">while</span> <span class="ident">i</span> <span class="op">&gt;</span> <span class="number">0</span> {
-            <span class="self">self</span>.<span class="number">0</span>[<span class="ident">i</span>] <span class="op">+</span><span class="op">=</span> <span class="ident">d</span>;
-            <span class="ident">i</span> <span class="op">-</span><span class="op">=</span> <span class="ident">i</span> <span class="op">&amp;</span> <span class="ident">i</span>.<span class="ident">wrapping_neg</span>();
+    <span class="kw">pub fn </span>add(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw-2">mut </span>i: usize, d: usize) {
+        <span class="kw">while </span>i &gt; <span class="number">0 </span>{
+            <span class="self">self</span>.<span class="number">0</span>[i] += d;
+            i -= i &amp; i.wrapping_neg();
         }
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">into_suffix_sum</span>(<span class="self">self</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>;
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> (<span class="number">1</span>..<span class="ident">res</span>.<span class="ident">len</span>()).<span class="ident">rev</span>() {
-            <span class="kw">let</span> <span class="ident">j</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">+</span> (<span class="ident">i</span> <span class="op">&amp;</span> <span class="ident">i</span>.<span class="ident">wrapping_neg</span>());
-            <span class="kw">if</span> <span class="ident">j</span> <span class="op">&lt;</span> <span class="ident">res</span>.<span class="ident">len</span>() {
-                <span class="ident">res</span>[<span class="ident">i</span>] <span class="op">+</span><span class="op">=</span> <span class="ident">res</span>[<span class="ident">j</span>];
+    <span class="kw">pub fn </span>into_suffix_sum(<span class="self">self</span>) -&gt; Vec&lt;usize&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="self">self</span>.<span class="number">0</span>;
+        <span class="kw">for </span>i <span class="kw">in </span>(<span class="number">1</span>..res.len()).rev() {
+            <span class="kw">let </span>j = i + (i &amp; i.wrapping_neg());
+            <span class="kw">if </span>j &lt; res.len() {
+                res[i] += res[j];
             }
         }
-        <span class="ident">res</span>
+        res
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

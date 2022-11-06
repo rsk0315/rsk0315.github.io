@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/two_sat.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>two_sat.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/two_sat.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>two_sat.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -197,115 +197,115 @@
 <span id="108">108</span>
 <span id="109">109</span>
 <span id="110">110</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 2-SAT。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 2-SAT。
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::graph::scc_</span>;
+</span><span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::graph::scc_;
 
-<span class="kw">use</span> <span class="ident">scc_::scc</span>;
+<span class="kw">use </span>scc_::scc;
 
-<span class="doccomment">/// 2-SAT。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $f(x\_1, \\dots, x\_n) = \\bigwedge (\\bullet \\vee \\bullet)$</span>
-<span class="doccomment">/// の形の論理式を $\\top$ にするような $x\_1, \\dots, x\_n$ の割り当てがあるか判定する。</span>
-<span class="doccomment">/// ただし、各々の $\\bullet$ は $x\_1, \\dots, x\_n, \\lnot x\_1, \\dots \\lnot x\_n$</span>
-<span class="doccomment">/// のうちのいずれかである。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::math::TwoSat;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let mut ts = TwoSat::new(4);</span>
-<span class="doccomment">/// ts.add_clause(1, 1);</span>
-<span class="doccomment">/// ts.add_clause(-2, -2);</span>
-<span class="doccomment">/// ts.add_clause(3, -4);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let w = ts.witness().unwrap();</span>
-<span class="doccomment">/// assert!(w[1]);</span>
-<span class="doccomment">/// assert!(!w[2]);</span>
-<span class="doccomment">/// assert!(w[3] || !w[4]);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ts.add_clause(-1, -1);</span>
-<span class="doccomment">/// assert_eq!(ts.witness(), None);</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TwoSat</span> {
-    <span class="ident">n</span>: <span class="ident">usize</span>,
-    <span class="ident">cnf</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">isize</span>, <span class="ident">isize</span>)<span class="op">&gt;</span>,
+<span class="doccomment">/// 2-SAT。
+///
+/// $f(x\_1, \\dots, x\_n) = \\bigwedge (\\bullet \\vee \\bullet)$
+/// の形の論理式を $\\top$ にするような $x\_1, \\dots, x\_n$ の割り当てがあるか判定する。
+/// ただし、各々の $\\bullet$ は $x\_1, \\dots, x\_n, \\lnot x\_1, \\dots \\lnot x\_n$
+/// のうちのいずれかである。
+///
+/// # Examples
+/// ```
+/// use nekolib::math::TwoSat;
+///
+/// let mut ts = TwoSat::new(4);
+/// ts.add_clause(1, 1);
+/// ts.add_clause(-2, -2);
+/// ts.add_clause(3, -4);
+///
+/// let w = ts.witness().unwrap();
+/// assert!(w[1]);
+/// assert!(!w[2]);
+/// assert!(w[3] || !w[4]);
+///
+/// ts.add_clause(-1, -1);
+/// assert_eq!(ts.witness(), None);
+/// ```
+</span><span class="kw">pub struct </span>TwoSat {
+    n: usize,
+    cnf: Vec&lt;(isize, isize)&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">TwoSat</span> {
-    <span class="doccomment">/// $f(x\_1, \\dots, x\_n) = \\top$ で初期化する。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use nekolib::math::TwoSat;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let ts = TwoSat::new(1);</span>
-    <span class="doccomment">/// assert!(ts.witness().is_some());</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span> { <span class="self">Self</span> { <span class="ident">n</span>, <span class="ident">cnf</span>: <span class="macro">vec!</span>[] } }
-    <span class="doccomment">/// $f(x\_1, \\dots, x\_n) \\xleftarrow{\\wedge} (x\_i \\vee x\_j)$ で更新する。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ただし、$i \\lt 0$ のとき $x\_i$ は $\\lnot x\_{-i}$ を指すとする。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use nekolib::math::TwoSat;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let mut ts = TwoSat::new(3);</span>
-    <span class="doccomment">/// ts.add_clause(-1, 2);</span>
-    <span class="doccomment">/// ts.add_clause(1, 3);</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_clause</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">i</span>: <span class="ident">isize</span>, <span class="ident">j</span>: <span class="ident">isize</span>) { <span class="self">self</span>.<span class="ident">cnf</span>.<span class="ident">push</span>((<span class="ident">i</span>, <span class="ident">j</span>)); }
-    <span class="doccomment">/// 充足可能性を判定し、可能なら解を返す。</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Examples</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use nekolib::math::TwoSat;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let mut ts = TwoSat::new(3);</span>
-    <span class="doccomment">/// ts.add_clause(-1, 2);</span>
-    <span class="doccomment">/// ts.add_clause(-2, 3);</span>
-    <span class="doccomment">/// ts.add_clause(-3, -2);</span>
-    <span class="doccomment">/// let w = ts.witness().unwrap();</span>
-    <span class="doccomment">/// assert!(!w[1] || w[2]);</span>
-    <span class="doccomment">/// assert!(!w[2] || w[3]);</span>
-    <span class="doccomment">/// assert!(!w[3] || !w[2]);</span>
-    <span class="doccomment">/// // w == [_, false, false, true], for example.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ts.add_clause(2, 1);</span>
-    <span class="doccomment">/// assert_eq!(ts.witness(), None);</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">witness</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">n</span>;
-        <span class="kw">let</span> <span class="ident">g</span> <span class="op">=</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">g</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="macro">vec!</span>[]; <span class="number">2</span> <span class="op">*</span> (<span class="ident">n</span> <span class="op">+</span> <span class="number">1</span>)];
-            <span class="kw">for</span> <span class="kw-2">&amp;</span>(<span class="ident">i</span>, <span class="ident">j</span>) <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">cnf</span> {
-                <span class="kw">let</span> (<span class="ident">i</span>, <span class="ident">not_i</span>) <span class="op">=</span> <span class="ident"><span class="self">Self</span>::enc</span>(<span class="ident">i</span>);
-                <span class="kw">let</span> (<span class="ident">j</span>, <span class="ident">not_j</span>) <span class="op">=</span> <span class="ident"><span class="self">Self</span>::enc</span>(<span class="ident">j</span>);
-                <span class="ident">g</span>[<span class="ident">not_i</span>].<span class="ident">push</span>(<span class="ident">j</span>);
-                <span class="ident">g</span>[<span class="ident">not_j</span>].<span class="ident">push</span>(<span class="ident">i</span>);
+<span class="kw">impl </span>TwoSat {
+    <span class="doccomment">/// $f(x\_1, \\dots, x\_n) = \\top$ で初期化する。
+    ///
+    /// # Examples
+    /// ```
+    /// use nekolib::math::TwoSat;
+    ///
+    /// let ts = TwoSat::new(1);
+    /// assert!(ts.witness().is_some());
+    /// ```
+    </span><span class="kw">pub fn </span>new(n: usize) -&gt; <span class="self">Self </span>{ <span class="self">Self </span>{ n, cnf: <span class="macro">vec!</span>[] } }
+    <span class="doccomment">/// $f(x\_1, \\dots, x\_n) \\xleftarrow{\\wedge} (x\_i \\vee x\_j)$ で更新する。
+    ///
+    /// ただし、$i \\lt 0$ のとき $x\_i$ は $\\lnot x\_{-i}$ を指すとする。
+    ///
+    /// # Examples
+    /// ```
+    /// use nekolib::math::TwoSat;
+    ///
+    /// let mut ts = TwoSat::new(3);
+    /// ts.add_clause(-1, 2);
+    /// ts.add_clause(1, 3);
+    /// ```
+    </span><span class="kw">pub fn </span>add_clause(<span class="kw-2">&amp;mut </span><span class="self">self</span>, i: isize, j: isize) { <span class="self">self</span>.cnf.push((i, j)); }
+    <span class="doccomment">/// 充足可能性を判定し、可能なら解を返す。
+    ///
+    /// # Examples
+    /// ```
+    /// use nekolib::math::TwoSat;
+    ///
+    /// let mut ts = TwoSat::new(3);
+    /// ts.add_clause(-1, 2);
+    /// ts.add_clause(-2, 3);
+    /// ts.add_clause(-3, -2);
+    /// let w = ts.witness().unwrap();
+    /// assert!(!w[1] || w[2]);
+    /// assert!(!w[2] || w[3]);
+    /// assert!(!w[3] || !w[2]);
+    /// // w == [_, false, false, true], for example.
+    ///
+    /// ts.add_clause(2, 1);
+    /// assert_eq!(ts.witness(), None);
+    </span><span class="kw">pub fn </span>witness(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Vec&lt;bool&gt;&gt; {
+        <span class="kw">let </span>n = <span class="self">self</span>.n;
+        <span class="kw">let </span>g = {
+            <span class="kw">let </span><span class="kw-2">mut </span>g = <span class="macro">vec!</span>[<span class="macro">vec!</span>[]; <span class="number">2 </span>* (n + <span class="number">1</span>)];
+            <span class="kw">for </span><span class="kw-2">&amp;</span>(i, j) <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.cnf {
+                <span class="kw">let </span>(i, not_i) = <span class="self">Self</span>::enc(i);
+                <span class="kw">let </span>(j, not_j) = <span class="self">Self</span>::enc(j);
+                g[not_i].push(j);
+                g[not_j].push(i);
             }
-            <span class="ident">g</span>
+            g
         };
-        <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">v</span>: <span class="kw-2">&amp;</span><span class="ident">usize</span><span class="op">|</span> <span class="ident">v</span>;
-        <span class="kw">let</span> <span class="ident">delta</span> <span class="op">=</span> <span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">v</span>: <span class="kw-2">&amp;</span><span class="ident">usize</span><span class="op">|</span> <span class="ident">g</span>[<span class="ident">v</span>].<span class="ident">iter</span>().<span class="ident">cloned</span>();
-        <span class="kw">let</span> <span class="ident">comp_id</span> <span class="op">=</span> <span class="ident">scc</span>(<span class="ident">g</span>.<span class="ident">len</span>(), <span class="number">2</span>..<span class="ident">g</span>.<span class="ident">len</span>(), <span class="ident">index</span>, <span class="ident">delta</span>);
-        <span class="kw">if</span> (<span class="number">1</span>..<span class="op">=</span><span class="ident">n</span>).<span class="ident">any</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">comp_id</span>[<span class="number">2</span> <span class="op">*</span> <span class="ident">i</span>] <span class="op">==</span> <span class="ident">comp_id</span>[<span class="number">2</span> <span class="op">*</span> <span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>]) {
-            <span class="kw">return</span> <span class="prelude-val">None</span>;
+        <span class="kw">let </span>index = |<span class="kw-2">&amp;</span>v: <span class="kw-2">&amp;</span>usize| v;
+        <span class="kw">let </span>delta = |<span class="kw-2">&amp;</span>v: <span class="kw-2">&amp;</span>usize| g[v].iter().cloned();
+        <span class="kw">let </span>comp_id = scc(g.len(), <span class="number">2</span>..g.len(), index, delta);
+        <span class="kw">if </span>(<span class="number">1</span>..=n).any(|i| comp_id[<span class="number">2 </span>* i] == comp_id[<span class="number">2 </span>* i + <span class="number">1</span>]) {
+            <span class="kw">return </span><span class="prelude-val">None</span>;
         }
         <span class="prelude-val">Some</span>(
-            <span class="ident">std::iter::once</span>(<span class="bool-val">true</span>)
-                .<span class="ident">chain</span>((<span class="number">1</span>..<span class="op">=</span><span class="ident">n</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">comp_id</span>[<span class="number">2</span> <span class="op">*</span> <span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>] <span class="op">&lt;</span> <span class="ident">comp_id</span>[<span class="number">2</span> <span class="op">*</span> <span class="ident">i</span>]))
-                .<span class="ident">collect</span>(),
+            std::iter::once(<span class="bool-val">true</span>)
+                .chain((<span class="number">1</span>..=n).map(|i| comp_id[<span class="number">2 </span>* i + <span class="number">1</span>] &lt; comp_id[<span class="number">2 </span>* i]))
+                .collect(),
         )
     }
-    <span class="kw">fn</span> <span class="ident">enc</span>(<span class="ident">i</span>: <span class="ident">isize</span>) -&gt; (<span class="ident">usize</span>, <span class="ident">usize</span>) {
-        <span class="kw">let</span> <span class="ident">ii</span> <span class="op">=</span> <span class="number">2</span> <span class="op">*</span> <span class="ident">i</span>.<span class="ident">abs</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="kw">if</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="number">0</span> {
-            (<span class="ident">ii</span> <span class="op">+</span> <span class="number">1</span>, <span class="ident">ii</span>)
-        } <span class="kw">else</span> {
-            (<span class="ident">ii</span>, <span class="ident">ii</span> <span class="op">+</span> <span class="number">1</span>)
+    <span class="kw">fn </span>enc(i: isize) -&gt; (usize, usize) {
+        <span class="kw">let </span>ii = <span class="number">2 </span>* i.abs() <span class="kw">as </span>usize;
+        <span class="kw">if </span>i &lt; <span class="number">0 </span>{
+            (ii + <span class="number">1</span>, ii)
+        } <span class="kw">else </span>{
+            (ii, ii + <span class="number">1</span>)
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

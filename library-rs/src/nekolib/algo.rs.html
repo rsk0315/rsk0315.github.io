@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/algo.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>algo.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/algo.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>algo.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -139,57 +139,57 @@
 <span id="50">50</span>
 <span id="51">51</span>
 <span id="52">52</span>
-</pre><pre class="rust"><code><span class="doccomment">//! アルゴリズムたち。</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ここに何かを書く。</span>
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">bisect_</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">exact_cover</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">extremum</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">extremum_float</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">hilbert_mo_</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">index_order</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">karatsuba</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">larsch</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">majority_</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">minmax</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">mo</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">ordered_hash_</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">parallel_bisect</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">permutation</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">tortoise_hare</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">window_bisect</span>;
+</pre><pre class="rust"><code><span class="doccomment">//! アルゴリズムたち。
+//!
+//! ここに何かを書く。
+</span><span class="kw">pub mod </span>bisect_;
+<span class="kw">pub mod </span>exact_cover;
+<span class="kw">pub mod </span>extremum;
+<span class="kw">pub mod </span>extremum_float;
+<span class="kw">pub mod </span>hilbert_mo_;
+<span class="kw">pub mod </span>index_order;
+<span class="kw">pub mod </span>karatsuba;
+<span class="kw">pub mod </span>larsch;
+<span class="kw">pub mod </span>majority_;
+<span class="kw">pub mod </span>minmax;
+<span class="kw">pub mod </span>mo;
+<span class="kw">pub mod </span>ordered_hash_;
+<span class="kw">pub mod </span>parallel_bisect;
+<span class="kw">pub mod </span>permutation;
+<span class="kw">pub mod </span>tortoise_hare;
+<span class="kw">pub mod </span>window_bisect;
 
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">bisect_</span>::{<span class="ident">bisect</span>, <span class="ident">bisect_slice</span>};
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">exact_cover::ExactCover</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">extremum</span>::{<span class="ident">extremum</span>, <span class="ident">extremum_slice</span>};
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">extremum_float::extremum_float</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">hilbert_mo_::hilbert_mo</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">index_order</span>::{<span class="ident">index_order_by</span>, <span class="ident">index_order_by_key</span>};
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">karatsuba::convolve</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">larsch::Larsch</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">majority_::majority</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">minmax</span>::{<span class="ident">minmax</span>, <span class="ident">minmax_by</span>, <span class="ident">minmax_by_key</span>};
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">mo::mo</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">ordered_hash_::ordered_hash</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">parallel_bisect::parallel_bisect</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">permutation::next_permutation</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">tortoise_hare</span>::{<span class="ident">cycle_mu_lambda</span>, <span class="ident">cycle_nth</span>};
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">window_bisect::window_bisect</span>;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>bisect_::{bisect, bisect_slice};
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>exact_cover::ExactCover;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>extremum::{extremum, extremum_slice};
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>extremum_float::extremum_float;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>hilbert_mo_::hilbert_mo;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>index_order::{index_order_by, index_order_by_key};
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>karatsuba::convolve;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>larsch::Larsch;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>majority_::majority;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>minmax::{minmax, minmax_by, minmax_by_key};
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>mo::mo;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>ordered_hash_::ordered_hash;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>parallel_bisect::parallel_bisect;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>permutation::next_permutation;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>tortoise_hare::{cycle_mu_lambda, cycle_nth};
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>window_bisect::window_bisect;
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

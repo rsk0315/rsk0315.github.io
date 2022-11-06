@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/traits/binop.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>binop.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/traits/binop.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>binop.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -313,231 +313,231 @@
 <span id="224">224</span>
 <span id="225">225</span>
 <span id="226">226</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 代数的構造に関するトレイトたちです。</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! データ構造を実装する際に使うことを目的とします。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 代数的構造に関するトレイトたちです。
+//!
+//! データ構造を実装する際に使うことを目的とします。
 
-<span class="doccomment">/// マグマ。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 集合 $M$ と二項演算 $\\circ$ のペア $(M, \\circ)$ であり、次の性質を満たす。</span>
-<span class="doccomment">/// $$ x, y \\in M \\implies x \\circ y \\in M. $$</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::traits::Magma;</span>
-<span class="doccomment">/// use nekolib::utils::OpMin;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let op_min = OpMin::default();</span>
-<span class="doccomment">/// assert_eq!(3, op_min.op(3, 4));</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Magma</span> {
-    <span class="doccomment">/// 集合 $M$ に対応する型。</span>
-    <span class="kw">type</span> <span class="ident">Set</span>: <span class="ident">Eq</span>;
-    <span class="doccomment">/// $x \\circ y$ を返す。</span>
-    <span class="kw">fn</span> <span class="ident">op</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>, <span class="ident">y</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span>;
+/// マグマ。
+///
+/// 集合 $M$ と二項演算 $\\circ$ のペア $(M, \\circ)$ であり、次の性質を満たす。
+/// $$ x, y \\in M \\implies x \\circ y \\in M. $$
+///
+/// # Examples
+/// ```
+/// use nekolib::traits::Magma;
+/// use nekolib::utils::OpMin;
+///
+/// let op_min = OpMin::default();
+/// assert_eq!(3, op_min.op(3, 4));
+/// ```
+</span><span class="kw">pub trait </span>Magma {
+    <span class="doccomment">/// 集合 $M$ に対応する型。
+    </span><span class="kw">type </span>Set: Eq;
+    <span class="doccomment">/// $x \\circ y$ を返す。
+    </span><span class="kw">fn </span>op(<span class="kw-2">&amp;</span><span class="self">self</span>, x: <span class="self">Self</span>::Set, y: <span class="self">Self</span>::Set) -&gt; <span class="self">Self</span>::Set;
 }
 
-<span class="doccomment">/// 結合法則を満たす。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 二項演算 $\\circ: M \\times M \\to M$ が結合法則を満たすことを示す。</span>
-<span class="doccomment">/// $$ x, y, z \\in M \\implies (x \\circ y) \\circ z = x \\circ (y \\circ z). $$</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::traits::{Associative, Magma};</span>
-<span class="doccomment">/// use nekolib::utils::OpMin;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let (x, y, z) = (2, 3, 4);</span>
-<span class="doccomment">/// let op_min = OpMin::default();</span>
-<span class="doccomment">/// assert_eq!(</span>
-<span class="doccomment">///     op_min.op(op_min.op(x, y), z),</span>
-<span class="doccomment">///     op_min.op(x, op_min.op(y, z)),</span>
-<span class="doccomment">/// );</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Associative</span>: <span class="ident">Magma</span> {}
+<span class="doccomment">/// 結合法則を満たす。
+///
+/// 二項演算 $\\circ: M \\times M \\to M$ が結合法則を満たすことを示す。
+/// $$ x, y, z \\in M \\implies (x \\circ y) \\circ z = x \\circ (y \\circ z). $$
+/// # Examples
+/// ```
+/// use nekolib::traits::{Associative, Magma};
+/// use nekolib::utils::OpMin;
+///
+/// let (x, y, z) = (2, 3, 4);
+/// let op_min = OpMin::default();
+/// assert_eq!(
+///     op_min.op(op_min.op(x, y), z),
+///     op_min.op(x, op_min.op(y, z)),
+/// );
+/// ```
+</span><span class="kw">pub trait </span>Associative: Magma {}
 
-<span class="doccomment">/// 単位元を持つ。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 二項演算 $\\circ: M \\times M \\to M$ が単位元を持つことを示す。</span>
-<span class="doccomment">/// $$ x \\in M \\implies x \\circ e = e \\circ x = e. $$</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::traits::{Identity, Magma};</span>
-<span class="doccomment">/// use nekolib::utils::OpMin;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let op_min = OpMin::default();</span>
-<span class="doccomment">/// let x = 3;</span>
-<span class="doccomment">/// assert_eq!(op_min.id(), std::i32::MAX);</span>
-<span class="doccomment">/// assert_eq!(op_min.op(x, op_min.id()), x);</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Identity</span>: <span class="ident">Magma</span> {
-    <span class="doccomment">/// 単位元を返す。</span>
-    <span class="kw">fn</span> <span class="ident">id</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span>;
+<span class="doccomment">/// 単位元を持つ。
+///
+/// 二項演算 $\\circ: M \\times M \\to M$ が単位元を持つことを示す。
+/// $$ x \\in M \\implies x \\circ e = e \\circ x = e. $$
+///
+/// # Examples
+/// ```
+/// use nekolib::traits::{Identity, Magma};
+/// use nekolib::utils::OpMin;
+///
+/// let op_min = OpMin::default();
+/// let x = 3;
+/// assert_eq!(op_min.id(), std::i32::MAX);
+/// assert_eq!(op_min.op(x, op_min.id()), x);
+/// ```
+</span><span class="kw">pub trait </span>Identity: Magma {
+    <span class="doccomment">/// 単位元を返す。
+    </span><span class="kw">fn </span>id(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self</span>::Set;
 }
 
-<span class="doccomment">/// 交換法則を満たす。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 二項演算 $\\circ: M \\times M \\to M$ が交換法則を満たすことを示す。</span>
-<span class="doccomment">/// $$ x, y \\in M \\implies x \\circ y = y \\circ x. $$</span>
-<span class="doccomment">/// 交換法則を満たさない演算の例としては、文字列結合や線形関数の合成、行列積などが挙げられる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::traits::{Commutative, Magma};</span>
-<span class="doccomment">/// use nekolib::utils::OpMin;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let op_min = OpMin::default();</span>
-<span class="doccomment">/// let (x, y) = (3, 4);</span>
-<span class="doccomment">/// assert_eq!(op_min.op(x, y), op_min.op(y, x));</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Commutative</span>: <span class="ident">Magma</span> {}
+<span class="doccomment">/// 交換法則を満たす。
+///
+/// 二項演算 $\\circ: M \\times M \\to M$ が交換法則を満たすことを示す。
+/// $$ x, y \\in M \\implies x \\circ y = y \\circ x. $$
+/// 交換法則を満たさない演算の例としては、文字列結合や線形関数の合成、行列積などが挙げられる。
+///
+/// # Examples
+/// ```
+/// use nekolib::traits::{Commutative, Magma};
+/// use nekolib::utils::OpMin;
+///
+/// let op_min = OpMin::default();
+/// let (x, y) = (3, 4);
+/// assert_eq!(op_min.op(x, y), op_min.op(y, x));
+/// ```
+</span><span class="kw">pub trait </span>Commutative: Magma {}
 
-<span class="doccomment">/// 逆元を持つ要素が存在する。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 二項演算 $\\circ: M \\times M \\to M$ が、一部の要素を除いて逆元を持つことを示す。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 体の乗法においては $0$ を除いて逆元を持つことが要請されるため必要かなと思った。</span>
-<span class="doccomment">/// もっといい設計はある気がする。</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">PartialRecip</span>: <span class="ident">Magma</span> {
-    <span class="kw">fn</span> <span class="ident">partial_recip</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Set</span><span class="op">&gt;</span>;
+<span class="doccomment">/// 逆元を持つ要素が存在する。
+///
+/// 二項演算 $\\circ: M \\times M \\to M$ が、一部の要素を除いて逆元を持つことを示す。
+///
+/// 体の乗法においては $0$ を除いて逆元を持つことが要請されるため必要かなと思った。
+/// もっといい設計はある気がする。
+</span><span class="kw">pub trait </span>PartialRecip: Magma {
+    <span class="kw">fn </span>partial_recip(<span class="kw-2">&amp;</span><span class="self">self</span>, x: <span class="self">Self</span>::Set) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Set&gt;;
 }
 
-<span class="doccomment">/// 逆元が常に存在する。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 二項演算 $\\circ: M \\times M \\to M$ が、常に逆元を持つことを示す。</span>
-<span class="doccomment">/// $$ x \\in M \\implies {}^\\exists a \\in M: x \\circ a = a \\circ x = e. $$</span>
-<span class="doccomment">/// この $a$ を $x^{-1}$ と書く。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::traits::{Magma, Monoid, Recip};</span>
-<span class="doccomment">/// use nekolib::utils::OpAdd;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let op_add = OpAdd::default();</span>
-<span class="doccomment">/// let x = 3;</span>
-<span class="doccomment">/// let y = op_add.recip(x);</span>
-<span class="doccomment">/// assert_eq!(op_add.op(x, y), 0);</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Recip</span>: <span class="ident">PartialRecip</span> {
-    <span class="kw">fn</span> <span class="ident">recip</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> {
-        <span class="self">self</span>.<span class="ident">partial_recip</span>(<span class="ident">x</span>).<span class="ident">unwrap</span>()
+<span class="doccomment">/// 逆元が常に存在する。
+///
+/// 二項演算 $\\circ: M \\times M \\to M$ が、常に逆元を持つことを示す。
+/// $$ x \\in M \\implies {}^\\exists a \\in M: x \\circ a = a \\circ x = e. $$
+/// この $a$ を $x^{-1}$ と書く。
+///
+/// # Examples
+/// ```
+/// use nekolib::traits::{Magma, Monoid, Recip};
+/// use nekolib::utils::OpAdd;
+///
+/// let op_add = OpAdd::default();
+/// let x = 3;
+/// let y = op_add.recip(x);
+/// assert_eq!(op_add.op(x, y), 0);
+/// ```
+</span><span class="kw">pub trait </span>Recip: PartialRecip {
+    <span class="kw">fn </span>recip(<span class="kw-2">&amp;</span><span class="self">self</span>, x: <span class="self">Self</span>::Set) -&gt; <span class="self">Self</span>::Set {
+        <span class="self">self</span>.partial_recip(x).unwrap()
     }
 }
 
-<span class="doccomment">/// 分配法則を満たす。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 乗法 $\\ast: M \\times M \\to M$ は、加法 $\\circ: M \\times M \\to M$ について</span>
-<span class="doccomment">/// 分配法則を満たすことを示す。</span>
-<span class="doccomment">/// $$ \\begin{aligned}</span>
-<span class="doccomment">/// x, y, z \\in R &amp;\\implies x \\ast (y \\circ z) = (x \\ast y) \\circ (x \\ast z), \\\\</span>
-<span class="doccomment">/// x, y, z \\in R &amp;\\implies (y \\circ z) \\ast x = (y \\ast x) \\circ (z \\ast x).</span>
-<span class="doccomment">/// \\end{aligned} $$</span>
-<span class="doccomment">/// 加法は型引数 `A` として指定される。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::traits::{Commutative, Magma};</span>
-<span class="doccomment">/// use nekolib::utils::{OpAdd, OpMul};</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let op_add = OpAdd::default();</span>
-<span class="doccomment">/// let op_mul = OpMul::default();</span>
-<span class="doccomment">/// let (x, y, z) = (3, 4, 5);</span>
-<span class="doccomment">/// assert_eq!(</span>
-<span class="doccomment">///     op_mul.op(x, op_add.op(y, z)),</span>
-<span class="doccomment">///     op_add.op(op_mul.op(x, y), op_mul.op(x, z))</span>
-<span class="doccomment">/// );</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Distributive</span><span class="op">&lt;</span><span class="ident">A</span>: <span class="ident">Magma</span><span class="op">&gt;</span> {}
+<span class="doccomment">/// 分配法則を満たす。
+///
+/// 乗法 $\\ast: M \\times M \\to M$ は、加法 $\\circ: M \\times M \\to M$ について
+/// 分配法則を満たすことを示す。
+/// $$ \\begin{aligned}
+/// x, y, z \\in R &amp;\\implies x \\ast (y \\circ z) = (x \\ast y) \\circ (x \\ast z), \\\\
+/// x, y, z \\in R &amp;\\implies (y \\circ z) \\ast x = (y \\ast x) \\circ (z \\ast x).
+/// \\end{aligned} $$
+/// 加法は型引数 `A` として指定される。
+///
+/// # Examples
+/// ```
+/// use nekolib::traits::{Commutative, Magma};
+/// use nekolib::utils::{OpAdd, OpMul};
+///
+/// let op_add = OpAdd::default();
+/// let op_mul = OpMul::default();
+/// let (x, y, z) = (3, 4, 5);
+/// assert_eq!(
+///     op_mul.op(x, op_add.op(y, z)),
+///     op_add.op(op_mul.op(x, y), op_mul.op(x, z))
+/// );
+/// ```
+</span><span class="kw">pub trait </span>Distributive&lt;A: Magma&gt; {}
 
-<span class="doccomment">/// 半群。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// マグマ $(M, \\circ)$ であり、結合法則を満たす。</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Semigroup</span>: <span class="ident">Associative</span> <span class="op">+</span> <span class="ident">Magma</span> {}
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">G</span>: <span class="ident">Associative</span> <span class="op">+</span> <span class="ident">Magma</span><span class="op">&gt;</span> <span class="ident">Semigroup</span> <span class="kw">for</span> <span class="ident">G</span> {}
+<span class="doccomment">/// 半群。
+///
+/// マグマ $(M, \\circ)$ であり、結合法則を満たす。
+</span><span class="kw">pub trait </span>Semigroup: Associative + Magma {}
+<span class="kw">impl</span>&lt;G: Associative + Magma&gt; Semigroup <span class="kw">for </span>G {}
 
-<span class="doccomment">/// モノイド。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 半群 $(M, \\circ)$ であり、単位元 $e \\in M$ を持つ。</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Monoid</span>: <span class="ident">Identity</span> <span class="op">+</span> <span class="ident">Semigroup</span> {}
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">G</span>: <span class="ident">Identity</span> <span class="op">+</span> <span class="ident">Semigroup</span><span class="op">&gt;</span> <span class="ident">Monoid</span> <span class="kw">for</span> <span class="ident">G</span> {}
+<span class="doccomment">/// モノイド。
+///
+/// 半群 $(M, \\circ)$ であり、単位元 $e \\in M$ を持つ。
+</span><span class="kw">pub trait </span>Monoid: Identity + Semigroup {}
+<span class="kw">impl</span>&lt;G: Identity + Semigroup&gt; Monoid <span class="kw">for </span>G {}
 
-<span class="doccomment">/// 可換モノイド。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// モノイド $(M, \\circ, e)$ であり、交換法則を満たす。</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">CommutativeMonoid</span>: <span class="ident">Commutative</span> <span class="op">+</span> <span class="ident">Monoid</span> {}
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">G</span>: <span class="ident">Commutative</span> <span class="op">+</span> <span class="ident">Monoid</span><span class="op">&gt;</span> <span class="ident">CommutativeMonoid</span> <span class="kw">for</span> <span class="ident">G</span> {}
+<span class="doccomment">/// 可換モノイド。
+///
+/// モノイド $(M, \\circ, e)$ であり、交換法則を満たす。
+</span><span class="kw">pub trait </span>CommutativeMonoid: Commutative + Monoid {}
+<span class="kw">impl</span>&lt;G: Commutative + Monoid&gt; CommutativeMonoid <span class="kw">for </span>G {}
 
-<span class="doccomment">/// 群。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// モノイド $(M, \\circ, e)$ であり、逆元を持つ。</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Group</span>: <span class="ident">Monoid</span> <span class="op">+</span> <span class="ident">Recip</span> {}
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">G</span>: <span class="ident">Monoid</span> <span class="op">+</span> <span class="ident">Recip</span><span class="op">&gt;</span> <span class="ident">Group</span> <span class="kw">for</span> <span class="ident">G</span> {}
+<span class="doccomment">/// 群。
+///
+/// モノイド $(M, \\circ, e)$ であり、逆元を持つ。
+</span><span class="kw">pub trait </span>Group: Monoid + Recip {}
+<span class="kw">impl</span>&lt;G: Monoid + Recip&gt; Group <span class="kw">for </span>G {}
 
-<span class="doccomment">/// 可換群。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 群 $(M, \\circ, e)$ であり、交換法則を満たす。</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">CommutativeGroup</span>: <span class="ident">Commutative</span> <span class="op">+</span> <span class="ident">Monoid</span> <span class="op">+</span> <span class="ident">Recip</span> {}
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">G</span>: <span class="ident">Commutative</span> <span class="op">+</span> <span class="ident">Monoid</span> <span class="op">+</span> <span class="ident">Recip</span><span class="op">&gt;</span> <span class="ident">CommutativeGroup</span> <span class="kw">for</span> <span class="ident">G</span> {}
+<span class="doccomment">/// 可換群。
+///
+/// 群 $(M, \\circ, e)$ であり、交換法則を満たす。
+</span><span class="kw">pub trait </span>CommutativeGroup: Commutative + Monoid + Recip {}
+<span class="kw">impl</span>&lt;G: Commutative + Monoid + Recip&gt; CommutativeGroup <span class="kw">for </span>G {}
 
-<span class="doccomment">/// 環。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 集合 $R$ と二つの二項演算 $\\circ$, $\\ast$ の組 $(R, \\circ, \\ast)$ であり、次の性質を満たす。</span>
-<span class="doccomment">/// - $(R, \\circ, 0)$ は可換群をなす。</span>
-<span class="doccomment">/// - $(R, \\ast, 1)$ はモノイドをなす。</span>
-<span class="doccomment">/// - 乗法 $\\ast$ は加法 $\\circ$ について分配法則を満たす。</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Ring</span> {
-    <span class="doccomment">/// 集合 $R$ に対応する型。</span>
-    <span class="kw">type</span> <span class="ident">Set</span>: <span class="ident">Eq</span>;
-    <span class="doccomment">/// 可換群 $(R, \\circ, 0)$ に対応する型。</span>
-    <span class="kw">type</span> <span class="ident">Additive</span>: <span class="ident">CommutativeGroup</span><span class="op">&lt;</span><span class="ident">Set</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::Set</span><span class="op">&gt;</span>;
-    <span class="doccomment">/// モノイド $(R, \\ast, 1)$ に対応する型。</span>
-    <span class="kw">type</span> <span class="ident">Multiplicative</span>: <span class="ident">Monoid</span><span class="op">&lt;</span><span class="ident">Set</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::Set</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Distributive</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Additive</span><span class="op">&gt;</span>;
+<span class="doccomment">/// 環。
+///
+/// 集合 $R$ と二つの二項演算 $\\circ$, $\\ast$ の組 $(R, \\circ, \\ast)$ であり、次の性質を満たす。
+/// - $(R, \\circ, 0)$ は可換群をなす。
+/// - $(R, \\ast, 1)$ はモノイドをなす。
+/// - 乗法 $\\ast$ は加法 $\\circ$ について分配法則を満たす。
+</span><span class="kw">pub trait </span>Ring {
+    <span class="doccomment">/// 集合 $R$ に対応する型。
+    </span><span class="kw">type </span>Set: Eq;
+    <span class="doccomment">/// 可換群 $(R, \\circ, 0)$ に対応する型。
+    </span><span class="kw">type </span>Additive: CommutativeGroup&lt;Set = <span class="self">Self</span>::Set&gt;;
+    <span class="doccomment">/// モノイド $(R, \\ast, 1)$ に対応する型。
+    </span><span class="kw">type </span>Multiplicative: Monoid&lt;Set = <span class="self">Self</span>::Set&gt; + Distributive&lt;<span class="self">Self</span>::Additive&gt;;
 
-    <span class="kw">fn</span> <span class="ident">additive</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::Additive</span>;
-    <span class="kw">fn</span> <span class="ident">multiplicative</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::Multiplicative</span>;
+    <span class="kw">fn </span>additive(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Additive;
+    <span class="kw">fn </span>multiplicative(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Multiplicative;
 
-    <span class="doccomment">/// 和 $x \\circ y$ を返す。</span>
-    <span class="kw">fn</span> <span class="ident">add</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>, <span class="ident">y</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> {
-        <span class="self">self</span>.<span class="ident">additive</span>().<span class="ident">op</span>(<span class="ident">x</span>, <span class="ident">y</span>)
+    <span class="doccomment">/// 和 $x \\circ y$ を返す。
+    </span><span class="kw">fn </span>add(<span class="kw-2">&amp;</span><span class="self">self</span>, x: <span class="self">Self</span>::Set, y: <span class="self">Self</span>::Set) -&gt; <span class="self">Self</span>::Set {
+        <span class="self">self</span>.additive().op(x, y)
     }
-    <span class="doccomment">/// 加法 $\\circ$ の単位元 $0$ を返す。</span>
-    <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">fn</span> <span class="ident">zero</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> { <span class="self">self</span>.<span class="ident">additive</span>().<span class="ident">id</span>() }
-    <span class="doccomment">/// 加法 $\\circ$ に関する $x$ の逆元 $-x$ を返す。</span>
-    <span class="kw">fn</span> <span class="ident">neg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> { <span class="self">self</span>.<span class="ident">additive</span>().<span class="ident">recip</span>(<span class="ident">x</span>) }
-    <span class="doccomment">/// 積 $x \\ast y$ を返す。</span>
-    <span class="kw">fn</span> <span class="ident">mul</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>, <span class="ident">y</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> {
-        <span class="self">self</span>.<span class="ident">multiplicative</span>().<span class="ident">op</span>(<span class="ident">x</span>, <span class="ident">y</span>)
+    <span class="doccomment">/// 加法 $\\circ$ の単位元 $0$ を返す。
+    </span><span class="attribute">#[must_use]
+    </span><span class="kw">fn </span>zero(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self</span>::Set { <span class="self">self</span>.additive().id() }
+    <span class="doccomment">/// 加法 $\\circ$ に関する $x$ の逆元 $-x$ を返す。
+    </span><span class="kw">fn </span>neg(<span class="kw-2">&amp;</span><span class="self">self</span>, x: <span class="self">Self</span>::Set) -&gt; <span class="self">Self</span>::Set { <span class="self">self</span>.additive().recip(x) }
+    <span class="doccomment">/// 積 $x \\ast y$ を返す。
+    </span><span class="kw">fn </span>mul(<span class="kw-2">&amp;</span><span class="self">self</span>, x: <span class="self">Self</span>::Set, y: <span class="self">Self</span>::Set) -&gt; <span class="self">Self</span>::Set {
+        <span class="self">self</span>.multiplicative().op(x, y)
     }
-    <span class="doccomment">/// 乗法 $\\ast$ の単位元 $1$ を返す。</span>
-    <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">fn</span> <span class="ident">one</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> { <span class="self">self</span>.<span class="ident">multiplicative</span>().<span class="ident">id</span>() }
+    <span class="doccomment">/// 乗法 $\\ast$ の単位元 $1$ を返す。
+    </span><span class="attribute">#[must_use]
+    </span><span class="kw">fn </span>one(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self</span>::Set { <span class="self">self</span>.multiplicative().id() }
 }
 
-<span class="doccomment">/// 可換環。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 環 $(R, \\circ, \\ast, 0, 1)$ であり、$(R, \\ast, 1)$ は可換モノイドをなす。</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">CommutativeRing</span>: <span class="ident">Ring</span>
-<span class="kw">where</span>
-    <span class="ident"><span class="self">Self</span>::Multiplicative</span>: <span class="ident">Commutative</span>,
+<span class="doccomment">/// 可換環。
+///
+/// 環 $(R, \\circ, \\ast, 0, 1)$ であり、$(R, \\ast, 1)$ は可換モノイドをなす。
+</span><span class="kw">pub trait </span>CommutativeRing: Ring
+<span class="kw">where
+    </span><span class="self">Self</span>::Multiplicative: Commutative,
 {
 }
 
-<span class="doccomment">/// 体。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 環 $(R, \\circ, \\ast, 0, 1)$ であり、$(R \\setminus \\{0\\}, \\ast, 1)$ は群をなす。</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Field</span>: <span class="ident">Ring</span>
-<span class="kw">where</span>
-    <span class="ident"><span class="self">Self</span>::Multiplicative</span>: <span class="ident">PartialRecip</span>,
+<span class="doccomment">/// 体。
+///
+/// 環 $(R, \\circ, \\ast, 0, 1)$ であり、$(R \\setminus \\{0\\}, \\ast, 1)$ は群をなす。
+</span><span class="kw">pub trait </span>Field: Ring
+<span class="kw">where
+    </span><span class="self">Self</span>::Multiplicative: PartialRecip,
 {
-    <span class="doccomment">/// 乗法 $\\ast$ における関する $x$ の逆元 $x^{-1}$ を返す。</span>
-    <span class="kw">fn</span> <span class="ident">recip</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Set</span>) -&gt; <span class="ident"><span class="self">Self</span>::Set</span> {
-        <span class="kw">if</span> <span class="ident">x</span> <span class="op">==</span> <span class="self">self</span>.<span class="ident">additive</span>().<span class="ident">id</span>() {
+    <span class="doccomment">/// 乗法 $\\ast$ における関する $x$ の逆元 $x^{-1}$ を返す。
+    </span><span class="kw">fn </span>recip(<span class="kw-2">&amp;</span><span class="self">self</span>, x: <span class="self">Self</span>::Set) -&gt; <span class="self">Self</span>::Set {
+        <span class="kw">if </span>x == <span class="self">self</span>.additive().id() {
             <span class="macro">panic!</span>(<span class="string">&quot;zero element does not have multiplicative inverse&quot;</span>);
-        } <span class="kw">else</span> {
-            <span class="self">self</span>.<span class="ident">multiplicative</span>().<span class="ident">partial_recip</span>(<span class="ident">x</span>).<span class="ident">unwrap</span>()
+        } <span class="kw">else </span>{
+            <span class="self">self</span>.multiplicative().partial_recip(x).unwrap()
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/stern_brocot_.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>stern_brocot_.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/stern_brocot_.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>stern_brocot_.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -141,59 +141,59 @@
 <span id="52">52</span>
 <span id="53">53</span>
 <span id="54">54</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Stern--Brocot tree</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Stern--Brocot tree
 
-<span class="doccomment">/// Stern--Brocot tree</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $a/b = 0/1=0$ と $c/d = 1/0=\\infty$ で初期化し、その mediant</span>
-<span class="doccomment">/// $x/y = (a+b)/(c+d)$</span>
-<span class="doccomment">/// を探索する。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $x/y$ が所望の条件 `ok` を満たすならそれを [`Ok`] として返す。</span>
-<span class="doccomment">/// 条件 `large` を満たすなら $c/d\\gets x/y$、そうでなければ $a/b\\gets x/y$</span>
-<span class="doccomment">/// として探索を進める。</span>
-<span class="doccomment">/// 分母が $n$ を超えても `ok` を満たさなければ、$((a, b), (c, d))$ を</span>
-<span class="doccomment">/// [`Err`] として返す。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [`Ok`]: https://doc.rust-lang.org/nightly/std/result/enum.Result.html#variant.Ok</span>
-<span class="doccomment">/// [`Err`]: https://doc.rust-lang.org/nightly/std/result/enum.Result.html#variant.Err</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::math::stern_brocot;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let (num, den) =</span>
-<span class="doccomment">///     stern_brocot(10_i128.pow(18), |n, d| n * n &gt; 3 * d * d, |_, _| false)</span>
-<span class="doccomment">///     .err().unwrap().0;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let sqrt3 = num as f64 / den as f64;</span>
-<span class="doccomment">/// assert!((sqrt3 - 3.0_f64.sqrt()).abs() &lt; 1.0e-16);</span>
-<span class="doccomment">/// assert_eq!((num, den), (734231055024833855, 423908497265970753));</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">stern_brocot</span>(
-    <span class="ident">n</span>: <span class="ident">i128</span>,
-    <span class="kw-2">mut</span> <span class="ident">large</span>: <span class="kw">impl</span> <span class="ident">FnMut</span>(<span class="ident">i128</span>, <span class="ident">i128</span>) -&gt; <span class="ident">bool</span>,
-    <span class="kw-2">mut</span> <span class="ident">ok</span>: <span class="kw">impl</span> <span class="ident">FnMut</span>(<span class="ident">i128</span>, <span class="ident">i128</span>) -&gt; <span class="ident">bool</span>,
-) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">i128</span>, <span class="ident">i128</span>), ((<span class="ident">i128</span>, <span class="ident">i128</span>), (<span class="ident">i128</span>, <span class="ident">i128</span>))<span class="op">&gt;</span> {
-    <span class="kw">let</span> (<span class="kw-2">mut</span> <span class="ident">a</span>, <span class="kw-2">mut</span> <span class="ident">b</span>) <span class="op">=</span> (<span class="number">0</span>, <span class="number">1</span>);
-    <span class="kw">let</span> (<span class="kw-2">mut</span> <span class="ident">c</span>, <span class="kw-2">mut</span> <span class="ident">d</span>) <span class="op">=</span> (<span class="number">1</span>, <span class="number">0</span>);
-    <span class="kw">loop</span> {
-        <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">a</span> <span class="op">+</span> <span class="ident">c</span>;
-        <span class="kw">let</span> <span class="ident">y</span> <span class="op">=</span> <span class="ident">b</span> <span class="op">+</span> <span class="ident">d</span>;
-        <span class="kw">if</span> <span class="ident">y</span> <span class="op">&gt;</span> <span class="ident">n</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(((<span class="ident">a</span>, <span class="ident">b</span>), (<span class="ident">c</span>, <span class="ident">d</span>)));
+/// Stern--Brocot tree
+///
+/// $a/b = 0/1=0$ と $c/d = 1/0=\\infty$ で初期化し、その mediant
+/// $x/y = (a+b)/(c+d)$
+/// を探索する。
+///
+/// $x/y$ が所望の条件 `ok` を満たすならそれを [`Ok`] として返す。
+/// 条件 `large` を満たすなら $c/d\\gets x/y$、そうでなければ $a/b\\gets x/y$
+/// として探索を進める。
+/// 分母が $n$ を超えても `ok` を満たさなければ、$((a, b), (c, d))$ を
+/// [`Err`] として返す。
+///
+/// [`Ok`]: https://doc.rust-lang.org/nightly/std/result/enum.Result.html#variant.Ok
+/// [`Err`]: https://doc.rust-lang.org/nightly/std/result/enum.Result.html#variant.Err
+///
+/// # Examples
+/// ```
+/// use nekolib::math::stern_brocot;
+///
+/// let (num, den) =
+///     stern_brocot(10_i128.pow(18), |n, d| n * n &gt; 3 * d * d, |_, _| false)
+///     .err().unwrap().0;
+///
+/// let sqrt3 = num as f64 / den as f64;
+/// assert!((sqrt3 - 3.0_f64.sqrt()).abs() &lt; 1.0e-16);
+/// assert_eq!((num, den), (734231055024833855, 423908497265970753));
+/// ```
+</span><span class="kw">pub fn </span>stern_brocot(
+    n: i128,
+    <span class="kw-2">mut </span>large: <span class="kw">impl </span>FnMut(i128, i128) -&gt; bool,
+    <span class="kw-2">mut </span>ok: <span class="kw">impl </span>FnMut(i128, i128) -&gt; bool,
+) -&gt; <span class="prelude-ty">Result</span>&lt;(i128, i128), ((i128, i128), (i128, i128))&gt; {
+    <span class="kw">let </span>(<span class="kw-2">mut </span>a, <span class="kw-2">mut </span>b) = (<span class="number">0</span>, <span class="number">1</span>);
+    <span class="kw">let </span>(<span class="kw-2">mut </span>c, <span class="kw-2">mut </span>d) = (<span class="number">1</span>, <span class="number">0</span>);
+    <span class="kw">loop </span>{
+        <span class="kw">let </span>x = a + c;
+        <span class="kw">let </span>y = b + d;
+        <span class="kw">if </span>y &gt; n {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(((a, b), (c, d)));
         }
-        <span class="kw">if</span> <span class="ident">ok</span>(<span class="ident">x</span>, <span class="ident">y</span>) {
-            <span class="kw">return</span> <span class="prelude-val">Ok</span>((<span class="ident">x</span>, <span class="ident">y</span>));
+        <span class="kw">if </span>ok(x, y) {
+            <span class="kw">return </span><span class="prelude-val">Ok</span>((x, y));
         }
-        <span class="kw">if</span> <span class="ident">large</span>(<span class="ident">x</span>, <span class="ident">y</span>) {
-            <span class="ident">c</span> <span class="op">=</span> <span class="ident">x</span>;
-            <span class="ident">d</span> <span class="op">=</span> <span class="ident">y</span>;
-        } <span class="kw">else</span> {
-            <span class="ident">a</span> <span class="op">=</span> <span class="ident">x</span>;
-            <span class="ident">b</span> <span class="op">=</span> <span class="ident">y</span>;
+        <span class="kw">if </span>large(x, y) {
+            c = x;
+            d = y;
+        } <span class="kw">else </span>{
+            a = x;
+            b = y;
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

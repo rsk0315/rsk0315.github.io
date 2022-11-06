@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/utils.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>utils.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/utils.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>utils.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -166,84 +166,84 @@
 <span id="77">77</span>
 <span id="78">78</span>
 <span id="79">79</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 便利ちゃんたち。</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ここに何かを書く。</span>
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">ascii</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">bitop</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">buf_range</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">e_macro</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">make_minmax</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">op_add</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">op_add_count</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">op_add_on_op_add_count</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">op_add_on_op_max</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">op_add_on_op_min</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">op_affine</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">op_affine_on_op_add_count</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">op_closure</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">op_closure_on_op_closure</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">op_gcd</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">op_max</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">op_min</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">op_mul</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">op_roll_hash</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">output</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">rand_gen_macro</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">scanner</span>;
+</pre><pre class="rust"><code><span class="doccomment">//! 便利ちゃんたち。
+//!
+//! ここに何かを書く。
+</span><span class="kw">pub mod </span>ascii;
+<span class="kw">pub mod </span>bitop;
+<span class="kw">pub mod </span>buf_range;
+<span class="kw">pub mod </span>e_macro;
+<span class="kw">pub mod </span>make_minmax;
+<span class="kw">pub mod </span>op_add;
+<span class="kw">pub mod </span>op_add_count;
+<span class="kw">pub mod </span>op_add_on_op_add_count;
+<span class="kw">pub mod </span>op_add_on_op_max;
+<span class="kw">pub mod </span>op_add_on_op_min;
+<span class="kw">pub mod </span>op_affine;
+<span class="kw">pub mod </span>op_affine_on_op_add_count;
+<span class="kw">pub mod </span>op_closure;
+<span class="kw">pub mod </span>op_closure_on_op_closure;
+<span class="kw">pub mod </span>op_gcd;
+<span class="kw">pub mod </span>op_max;
+<span class="kw">pub mod </span>op_min;
+<span class="kw">pub mod </span>op_mul;
+<span class="kw">pub mod </span>op_roll_hash;
+<span class="kw">pub mod </span>output;
+<span class="kw">pub mod </span>rand_gen_macro;
+<span class="kw">pub mod </span>scanner;
 
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">ascii</span>::{
-    <span class="ident">charset</span>, <span class="ident">ASCII</span>, <span class="ident">ASCII_ALPHABETIC</span>, <span class="ident">ASCII_ALPHANUMERIC</span>, <span class="ident">ASCII_CONTROL</span>,
-    <span class="ident">ASCII_DIGIT</span>, <span class="ident">ASCII_GRAPHIC</span>, <span class="ident">ASCII_HEXDIGIT</span>, <span class="ident">ASCII_LOWERCASE</span>,
-    <span class="ident">ASCII_PUNCTUATION</span>, <span class="ident">ASCII_UPPERCASE</span>, <span class="ident">ASCII_WHITESPACE</span>,
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>ascii::{
+    charset, ASCII, ASCII_ALPHABETIC, ASCII_ALPHANUMERIC, ASCII_CONTROL,
+    ASCII_DIGIT, ASCII_GRAPHIC, ASCII_HEXDIGIT, ASCII_LOWERCASE,
+    ASCII_PUNCTUATION, ASCII_UPPERCASE, ASCII_WHITESPACE,
 };
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">bitop</span>::{
-    <span class="ident">Pdep</span>, <span class="ident">PdepPextMaskU128</span>, <span class="ident">PdepPextMaskU16</span>, <span class="ident">PdepPextMaskU32</span>, <span class="ident">PdepPextMaskU64</span>,
-    <span class="ident">PdepPextMaskU8</span>, <span class="ident">Pext</span>,
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>bitop::{
+    Pdep, PdepPextMaskU128, PdepPextMaskU16, PdepPextMaskU32, PdepPextMaskU64,
+    PdepPextMaskU8, Pext,
 };
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">buf_range</span>::{<span class="ident">bounds_within</span>, <span class="ident">check_bounds</span>, <span class="ident">check_bounds_range</span>};
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">make_minmax</span>::{<span class="ident">MakeMax</span>, <span class="ident">MakeMin</span>};
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">op_add::OpAdd</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">op_add_count::OpAddCount</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">op_add_on_op_add_count::OpAddOnOpAddCount</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">op_add_on_op_max::OpAddOnOpMax</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">op_add_on_op_min::OpAddOnOpMin</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">op_affine::OpAffine</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">op_affine_on_op_add_count::OpAffineOnOpAddCount</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">op_closure::OpClosure</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">op_closure_on_op_closure::OpClosureOnOpClosure</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">op_gcd::OpGcd</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">op_max::OpMax</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">op_min::OpMin</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">op_mul::OpMul</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">op_roll_hash::OpRollHash</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">output</span>::{<span class="ident">PerLine</span>, <span class="ident">SpaceSep</span>, <span class="ident">StrSep</span>};
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">rand_gen_macro</span>::{<span class="ident">RandomGenerator</span>, <span class="ident">VecMarker</span>};
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">scanner::Scanner</span>;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>buf_range::{bounds_within, check_bounds, check_bounds_range};
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>make_minmax::{MakeMax, MakeMin};
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>op_add::OpAdd;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>op_add_count::OpAddCount;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>op_add_on_op_add_count::OpAddOnOpAddCount;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>op_add_on_op_max::OpAddOnOpMax;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>op_add_on_op_min::OpAddOnOpMin;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>op_affine::OpAffine;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>op_affine_on_op_add_count::OpAffineOnOpAddCount;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>op_closure::OpClosure;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>op_closure_on_op_closure::OpClosureOnOpClosure;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>op_gcd::OpGcd;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>op_max::OpMax;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>op_min::OpMin;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>op_mul::OpMul;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>op_roll_hash::OpRollHash;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>output::{PerLine, SpaceSep, StrSep};
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>rand_gen_macro::{RandomGenerator, VecMarker};
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>scanner::Scanner;
 
-<span class="comment">// pub mod scan_macro;</span>
-<span class="comment">// #[doc(inline)]</span>
-<span class="comment">// pub use scan_macro::{AutoSource, OnceSource, Readable};</span>
-</code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+<span class="comment">// pub mod scan_macro;
+// #[doc(inline)]
+// pub use scan_macro::{AutoSource, OnceSource, Readable};
+</span></code></pre></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

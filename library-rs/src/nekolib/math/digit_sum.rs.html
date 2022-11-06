@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/digit_sum.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>digit_sum.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/digit_sum.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>digit_sum.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -127,45 +127,45 @@
 <span id="38">38</span>
 <span id="39">39</span>
 <span id="40">40</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 桁和。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 桁和。
 
-<span class="doccomment">/// 桁和。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::math::DigitSum;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(2_u32.pow(15).digit_sum(10), 3 + 2 + 7 + 6 + 8);</span>
-<span class="doccomment">/// assert_eq!(123_u32.digit_pow_sum(10, 2), 1*1 + 2*2 + 3*3);</span>
-<span class="doccomment">/// assert_eq!(0xACE_u32.digit_sum(16), 0xA + 0xC + 0xE);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(12345_u32.digit_pow_sum(10, 0), 5);  // the number of digits</span>
-<span class="doccomment">/// assert_eq!(0_u32.digit_pow_sum(10, 0), 1);</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">DigitSum</span>: <span class="ident">Sized</span> {
-    <span class="kw">fn</span> <span class="ident">digit_pow_sum</span>(<span class="self">self</span>, <span class="ident">base</span>: <span class="self">Self</span>, <span class="ident">exp</span>: <span class="ident">u32</span>) -&gt; <span class="self">Self</span>;
-    <span class="kw">fn</span> <span class="ident">digit_sum</span>(<span class="self">self</span>, <span class="ident">base</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> { <span class="self">self</span>.<span class="ident">digit_pow_sum</span>(<span class="ident">base</span>, <span class="number">1</span>) }
+/// 桁和。
+///
+/// # Examples
+/// ```
+/// use nekolib::math::DigitSum;
+///
+/// assert_eq!(2_u32.pow(15).digit_sum(10), 3 + 2 + 7 + 6 + 8);
+/// assert_eq!(123_u32.digit_pow_sum(10, 2), 1*1 + 2*2 + 3*3);
+/// assert_eq!(0xACE_u32.digit_sum(16), 0xA + 0xC + 0xE);
+///
+/// assert_eq!(12345_u32.digit_pow_sum(10, 0), 5);  // the number of digits
+/// assert_eq!(0_u32.digit_pow_sum(10, 0), 1);
+/// ```
+</span><span class="kw">pub trait </span>DigitSum: Sized {
+    <span class="kw">fn </span>digit_pow_sum(<span class="self">self</span>, base: <span class="self">Self</span>, exp: u32) -&gt; <span class="self">Self</span>;
+    <span class="kw">fn </span>digit_sum(<span class="self">self</span>, base: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{ <span class="self">self</span>.digit_pow_sum(base, <span class="number">1</span>) }
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_uint</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span> <span class="ident">DigitSum</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">digit_pow_sum</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">base</span>: <span class="self">Self</span>, <span class="ident">exp</span>: <span class="ident">u32</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">if</span> <span class="self">self</span> <span class="op">==</span> <span class="number">0</span> {
-                    <span class="kw">return</span> <span class="kw">if</span> <span class="ident">exp</span> <span class="op">==</span> <span class="number">0</span> { <span class="number">1</span> } <span class="kw">else</span> { <span class="number">0</span> };
+<span class="macro">macro_rules! </span>impl_uint {
+    (<span class="macro-nonterminal">$t</span>:ty) =&gt; {
+        <span class="kw">impl </span>DigitSum <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
+            <span class="kw">fn </span>digit_pow_sum(<span class="kw-2">mut </span><span class="self">self</span>, base: <span class="self">Self</span>, exp: u32) -&gt; <span class="self">Self </span>{
+                <span class="kw">if </span><span class="self">self </span>== <span class="number">0 </span>{
+                    <span class="kw">return if </span>exp == <span class="number">0 </span>{ <span class="number">1 </span>} <span class="kw">else </span>{ <span class="number">0 </span>};
                 }
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="number">0</span>;
-                <span class="kw">while</span> <span class="self">self</span> <span class="op">&gt;</span> <span class="number">0</span> {
-                    <span class="ident">res</span> <span class="op">+</span><span class="op">=</span> (<span class="self">self</span> <span class="op">%</span> <span class="ident">base</span>).<span class="ident">pow</span>(<span class="ident">exp</span>);
-                    <span class="self">self</span> <span class="op">/</span><span class="op">=</span> <span class="ident">base</span>;
+                <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="number">0</span>;
+                <span class="kw">while </span><span class="self">self </span>&gt; <span class="number">0 </span>{
+                    res += (<span class="self">self </span>% base).pow(exp);
+                    <span class="self">self </span>/= base;
                 }
-                <span class="ident">res</span>
+                res
             }
         }
     };
-    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
+    ( $(<span class="macro-nonterminal">$t</span>:ty)* ) =&gt; { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$t</span>);)* };
 }
 
-<span class="macro">impl_uint!</span>(<span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span>);
+<span class="macro">impl_uint!</span>(u8 u16 u32 u64 u128 usize);
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

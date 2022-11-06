@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/algo/karatsuba.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>karatsuba.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/algo/karatsuba.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>karatsuba.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -202,120 +202,120 @@
 <span id="113">113</span>
 <span id="114">114</span>
 <span id="115">115</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Karatsuba 法。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Karatsuba 法。
 
-<span class="kw">use</span> <span class="ident">std::ops</span>::{<span class="ident">AddAssign</span>, <span class="ident">Mul</span>, <span class="ident">SubAssign</span>};
+</span><span class="kw">use </span>std::ops::{AddAssign, Mul, SubAssign};
 
-<span class="doccomment">/// Karatsuba 法。Карацуба 法？</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $a = (a\_i)$ と $b = (b\_i)$ の積 $a * b$ を求める。</span>
-<span class="doccomment">/// ただし、$a * b$ は以下のように定義される。</span>
-<span class="doccomment">/// $$ (a * b)\_i = \\sum\_{j=0}^i a\_j \\cdot b\_{i-j}. $$</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Idea</span>
-<span class="doccomment">/// `todo!()`</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// $O(n^{\\log\_2(3)}) \\subset O(n^{1.585})$ time.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::algo::convolve;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let a = vec![0_i32, 1, 2, 3, 4];</span>
-<span class="doccomment">/// let b = vec![0, 1, 2, 4, 8];</span>
-<span class="doccomment">/// assert_eq!(convolve(&amp;a, &amp;b), [0, 0, 1, 4, 11, 26, 36, 40, 32]);</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">convolve</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">a</span>: <span class="kw-2">&amp;</span>[<span class="ident">T</span>], <span class="ident">b</span>: <span class="kw-2">&amp;</span>[<span class="ident">T</span>]) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">AddAssign</span> <span class="op">+</span> <span class="ident">SubAssign</span> <span class="op">+</span> <span class="ident">Mul</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">T</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">Clone</span>,
+<span class="doccomment">/// Karatsuba 法。Карацуба 法？
+///
+/// $a = (a\_i)$ と $b = (b\_i)$ の積 $a * b$ を求める。
+/// ただし、$a * b$ は以下のように定義される。
+/// $$ (a * b)\_i = \\sum\_{j=0}^i a\_j \\cdot b\_{i-j}. $$
+///
+/// # Idea
+/// `todo!()`
+///
+/// # Complexity
+/// $O(n^{\\log\_2(3)}) \\subset O(n^{1.585})$ time.
+///
+/// # Examples
+/// ```
+/// use nekolib::algo::convolve;
+///
+/// let a = vec![0_i32, 1, 2, 3, 4];
+/// let b = vec![0, 1, 2, 4, 8];
+/// assert_eq!(convolve(&amp;a, &amp;b), [0, 0, 1, 4, 11, 26, 36, 40, 32]);
+/// ```
+</span><span class="kw">pub fn </span>convolve&lt;T&gt;(a: <span class="kw-2">&amp;</span>[T], b: <span class="kw-2">&amp;</span>[T]) -&gt; Vec&lt;T&gt;
+<span class="kw">where
+    </span>T: AddAssign + SubAssign + Mul&lt;Output = T&gt; + Default + Clone,
 {
-    <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">a</span>.<span class="ident">len</span>();
-    <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">b</span>.<span class="ident">len</span>();
-    <span class="kw">let</span> <span class="ident">nm</span> <span class="op">=</span> <span class="ident">n</span>.<span class="ident">max</span>(<span class="ident">m</span>);
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">a</span>.<span class="ident">to_vec</span>();
-    <span class="ident">a</span>.<span class="ident">resize_with</span>(<span class="ident">nm</span>, <span class="ident">T::default</span>);
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">b</span>.<span class="ident">to_vec</span>();
-    <span class="ident">b</span>.<span class="ident">resize_with</span>(<span class="ident">nm</span>, <span class="ident">T::default</span>);
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ab</span> <span class="op">=</span> <span class="ident">mul</span>(<span class="kw-2">&amp;mut</span> <span class="ident">a</span>, <span class="kw-2">&amp;mut</span> <span class="ident">b</span>);
-    <span class="ident">ab</span>.<span class="ident">truncate</span>(<span class="ident">n</span> <span class="op">+</span> <span class="ident">m</span> <span class="op">-</span> <span class="number">1</span>);
-    <span class="ident">ab</span>
+    <span class="kw">let </span>n = a.len();
+    <span class="kw">let </span>m = b.len();
+    <span class="kw">let </span>nm = n.max(m);
+    <span class="kw">let </span><span class="kw-2">mut </span>a = a.to_vec();
+    a.resize_with(nm, T::default);
+    <span class="kw">let </span><span class="kw-2">mut </span>b = b.to_vec();
+    b.resize_with(nm, T::default);
+    <span class="kw">let </span><span class="kw-2">mut </span>ab = mul(<span class="kw-2">&amp;mut </span>a, <span class="kw-2">&amp;mut </span>b);
+    ab.truncate(n + m - <span class="number">1</span>);
+    ab
 }
 
-<span class="kw">const</span> <span class="ident">NAIVE_THRESHOLD</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">32</span>;
+<span class="kw">const </span>NAIVE_THRESHOLD: usize = <span class="number">32</span>;
 
-<span class="kw">fn</span> <span class="ident">mul</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">a</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">T</span>], <span class="ident">b</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">T</span>]) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">AddAssign</span> <span class="op">+</span> <span class="ident">SubAssign</span> <span class="op">+</span> <span class="ident">Mul</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">T</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">Clone</span>,
+<span class="kw">fn </span>mul&lt;T&gt;(a: <span class="kw-2">&amp;mut </span>[T], b: <span class="kw-2">&amp;mut </span>[T]) -&gt; Vec&lt;T&gt;
+<span class="kw">where
+    </span>T: AddAssign + SubAssign + Mul&lt;Output = T&gt; + Default + Clone,
 {
-    <span class="macro">assert_eq!</span>(<span class="ident">a</span>.<span class="ident">len</span>(), <span class="ident">b</span>.<span class="ident">len</span>());
+    <span class="macro">assert_eq!</span>(a.len(), b.len());
 
-    <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">a</span>.<span class="ident">len</span>();
-    <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">NAIVE_THRESHOLD</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">T::default</span>(); <span class="ident">n</span> <span class="op">+</span> <span class="ident">n</span> <span class="op">-</span> <span class="number">1</span>];
-        <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">ai</span>) <span class="kw">in</span> <span class="ident">a</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
-            <span class="kw">for</span> (<span class="ident">j</span>, <span class="ident">bj</span>) <span class="kw">in</span> <span class="ident">b</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
-                <span class="ident">res</span>[<span class="ident">i</span> <span class="op">+</span> <span class="ident">j</span>] <span class="op">+</span><span class="op">=</span> <span class="ident">ai</span>.<span class="ident">clone</span>() <span class="op">*</span> <span class="ident">bj</span>.<span class="ident">clone</span>();
+    <span class="kw">let </span>n = a.len();
+    <span class="kw">if </span>n &lt;= NAIVE_THRESHOLD {
+        <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="macro">vec!</span>[T::default(); n + n - <span class="number">1</span>];
+        <span class="kw">for </span>(i, ai) <span class="kw">in </span>a.iter().enumerate() {
+            <span class="kw">for </span>(j, bj) <span class="kw">in </span>b.iter().enumerate() {
+                res[i + j] += ai.clone() * bj.clone();
             }
         }
-        <span class="kw">return</span> <span class="ident">res</span>;
+        <span class="kw">return </span>res;
     }
 
-    <span class="kw">let</span> <span class="ident">nl</span> <span class="op">=</span> <span class="ident">n</span> <span class="op">/</span> <span class="number">2</span>;
-    <span class="kw">let</span> <span class="ident">nh</span> <span class="op">=</span> <span class="ident">n</span> <span class="op">-</span> <span class="ident">nl</span>;
+    <span class="kw">let </span>nl = n / <span class="number">2</span>;
+    <span class="kw">let </span>nh = n - nl;
 
-    <span class="kw">let</span> (<span class="ident">al</span>, <span class="ident">ah</span>) <span class="op">=</span> <span class="ident">a</span>.<span class="ident">split_at_mut</span>(<span class="ident">nl</span>);
-    <span class="kw">let</span> (<span class="ident">bl</span>, <span class="ident">bh</span>) <span class="op">=</span> <span class="ident">b</span>.<span class="ident">split_at_mut</span>(<span class="ident">nl</span>);
+    <span class="kw">let </span>(al, ah) = a.split_at_mut(nl);
+    <span class="kw">let </span>(bl, bh) = b.split_at_mut(nl);
 
-    <span class="kw">let</span> <span class="ident">t</span> <span class="op">=</span> <span class="ident">mul</span>(<span class="ident">al</span>, <span class="ident">bl</span>);
-    <span class="kw">let</span> <span class="ident">u</span> <span class="op">=</span> <span class="ident">mul</span>(<span class="ident">ah</span>, <span class="ident">bh</span>);
+    <span class="kw">let </span>t = mul(al, bl);
+    <span class="kw">let </span>u = mul(ah, bh);
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">alh</span> <span class="op">=</span> <span class="ident">ah</span>.<span class="ident">to_vec</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">blh</span> <span class="op">=</span> <span class="ident">bh</span>.<span class="ident">to_vec</span>();
-    <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">nl</span> {
-        <span class="ident">alh</span>[<span class="ident">i</span>] <span class="op">+</span><span class="op">=</span> <span class="ident">al</span>[<span class="ident">i</span>].<span class="ident">clone</span>();
-        <span class="ident">blh</span>[<span class="ident">i</span>] <span class="op">+</span><span class="op">=</span> <span class="ident">bl</span>[<span class="ident">i</span>].<span class="ident">clone</span>();
+    <span class="kw">let </span><span class="kw-2">mut </span>alh = ah.to_vec();
+    <span class="kw">let </span><span class="kw-2">mut </span>blh = bh.to_vec();
+    <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..nl {
+        alh[i] += al[i].clone();
+        blh[i] += bl[i].clone();
     }
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">T::default</span>(); <span class="ident">n</span> <span class="op">+</span> <span class="ident">n</span> <span class="op">-</span> <span class="number">1</span>];
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">mul</span>(<span class="kw-2">&amp;mut</span> <span class="ident">alh</span>, <span class="kw-2">&amp;mut</span> <span class="ident">blh</span>);
-    <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">ti</span>) <span class="kw">in</span> <span class="ident">t</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
-        <span class="ident">v</span>[<span class="ident">i</span>] <span class="op">-</span><span class="op">=</span> <span class="ident">ti</span>.<span class="ident">clone</span>();
-        <span class="ident">res</span>[<span class="ident">i</span>] <span class="op">+</span><span class="op">=</span> <span class="ident">ti</span>.<span class="ident">clone</span>();
+    <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="macro">vec!</span>[T::default(); n + n - <span class="number">1</span>];
+    <span class="kw">let </span><span class="kw-2">mut </span>v = mul(<span class="kw-2">&amp;mut </span>alh, <span class="kw-2">&amp;mut </span>blh);
+    <span class="kw">for </span>(i, ti) <span class="kw">in </span>t.iter().enumerate() {
+        v[i] -= ti.clone();
+        res[i] += ti.clone();
     }
-    <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">ui</span>) <span class="kw">in</span> <span class="ident">u</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
-        <span class="ident">v</span>[<span class="ident">i</span>] <span class="op">-</span><span class="op">=</span> <span class="ident">ui</span>.<span class="ident">clone</span>();
-        <span class="ident">res</span>[<span class="ident">nl</span> <span class="op">+</span> <span class="ident">nl</span> <span class="op">+</span> <span class="ident">i</span>] <span class="op">+</span><span class="op">=</span> <span class="ident">ui</span>.<span class="ident">clone</span>();
-    }
-
-    <span class="kw">if</span> <span class="ident">nl</span> <span class="op">!</span><span class="op">=</span> <span class="ident">nh</span> {
-        <span class="ident">v</span>.<span class="ident">pop</span>();
+    <span class="kw">for </span>(i, ui) <span class="kw">in </span>u.iter().enumerate() {
+        v[i] -= ui.clone();
+        res[nl + nl + i] += ui.clone();
     }
 
-    <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">vi</span>) <span class="kw">in</span> <span class="ident">v</span>.<span class="ident">into_iter</span>().<span class="ident">enumerate</span>() {
-        <span class="ident">res</span>[<span class="ident">nl</span> <span class="op">+</span> <span class="ident">i</span>] <span class="op">+</span><span class="op">=</span> <span class="ident">vi</span>;
+    <span class="kw">if </span>nl != nh {
+        v.pop();
     }
-    <span class="ident">res</span>
+
+    <span class="kw">for </span>(i, vi) <span class="kw">in </span>v.into_iter().enumerate() {
+        res[nl + i] += vi;
+    }
+    res
 }
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test</span>() {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">it</span> <span class="op">=</span>
-        <span class="ident">std::iter::successors</span>(<span class="prelude-val">Some</span>(<span class="number">14025256_i64</span>), <span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">i</span><span class="op">|</span> <span class="prelude-val">Some</span>(<span class="ident">i</span> <span class="op">*</span> <span class="ident">i</span> <span class="op">%</span> <span class="number">20300713</span>))
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span> <span class="op">%</span> <span class="number">10</span>);
-    <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="number">1024</span>;
-    <span class="kw">let</span> <span class="ident">a</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">n</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">it</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>()).<span class="ident">collect</span>();
-    <span class="kw">let</span> <span class="ident">b</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">n</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">it</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>()).<span class="ident">collect</span>();
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test() {
+    <span class="kw">let </span><span class="kw-2">mut </span>it =
+        std::iter::successors(<span class="prelude-val">Some</span>(<span class="number">14025256_i64</span>), |<span class="kw-2">&amp;</span>i| <span class="prelude-val">Some</span>(i * i % <span class="number">20300713</span>))
+            .map(|i| i % <span class="number">10</span>);
+    <span class="kw">let </span>n = <span class="number">1024</span>;
+    <span class="kw">let </span>a: Vec&lt;<span class="kw">_</span>&gt; = (<span class="number">0</span>..n).map(|<span class="kw">_</span>| it.next().unwrap()).collect();
+    <span class="kw">let </span>b: Vec&lt;<span class="kw">_</span>&gt; = (<span class="number">0</span>..n).map(|<span class="kw">_</span>| it.next().unwrap()).collect();
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">expected</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">n</span> <span class="op">+</span> <span class="ident">n</span> <span class="op">-</span> <span class="number">1</span>];
-    <span class="kw">for</span> (<span class="ident">i</span>, <span class="kw-2">&amp;</span><span class="ident">ai</span>) <span class="kw">in</span> <span class="ident">a</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
-        <span class="kw">for</span> (<span class="ident">j</span>, <span class="kw-2">&amp;</span><span class="ident">bj</span>) <span class="kw">in</span> <span class="ident">b</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
-            <span class="ident">expected</span>[<span class="ident">i</span> <span class="op">+</span> <span class="ident">j</span>] <span class="op">+</span><span class="op">=</span> <span class="ident">ai</span> <span class="op">*</span> <span class="ident">bj</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>expected = <span class="macro">vec!</span>[<span class="number">0</span>; n + n - <span class="number">1</span>];
+    <span class="kw">for </span>(i, <span class="kw-2">&amp;</span>ai) <span class="kw">in </span>a.iter().enumerate() {
+        <span class="kw">for </span>(j, <span class="kw-2">&amp;</span>bj) <span class="kw">in </span>b.iter().enumerate() {
+            expected[i + j] += ai * bj;
         }
     }
 
-    <span class="kw">let</span> <span class="ident">actual</span> <span class="op">=</span> <span class="ident">convolve</span>(<span class="kw-2">&amp;</span><span class="ident">a</span>, <span class="kw-2">&amp;</span><span class="ident">b</span>);
-    <span class="macro">assert_eq!</span>(<span class="ident">actual</span>, <span class="ident">expected</span>);
+    <span class="kw">let </span>actual = convolve(<span class="kw-2">&amp;</span>a, <span class="kw-2">&amp;</span>b);
+    <span class="macro">assert_eq!</span>(actual, expected);
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/ds/skew_heap.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>skew_heap.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/ds/skew_heap.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>skew_heap.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -456,374 +456,374 @@
 <span id="367">367</span>
 <span id="368">368</span>
 <span id="369">369</span>
-</pre><pre class="rust"><code><span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SkewHeap</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="ident">root</span>: <span class="ident">Link</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
-    <span class="ident">len</span>: <span class="ident">usize</span>,
+</pre><pre class="rust"><code><span class="kw">pub struct </span>SkewHeap&lt;T&gt; {
+    root: Link&lt;T&gt;,
+    len: usize,
 }
 
-<span class="kw">type</span> <span class="ident">Link</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Node</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>;
+<span class="kw">type </span>Link&lt;T&gt; = <span class="prelude-ty">Option</span>&lt;Box&lt;Node&lt;T&gt;&gt;&gt;;
 
-<span class="kw">struct</span> <span class="ident">Node</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="ident">elem</span>: <span class="ident">T</span>,
-    <span class="ident">left</span>: <span class="ident">Link</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
-    <span class="ident">right</span>: <span class="ident">Link</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
+<span class="kw">struct </span>Node&lt;T&gt; {
+    elem: T,
+    left: Link&lt;T&gt;,
+    right: Link&lt;T&gt;,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Node</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">elem</span>: <span class="ident">T</span>) -&gt; <span class="self">Self</span> { <span class="self">Self</span> { <span class="ident">elem</span>, <span class="ident">left</span>: <span class="prelude-val">None</span>, <span class="ident">right</span>: <span class="prelude-val">None</span> } }
+<span class="kw">impl</span>&lt;T&gt; Node&lt;T&gt; {
+    <span class="kw">pub fn </span>new(elem: T) -&gt; <span class="self">Self </span>{ <span class="self">Self </span>{ elem, left: <span class="prelude-val">None</span>, right: <span class="prelude-val">None </span>} }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">SkewHeap</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span> { <span class="ident">SkewHeap</span> { <span class="ident">root</span>: <span class="prelude-val">None</span>, <span class="ident">len</span>: <span class="number">0</span> } }
+<span class="kw">impl</span>&lt;T: Ord&gt; SkewHeap&lt;T&gt; {
+    <span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{ SkewHeap { root: <span class="prelude-val">None</span>, len: <span class="number">0 </span>} }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">len</span> }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> { <span class="self">self</span>.<span class="ident">len</span> <span class="op">==</span> <span class="number">0</span> }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">clear</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) { <span class="kw">while</span> <span class="self">self</span>.<span class="ident">pop</span>().<span class="ident">is_some</span>() {} }
+    <span class="kw">pub fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize { <span class="self">self</span>.len }
+    <span class="kw">pub fn </span>is_empty(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool { <span class="self">self</span>.len == <span class="number">0 </span>}
+    <span class="kw">pub fn </span>clear(<span class="kw-2">&amp;mut </span><span class="self">self</span>) { <span class="kw">while </span><span class="self">self</span>.pop().is_some() {} }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">peek</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">root</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">node</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">node</span>.<span class="ident">elem</span>)
+    <span class="kw">pub fn </span>peek(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>T&gt; {
+        <span class="self">self</span>.root.as_ref().map(|node| <span class="kw-2">&amp;</span>node.elem)
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">peek_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PeekMut</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_empty</span>() {
-            <span class="prelude-val">None</span>
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">PeekMut</span> { <span class="ident">heap</span>: <span class="self">self</span>, <span class="ident">tainted</span>: <span class="bool-val">false</span> })
+    <span class="kw">pub fn </span>peek_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;PeekMut&lt;<span class="lifetime">&#39;_</span>, T&gt;&gt; {
+        <span class="kw">if </span><span class="self">self</span>.is_empty() {
+            <span class="prelude-val">None
+        </span>} <span class="kw">else </span>{
+            <span class="prelude-val">Some</span>(PeekMut { heap: <span class="self">self</span>, tainted: <span class="bool-val">false </span>})
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">push</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">elem</span>: <span class="ident">T</span>) {
-        <span class="self">self</span>.<span class="ident">meld</span>(<span class="self">Self</span> { <span class="ident">root</span>: <span class="prelude-val">Some</span>(<span class="ident">Box::new</span>(<span class="ident">Node::new</span>(<span class="ident">elem</span>))), <span class="ident">len</span>: <span class="number">1</span> });
+    <span class="kw">pub fn </span>push(<span class="kw-2">&amp;mut </span><span class="self">self</span>, elem: T) {
+        <span class="self">self</span>.meld(<span class="self">Self </span>{ root: <span class="prelude-val">Some</span>(Box::new(Node::new(elem))), len: <span class="number">1 </span>});
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pop</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">root</span>.<span class="ident">take</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">node</span><span class="op">|</span> {
-            <span class="self">self</span>.<span class="ident">len</span> <span class="op">-</span><span class="op">=</span> <span class="number">1</span>;
-            <span class="self">self</span>.<span class="ident">root</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::meld_internal</span>(<span class="ident">node</span>.<span class="ident">left</span>, <span class="ident">node</span>.<span class="ident">right</span>);
-            <span class="ident">node</span>.<span class="ident">elem</span>
+    <span class="kw">pub fn </span>pop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;T&gt; {
+        <span class="self">self</span>.root.take().map(|node| {
+            <span class="self">self</span>.len -= <span class="number">1</span>;
+            <span class="self">self</span>.root = <span class="self">Self</span>::meld_internal(node.left, node.right);
+            node.elem
         })
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">meld</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) {
-        <span class="self">self</span>.<span class="ident">len</span> <span class="op">+</span><span class="op">=</span> <span class="ident">other</span>.<span class="ident">len</span>;
-        <span class="self">self</span>.<span class="ident">root</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::meld_internal</span>(<span class="self">self</span>.<span class="ident">root</span>.<span class="ident">take</span>(), <span class="ident">other</span>.<span class="ident">root</span>);
+    <span class="kw">pub fn </span>meld(<span class="kw-2">&amp;mut </span><span class="self">self</span>, other: <span class="self">Self</span>) {
+        <span class="self">self</span>.len += other.len;
+        <span class="self">self</span>.root = <span class="self">Self</span>::meld_internal(<span class="self">self</span>.root.take(), other.root);
     }
 
-    <span class="kw">fn</span> <span class="ident">meld_internal</span>(<span class="ident">left</span>: <span class="ident">Link</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">right</span>: <span class="ident">Link</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) -&gt; <span class="ident">Link</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> (<span class="ident">left</span>, <span class="ident">right</span>) {
-            (<span class="ident">left</span>, <span class="prelude-val">None</span>) =&gt; <span class="ident">left</span>,
-            (<span class="prelude-val">None</span>, <span class="ident">right</span>) =&gt; <span class="ident">right</span>,
-            (<span class="prelude-val">Some</span>(<span class="kw-2">mut</span> <span class="ident">left</span>), <span class="prelude-val">Some</span>(<span class="ident">right</span>)) <span class="kw">if</span> <span class="ident">left</span>.<span class="ident">elem</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">right</span>.<span class="ident">elem</span> =&gt; {
-                <span class="ident">std::mem::swap</span>(<span class="kw-2">&amp;mut</span> <span class="ident">left</span>.<span class="ident">left</span>, <span class="kw-2">&amp;mut</span> <span class="ident">left</span>.<span class="ident">right</span>);
-                <span class="ident">left</span>.<span class="ident">left</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::meld_internal</span>(<span class="ident">left</span>.<span class="ident">left</span>.<span class="ident">take</span>(), <span class="prelude-val">Some</span>(<span class="ident">right</span>));
-                <span class="prelude-val">Some</span>(<span class="ident">left</span>)
+    <span class="kw">fn </span>meld_internal(left: Link&lt;T&gt;, right: Link&lt;T&gt;) -&gt; Link&lt;T&gt; {
+        <span class="kw">match </span>(left, right) {
+            (left, <span class="prelude-val">None</span>) =&gt; left,
+            (<span class="prelude-val">None</span>, right) =&gt; right,
+            (<span class="prelude-val">Some</span>(<span class="kw-2">mut </span>left), <span class="prelude-val">Some</span>(right)) <span class="kw">if </span>left.elem &gt;= right.elem =&gt; {
+                std::mem::swap(<span class="kw-2">&amp;mut </span>left.left, <span class="kw-2">&amp;mut </span>left.right);
+                left.left = <span class="self">Self</span>::meld_internal(left.left.take(), <span class="prelude-val">Some</span>(right));
+                <span class="prelude-val">Some</span>(left)
             }
-            (<span class="ident">left</span>, <span class="ident">right</span>) =&gt; <span class="ident"><span class="self">Self</span>::meld_internal</span>(<span class="ident">right</span>, <span class="ident">left</span>),
+            (left, right) =&gt; <span class="self">Self</span>::meld_internal(right, left),
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">fix_root</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="kw">let</span> <span class="ident">root</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">root</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap</span>().<span class="ident">elem</span>;
-        <span class="kw">let</span> <span class="ident">left</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">root</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap</span>().<span class="ident">left</span>;
-        <span class="kw">let</span> <span class="ident">right</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">root</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap</span>().<span class="ident">right</span>;
-        <span class="kw">if</span> <span class="ident">left</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">left</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">left</span>.<span class="ident">elem</span> <span class="op">&gt;</span> <span class="ident">root</span>).<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>)
-            <span class="op">|</span><span class="op">|</span> <span class="ident">right</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">right</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">right</span>.<span class="ident">elem</span> <span class="op">&gt;</span> <span class="ident">root</span>).<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>)
+    <span class="kw">fn </span>fix_root(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="kw">let </span>root = <span class="kw-2">&amp;</span><span class="self">self</span>.root.as_ref().unwrap().elem;
+        <span class="kw">let </span>left = <span class="kw-2">&amp;</span><span class="self">self</span>.root.as_ref().unwrap().left;
+        <span class="kw">let </span>right = <span class="kw-2">&amp;</span><span class="self">self</span>.root.as_ref().unwrap().right;
+        <span class="kw">if </span>left.as_ref().map(|left| <span class="kw-2">&amp;</span>left.elem &gt; root).unwrap_or(<span class="bool-val">false</span>)
+            || right.as_ref().map(|right| <span class="kw-2">&amp;</span>right.elem &gt; root).unwrap_or(<span class="bool-val">false</span>)
         {
-            <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">pop</span>().<span class="ident">unwrap</span>();
-            <span class="self">self</span>.<span class="ident">push</span>(<span class="ident">tmp</span>);
+            <span class="kw">let </span>tmp = <span class="self">self</span>.pop().unwrap();
+            <span class="self">self</span>.push(tmp);
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">SkewHeap</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">push_with_dir</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">elem</span>: <span class="ident">T</span>, <span class="ident">dir</span>: <span class="kw-2">&amp;</span>[<span class="ident">bool</span>]) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">from</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">root</span>;
-        <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">is_right</span> <span class="kw">in</span> <span class="ident">dir</span>.<span class="ident">iter</span>().<span class="ident">chain</span>(<span class="ident">std::iter::once</span>(<span class="kw-2">&amp;</span><span class="bool-val">false</span>)) {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=</span> <span class="ident">from</span> {
-                <span class="ident">from</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">is_right</span> { <span class="kw-2">&amp;mut</span> <span class="ident">v</span>.<span class="ident">right</span> } <span class="kw">else</span> { <span class="kw-2">&amp;mut</span> <span class="ident">v</span>.<span class="ident">left</span> };
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">from</span>.<span class="ident">is_none</span>() {
-                <span class="kw-2">*</span><span class="ident">from</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Box::new</span>(<span class="ident">Node::new</span>(<span class="ident">elem</span>)));
+<span class="kw">impl</span>&lt;T&gt; SkewHeap&lt;T&gt; {
+    <span class="attribute">#[cfg(test)]
+    </span><span class="kw">fn </span>push_with_dir(<span class="kw-2">&amp;mut </span><span class="self">self</span>, elem: T, dir: <span class="kw-2">&amp;</span>[bool]) {
+        <span class="kw">let </span><span class="kw-2">mut </span>from = <span class="kw-2">&amp;mut </span><span class="self">self</span>.root;
+        <span class="kw">for </span><span class="kw-2">&amp;</span>is_right <span class="kw">in </span>dir.iter().chain(std::iter::once(<span class="kw-2">&amp;</span><span class="bool-val">false</span>)) {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = from {
+                from = <span class="kw">if </span>is_right { <span class="kw-2">&amp;mut </span>v.right } <span class="kw">else </span>{ <span class="kw-2">&amp;mut </span>v.left };
+            } <span class="kw">else if </span>from.is_none() {
+                <span class="kw-2">*</span>from = <span class="prelude-val">Some</span>(Box::new(Node::new(elem)));
                 <span class="kw">return</span>;
             }
         }
     }
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">in_order</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="kw">fn</span> <span class="ident">dfs</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">v</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Link</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">vec</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">T</span><span class="op">&gt;</span>) {
-            <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">v</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">v</span>) =&gt; <span class="ident">v</span>,
-                <span class="prelude-val">None</span> =&gt; <span class="kw">return</span>,
+    <span class="attribute">#[cfg(test)]
+    </span><span class="kw">fn </span>in_order(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw">impl </span>Iterator&lt;Item = <span class="kw-2">&amp;</span>T&gt; {
+        <span class="kw">fn </span>dfs&lt;<span class="lifetime">&#39;a</span>, T&gt;(v: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Link&lt;T&gt;, vec: <span class="kw-2">&amp;mut </span>Vec&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>T&gt;) {
+            <span class="kw">let </span>v = <span class="kw">match </span>v {
+                <span class="prelude-val">Some</span>(v) =&gt; v,
+                <span class="prelude-val">None </span>=&gt; <span class="kw">return</span>,
             };
-            <span class="ident">dfs</span>(<span class="kw-2">&amp;</span><span class="ident">v</span>.<span class="ident">left</span>, <span class="ident">vec</span>);
-            <span class="ident">vec</span>.<span class="ident">push</span>(<span class="kw-2">&amp;</span><span class="ident">v</span>.<span class="ident">elem</span>);
-            <span class="ident">dfs</span>(<span class="kw-2">&amp;</span><span class="ident">v</span>.<span class="ident">right</span>, <span class="ident">vec</span>);
+            dfs(<span class="kw-2">&amp;</span>v.left, vec);
+            vec.push(<span class="kw-2">&amp;</span>v.elem);
+            dfs(<span class="kw-2">&amp;</span>v.right, vec);
         }
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-        <span class="ident">dfs</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">root</span>, <span class="kw-2">&amp;mut</span> <span class="ident">res</span>);
-        <span class="ident">res</span>.<span class="ident">into_iter</span>()
+        <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="macro">vec!</span>[];
+        dfs(<span class="kw-2">&amp;</span><span class="self">self</span>.root, <span class="kw-2">&amp;mut </span>res);
+        res.into_iter()
     }
 
-    <span class="kw">fn</span> <span class="ident">bfs_order</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> (<span class="kw-2">&amp;</span><span class="ident">T</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">T</span><span class="op">&gt;</span>)<span class="op">&gt;</span> {
-        <span class="kw">use</span> <span class="ident">std::collections::VecDeque</span>;
+    <span class="kw">fn </span>bfs_order(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw">impl </span>Iterator&lt;Item = (<span class="kw-2">&amp;</span>T, <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>T&gt;, <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>T&gt;)&gt; {
+        <span class="kw">use </span>std::collections::VecDeque;
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">q</span> <span class="op">=</span> <span class="ident">VecDeque::new</span>();
+        <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="macro">vec!</span>[];
+        <span class="kw">let </span><span class="kw-2">mut </span>q = VecDeque::new();
 
-        <span class="ident">q</span>.<span class="ident">extend</span>(<span class="self">self</span>.<span class="ident">root</span>.<span class="ident">as_ref</span>());
-        <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=</span> <span class="ident">q</span>.<span class="ident">pop_front</span>() {
-            <span class="kw">let</span> <span class="ident">left</span> <span class="op">=</span> <span class="ident">v</span>.<span class="ident">left</span>.<span class="ident">as_ref</span>();
-            <span class="kw">let</span> <span class="ident">right</span> <span class="op">=</span> <span class="ident">v</span>.<span class="ident">right</span>.<span class="ident">as_ref</span>();
-            <span class="ident">res</span>.<span class="ident">push</span>((<span class="kw-2">&amp;</span><span class="ident">v</span>.<span class="ident">elem</span>, <span class="ident">left</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">o</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">o</span>.<span class="ident">elem</span>), <span class="ident">right</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">o</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">o</span>.<span class="ident">elem</span>)));
-            <span class="ident">q</span>.<span class="ident">extend</span>(<span class="ident">left</span>.<span class="ident">into_iter</span>().<span class="ident">chain</span>(<span class="ident">right</span>));
+        q.extend(<span class="self">self</span>.root.as_ref());
+        <span class="kw">while let </span><span class="prelude-val">Some</span>(v) = q.pop_front() {
+            <span class="kw">let </span>left = v.left.as_ref();
+            <span class="kw">let </span>right = v.right.as_ref();
+            res.push((<span class="kw-2">&amp;</span>v.elem, left.map(|o| <span class="kw-2">&amp;</span>o.elem), right.map(|o| <span class="kw-2">&amp;</span>o.elem)));
+            q.extend(left.into_iter().chain(right));
         }
 
-        <span class="ident">res</span>.<span class="ident">into_iter</span>()
+        res.into_iter()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">Extend</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SkewHeap</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">extend</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">iter</span>: <span class="ident">I</span>) {
-        <span class="kw">for</span> <span class="ident">item</span> <span class="kw">in</span> <span class="ident">iter</span> {
-            <span class="self">self</span>.<span class="ident">push</span>(<span class="ident">item</span>);
-        }
-    }
-}
-
-<span class="kw">use</span> <span class="ident">std::iter::FromIterator</span>;
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">FromIterator</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SkewHeap</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">from_iter</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">iter</span>: <span class="ident">I</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">heap</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::new</span>();
-        <span class="ident">heap</span>.<span class="ident">extend</span>(<span class="ident">iter</span>);
-        <span class="ident">heap</span>
-    }
-}
-
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">IntoIter</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">SkewHeap</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">IntoIterator</span> <span class="kw">for</span> <span class="ident">SkewHeap</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">type</span> <span class="ident">IntoIter</span> <span class="op">=</span> <span class="ident">IntoIter</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>;
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">T</span>;
-
-    <span class="kw">fn</span> <span class="ident">into_iter</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::IntoIter</span> { <span class="ident">IntoIter</span>(<span class="self">self</span>) }
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">IntoIter</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">T</span>;
-
-    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span> { <span class="self">self</span>.<span class="number">0</span>.<span class="ident">pop</span>() }
-
-    <span class="kw">fn</span> <span class="ident">size_hint</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (<span class="ident">usize</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) {
-        (<span class="self">self</span>.<span class="number">0</span>.<span class="ident">len</span>, <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="number">0</span>.<span class="ident">len</span>))
-    }
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">ExactSizeIterator</span> <span class="kw">for</span> <span class="ident">IntoIter</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> { <span class="self">self</span>.<span class="number">0</span>.<span class="ident">len</span> }
-}
-
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PeekMut</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span>: <span class="lifetime">&#39;a</span> <span class="op">+</span> <span class="ident">Ord</span><span class="op">&gt;</span> {
-    <span class="ident">heap</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">SkewHeap</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
-    <span class="ident">tainted</span>: <span class="ident">bool</span>,
-}
-
-<span class="kw">use</span> <span class="ident">std::ops</span>::{<span class="ident">Deref</span>, <span class="ident">DerefMut</span>};
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">Drop</span> <span class="kw">for</span> <span class="ident">PeekMut</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">drop</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tainted</span> {
-            <span class="self">self</span>.<span class="ident">heap</span>.<span class="ident">fix_root</span>();
+<span class="kw">impl</span>&lt;T: Ord&gt; Extend&lt;T&gt; <span class="kw">for </span>SkewHeap&lt;T&gt; {
+    <span class="kw">fn </span>extend&lt;I: IntoIterator&lt;Item = T&gt;&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, iter: I) {
+        <span class="kw">for </span>item <span class="kw">in </span>iter {
+            <span class="self">self</span>.push(item);
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">Deref</span> <span class="kw">for</span> <span class="ident">PeekMut</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">type</span> <span class="ident">Target</span> <span class="op">=</span> <span class="ident">T</span>;
+<span class="kw">use </span>std::iter::FromIterator;
 
-    <span class="kw">fn</span> <span class="ident">deref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">T</span> { <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">heap</span>.<span class="ident">root</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap</span>().<span class="ident">elem</span> }
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">DerefMut</span> <span class="kw">for</span> <span class="ident">PeekMut</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">deref_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="ident">T</span> {
-        <span class="self">self</span>.<span class="ident">tainted</span> <span class="op">=</span> <span class="bool-val">true</span>;
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">heap</span>.<span class="ident">root</span>.<span class="ident">as_mut</span>().<span class="ident">unwrap</span>().<span class="ident">elem</span>
+<span class="kw">impl</span>&lt;T: Ord&gt; FromIterator&lt;T&gt; <span class="kw">for </span>SkewHeap&lt;T&gt; {
+    <span class="kw">fn </span>from_iter&lt;I: IntoIterator&lt;Item = T&gt;&gt;(iter: I) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>heap = <span class="self">Self</span>::new();
+        heap.extend(iter);
+        heap
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">PeekMut</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pop</span>(<span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="ident">T</span> {
-        <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">heap</span>.<span class="ident">pop</span>().<span class="ident">unwrap</span>();
-        <span class="self">self</span>.<span class="ident">tainted</span> <span class="op">=</span> <span class="bool-val">false</span>;
-        <span class="ident">value</span>
+<span class="kw">pub struct </span>IntoIter&lt;T&gt;(SkewHeap&lt;T&gt;);
+
+<span class="kw">impl</span>&lt;T: Ord&gt; IntoIterator <span class="kw">for </span>SkewHeap&lt;T&gt; {
+    <span class="kw">type </span>IntoIter = IntoIter&lt;T&gt;;
+    <span class="kw">type </span>Item = T;
+
+    <span class="kw">fn </span>into_iter(<span class="self">self</span>) -&gt; <span class="self">Self</span>::IntoIter { IntoIter(<span class="self">self</span>) }
+}
+
+<span class="kw">impl</span>&lt;T: Ord&gt; Iterator <span class="kw">for </span>IntoIter&lt;T&gt; {
+    <span class="kw">type </span>Item = T;
+
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; { <span class="self">self</span>.<span class="number">0</span>.pop() }
+
+    <span class="kw">fn </span>size_hint(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (usize, <span class="prelude-ty">Option</span>&lt;usize&gt;) {
+        (<span class="self">self</span>.<span class="number">0</span>.len, <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="number">0</span>.len))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">SkewHeap</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> { <span class="ident"><span class="self">Self</span>::new</span>() }
+<span class="kw">impl</span>&lt;T: Ord&gt; ExactSizeIterator <span class="kw">for </span>IntoIter&lt;T&gt; {
+    <span class="kw">fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize { <span class="self">self</span>.<span class="number">0</span>.len }
 }
 
-<span class="kw">use</span> <span class="ident">std::fmt</span>;
+<span class="kw">pub struct </span>PeekMut&lt;<span class="lifetime">&#39;a</span>, T: <span class="lifetime">&#39;a </span>+ Ord&gt; {
+    heap: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>SkewHeap&lt;T&gt;,
+    tainted: bool,
+}
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">fmt::Debug</span><span class="op">&gt;</span> <span class="ident">fmt::Debug</span> <span class="kw">for</span> <span class="ident">SkewHeap</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="ident">f</span>.<span class="ident">debug_list</span>().<span class="ident">entries</span>(<span class="self">self</span>.<span class="ident">bfs_order</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">x</span>, ..)<span class="op">|</span> <span class="ident">x</span>)).<span class="ident">finish</span>()
+<span class="kw">use </span>std::ops::{Deref, DerefMut};
+
+<span class="kw">impl</span>&lt;T: Ord&gt; Drop <span class="kw">for </span>PeekMut&lt;<span class="lifetime">&#39;_</span>, T&gt; {
+    <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="kw">if </span><span class="self">self</span>.tainted {
+            <span class="self">self</span>.heap.fix_root();
+        }
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">test</span> {
-    <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::SkewHeap</span>;
+<span class="kw">impl</span>&lt;T: Ord&gt; Deref <span class="kw">for </span>PeekMut&lt;<span class="lifetime">&#39;_</span>, T&gt; {
+    <span class="kw">type </span>Target = T;
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">push_with_dir</span>() {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tr</span> <span class="op">=</span> <span class="ident">SkewHeap::new</span>();
-        <span class="ident">tr</span>.<span class="ident">push_with_dir</span>(<span class="number">1</span>, <span class="kw-2">&amp;</span>[]);
-        <span class="ident">tr</span>.<span class="ident">push_with_dir</span>(<span class="number">4</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">false</span>]);
-        <span class="ident">tr</span>.<span class="ident">push_with_dir</span>(<span class="number">23</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">true</span>]);
-        <span class="ident">tr</span>.<span class="ident">push_with_dir</span>(<span class="number">63</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">false</span>, <span class="bool-val">false</span>]);
-        <span class="ident">tr</span>.<span class="ident">push_with_dir</span>(<span class="number">24</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">false</span>, <span class="bool-val">true</span>]);
-        <span class="ident">tr</span>.<span class="ident">push_with_dir</span>(<span class="number">44</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">true</span>, <span class="bool-val">false</span>]);
-        <span class="ident">tr</span>.<span class="ident">push_with_dir</span>(<span class="number">28</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">true</span>, <span class="bool-val">true</span>]);
+    <span class="kw">fn </span>deref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>T { <span class="kw-2">&amp;</span><span class="self">self</span>.heap.root.as_ref().unwrap().elem }
+}
 
-        <span class="macro">assert_eq!</span>(<span class="ident">tr</span>.<span class="ident">in_order</span>().<span class="ident">copied</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>(), [
-            <span class="number">63</span>, <span class="number">4</span>, <span class="number">24</span>, <span class="number">1</span>, <span class="number">44</span>, <span class="number">23</span>, <span class="number">28</span>
+<span class="kw">impl</span>&lt;T: Ord&gt; DerefMut <span class="kw">for </span>PeekMut&lt;<span class="lifetime">&#39;_</span>, T&gt; {
+    <span class="kw">fn </span>deref_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>T {
+        <span class="self">self</span>.tainted = <span class="bool-val">true</span>;
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>.heap.root.as_mut().unwrap().elem
+    }
+}
+
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, T: Ord&gt; PeekMut&lt;<span class="lifetime">&#39;a</span>, T&gt; {
+    <span class="kw">pub fn </span>pop(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; T {
+        <span class="kw">let </span>value = <span class="self">self</span>.heap.pop().unwrap();
+        <span class="self">self</span>.tainted = <span class="bool-val">false</span>;
+        value
+    }
+}
+
+<span class="kw">impl</span>&lt;T: Ord&gt; Default <span class="kw">for </span>SkewHeap&lt;T&gt; {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{ <span class="self">Self</span>::new() }
+}
+
+<span class="kw">use </span>std::fmt;
+
+<span class="kw">impl</span>&lt;T: fmt::Debug&gt; fmt::Debug <span class="kw">for </span>SkewHeap&lt;T&gt; {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        f.debug_list().entries(<span class="self">self</span>.bfs_order().map(|(x, ..)| x)).finish()
+    }
+}
+
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>test {
+    <span class="kw">use </span><span class="kw">super</span>::SkewHeap;
+
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>push_with_dir() {
+        <span class="kw">let </span><span class="kw-2">mut </span>tr = SkewHeap::new();
+        tr.push_with_dir(<span class="number">1</span>, <span class="kw-2">&amp;</span>[]);
+        tr.push_with_dir(<span class="number">4</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">false</span>]);
+        tr.push_with_dir(<span class="number">23</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">true</span>]);
+        tr.push_with_dir(<span class="number">63</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">false</span>, <span class="bool-val">false</span>]);
+        tr.push_with_dir(<span class="number">24</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">false</span>, <span class="bool-val">true</span>]);
+        tr.push_with_dir(<span class="number">44</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">true</span>, <span class="bool-val">false</span>]);
+        tr.push_with_dir(<span class="number">28</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">true</span>, <span class="bool-val">true</span>]);
+
+        <span class="macro">assert_eq!</span>(tr.in_order().copied().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;(), [
+            <span class="number">63</span>, <span class="number">4</span>, <span class="number">24</span>, <span class="number">1</span>, <span class="number">44</span>, <span class="number">23</span>, <span class="number">28
+        </span>]);
+    }
+
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>meld() {
+        <span class="kw">let </span><span class="kw-2">mut </span>left = SkewHeap::new();
+        left.push_with_dir(-<span class="number">1</span>, <span class="kw-2">&amp;</span>[]);
+        left.push_with_dir(-<span class="number">4</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">false</span>]);
+        left.push_with_dir(-<span class="number">23</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">true</span>]);
+        left.push_with_dir(-<span class="number">63</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">false</span>, <span class="bool-val">false</span>]);
+        left.push_with_dir(-<span class="number">24</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">false</span>, <span class="bool-val">true</span>]);
+        left.push_with_dir(-<span class="number">44</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">true</span>, <span class="bool-val">false</span>]);
+        left.push_with_dir(-<span class="number">28</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">true</span>, <span class="bool-val">true</span>]);
+
+        <span class="macro">assert_eq!</span>(left.in_order().copied().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;(), [
+            -<span class="number">63</span>, -<span class="number">4</span>, -<span class="number">24</span>, -<span class="number">1</span>, -<span class="number">44</span>, -<span class="number">23</span>, -<span class="number">28
+        </span>]);
+
+        <span class="kw">let </span><span class="kw-2">mut </span>right = SkewHeap::new();
+        right.push_with_dir(-<span class="number">13</span>, <span class="kw-2">&amp;</span>[]);
+        right.push_with_dir(-<span class="number">17</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">false</span>]);
+        right.push_with_dir(-<span class="number">99</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">true</span>]);
+        right.push_with_dir(-<span class="number">57</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">false</span>, <span class="bool-val">false</span>]);
+        right.push_with_dir(-<span class="number">49</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">false</span>, <span class="bool-val">true</span>]);
+        right.push_with_dir(-<span class="number">105</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">true</span>, <span class="bool-val">false</span>]);
+        right.push_with_dir(-<span class="number">201</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">true</span>, <span class="bool-val">true</span>]);
+
+        <span class="macro">assert_eq!</span>(right.in_order().copied().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;(), [
+            -<span class="number">57</span>, -<span class="number">17</span>, -<span class="number">49</span>, -<span class="number">13</span>, -<span class="number">105</span>, -<span class="number">99</span>, -<span class="number">201
+        </span>]);
+
+        left.meld(right);
+        <span class="kw">let </span>melded: Vec&lt;<span class="kw">_</span>&gt; = left
+            .bfs_order()
+            .map(|(<span class="kw-2">&amp;</span>v, l, r)| (v, l.copied(), r.copied()))
+            .collect();
+        <span class="macro">assert_eq!</span>(melded, [
+            (-<span class="number">1</span>, <span class="prelude-val">Some</span>(-<span class="number">13</span>), <span class="prelude-val">Some</span>(-<span class="number">4</span>)),
+            (-<span class="number">13</span>, <span class="prelude-val">Some</span>(-<span class="number">23</span>), <span class="prelude-val">Some</span>(-<span class="number">17</span>)),
+            (-<span class="number">4</span>, <span class="prelude-val">Some</span>(-<span class="number">63</span>), <span class="prelude-val">Some</span>(-<span class="number">24</span>)),
+            (-<span class="number">23</span>, <span class="prelude-val">Some</span>(-<span class="number">28</span>), <span class="prelude-val">Some</span>(-<span class="number">44</span>)),
+            (-<span class="number">17</span>, <span class="prelude-val">Some</span>(-<span class="number">57</span>), <span class="prelude-val">Some</span>(-<span class="number">49</span>)),
+            (-<span class="number">63</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
+            (-<span class="number">24</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
+            (-<span class="number">28</span>, <span class="prelude-val">Some</span>(-<span class="number">99</span>), <span class="prelude-val">None</span>),
+            (-<span class="number">44</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
+            (-<span class="number">57</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
+            (-<span class="number">49</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
+            (-<span class="number">99</span>, <span class="prelude-val">Some</span>(-<span class="number">105</span>), <span class="prelude-val">Some</span>(-<span class="number">201</span>)),
+            (-<span class="number">105</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
+            (-<span class="number">201</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
         ]);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">meld</span>() {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">left</span> <span class="op">=</span> <span class="ident">SkewHeap::new</span>();
-        <span class="ident">left</span>.<span class="ident">push_with_dir</span>(<span class="op">-</span><span class="number">1</span>, <span class="kw-2">&amp;</span>[]);
-        <span class="ident">left</span>.<span class="ident">push_with_dir</span>(<span class="op">-</span><span class="number">4</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">false</span>]);
-        <span class="ident">left</span>.<span class="ident">push_with_dir</span>(<span class="op">-</span><span class="number">23</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">true</span>]);
-        <span class="ident">left</span>.<span class="ident">push_with_dir</span>(<span class="op">-</span><span class="number">63</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">false</span>, <span class="bool-val">false</span>]);
-        <span class="ident">left</span>.<span class="ident">push_with_dir</span>(<span class="op">-</span><span class="number">24</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">false</span>, <span class="bool-val">true</span>]);
-        <span class="ident">left</span>.<span class="ident">push_with_dir</span>(<span class="op">-</span><span class="number">44</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">true</span>, <span class="bool-val">false</span>]);
-        <span class="ident">left</span>.<span class="ident">push_with_dir</span>(<span class="op">-</span><span class="number">28</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">true</span>, <span class="bool-val">true</span>]);
-
-        <span class="macro">assert_eq!</span>(<span class="ident">left</span>.<span class="ident">in_order</span>().<span class="ident">copied</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>(), [
-            <span class="op">-</span><span class="number">63</span>, <span class="op">-</span><span class="number">4</span>, <span class="op">-</span><span class="number">24</span>, <span class="op">-</span><span class="number">1</span>, <span class="op">-</span><span class="number">44</span>, <span class="op">-</span><span class="number">23</span>, <span class="op">-</span><span class="number">28</span>
-        ]);
-
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">right</span> <span class="op">=</span> <span class="ident">SkewHeap::new</span>();
-        <span class="ident">right</span>.<span class="ident">push_with_dir</span>(<span class="op">-</span><span class="number">13</span>, <span class="kw-2">&amp;</span>[]);
-        <span class="ident">right</span>.<span class="ident">push_with_dir</span>(<span class="op">-</span><span class="number">17</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">false</span>]);
-        <span class="ident">right</span>.<span class="ident">push_with_dir</span>(<span class="op">-</span><span class="number">99</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">true</span>]);
-        <span class="ident">right</span>.<span class="ident">push_with_dir</span>(<span class="op">-</span><span class="number">57</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">false</span>, <span class="bool-val">false</span>]);
-        <span class="ident">right</span>.<span class="ident">push_with_dir</span>(<span class="op">-</span><span class="number">49</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">false</span>, <span class="bool-val">true</span>]);
-        <span class="ident">right</span>.<span class="ident">push_with_dir</span>(<span class="op">-</span><span class="number">105</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">true</span>, <span class="bool-val">false</span>]);
-        <span class="ident">right</span>.<span class="ident">push_with_dir</span>(<span class="op">-</span><span class="number">201</span>, <span class="kw-2">&amp;</span>[<span class="bool-val">true</span>, <span class="bool-val">true</span>]);
-
-        <span class="macro">assert_eq!</span>(<span class="ident">right</span>.<span class="ident">in_order</span>().<span class="ident">copied</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>(), [
-            <span class="op">-</span><span class="number">57</span>, <span class="op">-</span><span class="number">17</span>, <span class="op">-</span><span class="number">49</span>, <span class="op">-</span><span class="number">13</span>, <span class="op">-</span><span class="number">105</span>, <span class="op">-</span><span class="number">99</span>, <span class="op">-</span><span class="number">201</span>
-        ]);
-
-        <span class="ident">left</span>.<span class="ident">meld</span>(<span class="ident">right</span>);
-        <span class="kw">let</span> <span class="ident">melded</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">left</span>
-            .<span class="ident">bfs_order</span>()
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="kw-2">&amp;</span><span class="ident">v</span>, <span class="ident">l</span>, <span class="ident">r</span>)<span class="op">|</span> (<span class="ident">v</span>, <span class="ident">l</span>.<span class="ident">copied</span>(), <span class="ident">r</span>.<span class="ident">copied</span>()))
-            .<span class="ident">collect</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">melded</span>, [
-            (<span class="op">-</span><span class="number">1</span>, <span class="prelude-val">Some</span>(<span class="op">-</span><span class="number">13</span>), <span class="prelude-val">Some</span>(<span class="op">-</span><span class="number">4</span>)),
-            (<span class="op">-</span><span class="number">13</span>, <span class="prelude-val">Some</span>(<span class="op">-</span><span class="number">23</span>), <span class="prelude-val">Some</span>(<span class="op">-</span><span class="number">17</span>)),
-            (<span class="op">-</span><span class="number">4</span>, <span class="prelude-val">Some</span>(<span class="op">-</span><span class="number">63</span>), <span class="prelude-val">Some</span>(<span class="op">-</span><span class="number">24</span>)),
-            (<span class="op">-</span><span class="number">23</span>, <span class="prelude-val">Some</span>(<span class="op">-</span><span class="number">28</span>), <span class="prelude-val">Some</span>(<span class="op">-</span><span class="number">44</span>)),
-            (<span class="op">-</span><span class="number">17</span>, <span class="prelude-val">Some</span>(<span class="op">-</span><span class="number">57</span>), <span class="prelude-val">Some</span>(<span class="op">-</span><span class="number">49</span>)),
-            (<span class="op">-</span><span class="number">63</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
-            (<span class="op">-</span><span class="number">24</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
-            (<span class="op">-</span><span class="number">28</span>, <span class="prelude-val">Some</span>(<span class="op">-</span><span class="number">99</span>), <span class="prelude-val">None</span>),
-            (<span class="op">-</span><span class="number">44</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
-            (<span class="op">-</span><span class="number">57</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
-            (<span class="op">-</span><span class="number">49</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
-            (<span class="op">-</span><span class="number">99</span>, <span class="prelude-val">Some</span>(<span class="op">-</span><span class="number">105</span>), <span class="prelude-val">Some</span>(<span class="op">-</span><span class="number">201</span>)),
-            (<span class="op">-</span><span class="number">105</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
-            (<span class="op">-</span><span class="number">201</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
-        ]);
-    }
-
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">heap_sort</span>() {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">a</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">2</span>, <span class="number">9</span>, <span class="number">7</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">6</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">4</span>, <span class="number">8</span>];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">heap</span> <span class="op">=</span> <span class="ident">SkewHeap::new</span>();
-        <span class="ident">heap</span>.<span class="ident">extend</span>(<span class="ident">a</span>.<span class="ident">iter</span>().<span class="ident">copied</span>());
-        <span class="ident">a</span>.<span class="ident">sort_unstable</span>();
-        <span class="ident">a</span>.<span class="ident">reverse</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">b</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-        <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="op">=</span> <span class="ident">heap</span>.<span class="ident">pop</span>() {
-            <span class="ident">b</span>.<span class="ident">push</span>(<span class="ident">x</span>);
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>heap_sort() {
+        <span class="kw">let </span><span class="kw-2">mut </span>a = <span class="macro">vec!</span>[<span class="number">2</span>, <span class="number">9</span>, <span class="number">7</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">6</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">4</span>, <span class="number">8</span>];
+        <span class="kw">let </span><span class="kw-2">mut </span>heap = SkewHeap::new();
+        heap.extend(a.iter().copied());
+        a.sort_unstable();
+        a.reverse();
+        <span class="kw">let </span><span class="kw-2">mut </span>b = <span class="macro">vec!</span>[];
+        <span class="kw">while let </span><span class="prelude-val">Some</span>(x) = heap.pop() {
+            b.push(x);
         }
-        <span class="macro">assert_eq!</span>(<span class="ident">a</span>, <span class="ident">b</span>);
+        <span class="macro">assert_eq!</span>(a, b);
 
-        <span class="macro">assert_eq!</span>(<span class="ident">heap</span>.<span class="ident">len</span>(), <span class="number">0</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">heap</span>.<span class="ident">pop</span>(), <span class="prelude-val">None</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">heap</span>.<span class="ident">pop</span>(), <span class="prelude-val">None</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">heap</span>.<span class="ident">len</span>(), <span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(heap.len(), <span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(heap.pop(), <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq!</span>(heap.pop(), <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq!</span>(heap.len(), <span class="number">0</span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">into_iter</span>() {
-        <span class="kw">let</span> <span class="ident">heap</span>: <span class="ident">SkewHeap</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span>
-            [<span class="number">2</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">1</span>].<span class="ident">iter</span>().<span class="ident">copied</span>().<span class="ident">collect</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">heap</span>.<span class="ident">len</span>(), <span class="number">8</span>);
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>into_iter() {
+        <span class="kw">let </span>heap: SkewHeap&lt;<span class="kw">_</span>&gt; =
+            [<span class="number">2</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">1</span>].iter().copied().collect();
+        <span class="macro">assert_eq!</span>(heap.len(), <span class="number">8</span>);
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">iter</span> <span class="op">=</span> <span class="ident">heap</span>.<span class="ident">into_iter</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">iter</span>.<span class="ident">size_hint</span>(), (<span class="number">8</span>, <span class="prelude-val">Some</span>(<span class="number">8</span>)));
-        <span class="macro">assert_eq!</span>(<span class="ident">iter</span>.<span class="ident">len</span>(), <span class="number">8</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">iter</span>.<span class="ident">next</span>(), <span class="prelude-val">Some</span>(<span class="number">6</span>));
-        <span class="macro">assert_eq!</span>(<span class="ident">iter</span>.<span class="ident">size_hint</span>(), (<span class="number">7</span>, <span class="prelude-val">Some</span>(<span class="number">7</span>)));
-        <span class="macro">assert_eq!</span>(<span class="ident">iter</span>.<span class="ident">len</span>(), <span class="number">7</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">iter</span>.<span class="ident">next</span>(), <span class="prelude-val">Some</span>(<span class="number">6</span>));
-        <span class="macro">assert_eq!</span>(<span class="ident">iter</span>.<span class="ident">next</span>(), <span class="prelude-val">Some</span>(<span class="number">5</span>));
-        <span class="macro">assert_eq!</span>(<span class="ident">iter</span>.<span class="ident">len</span>(), <span class="number">5</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">iter</span>.<span class="ident">next</span>(), <span class="prelude-val">Some</span>(<span class="number">4</span>));
-        <span class="macro">assert_eq!</span>(<span class="ident">iter</span>.<span class="ident">len</span>(), <span class="number">4</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">iter</span>.<span class="ident">next</span>(), <span class="prelude-val">Some</span>(<span class="number">3</span>));
-        <span class="macro">assert_eq!</span>(<span class="ident">iter</span>.<span class="ident">len</span>(), <span class="number">3</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">iter</span>.<span class="ident">next</span>(), <span class="prelude-val">Some</span>(<span class="number">2</span>));
-        <span class="macro">assert_eq!</span>(<span class="ident">iter</span>.<span class="ident">len</span>(), <span class="number">2</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">iter</span>.<span class="ident">next</span>(), <span class="prelude-val">Some</span>(<span class="number">1</span>));
-        <span class="macro">assert_eq!</span>(<span class="ident">iter</span>.<span class="ident">len</span>(), <span class="number">1</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">iter</span>.<span class="ident">next</span>(), <span class="prelude-val">Some</span>(<span class="number">1</span>));
-        <span class="macro">assert_eq!</span>(<span class="ident">iter</span>.<span class="ident">len</span>(), <span class="number">0</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">iter</span>.<span class="ident">next</span>(), <span class="prelude-val">None</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">iter</span>.<span class="ident">len</span>(), <span class="number">0</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>iter = heap.into_iter();
+        <span class="macro">assert_eq!</span>(iter.size_hint(), (<span class="number">8</span>, <span class="prelude-val">Some</span>(<span class="number">8</span>)));
+        <span class="macro">assert_eq!</span>(iter.len(), <span class="number">8</span>);
+        <span class="macro">assert_eq!</span>(iter.next(), <span class="prelude-val">Some</span>(<span class="number">6</span>));
+        <span class="macro">assert_eq!</span>(iter.size_hint(), (<span class="number">7</span>, <span class="prelude-val">Some</span>(<span class="number">7</span>)));
+        <span class="macro">assert_eq!</span>(iter.len(), <span class="number">7</span>);
+        <span class="macro">assert_eq!</span>(iter.next(), <span class="prelude-val">Some</span>(<span class="number">6</span>));
+        <span class="macro">assert_eq!</span>(iter.next(), <span class="prelude-val">Some</span>(<span class="number">5</span>));
+        <span class="macro">assert_eq!</span>(iter.len(), <span class="number">5</span>);
+        <span class="macro">assert_eq!</span>(iter.next(), <span class="prelude-val">Some</span>(<span class="number">4</span>));
+        <span class="macro">assert_eq!</span>(iter.len(), <span class="number">4</span>);
+        <span class="macro">assert_eq!</span>(iter.next(), <span class="prelude-val">Some</span>(<span class="number">3</span>));
+        <span class="macro">assert_eq!</span>(iter.len(), <span class="number">3</span>);
+        <span class="macro">assert_eq!</span>(iter.next(), <span class="prelude-val">Some</span>(<span class="number">2</span>));
+        <span class="macro">assert_eq!</span>(iter.len(), <span class="number">2</span>);
+        <span class="macro">assert_eq!</span>(iter.next(), <span class="prelude-val">Some</span>(<span class="number">1</span>));
+        <span class="macro">assert_eq!</span>(iter.len(), <span class="number">1</span>);
+        <span class="macro">assert_eq!</span>(iter.next(), <span class="prelude-val">Some</span>(<span class="number">1</span>));
+        <span class="macro">assert_eq!</span>(iter.len(), <span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(iter.next(), <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq!</span>(iter.len(), <span class="number">0</span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">peek</span>() {
-        <span class="kw">use</span> <span class="ident">std::cmp::Reverse</span>;
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>peek() {
+        <span class="kw">use </span>std::cmp::Reverse;
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">heap</span>: <span class="ident">SkewHeap</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span>
-            [<span class="number">2</span>, <span class="number">5</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">6</span>, <span class="number">2</span>].<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">x</span><span class="op">|</span> <span class="ident">Reverse</span>(<span class="ident">x</span>)).<span class="ident">collect</span>();
+        <span class="kw">let </span><span class="kw-2">mut </span>heap: SkewHeap&lt;<span class="kw">_</span>&gt; =
+            [<span class="number">2</span>, <span class="number">5</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">6</span>, <span class="number">2</span>].iter().map(|<span class="kw-2">&amp;</span>x| Reverse(x)).collect();
 
-        <span class="macro">assert_eq!</span>(<span class="ident">heap</span>.<span class="ident">peek</span>(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">Reverse</span>(<span class="number">1</span>)));
-        <span class="ident">heap</span>.<span class="ident">peek_mut</span>().<span class="ident">unwrap</span>().<span class="number">0</span> <span class="op">-</span><span class="op">=</span> <span class="number">1</span>; <span class="comment">// [0, 2, 2, 3, 5, 6]</span>
-        <span class="macro">assert_eq!</span>(<span class="ident">heap</span>.<span class="ident">peek</span>(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">Reverse</span>(<span class="number">0</span>)));
-        <span class="ident">heap</span>.<span class="ident">peek_mut</span>().<span class="ident">unwrap</span>().<span class="number">0</span> <span class="op">+</span><span class="op">=</span> <span class="number">4</span>; <span class="comment">// [2, 2, 3, 4, 5, 6]</span>
-        <span class="macro">assert_eq!</span>(<span class="ident">heap</span>.<span class="ident">peek</span>(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">Reverse</span>(<span class="number">2</span>)));
-        <span class="macro">assert_eq!</span>(<span class="ident">heap</span>.<span class="ident">peek_mut</span>().<span class="ident">unwrap</span>().<span class="ident">pop</span>().<span class="number">0</span>, <span class="number">2</span>); <span class="comment">// [2, 3, 4, 5, 6]</span>
-        <span class="macro">assert_eq!</span>(<span class="ident">heap</span>.<span class="ident">peek</span>(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">Reverse</span>(<span class="number">2</span>)));
-        <span class="macro">assert_eq!</span>(<span class="ident">heap</span>.<span class="ident">peek_mut</span>().<span class="ident">unwrap</span>().<span class="number">0</span>, <span class="number">2</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">heap</span>.<span class="ident">peek_mut</span>().<span class="ident">unwrap</span>().<span class="ident">pop</span>().<span class="number">0</span>, <span class="number">2</span>); <span class="comment">// [3, 4, 5, 6]</span>
-        <span class="macro">assert_eq!</span>(<span class="ident">heap</span>.<span class="ident">peek</span>(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">Reverse</span>(<span class="number">3</span>)));
-        <span class="macro">assert_eq!</span>(<span class="ident">heap</span>.<span class="ident">pop</span>(), <span class="prelude-val">Some</span>(<span class="ident">Reverse</span>(<span class="number">3</span>))); <span class="comment">// [4, 5, 6]</span>
-        <span class="macro">assert_eq!</span>(<span class="ident">heap</span>.<span class="ident">peek</span>(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">Reverse</span>(<span class="number">4</span>)));
+        <span class="macro">assert_eq!</span>(heap.peek(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>Reverse(<span class="number">1</span>)));
+        heap.peek_mut().unwrap().<span class="number">0 </span>-= <span class="number">1</span>; <span class="comment">// [0, 2, 2, 3, 5, 6]
+        </span><span class="macro">assert_eq!</span>(heap.peek(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>Reverse(<span class="number">0</span>)));
+        heap.peek_mut().unwrap().<span class="number">0 </span>+= <span class="number">4</span>; <span class="comment">// [2, 2, 3, 4, 5, 6]
+        </span><span class="macro">assert_eq!</span>(heap.peek(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>Reverse(<span class="number">2</span>)));
+        <span class="macro">assert_eq!</span>(heap.peek_mut().unwrap().pop().<span class="number">0</span>, <span class="number">2</span>); <span class="comment">// [2, 3, 4, 5, 6]
+        </span><span class="macro">assert_eq!</span>(heap.peek(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>Reverse(<span class="number">2</span>)));
+        <span class="macro">assert_eq!</span>(heap.peek_mut().unwrap().<span class="number">0</span>, <span class="number">2</span>);
+        <span class="macro">assert_eq!</span>(heap.peek_mut().unwrap().pop().<span class="number">0</span>, <span class="number">2</span>); <span class="comment">// [3, 4, 5, 6]
+        </span><span class="macro">assert_eq!</span>(heap.peek(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>Reverse(<span class="number">3</span>)));
+        <span class="macro">assert_eq!</span>(heap.pop(), <span class="prelude-val">Some</span>(Reverse(<span class="number">3</span>))); <span class="comment">// [4, 5, 6]
+        </span><span class="macro">assert_eq!</span>(heap.peek(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>Reverse(<span class="number">4</span>)));
 
-        <span class="ident">heap</span>.<span class="ident">peek_mut</span>().<span class="ident">unwrap</span>().<span class="number">0</span> <span class="op">+</span><span class="op">=</span> <span class="number">10</span>; <span class="comment">// [5, 6, 14]</span>
-        <span class="macro">assert_eq!</span>(<span class="ident">heap</span>.<span class="ident">peek</span>(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">Reverse</span>(<span class="number">5</span>)));
+        heap.peek_mut().unwrap().<span class="number">0 </span>+= <span class="number">10</span>; <span class="comment">// [5, 6, 14]
+        </span><span class="macro">assert_eq!</span>(heap.peek(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>Reverse(<span class="number">5</span>)));
 
-        <span class="ident">heap</span>.<span class="ident">push</span>(<span class="ident">Reverse</span>(<span class="number">8</span>)); <span class="comment">// [5, 6, 8, 14]</span>
-        <span class="macro">assert_eq!</span>(<span class="ident">heap</span>.<span class="ident">peek</span>(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">Reverse</span>(<span class="number">5</span>)));
-        <span class="macro">assert_eq!</span>(<span class="ident">heap</span>.<span class="ident">pop</span>(), <span class="prelude-val">Some</span>(<span class="ident">Reverse</span>(<span class="number">5</span>))); <span class="comment">// [6, 8, 14]</span>
-        <span class="macro">assert_eq!</span>(<span class="ident">heap</span>.<span class="ident">pop</span>(), <span class="prelude-val">Some</span>(<span class="ident">Reverse</span>(<span class="number">6</span>))); <span class="comment">// [8, 14]</span>
-        <span class="macro">assert_eq!</span>(<span class="ident">heap</span>.<span class="ident">pop</span>(), <span class="prelude-val">Some</span>(<span class="ident">Reverse</span>(<span class="number">8</span>))); <span class="comment">// [14]</span>
-        <span class="macro">assert_eq!</span>(<span class="ident">heap</span>.<span class="ident">peek_mut</span>().<span class="ident">unwrap</span>().<span class="ident">pop</span>().<span class="number">0</span>, <span class="number">14</span>);
-        <span class="macro">assert!</span>(<span class="ident">heap</span>.<span class="ident">peek_mut</span>().<span class="ident">is_none</span>());
-        <span class="macro">assert!</span>(<span class="ident">heap</span>.<span class="ident">peek</span>().<span class="ident">is_none</span>());
+        heap.push(Reverse(<span class="number">8</span>)); <span class="comment">// [5, 6, 8, 14]
+        </span><span class="macro">assert_eq!</span>(heap.peek(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>Reverse(<span class="number">5</span>)));
+        <span class="macro">assert_eq!</span>(heap.pop(), <span class="prelude-val">Some</span>(Reverse(<span class="number">5</span>))); <span class="comment">// [6, 8, 14]
+        </span><span class="macro">assert_eq!</span>(heap.pop(), <span class="prelude-val">Some</span>(Reverse(<span class="number">6</span>))); <span class="comment">// [8, 14]
+        </span><span class="macro">assert_eq!</span>(heap.pop(), <span class="prelude-val">Some</span>(Reverse(<span class="number">8</span>))); <span class="comment">// [14]
+        </span><span class="macro">assert_eq!</span>(heap.peek_mut().unwrap().pop().<span class="number">0</span>, <span class="number">14</span>);
+        <span class="macro">assert!</span>(heap.peek_mut().is_none());
+        <span class="macro">assert!</span>(heap.peek().is_none());
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/sqrt.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>sqrt.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/sqrt.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>sqrt.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -168,86 +168,86 @@
 <span id="79">79</span>
 <span id="80">80</span>
 <span id="81">81</span>
-</pre><pre class="rust"><code><span class="doccomment">//! 平方根。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! 平方根。
 
-<span class="doccomment">/// 平方根。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $\\lfloor\\sqrt{n}\\rfloor$ を求める。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// $O(\\log(n))$ time.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Newton 法で $O(\\log(\\log(n)))$ time にするべき？</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::math::Sqrt;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(0_i32.sqrt(), 0);</span>
-<span class="doccomment">/// assert_eq!(9_i32.sqrt(), 3);</span>
-<span class="doccomment">/// assert_eq!(12_i32.sqrt(), 3);</span>
-<span class="doccomment">/// assert_eq!(16_i32.sqrt(), 4);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(u128::MAX.sqrt(), (1 &lt;&lt; 64) - 1);</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```should_panic</span>
-<span class="doccomment">/// use nekolib::math::Sqrt;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// (-1_i32).sqrt();</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Sqrt</span> {
-    <span class="kw">fn</span> <span class="ident">sqrt</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
+/// 平方根。
+///
+/// $\\lfloor\\sqrt{n}\\rfloor$ を求める。
+///
+/// # Complexity
+/// $O(\\log(n))$ time.
+///
+/// Newton 法で $O(\\log(\\log(n)))$ time にするべき？
+///
+/// # Examples
+/// ```
+/// use nekolib::math::Sqrt;
+///
+/// assert_eq!(0_i32.sqrt(), 0);
+/// assert_eq!(9_i32.sqrt(), 3);
+/// assert_eq!(12_i32.sqrt(), 3);
+/// assert_eq!(16_i32.sqrt(), 4);
+///
+/// assert_eq!(u128::MAX.sqrt(), (1 &lt;&lt; 64) - 1);
+/// ```
+///
+/// ```should_panic
+/// use nekolib::math::Sqrt;
+///
+/// (-1_i32).sqrt();
+/// ```
+</span><span class="kw">pub trait </span>Sqrt {
+    <span class="kw">fn </span>sqrt(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_uint</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span> <span class="ident">Sqrt</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">sqrt</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> <span class="ident">pred</span> <span class="op">=</span> <span class="op">|</span><span class="ident">i</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">|</span> {
-                    <span class="ident">i</span>.<span class="ident">checked_pow</span>(<span class="number">2</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i2</span><span class="op">|</span> <span class="ident">i2</span> <span class="op">&lt;</span><span class="op">=</span> <span class="self">self</span>).<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>)
+<span class="macro">macro_rules! </span>impl_uint {
+    (<span class="macro-nonterminal">$t</span>:ty) =&gt; {
+        <span class="kw">impl </span>Sqrt <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
+            <span class="kw">fn </span>sqrt(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span>pred = |i: <span class="macro-nonterminal">$t</span>| {
+                    i.checked_pow(<span class="number">2</span>).map(|i2| i2 &lt;= <span class="self">self</span>).unwrap_or(<span class="bool-val">false</span>)
                 };
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ok</span> <span class="op">=</span> <span class="number">0</span>;
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bad</span> <span class="op">=</span> <span class="number">1</span>;
-                <span class="kw">while</span> <span class="ident">pred</span>(<span class="ident">bad</span>) {
-                    <span class="ident">bad</span> <span class="kw-2">*</span><span class="op">=</span> <span class="number">2</span>;
+                <span class="kw">let </span><span class="kw-2">mut </span>ok = <span class="number">0</span>;
+                <span class="kw">let </span><span class="kw-2">mut </span>bad = <span class="number">1</span>;
+                <span class="kw">while </span>pred(bad) {
+                    bad <span class="kw-2">*</span>= <span class="number">2</span>;
                 }
-                <span class="kw">while</span> <span class="ident">bad</span> <span class="op">-</span> <span class="ident">ok</span> <span class="op">&gt;</span> <span class="number">1</span> {
-                    <span class="kw">let</span> <span class="ident">mid</span> <span class="op">=</span> <span class="ident">ok</span> <span class="op">+</span> (<span class="ident">bad</span> <span class="op">-</span> <span class="ident">ok</span>) <span class="op">/</span> <span class="number">2</span>;
-                    <span class="kw-2">*</span>(<span class="kw">if</span> <span class="ident">pred</span>(<span class="ident">mid</span>) { <span class="kw-2">&amp;mut</span> <span class="ident">ok</span> } <span class="kw">else</span> { <span class="kw-2">&amp;mut</span> <span class="ident">bad</span> }) <span class="op">=</span> <span class="ident">mid</span>;
+                <span class="kw">while </span>bad - ok &gt; <span class="number">1 </span>{
+                    <span class="kw">let </span>mid = ok + (bad - ok) / <span class="number">2</span>;
+                    <span class="kw-2">*</span>(<span class="kw">if </span>pred(mid) { <span class="kw-2">&amp;mut </span>ok } <span class="kw">else </span>{ <span class="kw-2">&amp;mut </span>bad }) = mid;
                 }
-                <span class="ident">ok</span>
+                ok
             }
         }
     };
-    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
+    ( $(<span class="macro-nonterminal">$t</span>:ty)* ) =&gt; { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$t</span>);)* };
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_int</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span> <span class="ident">Sqrt</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">sqrt</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> {
-                <span class="macro">assert!</span>(<span class="self">self</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">0</span>, <span class="string">&quot;must be non-negative&quot;</span>);
-                <span class="kw">let</span> <span class="ident">pred</span> <span class="op">=</span> <span class="op">|</span><span class="ident">i</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">|</span> {
-                    <span class="ident">i</span>.<span class="ident">checked_pow</span>(<span class="number">2</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i2</span><span class="op">|</span> <span class="ident">i2</span> <span class="op">&lt;</span><span class="op">=</span> <span class="self">self</span>).<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>)
+<span class="macro">macro_rules! </span>impl_int {
+    (<span class="macro-nonterminal">$t</span>:ty) =&gt; {
+        <span class="kw">impl </span>Sqrt <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
+            <span class="kw">fn </span>sqrt(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
+                <span class="macro">assert!</span>(<span class="self">self </span>&gt;= <span class="number">0</span>, <span class="string">&quot;must be non-negative&quot;</span>);
+                <span class="kw">let </span>pred = |i: <span class="macro-nonterminal">$t</span>| {
+                    i.checked_pow(<span class="number">2</span>).map(|i2| i2 &lt;= <span class="self">self</span>).unwrap_or(<span class="bool-val">false</span>)
                 };
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ok</span> <span class="op">=</span> <span class="number">0</span>;
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bad</span> <span class="op">=</span> <span class="number">1</span>;
-                <span class="kw">while</span> <span class="ident">pred</span>(<span class="ident">bad</span>) {
-                    <span class="ident">bad</span> <span class="kw-2">*</span><span class="op">=</span> <span class="number">2</span>;
+                <span class="kw">let </span><span class="kw-2">mut </span>ok = <span class="number">0</span>;
+                <span class="kw">let </span><span class="kw-2">mut </span>bad = <span class="number">1</span>;
+                <span class="kw">while </span>pred(bad) {
+                    bad <span class="kw-2">*</span>= <span class="number">2</span>;
                 }
-                <span class="kw">while</span> <span class="ident">bad</span> <span class="op">-</span> <span class="ident">ok</span> <span class="op">&gt;</span> <span class="number">1</span> {
-                    <span class="kw">let</span> <span class="ident">mid</span> <span class="op">=</span> <span class="ident">ok</span> <span class="op">+</span> (<span class="ident">bad</span> <span class="op">-</span> <span class="ident">ok</span>) <span class="op">/</span> <span class="number">2</span>;
-                    <span class="kw-2">*</span>(<span class="kw">if</span> <span class="ident">pred</span>(<span class="ident">mid</span>) { <span class="kw-2">&amp;mut</span> <span class="ident">ok</span> } <span class="kw">else</span> { <span class="kw-2">&amp;mut</span> <span class="ident">bad</span> }) <span class="op">=</span> <span class="ident">mid</span>;
+                <span class="kw">while </span>bad - ok &gt; <span class="number">1 </span>{
+                    <span class="kw">let </span>mid = ok + (bad - ok) / <span class="number">2</span>;
+                    <span class="kw-2">*</span>(<span class="kw">if </span>pred(mid) { <span class="kw-2">&amp;mut </span>ok } <span class="kw">else </span>{ <span class="kw-2">&amp;mut </span>bad }) = mid;
                 }
-                <span class="ident">ok</span>
+                ok
             }
         }
     };
-    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(<span class="macro">impl_int!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
+    ( $(<span class="macro-nonterminal">$t</span>:ty)* ) =&gt; { $(<span class="macro">impl_int!</span>(<span class="macro-nonterminal">$t</span>);)* };
 }
 
-<span class="macro">impl_uint!</span>(<span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span>);
-<span class="macro">impl_int!</span>(<span class="ident">i8</span> <span class="ident">i16</span> <span class="ident">i32</span> <span class="ident">i64</span> <span class="ident">i128</span> <span class="ident">isize</span>);
+<span class="macro">impl_uint!</span>(u8 u16 u32 u64 u128 usize);
+<span class="macro">impl_int!</span>(i8 i16 i32 i64 i128 isize);
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/algo/larsch.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>larsch.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/algo/larsch.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>larsch.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -502,420 +502,420 @@
 <span id="413">413</span>
 <span id="414">414</span>
 <span id="415">415</span>
-</pre><pre class="rust"><code><span class="doccomment">//! LARSCH algorithm。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! LARSCH algorithm。
 
-<span class="kw">use</span> <span class="ident">std::cell::RefCell</span>;
-<span class="kw">use</span> <span class="ident">std::ops::Add</span>;
-<span class="kw">use</span> <span class="ident">std::rc</span>::{<span class="ident">Rc</span>, <span class="ident">Weak</span>};
+</span><span class="kw">use </span>std::cell::RefCell;
+<span class="kw">use </span>std::ops::Add;
+<span class="kw">use </span>std::rc::{Rc, Weak};
 
-<span class="kw">enum</span> <span class="ident">Reduce</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">W</span><span class="op">&gt;</span> {
-    <span class="ident">Reduce0E</span>,
-    <span class="ident">Reduce1E</span>(<span class="ident">Reduce1</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">W</span><span class="op">&gt;</span>),
-    <span class="ident">Reduce2E</span>(<span class="ident">Reduce2</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">W</span><span class="op">&gt;</span>),
+<span class="kw">enum </span>Reduce&lt;T, F, W&gt; {
+    Reduce0E,
+    Reduce1E(Reduce1&lt;T, F, W&gt;),
+    Reduce2E(Reduce2&lt;T, F, W&gt;),
 }
-<span class="kw">use</span> <span class="ident">Reduce</span>::{<span class="ident">Reduce0E</span>, <span class="ident">Reduce1E</span>, <span class="ident">Reduce2E</span>};
+<span class="kw">use </span>Reduce::{Reduce0E, Reduce1E, Reduce2E};
 
-<span class="kw">struct</span> <span class="ident">Fetcher</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">W</span><span class="op">&gt;</span> {
-    <span class="ident">dp</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">map</span>: <span class="ident">F</span>,
-    <span class="ident">trans</span>: <span class="ident">W</span>,
-}
-
-<span class="kw">struct</span> <span class="ident">Reduce1</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">W</span><span class="op">&gt;</span> {
-    <span class="ident">n</span>: <span class="ident">usize</span>,
-    <span class="ident">i</span>: <span class="ident">usize</span>,
-    <span class="ident">j0</span>: <span class="ident">usize</span>,
-    <span class="ident">j1</span>: <span class="ident">usize</span>,
-    <span class="ident">reduce</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Reduce</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">row_shift</span>: <span class="ident">u32</span>,
-    <span class="ident">col_map</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">c</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">fetcher</span>: <span class="ident">Weak</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Fetcher</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="kw">struct </span>Fetcher&lt;T, F, W&gt; {
+    dp: RefCell&lt;Vec&lt;<span class="prelude-ty">Option</span>&lt;T&gt;&gt;&gt;,
+    map: F,
+    trans: W,
 }
 
-<span class="kw">struct</span> <span class="ident">Reduce2</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">W</span><span class="op">&gt;</span> {
-    <span class="ident">n</span>: <span class="ident">usize</span>,
-    <span class="ident">i</span>: <span class="ident">usize</span>,
-    <span class="ident">j</span>: <span class="ident">usize</span>,
-    <span class="ident">srow</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-    <span class="ident">scol</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-    <span class="ident">reduce</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Reduce</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">row_shift</span>: <span class="ident">u32</span>,
-    <span class="ident">col_map</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">c</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">fetcher</span>: <span class="ident">Weak</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Fetcher</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="kw">struct </span>Reduce1&lt;T, F, W&gt; {
+    n: usize,
+    i: usize,
+    j0: usize,
+    j1: usize,
+    reduce: Box&lt;Reduce&lt;T, F, W&gt;&gt;,
+    row_shift: u32,
+    col_map: RefCell&lt;Vec&lt;usize&gt;&gt;,
+    c: RefCell&lt;Vec&lt;usize&gt;&gt;,
+    fetcher: Weak&lt;RefCell&lt;Fetcher&lt;T, F, W&gt;&gt;&gt;,
 }
 
-<span class="doccomment">/// LARSCH algorithm。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $E[i] = F[j] + W(j, i)$ ($0\\le j&lt;i&lt;n$) と書ける DP を計算する。</span>
-<span class="doccomment">/// ここで、$F[j]$ は $E[j]$ から高速に計算できる値とし、$W$ は concave QI</span>
-<span class="doccomment">/// を満たすとする。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// `todo!()` ちゃんと書く</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $\\gdef\\DP{\operatorname{dp}}$</span>
-<span class="doccomment">/// 行列 $M[i, j]$ は、$\\DP[j]$ から $\\DP[i]$ に遷移するときのコストを表し、</span>
-<span class="doccomment">/// 値がオンラインに定まる。この行列は concave totally monotone になっている。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// この行列の row minima を求めるのに相当する。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// `(argmin, min): (Vec&lt;usize&gt;, Vec&lt;T&gt;)` を返すので、`i = n - 1` から始めて</span>
-<span class="doccomment">/// `argmin[i] -&gt; i` の遷移を辿ることで復元も可能。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Notes</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// SMAWK のオンライン版。SMAWK もそのうち書く。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::algo::Larsch;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let a = vec![1_i64, 2, 3, 4, 5];</span>
-<span class="doccomment">/// let c = 6;</span>
-<span class="doccomment">/// let n = a.len();</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let map = |&amp;x: &amp;i64| x;</span>
-<span class="doccomment">/// let trans = |il: usize, ir: usize| (a[il] - a[ir]).pow(2) + c;</span>
-<span class="doccomment">/// let (argmin, min) = Larsch::new(n - 1, n - 1, 0, map, trans).solve();</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(argmin, &amp;[0, 0, 0, 0, 2]);</span>
-<span class="doccomment">/// assert_eq!(min, &amp;[0, 7, 10, 15, 20]);</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 愚直に書いたときの DP がどんな感じかを書いておくと役立つ場合がありそう。`todo!()`</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// $E[\\bullet]$ の計算を $O(1)$ time として $O(n)$ time。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # References</span>
-<span class="doccomment">/// - Larmore, Lawrence L., and Baruch Schieber. &quot;On-line dynamic programming with applications to the prediction of RNA secondary structure.&quot; *Journal of Algorithms* 12, no. 3 (1991): 490--515.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ## See also</span>
-<span class="doccomment">/// - &lt;https://noshi91.github.io/Library/algorithm/larsch.cpp&gt;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Applications</span>
-<span class="doccomment">/// [Examples](#examples) にある EDPC-Z の例の他、[AOJ 3086](https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=3086)</span>
-<span class="doccomment">/// などにも利用できる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use std::cmp::Reverse;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// use nekolib::{algo::Larsch, ds::N1Rmq};</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let a = vec![1, 1, 5, 5, 1, 1];</span>
-<span class="doccomment">/// let l = 2;</span>
-<span class="doccomment">/// let n = a.len();</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let a: Vec&lt;_&gt; = a.into_iter().map(|ai| Reverse(ai)).collect();</span>
-<span class="doccomment">/// let rmq: N1Rmq&lt;_&gt; = a.into();</span>
-<span class="doccomment">/// let oo = 10_i64.pow(18);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let map = |&amp;x: &amp;i64| x;</span>
-<span class="doccomment">/// let trans = |il: usize, ir: usize| {</span>
-<span class="doccomment">///     if ir &lt; il + l { oo } else { -rmq.min(il, ir).0 }</span>
-<span class="doccomment">/// };</span>
-<span class="doccomment">/// let (argmin, min) = Larsch::new(n, n, 0, map, trans).solve();</span>
-<span class="doccomment">/// let max: Vec&lt;_&gt; = min.into_iter().map(|x| -x).collect();</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(argmin, &amp;[0, 0, 0, 0, 2, 3, 3]);</span>
-<span class="doccomment">/// assert_eq!(max, &amp;[0, -oo, 1, 5, 6, 10, 10]);</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Larsch</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">W</span><span class="op">&gt;</span> {
-    <span class="ident">n</span>: <span class="ident">usize</span>,
-    <span class="ident">reduce</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Reduce</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">fetcher</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Fetcher</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="kw">struct </span>Reduce2&lt;T, F, W&gt; {
+    n: usize,
+    i: usize,
+    j: usize,
+    srow: Vec&lt;usize&gt;,
+    scol: Vec&lt;usize&gt;,
+    reduce: Box&lt;Reduce&lt;T, F, W&gt;&gt;,
+    row_shift: u32,
+    col_map: RefCell&lt;Vec&lt;usize&gt;&gt;,
+    c: RefCell&lt;Vec&lt;usize&gt;&gt;,
+    fetcher: Weak&lt;RefCell&lt;Fetcher&lt;T, F, W&gt;&gt;&gt;,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="ident">Reduce</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">W</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">T</span>) -&gt; <span class="ident">T</span>,
-    <span class="ident">W</span>: <span class="ident">Fn</span>(<span class="ident">usize</span>, <span class="ident">usize</span>) -&gt; <span class="ident">T</span>,
-    <span class="ident">T</span>: <span class="ident">Add</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">T</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Ord</span>,
+<span class="doccomment">/// LARSCH algorithm。
+///
+/// $E[i] = F[j] + W(j, i)$ ($0\\le j&lt;i&lt;n$) と書ける DP を計算する。
+/// ここで、$F[j]$ は $E[j]$ から高速に計算できる値とし、$W$ は concave QI
+/// を満たすとする。
+///
+/// `todo!()` ちゃんと書く
+///
+/// $\\gdef\\DP{\operatorname{dp}}$
+/// 行列 $M[i, j]$ は、$\\DP[j]$ から $\\DP[i]$ に遷移するときのコストを表し、
+/// 値がオンラインに定まる。この行列は concave totally monotone になっている。
+///
+/// この行列の row minima を求めるのに相当する。
+///
+/// `(argmin, min): (Vec&lt;usize&gt;, Vec&lt;T&gt;)` を返すので、`i = n - 1` から始めて
+/// `argmin[i] -&gt; i` の遷移を辿ることで復元も可能。
+///
+/// # Notes
+///
+/// SMAWK のオンライン版。SMAWK もそのうち書く。
+///
+/// # Examples
+/// ```
+/// use nekolib::algo::Larsch;
+///
+/// let a = vec![1_i64, 2, 3, 4, 5];
+/// let c = 6;
+/// let n = a.len();
+///
+/// let map = |&amp;x: &amp;i64| x;
+/// let trans = |il: usize, ir: usize| (a[il] - a[ir]).pow(2) + c;
+/// let (argmin, min) = Larsch::new(n - 1, n - 1, 0, map, trans).solve();
+///
+/// assert_eq!(argmin, &amp;[0, 0, 0, 0, 2]);
+/// assert_eq!(min, &amp;[0, 7, 10, 15, 20]);
+/// ```
+///
+/// 愚直に書いたときの DP がどんな感じかを書いておくと役立つ場合がありそう。`todo!()`
+///
+/// # Complexity
+/// $E[\\bullet]$ の計算を $O(1)$ time として $O(n)$ time。
+///
+/// # References
+/// - Larmore, Lawrence L., and Baruch Schieber. &quot;On-line dynamic programming with applications to the prediction of RNA secondary structure.&quot; *Journal of Algorithms* 12, no. 3 (1991): 490--515.
+///
+/// ## See also
+/// - &lt;https://noshi91.github.io/Library/algorithm/larsch.cpp&gt;
+///
+/// # Applications
+/// [Examples](#examples) にある EDPC-Z の例の他、[AOJ 3086](https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=3086)
+/// などにも利用できる。
+///
+/// ```
+/// use std::cmp::Reverse;
+///
+/// use nekolib::{algo::Larsch, ds::N1Rmq};
+///
+/// let a = vec![1, 1, 5, 5, 1, 1];
+/// let l = 2;
+/// let n = a.len();
+///
+/// let a: Vec&lt;_&gt; = a.into_iter().map(|ai| Reverse(ai)).collect();
+/// let rmq: N1Rmq&lt;_&gt; = a.into();
+/// let oo = 10_i64.pow(18);
+///
+/// let map = |&amp;x: &amp;i64| x;
+/// let trans = |il: usize, ir: usize| {
+///     if ir &lt; il + l { oo } else { -rmq.min(il, ir).0 }
+/// };
+/// let (argmin, min) = Larsch::new(n, n, 0, map, trans).solve();
+/// let max: Vec&lt;_&gt; = min.into_iter().map(|x| -x).collect();
+///
+/// assert_eq!(argmin, &amp;[0, 0, 0, 0, 2, 3, 3]);
+/// assert_eq!(max, &amp;[0, -oo, 1, 5, 6, 10, 10]);
+/// ```
+</span><span class="kw">pub struct </span>Larsch&lt;T, F, W&gt; {
+    n: usize,
+    reduce: Box&lt;Reduce&lt;T, F, W&gt;&gt;,
+    fetcher: Rc&lt;RefCell&lt;Fetcher&lt;T, F, W&gt;&gt;&gt;,
+}
+
+<span class="kw">impl</span>&lt;T, F, W&gt; Reduce&lt;T, F, W&gt;
+<span class="kw">where
+    </span>F: Fn(<span class="kw-2">&amp;</span>T) -&gt; T,
+    W: Fn(usize, usize) -&gt; T,
+    T: Add&lt;Output = T&gt; + Ord,
 {
-    <span class="kw">fn</span> <span class="ident">new</span>(
-        <span class="ident">n</span>: <span class="ident">usize</span>,
-        <span class="ident">m</span>: <span class="ident">usize</span>,
-        <span class="ident">row_shift</span>: <span class="ident">u32</span>,
-        <span class="ident">col_map</span>: <span class="kw-2">&amp;</span>[<span class="ident">usize</span>],
-        <span class="ident">fetcher</span>: <span class="ident">Weak</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Fetcher</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    ) -&gt; <span class="self">Self</span> {
-        <span class="kw">if</span> <span class="ident">n</span> <span class="op">==</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">m</span> <span class="op">==</span> <span class="number">1</span> {
-            <span class="ident">Reduce0E</span>
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">n</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">m</span> {
-            <span class="ident">Reduce1E</span>(<span class="ident">Reduce1::new</span>(<span class="ident">n</span>, <span class="ident">m</span>, <span class="ident">row_shift</span>, <span class="ident">col_map</span>, <span class="ident">fetcher</span>))
-        } <span class="kw">else</span> {
-            <span class="ident">Reduce2E</span>(<span class="ident">Reduce2::new</span>(<span class="ident">n</span>, <span class="ident">m</span>, <span class="ident">row_shift</span>, <span class="ident">col_map</span>, <span class="ident">fetcher</span>))
+    <span class="kw">fn </span>new(
+        n: usize,
+        m: usize,
+        row_shift: u32,
+        col_map: <span class="kw-2">&amp;</span>[usize],
+        fetcher: Weak&lt;RefCell&lt;Fetcher&lt;T, F, W&gt;&gt;&gt;,
+    ) -&gt; <span class="self">Self </span>{
+        <span class="kw">if </span>n == <span class="number">0 </span>&amp;&amp; m == <span class="number">1 </span>{
+            Reduce0E
+        } <span class="kw">else if </span>n &gt;= m {
+            Reduce1E(Reduce1::new(n, m, row_shift, col_map, fetcher))
+        } <span class="kw">else </span>{
+            Reduce2E(Reduce2::new(n, m, row_shift, col_map, fetcher))
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">Reduce0E</span> =&gt; <span class="prelude-val">None</span>,
-            <span class="ident">Reduce1E</span>(<span class="ident">r</span>) =&gt; <span class="ident">r</span>.<span class="ident">next</span>(),
-            <span class="ident">Reduce2E</span>(<span class="ident">r</span>) =&gt; <span class="ident">r</span>.<span class="ident">next</span>(),
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt; {
+        <span class="kw">match </span><span class="self">self </span>{
+            Reduce0E =&gt; <span class="prelude-val">None</span>,
+            Reduce1E(r) =&gt; r.next(),
+            Reduce2E(r) =&gt; r.next(),
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">set_col_map</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">i_par</span>: <span class="ident">usize</span>, <span class="ident">i_child</span>: <span class="ident">usize</span>) {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">Reduce0E</span> =&gt; {}
-            <span class="ident">Reduce1E</span>(<span class="ident">r</span>) =&gt; <span class="ident">r</span>.<span class="ident">set_col_map</span>(<span class="ident">i_par</span>, <span class="ident">i_child</span>),
-            <span class="ident">Reduce2E</span>(<span class="ident">r</span>) =&gt; <span class="ident">r</span>.<span class="ident">set_col_map</span>(<span class="ident">i_par</span>, <span class="ident">i_child</span>),
+    <span class="kw">fn </span>set_col_map(<span class="kw-2">&amp;mut </span><span class="self">self</span>, i_par: usize, i_child: usize) {
+        <span class="kw">match </span><span class="self">self </span>{
+            Reduce0E =&gt; {}
+            Reduce1E(r) =&gt; r.set_col_map(i_par, i_child),
+            Reduce2E(r) =&gt; r.set_col_map(i_par, i_child),
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">set_c</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>, <span class="ident">j</span>: <span class="ident">usize</span>) {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">Reduce0E</span> =&gt; {}
-            <span class="ident">Reduce1E</span>(<span class="ident">r</span>) =&gt; <span class="ident">r</span>.<span class="ident">set_c</span>(<span class="ident">i</span>, <span class="ident">j</span>),
-            <span class="ident">Reduce2E</span>(<span class="ident">r</span>) =&gt; <span class="ident">r</span>.<span class="ident">set_c</span>(<span class="ident">i</span>, <span class="ident">j</span>),
+    <span class="kw">fn </span>set_c(<span class="kw-2">&amp;mut </span><span class="self">self</span>, i: usize, j: usize) {
+        <span class="kw">match </span><span class="self">self </span>{
+            Reduce0E =&gt; {}
+            Reduce1E(r) =&gt; r.set_c(i, j),
+            Reduce2E(r) =&gt; r.set_c(i, j),
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="ident">Fetcher</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">W</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">T</span>) -&gt; <span class="ident">T</span>,
-    <span class="ident">W</span>: <span class="ident">Fn</span>(<span class="ident">usize</span>, <span class="ident">usize</span>) -&gt; <span class="ident">T</span>,
-    <span class="ident">T</span>: <span class="ident">Add</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">T</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Ord</span>,
+<span class="kw">impl</span>&lt;T, F, W&gt; Fetcher&lt;T, F, W&gt;
+<span class="kw">where
+    </span>F: Fn(<span class="kw-2">&amp;</span>T) -&gt; T,
+    W: Fn(usize, usize) -&gt; T,
+    T: Add&lt;Output = T&gt; + Ord,
 {
-    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">dp</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">map</span>: <span class="ident">F</span>, <span class="ident">trans</span>: <span class="ident">W</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">dp</span> <span class="op">=</span> <span class="ident">RefCell::new</span>(<span class="ident">dp</span>);
-        <span class="self">Self</span> { <span class="ident">dp</span>, <span class="ident">map</span>, <span class="ident">trans</span> }
+    <span class="kw">fn </span>new(dp: Vec&lt;<span class="prelude-ty">Option</span>&lt;T&gt;&gt;, map: F, trans: W) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>dp = RefCell::new(dp);
+        <span class="self">Self </span>{ dp, map, trans }
     }
 
-    <span class="kw">fn</span> <span class="ident">fetch</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>, <span class="ident">j</span>: <span class="ident">usize</span>) -&gt; <span class="ident">T</span> {
-        <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> (<span class="self">self</span>.<span class="ident">map</span>)(<span class="self">self</span>.<span class="ident">dp</span>.<span class="ident">borrow</span>()[<span class="ident">j</span>].<span class="ident">as_ref</span>().<span class="ident">unwrap</span>());
-        <span class="kw">let</span> <span class="ident">w</span> <span class="op">=</span> (<span class="self">self</span>.<span class="ident">trans</span>)(<span class="ident">j</span>, <span class="ident">i</span>);
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">f</span> <span class="op">+</span> <span class="ident">w</span>;
-        <span class="ident">res</span>
+    <span class="kw">fn </span>fetch(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize, j: usize) -&gt; T {
+        <span class="kw">let </span>f = (<span class="self">self</span>.map)(<span class="self">self</span>.dp.borrow()[j].as_ref().unwrap());
+        <span class="kw">let </span>w = (<span class="self">self</span>.trans)(j, i);
+        <span class="kw">let </span>res = f + w;
+        res
     }
 
-    <span class="kw">fn</span> <span class="ident">set</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>, <span class="ident">val</span>: <span class="ident">T</span>) { <span class="self">self</span>.<span class="ident">dp</span>.<span class="ident">borrow_mut</span>()[<span class="ident">i</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">val</span>); }
+    <span class="kw">fn </span>set(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize, val: T) { <span class="self">self</span>.dp.borrow_mut()[i] = <span class="prelude-val">Some</span>(val); }
 
-    <span class="kw">fn</span> <span class="ident">finish</span>(<span class="self">self</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">dp</span>.<span class="ident">into_inner</span>().<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">Option::unwrap</span>).<span class="ident">collect</span>()
+    <span class="kw">fn </span>finish(<span class="self">self</span>) -&gt; Vec&lt;T&gt; {
+        <span class="self">self</span>.dp.into_inner().into_iter().map(Option::unwrap).collect()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="ident">Larsch</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">W</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">T</span>) -&gt; <span class="ident">T</span>,
-    <span class="ident">W</span>: <span class="ident">Fn</span>(<span class="ident">usize</span>, <span class="ident">usize</span>) -&gt; <span class="ident">T</span>,
-    <span class="ident">T</span>: <span class="ident">Add</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">T</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Ord</span>,
+<span class="kw">impl</span>&lt;T, F, W&gt; Larsch&lt;T, F, W&gt;
+<span class="kw">where
+    </span>F: Fn(<span class="kw-2">&amp;</span>T) -&gt; T,
+    W: Fn(usize, usize) -&gt; T,
+    T: Add&lt;Output = T&gt; + Ord,
 {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">n</span>: <span class="ident">usize</span>, <span class="ident">m</span>: <span class="ident">usize</span>, <span class="ident">init</span>: <span class="ident">T</span>, <span class="ident">map</span>: <span class="ident">F</span>, <span class="ident">trans</span>: <span class="ident">W</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">dp</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="op">=</span><span class="ident">n</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="prelude-val">None</span>).<span class="ident">collect</span>();
-        <span class="kw">let</span> <span class="ident">fetcher</span> <span class="op">=</span> <span class="ident">Fetcher::new</span>(<span class="ident">dp</span>, <span class="ident">map</span>, <span class="ident">trans</span>);
-        <span class="ident">fetcher</span>.<span class="ident">set</span>(<span class="number">0</span>, <span class="ident">init</span>);
-        <span class="kw">let</span> <span class="ident">fetcher</span> <span class="op">=</span> <span class="ident">Rc::new</span>(<span class="ident">RefCell::new</span>(<span class="ident">fetcher</span>));
-        <span class="kw">let</span> <span class="ident">row_shift</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">let</span> <span class="ident">col_map</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">m</span>).<span class="ident">collect</span>();
-        <span class="kw">let</span> <span class="ident">reduce</span> <span class="op">=</span>
-            <span class="ident">Reduce::new</span>(<span class="ident">n</span>, <span class="ident">m</span>, <span class="ident">row_shift</span>, <span class="kw-2">&amp;</span><span class="ident">col_map</span>, <span class="ident">Rc::downgrade</span>(<span class="kw-2">&amp;</span><span class="ident">fetcher</span>));
-        <span class="self">Self</span> { <span class="ident">n</span>, <span class="ident">reduce</span>: <span class="ident">Box::new</span>(<span class="ident">reduce</span>), <span class="ident">fetcher</span> }
+    <span class="kw">pub fn </span>new(n: usize, m: usize, init: T, map: F, trans: W) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>dp: Vec&lt;<span class="kw">_</span>&gt; = (<span class="number">0</span>..=n).map(|<span class="kw">_</span>| <span class="prelude-val">None</span>).collect();
+        <span class="kw">let </span>fetcher = Fetcher::new(dp, map, trans);
+        fetcher.set(<span class="number">0</span>, init);
+        <span class="kw">let </span>fetcher = Rc::new(RefCell::new(fetcher));
+        <span class="kw">let </span>row_shift = <span class="number">0</span>;
+        <span class="kw">let </span>col_map: Vec&lt;<span class="kw">_</span>&gt; = (<span class="number">0</span>..m).collect();
+        <span class="kw">let </span>reduce =
+            Reduce::new(n, m, row_shift, <span class="kw-2">&amp;</span>col_map, Rc::downgrade(<span class="kw-2">&amp;</span>fetcher));
+        <span class="self">Self </span>{ n, reduce: Box::new(reduce), fetcher }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">solve</span>(<span class="kw-2">mut</span> <span class="self">self</span>) -&gt; (<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">argmin</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0</span>; <span class="self">self</span>.<span class="ident">n</span> <span class="op">+</span> <span class="number">1</span>];
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">1</span>..<span class="op">=</span><span class="self">self</span>.<span class="ident">n</span> {
-            <span class="self">self</span>.<span class="ident">reduce</span>.<span class="ident">set_c</span>(<span class="ident">i</span>, <span class="ident">i</span> <span class="op">-</span> <span class="number">1</span>);
-            <span class="ident">argmin</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="self">self</span>.<span class="ident">reduce</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>();
-            <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">fetcher</span>.<span class="ident">borrow</span>().<span class="ident">fetch</span>(<span class="ident">i</span>, <span class="ident">argmin</span>[<span class="ident">i</span>]);
-            <span class="self">self</span>.<span class="ident">fetcher</span>.<span class="ident">borrow</span>().<span class="ident">set</span>(<span class="ident">i</span>, <span class="ident">x</span>);
+    <span class="kw">pub fn </span>solve(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; (Vec&lt;usize&gt;, Vec&lt;T&gt;) {
+        <span class="kw">let </span><span class="kw-2">mut </span>argmin = <span class="macro">vec!</span>[<span class="number">0</span>; <span class="self">self</span>.n + <span class="number">1</span>];
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..=<span class="self">self</span>.n {
+            <span class="self">self</span>.reduce.set_c(i, i - <span class="number">1</span>);
+            argmin[i] = <span class="self">self</span>.reduce.next().unwrap();
+            <span class="kw">let </span>x = <span class="self">self</span>.fetcher.borrow().fetch(i, argmin[i]);
+            <span class="self">self</span>.fetcher.borrow().set(i, x);
         }
 
-        <span class="kw">let</span> <span class="ident">dp</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span>
-            <span class="ident">Rc::try_unwrap</span>(<span class="self">self</span>.<span class="ident">fetcher</span>).<span class="ident">ok</span>().<span class="ident">unwrap</span>().<span class="ident">into_inner</span>().<span class="ident">finish</span>();
+        <span class="kw">let </span>dp: Vec&lt;<span class="kw">_</span>&gt; =
+            Rc::try_unwrap(<span class="self">self</span>.fetcher).ok().unwrap().into_inner().finish();
 
-        (<span class="ident">argmin</span>, <span class="ident">dp</span>)
+        (argmin, dp)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="ident">Reduce1</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">W</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">T</span>) -&gt; <span class="ident">T</span>,
-    <span class="ident">W</span>: <span class="ident">Fn</span>(<span class="ident">usize</span>, <span class="ident">usize</span>) -&gt; <span class="ident">T</span>,
-    <span class="ident">T</span>: <span class="ident">Add</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">T</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Ord</span>,
+<span class="kw">impl</span>&lt;T, F, W&gt; Reduce1&lt;T, F, W&gt;
+<span class="kw">where
+    </span>F: Fn(<span class="kw-2">&amp;</span>T) -&gt; T,
+    W: Fn(usize, usize) -&gt; T,
+    T: Add&lt;Output = T&gt; + Ord,
 {
-    <span class="kw">fn</span> <span class="ident">new</span>(
-        <span class="ident">n</span>: <span class="ident">usize</span>,
-        <span class="ident">m</span>: <span class="ident">usize</span>,
-        <span class="ident">row_shift</span>: <span class="ident">u32</span>,
-        <span class="ident">col_map</span>: <span class="kw-2">&amp;</span>[<span class="ident">usize</span>],
-        <span class="ident">fetcher</span>: <span class="ident">Weak</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Fetcher</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    ) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">reduce</span> <span class="op">=</span> <span class="ident">Reduce::new</span>(
-            <span class="ident">n</span> <span class="op">/</span> <span class="number">2</span>,
-            <span class="ident">m</span>,
-            <span class="ident">row_shift</span> <span class="op">+</span> <span class="number">1</span>,
-            <span class="ident">col_map</span>,
-            <span class="ident">Weak::clone</span>(<span class="kw-2">&amp;</span><span class="ident">fetcher</span>),
+    <span class="kw">fn </span>new(
+        n: usize,
+        m: usize,
+        row_shift: u32,
+        col_map: <span class="kw-2">&amp;</span>[usize],
+        fetcher: Weak&lt;RefCell&lt;Fetcher&lt;T, F, W&gt;&gt;&gt;,
+    ) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>reduce = Reduce::new(
+            n / <span class="number">2</span>,
+            m,
+            row_shift + <span class="number">1</span>,
+            col_map,
+            Weak::clone(<span class="kw-2">&amp;</span>fetcher),
         );
 
-        <span class="self">Self</span> {
-            <span class="ident">n</span>,
-            <span class="ident">i</span>: <span class="number">1</span>,
-            <span class="ident">j0</span>: <span class="number">0</span>,
-            <span class="ident">j1</span>: <span class="number">0</span>,
-            <span class="ident">reduce</span>: <span class="ident">Box::new</span>(<span class="ident">reduce</span>),
-            <span class="ident">row_shift</span>,
-            <span class="ident">col_map</span>: <span class="ident">RefCell::new</span>(<span class="ident">col_map</span>.<span class="ident">to_vec</span>()),
-            <span class="ident">c</span>: <span class="ident">RefCell::new</span>(<span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">n</span> <span class="op">+</span> <span class="number">1</span>]),
-            <span class="ident">fetcher</span>,
+        <span class="self">Self </span>{
+            n,
+            i: <span class="number">1</span>,
+            j0: <span class="number">0</span>,
+            j1: <span class="number">0</span>,
+            reduce: Box::new(reduce),
+            row_shift,
+            col_map: RefCell::new(col_map.to_vec()),
+            c: RefCell::new(<span class="macro">vec!</span>[<span class="number">0</span>; n + <span class="number">1</span>]),
+            fetcher,
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">c</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">c</span>.<span class="ident">borrow</span>()[<span class="ident">i</span>] }
+    <span class="kw">fn </span>c(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize) -&gt; usize { <span class="self">self</span>.c.borrow()[i] }
 
-    <span class="kw">fn</span> <span class="ident">set_col_map</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">i_par</span>: <span class="ident">usize</span>, <span class="ident">i_child</span>: <span class="ident">usize</span>) {
-        <span class="self">self</span>.<span class="ident">col_map</span>.<span class="ident">borrow_mut</span>()[<span class="ident">i_child</span>] <span class="op">=</span> <span class="ident">i_par</span>;
-        <span class="self">self</span>.<span class="ident">reduce</span>.<span class="ident">set_col_map</span>(<span class="ident">i_par</span>, <span class="ident">i_child</span>);
+    <span class="kw">fn </span>set_col_map(<span class="kw-2">&amp;mut </span><span class="self">self</span>, i_par: usize, i_child: usize) {
+        <span class="self">self</span>.col_map.borrow_mut()[i_child] = i_par;
+        <span class="self">self</span>.reduce.set_col_map(i_par, i_child);
     }
 
-    <span class="kw">fn</span> <span class="ident">set_c</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>, <span class="ident">j</span>: <span class="ident">usize</span>) {
-        <span class="self">self</span>.<span class="ident">c</span>.<span class="ident">borrow_mut</span>()[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">j</span>;
-        <span class="kw">if</span> <span class="ident">i</span> <span class="op">/</span> <span class="number">2</span> <span class="op">+</span> <span class="number">1</span> <span class="op">&lt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">n</span> <span class="op">/</span> <span class="number">2</span> {
-            <span class="self">self</span>.<span class="ident">reduce</span>.<span class="ident">set_c</span>(<span class="ident">i</span> <span class="op">/</span> <span class="number">2</span> <span class="op">+</span> <span class="number">1</span>, <span class="ident">j</span>);
+    <span class="kw">fn </span>set_c(<span class="kw-2">&amp;mut </span><span class="self">self</span>, i: usize, j: usize) {
+        <span class="self">self</span>.c.borrow_mut()[i] = j;
+        <span class="kw">if </span>i / <span class="number">2 </span>+ <span class="number">1 </span>&lt;= <span class="self">self</span>.n / <span class="number">2 </span>{
+            <span class="self">self</span>.reduce.set_c(i / <span class="number">2 </span>+ <span class="number">1</span>, j);
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">fetch</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>, <span class="ident">j</span>: <span class="ident">usize</span>) -&gt; <span class="ident">T</span> {
-        <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">row_shift</span>;
-        <span class="kw">let</span> <span class="ident">j</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">col_map</span>.<span class="ident">borrow</span>()[<span class="ident">j</span>];
-        <span class="self">self</span>.<span class="ident">fetcher</span>.<span class="ident">upgrade</span>().<span class="ident">unwrap</span>().<span class="ident">borrow</span>().<span class="ident">fetch</span>(<span class="ident">i</span>, <span class="ident">j</span>)
+    <span class="kw">fn </span>fetch(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize, j: usize) -&gt; T {
+        <span class="kw">let </span>i = i &lt;&lt; <span class="self">self</span>.row_shift;
+        <span class="kw">let </span>j = <span class="self">self</span>.col_map.borrow()[j];
+        <span class="self">self</span>.fetcher.upgrade().unwrap().borrow().fetch(i, j)
     }
 
-    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">i</span> <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">n</span> {
-            <span class="kw">return</span> <span class="prelude-val">None</span>;
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt; {
+        <span class="kw">if </span><span class="self">self</span>.i &gt; <span class="self">self</span>.n {
+            <span class="kw">return </span><span class="prelude-val">None</span>;
         }
 
-        <span class="kw">let</span> <span class="ident">j_range</span> <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">i</span> <span class="op">%</span> <span class="number">2</span> <span class="op">==</span> <span class="number">1</span> {
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">i</span> <span class="op">%</span> <span class="number">2</span> <span class="op">==</span> <span class="number">1</span> <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">i</span> <span class="op">/</span> <span class="number">2</span> <span class="op">+</span> <span class="number">1</span> <span class="op">&lt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">n</span> <span class="op">/</span> <span class="number">2</span> {
-                <span class="self">self</span>.<span class="ident">reduce</span>.<span class="ident">set_c</span>(<span class="self">self</span>.<span class="ident">i</span> <span class="op">/</span> <span class="number">2</span> <span class="op">+</span> <span class="number">1</span>, <span class="self">self</span>.<span class="ident">c</span>(<span class="self">self</span>.<span class="ident">i</span>));
+        <span class="kw">let </span>j_range = <span class="kw">if </span><span class="self">self</span>.i % <span class="number">2 </span>== <span class="number">1 </span>{
+            <span class="kw">if </span><span class="self">self</span>.i % <span class="number">2 </span>== <span class="number">1 </span>&amp;&amp; <span class="self">self</span>.i / <span class="number">2 </span>+ <span class="number">1 </span>&lt;= <span class="self">self</span>.n / <span class="number">2 </span>{
+                <span class="self">self</span>.reduce.set_c(<span class="self">self</span>.i / <span class="number">2 </span>+ <span class="number">1</span>, <span class="self">self</span>.c(<span class="self">self</span>.i));
             }
-            <span class="self">self</span>.<span class="ident">j1</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">reduce</span>.<span class="ident">next</span>().<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">c</span>(<span class="self">self</span>.<span class="ident">i</span>));
-            (<span class="self">self</span>.<span class="ident">j0</span>..<span class="op">=</span><span class="self">self</span>.<span class="ident">j1</span>).<span class="ident">chain</span>(<span class="prelude-val">None</span>)
-        } <span class="kw">else</span> {
-            (<span class="self">self</span>.<span class="ident">c</span>(<span class="self">self</span>.<span class="ident">i</span> <span class="op">-</span> <span class="number">1</span>) <span class="op">+</span> <span class="number">1</span>..<span class="op">=</span><span class="self">self</span>.<span class="ident">c</span>(<span class="self">self</span>.<span class="ident">i</span>)).<span class="ident">chain</span>(<span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">j1</span>))
+            <span class="self">self</span>.j1 = <span class="self">self</span>.reduce.next().unwrap_or_else(|| <span class="self">self</span>.c(<span class="self">self</span>.i));
+            (<span class="self">self</span>.j0..=<span class="self">self</span>.j1).chain(<span class="prelude-val">None</span>)
+        } <span class="kw">else </span>{
+            (<span class="self">self</span>.c(<span class="self">self</span>.i - <span class="number">1</span>) + <span class="number">1</span>..=<span class="self">self</span>.c(<span class="self">self</span>.i)).chain(<span class="prelude-val">Some</span>(<span class="self">self</span>.j1))
         };
 
-        <span class="kw">let</span> <span class="ident">j</span> <span class="op">=</span> <span class="ident">j_range</span>.<span class="ident">min_by_key</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">j</span><span class="op">|</span> (<span class="self">self</span>.<span class="ident">fetch</span>(<span class="self">self</span>.<span class="ident">i</span>, <span class="ident">j</span>), <span class="ident">j</span>)).<span class="ident">unwrap</span>();
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">i</span> <span class="op">%</span> <span class="number">2</span> <span class="op">==</span> <span class="number">0</span> {
-            <span class="self">self</span>.<span class="ident">j0</span> <span class="op">=</span> <span class="ident">j</span>;
+        <span class="kw">let </span>j = j_range.min_by_key(|<span class="kw-2">&amp;</span>j| (<span class="self">self</span>.fetch(<span class="self">self</span>.i, j), j)).unwrap();
+        <span class="kw">if </span><span class="self">self</span>.i % <span class="number">2 </span>== <span class="number">0 </span>{
+            <span class="self">self</span>.j0 = j;
         }
 
-        <span class="self">self</span>.<span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-        <span class="prelude-val">Some</span>(<span class="ident">j</span>)
+        <span class="self">self</span>.i += <span class="number">1</span>;
+        <span class="prelude-val">Some</span>(j)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="ident">Reduce2</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">W</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">T</span>) -&gt; <span class="ident">T</span>,
-    <span class="ident">W</span>: <span class="ident">Fn</span>(<span class="ident">usize</span>, <span class="ident">usize</span>) -&gt; <span class="ident">T</span>,
-    <span class="ident">T</span>: <span class="ident">Add</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="ident">T</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Ord</span>,
+<span class="kw">impl</span>&lt;T, F, W&gt; Reduce2&lt;T, F, W&gt;
+<span class="kw">where
+    </span>F: Fn(<span class="kw-2">&amp;</span>T) -&gt; T,
+    W: Fn(usize, usize) -&gt; T,
+    T: Add&lt;Output = T&gt; + Ord,
 {
-    <span class="kw">fn</span> <span class="ident">new</span>(
-        <span class="ident">n</span>: <span class="ident">usize</span>,
-        <span class="ident">_m</span>: <span class="ident">usize</span>,
-        <span class="ident">row_shift</span>: <span class="ident">u32</span>,
-        <span class="ident">col_map</span>: <span class="kw-2">&amp;</span>[<span class="ident">usize</span>],
-        <span class="ident">fetcher</span>: <span class="ident">Weak</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Fetcher</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    ) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">reduce</span> <span class="op">=</span>
-            <span class="ident">Reduce::new</span>(<span class="ident">n</span>, <span class="ident">n</span>, <span class="ident">row_shift</span>, <span class="kw-2">&amp;</span><span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">n</span>], <span class="ident">Weak::clone</span>(<span class="kw-2">&amp;</span><span class="ident">fetcher</span>));
+    <span class="kw">fn </span>new(
+        n: usize,
+        _m: usize,
+        row_shift: u32,
+        col_map: <span class="kw-2">&amp;</span>[usize],
+        fetcher: Weak&lt;RefCell&lt;Fetcher&lt;T, F, W&gt;&gt;&gt;,
+    ) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>reduce =
+            Reduce::new(n, n, row_shift, <span class="kw-2">&amp;</span><span class="macro">vec!</span>[<span class="number">0</span>; n], Weak::clone(<span class="kw-2">&amp;</span>fetcher));
 
-        <span class="self">Self</span> {
-            <span class="ident">n</span>,
-            <span class="ident">i</span>: <span class="number">1</span>,
-            <span class="ident">j</span>: <span class="number">0</span>,
-            <span class="ident">srow</span>: <span class="macro">vec!</span>[<span class="number">0</span>],
-            <span class="ident">scol</span>: <span class="macro">vec!</span>[<span class="number">0</span>],
-            <span class="ident">reduce</span>: <span class="ident">Box::new</span>(<span class="ident">reduce</span>),
-            <span class="ident">row_shift</span>,
-            <span class="ident">col_map</span>: <span class="ident">RefCell::new</span>(<span class="ident">col_map</span>.<span class="ident">to_vec</span>()),
-            <span class="ident">c</span>: <span class="ident">RefCell::new</span>(<span class="macro">vec!</span>[<span class="number">0</span>; <span class="ident">n</span> <span class="op">+</span> <span class="number">1</span>]),
-            <span class="ident">fetcher</span>,
+        <span class="self">Self </span>{
+            n,
+            i: <span class="number">1</span>,
+            j: <span class="number">0</span>,
+            srow: <span class="macro">vec!</span>[<span class="number">0</span>],
+            scol: <span class="macro">vec!</span>[<span class="number">0</span>],
+            reduce: Box::new(reduce),
+            row_shift,
+            col_map: RefCell::new(col_map.to_vec()),
+            c: RefCell::new(<span class="macro">vec!</span>[<span class="number">0</span>; n + <span class="number">1</span>]),
+            fetcher,
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">c</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">c</span>.<span class="ident">borrow</span>()[<span class="ident">i</span>] }
+    <span class="kw">fn </span>c(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize) -&gt; usize { <span class="self">self</span>.c.borrow()[i] }
 
-    <span class="kw">fn</span> <span class="ident">is_finite</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>, <span class="ident">j</span>: <span class="ident">usize</span>) -&gt; <span class="ident">bool</span> {
-        <span class="ident">j</span> <span class="op">&lt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">c</span>(<span class="ident">i</span>.<span class="ident">min</span>(<span class="self">self</span>.<span class="ident">i</span>))
+    <span class="kw">fn </span>is_finite(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize, j: usize) -&gt; bool {
+        j &lt;= <span class="self">self</span>.c(i.min(<span class="self">self</span>.i))
     }
 
-    <span class="kw">fn</span> <span class="ident">set_col_map</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">i_par</span>: <span class="ident">usize</span>, <span class="ident">i_child</span>: <span class="ident">usize</span>) {
-        <span class="self">self</span>.<span class="ident">col_map</span>.<span class="ident">borrow_mut</span>()[<span class="ident">i_child</span>] <span class="op">=</span> <span class="ident">i_par</span>;
+    <span class="kw">fn </span>set_col_map(<span class="kw-2">&amp;mut </span><span class="self">self</span>, i_par: usize, i_child: usize) {
+        <span class="self">self</span>.col_map.borrow_mut()[i_child] = i_par;
     }
 
-    <span class="kw">fn</span> <span class="ident">set_c</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>, <span class="ident">j</span>: <span class="ident">usize</span>) { <span class="self">self</span>.<span class="ident">c</span>.<span class="ident">borrow_mut</span>()[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">j</span>; }
+    <span class="kw">fn </span>set_c(<span class="kw-2">&amp;mut </span><span class="self">self</span>, i: usize, j: usize) { <span class="self">self</span>.c.borrow_mut()[i] = j; }
 
-    <span class="kw">fn</span> <span class="ident">fetch</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>, <span class="ident">j</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_finite</span>(<span class="ident">i</span>, <span class="ident">j</span>) {
-            <span class="kw">return</span> <span class="prelude-val">None</span>;
+    <span class="kw">fn </span>fetch(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize, j: usize) -&gt; <span class="prelude-ty">Option</span>&lt;T&gt; {
+        <span class="kw">if </span>!<span class="self">self</span>.is_finite(i, j) {
+            <span class="kw">return </span><span class="prelude-val">None</span>;
         }
 
-        <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">row_shift</span>;
-        <span class="kw">let</span> <span class="ident">j</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">col_map</span>.<span class="ident">borrow</span>()[<span class="ident">j</span>];
+        <span class="kw">let </span>i = i &lt;&lt; <span class="self">self</span>.row_shift;
+        <span class="kw">let </span>j = <span class="self">self</span>.col_map.borrow()[j];
 
-        <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">fetcher</span>.<span class="ident">upgrade</span>().<span class="ident">unwrap</span>().<span class="ident">borrow</span>().<span class="ident">fetch</span>(<span class="ident">i</span>, <span class="ident">j</span>))
+        <span class="prelude-val">Some</span>(<span class="self">self</span>.fetcher.upgrade().unwrap().borrow().fetch(i, j))
     }
 
-    <span class="kw">fn</span> <span class="ident">is_lt</span>(
+    <span class="kw">fn </span>is_lt(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        (<span class="ident">il</span>, <span class="ident">jl</span>): (<span class="ident">usize</span>, <span class="ident">usize</span>),
-        (<span class="ident">ir</span>, <span class="ident">jr</span>): (<span class="ident">usize</span>, <span class="ident">usize</span>),
-    ) -&gt; <span class="ident">bool</span> {
-        <span class="kw">if</span> (<span class="ident">il</span>, <span class="ident">jl</span>) <span class="op">==</span> (<span class="ident">ir</span>, <span class="ident">jr</span>) {
-            <span class="kw">return</span> <span class="bool-val">false</span>;
+        (il, jl): (usize, usize),
+        (ir, jr): (usize, usize),
+    ) -&gt; bool {
+        <span class="kw">if </span>(il, jl) == (ir, jr) {
+            <span class="kw">return </span><span class="bool-val">false</span>;
         }
-        <span class="kw">match</span> (<span class="self">self</span>.<span class="ident">fetch</span>(<span class="ident">il</span>, <span class="ident">jl</span>), <span class="self">self</span>.<span class="ident">fetch</span>(<span class="ident">ir</span>, <span class="ident">jr</span>)) {
-            (<span class="prelude-val">Some</span>(<span class="ident">fl</span>), <span class="prelude-val">Some</span>(<span class="ident">fr</span>)) =&gt; (<span class="ident">fl</span>, <span class="ident">jl</span>) <span class="op">&lt;</span> (<span class="ident">fr</span>, <span class="ident">jr</span>),
-            (<span class="kw">_</span>, <span class="prelude-val">None</span>) =&gt; <span class="bool-val">true</span>,  <span class="comment">// finite &lt; oo</span>
-            (<span class="prelude-val">None</span>, <span class="kw">_</span>) =&gt; <span class="bool-val">false</span>, <span class="comment">// oo &lt; finite</span>
-        }
+        <span class="kw">match </span>(<span class="self">self</span>.fetch(il, jl), <span class="self">self</span>.fetch(ir, jr)) {
+            (<span class="prelude-val">Some</span>(fl), <span class="prelude-val">Some</span>(fr)) =&gt; (fl, jl) &lt; (fr, jr),
+            (<span class="kw">_</span>, <span class="prelude-val">None</span>) =&gt; <span class="bool-val">true</span>,  <span class="comment">// finite &lt; oo
+            </span>(<span class="prelude-val">None</span>, <span class="kw">_</span>) =&gt; <span class="bool-val">false</span>, <span class="comment">// oo &lt; finite
+        </span>}
     }
 
-    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">i</span> <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">n</span> {
-            <span class="kw">return</span> <span class="prelude-val">None</span>;
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt; {
+        <span class="kw">if </span><span class="self">self</span>.i &gt; <span class="self">self</span>.n {
+            <span class="kw">return </span><span class="prelude-val">None</span>;
         }
 
-        <span class="comment">// c[0] := -1</span>
-        <span class="kw">let</span> <span class="ident">jl</span> <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">i</span> <span class="op">==</span> <span class="number">1</span> { <span class="number">0</span> } <span class="kw">else</span> { <span class="self">self</span>.<span class="ident">c</span>(<span class="self">self</span>.<span class="ident">i</span> <span class="op">-</span> <span class="number">1</span>) <span class="op">+</span> <span class="number">1</span> };
-        <span class="kw">let</span> <span class="ident">jr</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">c</span>(<span class="self">self</span>.<span class="ident">i</span>);
-        <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="ident">jl</span>..<span class="op">=</span><span class="ident">jr</span> {
-            <span class="kw">loop</span> {
-                <span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">srow</span>.<span class="ident">last</span>().<span class="ident">unwrap</span>();
-                <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">scol</span>.<span class="ident">last</span>().<span class="ident">unwrap</span>();
-                <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_lt</span>((<span class="ident">r</span>, <span class="ident">j</span>), (<span class="ident">r</span>, <span class="ident">c</span>)) {
+        <span class="comment">// c[0] := -1
+        </span><span class="kw">let </span>jl = <span class="kw">if </span><span class="self">self</span>.i == <span class="number">1 </span>{ <span class="number">0 </span>} <span class="kw">else </span>{ <span class="self">self</span>.c(<span class="self">self</span>.i - <span class="number">1</span>) + <span class="number">1 </span>};
+        <span class="kw">let </span>jr = <span class="self">self</span>.c(<span class="self">self</span>.i);
+        <span class="kw">for </span>j <span class="kw">in </span>jl..=jr {
+            <span class="kw">loop </span>{
+                <span class="kw">let </span>r = <span class="kw-2">*</span><span class="self">self</span>.srow.last().unwrap();
+                <span class="kw">let </span>c = <span class="kw-2">*</span><span class="self">self</span>.scol.last().unwrap();
+                <span class="kw">if </span>!<span class="self">self</span>.is_lt((r, j), (r, c)) {
                     <span class="kw">break</span>;
                 }
-                <span class="self">self</span>.<span class="ident">srow</span>.<span class="ident">pop</span>();
-                <span class="self">self</span>.<span class="ident">scol</span>.<span class="ident">pop</span>();
+                <span class="self">self</span>.srow.pop();
+                <span class="self">self</span>.scol.pop();
             }
-            <span class="kw">if</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">srow</span>.<span class="ident">last</span>().<span class="ident">unwrap</span>() <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">n</span> {
-                <span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">srow</span>.<span class="ident">last</span>().<span class="ident">unwrap</span>();
-                <span class="kw">let</span> <span class="ident">i_</span> <span class="op">=</span> (<span class="ident">r</span> <span class="op">+</span> <span class="number">1</span>..).<span class="ident">find</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">i_</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">is_finite</span>(<span class="ident">i_</span>, <span class="ident">j</span>)).<span class="ident">unwrap</span>();
-                <span class="self">self</span>.<span class="ident">srow</span>.<span class="ident">push</span>(<span class="ident">i_</span>);
-                <span class="self">self</span>.<span class="ident">scol</span>.<span class="ident">push</span>(<span class="ident">j</span>);
+            <span class="kw">if </span><span class="kw-2">*</span><span class="self">self</span>.srow.last().unwrap() &lt; <span class="self">self</span>.n {
+                <span class="kw">let </span>r = <span class="kw-2">*</span><span class="self">self</span>.srow.last().unwrap();
+                <span class="kw">let </span>i_ = (r + <span class="number">1</span>..).find(|<span class="kw-2">&amp;</span>i_| <span class="self">self</span>.is_finite(i_, j)).unwrap();
+                <span class="self">self</span>.srow.push(i_);
+                <span class="self">self</span>.scol.push(j);
             }
         }
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">j</span> <span class="op">+</span> <span class="number">1</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">srow</span>.<span class="ident">len</span>() <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">srow</span>[<span class="self">self</span>.<span class="ident">j</span> <span class="op">+</span> <span class="number">1</span>] <span class="op">==</span> <span class="self">self</span>.<span class="ident">i</span> {
-            <span class="self">self</span>.<span class="ident">j</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-            <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">col_map</span>.<span class="ident">borrow</span>()[<span class="self">self</span>.<span class="ident">scol</span>[<span class="self">self</span>.<span class="ident">j</span>]];
-            <span class="self">self</span>.<span class="ident">reduce</span>.<span class="ident">set_col_map</span>(<span class="ident">tmp</span>, <span class="self">self</span>.<span class="ident">j</span> <span class="op">-</span> <span class="number">1</span>);
+        <span class="kw">if </span><span class="self">self</span>.j + <span class="number">1 </span>&lt; <span class="self">self</span>.srow.len() &amp;&amp; <span class="self">self</span>.srow[<span class="self">self</span>.j + <span class="number">1</span>] == <span class="self">self</span>.i {
+            <span class="self">self</span>.j += <span class="number">1</span>;
+            <span class="kw">let </span>tmp = <span class="self">self</span>.col_map.borrow()[<span class="self">self</span>.scol[<span class="self">self</span>.j]];
+            <span class="self">self</span>.reduce.set_col_map(tmp, <span class="self">self</span>.j - <span class="number">1</span>);
         }
 
-        <span class="self">self</span>.<span class="ident">reduce</span>.<span class="ident">set_c</span>(<span class="self">self</span>.<span class="ident">i</span>, <span class="self">self</span>.<span class="ident">j</span> <span class="op">-</span> <span class="number">1</span>);
-        <span class="kw">let</span> <span class="ident">j</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">reduce</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>();
-        <span class="self">self</span>.<span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-        <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">scol</span>[<span class="ident">j</span> <span class="op">+</span> <span class="number">1</span>])
+        <span class="self">self</span>.reduce.set_c(<span class="self">self</span>.i, <span class="self">self</span>.j - <span class="number">1</span>);
+        <span class="kw">let </span>j = <span class="self">self</span>.reduce.next().unwrap();
+        <span class="self">self</span>.i += <span class="number">1</span>;
+        <span class="prelude-val">Some</span>(<span class="self">self</span>.scol[j + <span class="number">1</span>])
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

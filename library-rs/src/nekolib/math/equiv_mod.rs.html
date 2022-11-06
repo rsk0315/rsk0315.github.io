@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/equiv_mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>equiv_mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/equiv_mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>equiv_mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -300,218 +300,218 @@
 <span id="211">211</span>
 <span id="212">212</span>
 <span id="213">213</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Chinese remaindering</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Chinese remaindering
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::gcd_recip</span>;
+</span><span class="kw">use </span><span class="kw">super</span>::gcd_recip;
 
-<span class="kw">use</span> <span class="ident">gcd_recip::GcdRecip</span>;
+<span class="kw">use </span>gcd_recip::GcdRecip;
 
-<span class="doccomment">/// Chinese remaindering。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $\\gdef{\\lcm}{\\operatorname{lcm}}$</span>
-<span class="doccomment">/// $(r\_0, m\_0)$ と $(r\_1, m\_1)$ に対し、以下を満たす $0\\le x\\lt\\lcm(m\_0, m\_1)$ を求める。</span>
-<span class="doccomment">/// - $x\\bmod m\_0 = r\_0$</span>
-<span class="doccomment">/// - $x\\bmod m\_1 = r\_1$</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 中国剰余定理から、$\\gcd(m\_0, m\_1)=1$ であれば常に存在する。</span>
-<span class="doccomment">/// そうでない場合、高々一つ存在する。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// なお、計算の利便性のため、$\\lcm(m\_0, m\_1)$ も返す。以下の例も参照。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Idea</span>
-<span class="doccomment">/// $$ \\begin{aligned}</span>
-<span class="doccomment">/// (y\\cdot m\_0+r\_0)\\bmod m\_1 &amp;= r\_1 \\\\</span>
-<span class="doccomment">/// (y\\cdot m\_0)\\bmod m\_1 &amp;= (r\_1-r\_0)\\bmod m\_1 \\\\</span>
-<span class="doccomment">/// \\end{aligned} $$</span>
-<span class="doccomment">/// $g = \\gcd(m\_0, m\_1)$ として $(m\_0, m\_1) = (u\_0g, u\_1g)$ とすると、</span>
-<span class="doccomment">/// $$ (y\\cdot u\_0g)\\bmod u\_1g = (r\_1-r\_0)\\bmod u\_1g. $$</span>
-<span class="doccomment">/// 左辺は $g$ の倍数なので、右辺も $g$ の倍数となる必要がある。</span>
-<span class="doccomment">/// よって、$r\_1\\not\\equiv r\_0\\pmod{g}$ であれば解なしとなる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 以下、$r\_1\\equiv r\_0\\pmod{g}$ とする。このとき、$r\_1-r\_0$ は $g$ で割り切れ、</span>
-<span class="doccomment">/// $$ \\begin{aligned}</span>
-<span class="doccomment">/// (y\\cdot u\_0)\\bmod u\_1 &amp;= \\left(\\frac{r\_1-r\_0}{g}\\right)\\bmod u\_1 \\\\</span>
-<span class="doccomment">/// y &amp;\\equiv \\left(\\frac{r\_1-r\_0}{g}\\right)\\cdot u\_0^{-1} \\pmod{u\_1}</span>
-<span class="doccomment">/// \\end{aligned} $$</span>
-<span class="doccomment">/// となる。$\\gcd(u\_0, u\_1)=1$ なので $u\_0^{-1}$ は存在する。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// これを満たす $0\\le y\\lt u\_1$ は一意に定まり、$x = y\\cdot m\_0+r\_0$ を計算すればよい。</span>
-<span class="doccomment">/// また、$u\_1 = m\_1/g$ より、$\\lcm(m\_0, m\_1) = m\_0\\cdot u\_1$ となる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::math::EquivMod;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!((0_i64, 2).equiv_mod((1, 3)), Some((4, 6)));</span>
-<span class="doccomment">/// assert_eq!((0_i64, 2).equiv_mod((1, 4)), None);</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// イテレータと組み合わせてもよい。</span>
-<span class="doccomment">/// 条件 $x\\bmod 1 = 0$ が単位元となることに注意。</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::math::{EquivMod, Lcm};</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let x = (2_i64..=20)</span>
-<span class="doccomment">///     .map(|m| (m - 1, m))</span>
-<span class="doccomment">///     .try_fold((0, 1), |x, y| x.equiv_mod(y));</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let lcm = (2_i64..=20).fold(1, |x, y| x.lcm(y));</span>
-<span class="doccomment">/// assert_eq!(x, Some((lcm - 1, lcm)));</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 簡略版もある。</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::math::{EquivModIter, Lcm};</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let x = (2_i64..=20).map(|m| (m - 1, m)).equiv_mod();</span>
-<span class="doccomment">/// let lcm = (2_i64..=20).fold(1, |x, y| x.lcm(y));</span>
-<span class="doccomment">/// assert_eq!(x, Some((lcm - 1, lcm)));</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(std::iter::empty().equiv_mod(), Some((0_i32, 1)));</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Reference</span>
-<span class="doccomment">/// - &lt;https://github.com/atcoder/ac-library/blob/master/atcoder/math.hpp&gt;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ## See also</span>
-<span class="doccomment">/// - &lt;https://rsk0315.hatenablog.com/entry/2021/01/18/065720#crt&gt;</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">EquivMod</span>: <span class="ident">Sized</span> {
-    <span class="kw">fn</span> <span class="ident">equiv_mod</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>;
+<span class="doccomment">/// Chinese remaindering。
+///
+/// $\\gdef{\\lcm}{\\operatorname{lcm}}$
+/// $(r\_0, m\_0)$ と $(r\_1, m\_1)$ に対し、以下を満たす $0\\le x\\lt\\lcm(m\_0, m\_1)$ を求める。
+/// - $x\\bmod m\_0 = r\_0$
+/// - $x\\bmod m\_1 = r\_1$
+///
+/// 中国剰余定理から、$\\gcd(m\_0, m\_1)=1$ であれば常に存在する。
+/// そうでない場合、高々一つ存在する。
+///
+/// なお、計算の利便性のため、$\\lcm(m\_0, m\_1)$ も返す。以下の例も参照。
+///
+/// # Idea
+/// $$ \\begin{aligned}
+/// (y\\cdot m\_0+r\_0)\\bmod m\_1 &amp;= r\_1 \\\\
+/// (y\\cdot m\_0)\\bmod m\_1 &amp;= (r\_1-r\_0)\\bmod m\_1 \\\\
+/// \\end{aligned} $$
+/// $g = \\gcd(m\_0, m\_1)$ として $(m\_0, m\_1) = (u\_0g, u\_1g)$ とすると、
+/// $$ (y\\cdot u\_0g)\\bmod u\_1g = (r\_1-r\_0)\\bmod u\_1g. $$
+/// 左辺は $g$ の倍数なので、右辺も $g$ の倍数となる必要がある。
+/// よって、$r\_1\\not\\equiv r\_0\\pmod{g}$ であれば解なしとなる。
+///
+/// 以下、$r\_1\\equiv r\_0\\pmod{g}$ とする。このとき、$r\_1-r\_0$ は $g$ で割り切れ、
+/// $$ \\begin{aligned}
+/// (y\\cdot u\_0)\\bmod u\_1 &amp;= \\left(\\frac{r\_1-r\_0}{g}\\right)\\bmod u\_1 \\\\
+/// y &amp;\\equiv \\left(\\frac{r\_1-r\_0}{g}\\right)\\cdot u\_0^{-1} \\pmod{u\_1}
+/// \\end{aligned} $$
+/// となる。$\\gcd(u\_0, u\_1)=1$ なので $u\_0^{-1}$ は存在する。
+///
+/// これを満たす $0\\le y\\lt u\_1$ は一意に定まり、$x = y\\cdot m\_0+r\_0$ を計算すればよい。
+/// また、$u\_1 = m\_1/g$ より、$\\lcm(m\_0, m\_1) = m\_0\\cdot u\_1$ となる。
+///
+/// # Examples
+/// ```
+/// use nekolib::math::EquivMod;
+///
+/// assert_eq!((0_i64, 2).equiv_mod((1, 3)), Some((4, 6)));
+/// assert_eq!((0_i64, 2).equiv_mod((1, 4)), None);
+/// ```
+///
+/// イテレータと組み合わせてもよい。
+/// 条件 $x\\bmod 1 = 0$ が単位元となることに注意。
+/// ```
+/// use nekolib::math::{EquivMod, Lcm};
+///
+/// let x = (2_i64..=20)
+///     .map(|m| (m - 1, m))
+///     .try_fold((0, 1), |x, y| x.equiv_mod(y));
+///
+/// let lcm = (2_i64..=20).fold(1, |x, y| x.lcm(y));
+/// assert_eq!(x, Some((lcm - 1, lcm)));
+/// ```
+///
+/// 簡略版もある。
+/// ```
+/// use nekolib::math::{EquivModIter, Lcm};
+///
+/// let x = (2_i64..=20).map(|m| (m - 1, m)).equiv_mod();
+/// let lcm = (2_i64..=20).fold(1, |x, y| x.lcm(y));
+/// assert_eq!(x, Some((lcm - 1, lcm)));
+///
+/// assert_eq!(std::iter::empty().equiv_mod(), Some((0_i32, 1)));
+/// ```
+///
+///
+/// # Reference
+/// - &lt;https://github.com/atcoder/ac-library/blob/master/atcoder/math.hpp&gt;
+///
+/// ## See also
+/// - &lt;https://rsk0315.hatenablog.com/entry/2021/01/18/065720#crt&gt;
+</span><span class="kw">pub trait </span>EquivMod: Sized {
+    <span class="kw">fn </span>equiv_mod(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt;;
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_uint</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span> <span class="ident">EquivMod</span> <span class="kw">for</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>) {
-            <span class="kw">fn</span> <span class="ident">equiv_mod</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-                <span class="kw">let</span> ((<span class="ident">r0</span>, <span class="ident">m0</span>), (<span class="ident">r1</span>, <span class="ident">m1</span>))
-                    <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="number">1</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">other</span>.<span class="number">1</span> { (<span class="self">self</span>, <span class="ident">other</span>) } <span class="kw">else</span> { (<span class="ident">other</span>, <span class="self">self</span>) };
-                <span class="kw">if</span> <span class="ident">m0</span> <span class="op">%</span> <span class="ident">m1</span> <span class="op">==</span> <span class="number">0</span> {
-                    <span class="kw">return</span> <span class="kw">if</span> <span class="ident">r0</span> <span class="op">%</span> <span class="ident">m1</span> <span class="op">==</span> <span class="ident">r1</span> { <span class="prelude-val">Some</span>((<span class="ident">r0</span>, <span class="ident">m0</span>)) } <span class="kw">else</span> { <span class="prelude-val">None</span> }
+<span class="macro">macro_rules! </span>impl_uint {
+    (<span class="macro-nonterminal">$t</span>:ty) =&gt; {
+        <span class="kw">impl </span>EquivMod <span class="kw">for </span>(<span class="macro-nonterminal">$t</span>, <span class="macro-nonterminal">$t</span>) {
+            <span class="kw">fn </span>equiv_mod(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
+                <span class="kw">let </span>((r0, m0), (r1, m1))
+                    = <span class="kw">if </span><span class="self">self</span>.<span class="number">1 </span>&gt;= other.<span class="number">1 </span>{ (<span class="self">self</span>, other) } <span class="kw">else </span>{ (other, <span class="self">self</span>) };
+                <span class="kw">if </span>m0 % m1 == <span class="number">0 </span>{
+                    <span class="kw">return if </span>r0 % m1 == r1 { <span class="prelude-val">Some</span>((r0, m0)) } <span class="kw">else </span>{ <span class="prelude-val">None </span>}
                 }
-                <span class="kw">let</span> (<span class="ident">g</span>, <span class="ident">re</span>) <span class="op">=</span> <span class="ident">m0</span>.<span class="ident">gcd_recip</span>(<span class="ident">m1</span>);
-                <span class="kw">let</span> <span class="ident">u1</span> <span class="op">=</span> <span class="ident">m1</span> <span class="op">/</span> <span class="ident">g</span>;
-                <span class="kw">let</span> (<span class="ident">dr</span>, <span class="ident">neg</span>) <span class="op">=</span> <span class="kw">if</span> <span class="ident">r1</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">r0</span> { (<span class="ident">r1</span> <span class="op">-</span> <span class="ident">r0</span>, <span class="bool-val">false</span>) } <span class="kw">else</span> { (<span class="ident">r0</span> <span class="op">-</span> <span class="ident">r1</span>, <span class="bool-val">true</span>) };
-                <span class="kw">if</span> <span class="ident">dr</span> <span class="op">%</span> <span class="ident">g</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-                    <span class="kw">return</span> <span class="prelude-val">None</span>
-                }
-                <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> (<span class="kw">if</span> <span class="ident">neg</span> { <span class="ident">u1</span> <span class="op">-</span> <span class="ident">dr</span> <span class="op">/</span> <span class="ident">g</span> <span class="op">%</span> <span class="ident">u1</span> } <span class="kw">else</span> { <span class="ident">dr</span> <span class="op">/</span> <span class="ident">g</span> <span class="op">%</span> <span class="ident">u1</span> }) <span class="op">*</span> <span class="ident">re</span> <span class="op">%</span> <span class="ident">u1</span>;
-                <span class="prelude-val">Some</span>((<span class="ident">r0</span> <span class="op">+</span> <span class="ident">x</span> <span class="op">*</span> <span class="ident">m0</span>, <span class="ident">m0</span> <span class="op">*</span> <span class="ident">u1</span>))
+                <span class="kw">let </span>(g, re) = m0.gcd_recip(m1);
+                <span class="kw">let </span>u1 = m1 / g;
+                <span class="kw">let </span>(dr, neg) = <span class="kw">if </span>r1 &gt;= r0 { (r1 - r0, <span class="bool-val">false</span>) } <span class="kw">else </span>{ (r0 - r1, <span class="bool-val">true</span>) };
+                <span class="kw">if </span>dr % g != <span class="number">0 </span>{
+                    <span class="kw">return </span><span class="prelude-val">None
+                </span>}
+                <span class="kw">let </span>x = (<span class="kw">if </span>neg { u1 - dr / g % u1 } <span class="kw">else </span>{ dr / g % u1 }) * re % u1;
+                <span class="prelude-val">Some</span>((r0 + x * m0, m0 * u1))
             }
         }
     };
-    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
+    ( $(<span class="macro-nonterminal">$t</span>:ty)* ) =&gt; { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$t</span>);)* };
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_int</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span> <span class="ident">EquivMod</span> <span class="kw">for</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>) {
-            <span class="kw">fn</span> <span class="ident">equiv_mod</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-                <span class="kw">let</span> ((<span class="ident">r0</span>, <span class="ident">m0</span>), (<span class="ident">r1</span>, <span class="ident">m1</span>))
-                    <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="number">1</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">other</span>.<span class="number">1</span> { (<span class="self">self</span>, <span class="ident">other</span>) } <span class="kw">else</span> { (<span class="ident">other</span>, <span class="self">self</span>) };
-                <span class="kw">if</span> <span class="ident">m0</span> <span class="op">%</span> <span class="ident">m1</span> <span class="op">==</span> <span class="number">0</span> {
-                    <span class="kw">return</span> <span class="kw">if</span> <span class="ident">r0</span> <span class="op">%</span> <span class="ident">m1</span> <span class="op">==</span> <span class="ident">r1</span> { <span class="prelude-val">Some</span>((<span class="ident">r0</span>, <span class="ident">m0</span>)) } <span class="kw">else</span> { <span class="prelude-val">None</span> }
+<span class="macro">macro_rules! </span>impl_int {
+    (<span class="macro-nonterminal">$t</span>:ty) =&gt; {
+        <span class="kw">impl </span>EquivMod <span class="kw">for </span>(<span class="macro-nonterminal">$t</span>, <span class="macro-nonterminal">$t</span>) {
+            <span class="kw">fn </span>equiv_mod(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
+                <span class="kw">let </span>((r0, m0), (r1, m1))
+                    = <span class="kw">if </span><span class="self">self</span>.<span class="number">1 </span>&gt;= other.<span class="number">1 </span>{ (<span class="self">self</span>, other) } <span class="kw">else </span>{ (other, <span class="self">self</span>) };
+                <span class="kw">if </span>m0 % m1 == <span class="number">0 </span>{
+                    <span class="kw">return if </span>r0 % m1 == r1 { <span class="prelude-val">Some</span>((r0, m0)) } <span class="kw">else </span>{ <span class="prelude-val">None </span>}
                 }
-                <span class="kw">let</span> (<span class="ident">g</span>, <span class="ident">re</span>) <span class="op">=</span> <span class="ident">m0</span>.<span class="ident">gcd_recip</span>(<span class="ident">m1</span>);
-                <span class="kw">let</span> <span class="ident">u1</span> <span class="op">=</span> <span class="ident">m1</span> <span class="op">/</span> <span class="ident">g</span>;
-                <span class="kw">if</span> (<span class="ident">r1</span> <span class="op">-</span> <span class="ident">r0</span>) <span class="op">%</span> <span class="ident">g</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-                    <span class="kw">return</span> <span class="prelude-val">None</span>
-                }
-                <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> ((<span class="ident">r1</span> <span class="op">-</span> <span class="ident">r0</span>) <span class="op">/</span> <span class="ident">g</span>).<span class="ident">rem_euclid</span>(<span class="ident">u1</span>) <span class="op">*</span> <span class="ident">re</span> <span class="op">%</span> <span class="ident">u1</span>;
-                <span class="prelude-val">Some</span>((<span class="ident">r0</span> <span class="op">+</span> <span class="ident">x</span> <span class="op">*</span> <span class="ident">m0</span>, <span class="ident">m0</span> <span class="op">*</span> <span class="ident">u1</span>))
+                <span class="kw">let </span>(g, re) = m0.gcd_recip(m1);
+                <span class="kw">let </span>u1 = m1 / g;
+                <span class="kw">if </span>(r1 - r0) % g != <span class="number">0 </span>{
+                    <span class="kw">return </span><span class="prelude-val">None
+                </span>}
+                <span class="kw">let </span>x = ((r1 - r0) / g).rem_euclid(u1) * re % u1;
+                <span class="prelude-val">Some</span>((r0 + x * m0, m0 * u1))
             }
         }
     };
-    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(<span class="macro">impl_int!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
+    ( $(<span class="macro-nonterminal">$t</span>:ty)* ) =&gt; { $(<span class="macro">impl_int!</span>(<span class="macro-nonterminal">$t</span>);)* };
 }
 
-<span class="macro">impl_uint!</span>(<span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span>);
-<span class="macro">impl_int!</span>(<span class="ident">i8</span> <span class="ident">i16</span> <span class="ident">i32</span> <span class="ident">i64</span> <span class="ident">i128</span> <span class="ident">isize</span>);
+<span class="macro">impl_uint!</span>(u8 u16 u32 u64 u128 usize);
+<span class="macro">impl_int!</span>(i8 i16 i32 i64 i128 isize);
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test_uint</span>() {
-    <span class="kw">let</span> <span class="ident">m_max</span> <span class="op">=</span> <span class="number">150_usize</span>;
-    <span class="kw">for</span> <span class="ident">m0</span> <span class="kw">in</span> <span class="number">1</span>..<span class="op">=</span><span class="ident">m_max</span> {
-        <span class="kw">for</span> <span class="ident">m1</span> <span class="kw">in</span> <span class="number">1</span>..<span class="op">=</span><span class="ident">m_max</span> {
-            <span class="kw">let</span> <span class="ident">naive</span> <span class="op">=</span> {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="macro">vec!</span>[<span class="prelude-val">None</span>; <span class="ident">m1</span>]; <span class="ident">m0</span>];
-                <span class="kw">for</span> <span class="ident">x</span> <span class="kw">in</span> (<span class="number">0</span>..<span class="ident">m0</span> <span class="op">*</span> <span class="ident">m1</span>).<span class="ident">rev</span>() {
-                    <span class="kw">let</span> <span class="ident">r0</span> <span class="op">=</span> <span class="ident">x</span> <span class="op">%</span> <span class="ident">m0</span>;
-                    <span class="kw">let</span> <span class="ident">r1</span> <span class="op">=</span> <span class="ident">x</span> <span class="op">%</span> <span class="ident">m1</span>;
-                    <span class="ident">res</span>[<span class="ident">r0</span>][<span class="ident">r1</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">x</span>);
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test_uint() {
+    <span class="kw">let </span>m_max = <span class="number">150_usize</span>;
+    <span class="kw">for </span>m0 <span class="kw">in </span><span class="number">1</span>..=m_max {
+        <span class="kw">for </span>m1 <span class="kw">in </span><span class="number">1</span>..=m_max {
+            <span class="kw">let </span>naive = {
+                <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="macro">vec!</span>[<span class="macro">vec!</span>[<span class="prelude-val">None</span>; m1]; m0];
+                <span class="kw">for </span>x <span class="kw">in </span>(<span class="number">0</span>..m0 * m1).rev() {
+                    <span class="kw">let </span>r0 = x % m0;
+                    <span class="kw">let </span>r1 = x % m1;
+                    res[r0][r1] = <span class="prelude-val">Some</span>(x);
                 }
-                <span class="ident">res</span>
+                res
             };
-            <span class="kw">for</span> <span class="ident">r0</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">m0</span> {
-                <span class="kw">for</span> <span class="ident">r1</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">m1</span> {
-                    <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> (<span class="ident">r0</span>, <span class="ident">m0</span>).<span class="ident">equiv_mod</span>((<span class="ident">r1</span>, <span class="ident">m1</span>)).<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span>.<span class="number">0</span>);
-                    <span class="macro">assert_eq!</span>(<span class="ident">x</span>, <span class="ident">naive</span>[<span class="ident">r0</span>][<span class="ident">r1</span>]);
+            <span class="kw">for </span>r0 <span class="kw">in </span><span class="number">0</span>..m0 {
+                <span class="kw">for </span>r1 <span class="kw">in </span><span class="number">0</span>..m1 {
+                    <span class="kw">let </span>x = (r0, m0).equiv_mod((r1, m1)).map(|x| x.<span class="number">0</span>);
+                    <span class="macro">assert_eq!</span>(x, naive[r0][r1]);
                 }
             }
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test_int</span>() {
-    <span class="kw">let</span> <span class="ident">m_max</span> <span class="op">=</span> <span class="number">150_isize</span>;
-    <span class="kw">for</span> <span class="ident">m0</span> <span class="kw">in</span> <span class="number">1</span>..<span class="op">=</span><span class="ident">m_max</span> {
-        <span class="kw">for</span> <span class="ident">m1</span> <span class="kw">in</span> <span class="number">1</span>..<span class="op">=</span><span class="ident">m_max</span> {
-            <span class="kw">let</span> <span class="ident">naive</span> <span class="op">=</span> {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="macro">vec!</span>[<span class="prelude-val">None</span>; <span class="ident">m1</span> <span class="kw">as</span> <span class="ident">usize</span>]; <span class="ident">m0</span> <span class="kw">as</span> <span class="ident">usize</span>];
-                <span class="kw">for</span> <span class="ident">x</span> <span class="kw">in</span> (<span class="number">0</span>..<span class="ident">m0</span> <span class="op">*</span> <span class="ident">m1</span>).<span class="ident">rev</span>() {
-                    <span class="kw">let</span> <span class="ident">r0</span> <span class="op">=</span> (<span class="ident">x</span> <span class="op">%</span> <span class="ident">m0</span>) <span class="kw">as</span> <span class="ident">usize</span>;
-                    <span class="kw">let</span> <span class="ident">r1</span> <span class="op">=</span> (<span class="ident">x</span> <span class="op">%</span> <span class="ident">m1</span>) <span class="kw">as</span> <span class="ident">usize</span>;
-                    <span class="ident">res</span>[<span class="ident">r0</span>][<span class="ident">r1</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">x</span>);
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test_int() {
+    <span class="kw">let </span>m_max = <span class="number">150_isize</span>;
+    <span class="kw">for </span>m0 <span class="kw">in </span><span class="number">1</span>..=m_max {
+        <span class="kw">for </span>m1 <span class="kw">in </span><span class="number">1</span>..=m_max {
+            <span class="kw">let </span>naive = {
+                <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="macro">vec!</span>[<span class="macro">vec!</span>[<span class="prelude-val">None</span>; m1 <span class="kw">as </span>usize]; m0 <span class="kw">as </span>usize];
+                <span class="kw">for </span>x <span class="kw">in </span>(<span class="number">0</span>..m0 * m1).rev() {
+                    <span class="kw">let </span>r0 = (x % m0) <span class="kw">as </span>usize;
+                    <span class="kw">let </span>r1 = (x % m1) <span class="kw">as </span>usize;
+                    res[r0][r1] = <span class="prelude-val">Some</span>(x);
                 }
-                <span class="ident">res</span>
+                res
             };
-            <span class="kw">for</span> <span class="ident">r0</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">m0</span> {
-                <span class="kw">for</span> <span class="ident">r1</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">m1</span> {
-                    <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> (<span class="ident">r0</span>, <span class="ident">m0</span>).<span class="ident">equiv_mod</span>((<span class="ident">r1</span>, <span class="ident">m1</span>)).<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span>.<span class="number">0</span>);
-                    <span class="macro">assert_eq!</span>(<span class="ident">x</span>, <span class="ident">naive</span>[<span class="ident">r0</span> <span class="kw">as</span> <span class="ident">usize</span>][<span class="ident">r1</span> <span class="kw">as</span> <span class="ident">usize</span>]);
+            <span class="kw">for </span>r0 <span class="kw">in </span><span class="number">0</span>..m0 {
+                <span class="kw">for </span>r1 <span class="kw">in </span><span class="number">0</span>..m1 {
+                    <span class="kw">let </span>x = (r0, m0).equiv_mod((r1, m1)).map(|x| x.<span class="number">0</span>);
+                    <span class="macro">assert_eq!</span>(x, naive[r0 <span class="kw">as </span>usize][r1 <span class="kw">as </span>usize]);
                 }
             }
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test_iter</span>() {
-    <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> (<span class="number">2_i64</span>..<span class="op">=</span><span class="number">20</span>)
-        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">m</span><span class="op">|</span> (<span class="ident">m</span> <span class="op">-</span> <span class="number">1</span>, <span class="ident">m</span>))
-        .<span class="ident">try_fold</span>((<span class="number">0</span>, <span class="number">1</span>), <span class="op">|</span><span class="ident">x</span>, <span class="ident">y</span><span class="op">|</span> <span class="ident">x</span>.<span class="ident">equiv_mod</span>(<span class="ident">y</span>));
-    <span class="kw">let</span> <span class="ident">y</span> <span class="op">=</span> <span class="number">232792560</span>;
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test_iter() {
+    <span class="kw">let </span>x = (<span class="number">2_i64</span>..=<span class="number">20</span>)
+        .map(|m| (m - <span class="number">1</span>, m))
+        .try_fold((<span class="number">0</span>, <span class="number">1</span>), |x, y| x.equiv_mod(y));
+    <span class="kw">let </span>y = <span class="number">232792560</span>;
 
-    <span class="macro">assert_eq!</span>(<span class="ident">x</span>, <span class="prelude-val">Some</span>((<span class="ident">y</span> <span class="op">-</span> <span class="number">1</span>, <span class="ident">y</span>)));
+    <span class="macro">assert_eq!</span>(x, <span class="prelude-val">Some</span>((y - <span class="number">1</span>, y)));
 }
 
-<span class="doccomment">/// Chinese remaindering。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [`EquivMod`] のイテレータ版。</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">EquivModIter</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Sized</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">equiv_mod</span>(<span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">I</span>, <span class="ident">I</span>)<span class="op">&gt;</span>;
+<span class="doccomment">/// Chinese remaindering。
+///
+/// [`EquivMod`] のイテレータ版。
+</span><span class="kw">pub trait </span>EquivModIter&lt;I: Sized&gt; {
+    <span class="kw">fn </span>equiv_mod(<span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;(I, I)&gt;;
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_iter</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>)<span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">EquivModIter</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">I</span> {
-            <span class="kw">fn</span> <span class="ident">equiv_mod</span>(<span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>)<span class="op">&gt;</span> {
-                <span class="self">self</span>.<span class="ident">try_fold</span>((<span class="number">0</span>, <span class="number">1</span>), <span class="op">|</span><span class="ident">x</span>, <span class="ident">y</span><span class="op">|</span> <span class="ident">x</span>.<span class="ident">equiv_mod</span>(<span class="ident">y</span>))
+<span class="macro">macro_rules! </span>impl_iter {
+    (<span class="macro-nonterminal">$t</span>:ty) =&gt; {
+        <span class="kw">impl</span>&lt;I: Iterator&lt;Item = (<span class="macro-nonterminal">$t</span>, <span class="macro-nonterminal">$t</span>)&gt;&gt; EquivModIter&lt;<span class="macro-nonterminal">$t</span>&gt; <span class="kw">for </span>I {
+            <span class="kw">fn </span>equiv_mod(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;(<span class="macro-nonterminal">$t</span>, <span class="macro-nonterminal">$t</span>)&gt; {
+                <span class="self">self</span>.try_fold((<span class="number">0</span>, <span class="number">1</span>), |x, y| x.equiv_mod(y))
             }
         }
     };
-    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(<span class="macro">impl_iter!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
+    ( $(<span class="macro-nonterminal">$t</span>:ty)* ) =&gt; { $(<span class="macro">impl_iter!</span>(<span class="macro-nonterminal">$t</span>);)* };
 }
 
-<span class="macro">impl_iter!</span>(<span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span> <span class="ident">i8</span> <span class="ident">i16</span> <span class="ident">i32</span> <span class="ident">i64</span> <span class="ident">i128</span> <span class="ident">isize</span>);
+<span class="macro">impl_iter!</span>(u8 u16 u32 u64 u128 usize i8 i16 i32 i64 i128 isize);
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test_iter2</span>() {
-    <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> (<span class="number">2_i64</span>..<span class="op">=</span><span class="number">20</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">m</span><span class="op">|</span> (<span class="ident">m</span> <span class="op">-</span> <span class="number">1</span>, <span class="ident">m</span>)).<span class="ident">equiv_mod</span>();
-    <span class="kw">let</span> <span class="ident">y</span> <span class="op">=</span> <span class="number">232792560</span>;
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test_iter2() {
+    <span class="kw">let </span>x = (<span class="number">2_i64</span>..=<span class="number">20</span>).map(|m| (m - <span class="number">1</span>, m)).equiv_mod();
+    <span class="kw">let </span>y = <span class="number">232792560</span>;
 
-    <span class="macro">assert_eq!</span>(<span class="ident">x</span>, <span class="prelude-val">Some</span>((<span class="ident">y</span> <span class="op">-</span> <span class="number">1</span>, <span class="ident">y</span>)));
+    <span class="macro">assert_eq!</span>(x, <span class="prelude-val">Some</span>((y - <span class="number">1</span>, y)));
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

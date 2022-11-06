@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/traits.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>traits.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/traits.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>traits.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -172,90 +172,90 @@
 <span id="83">83</span>
 <span id="84">84</span>
 <span id="85">85</span>
-</pre><pre class="rust"><code><span class="doccomment">//! トレイトたち。</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ここに何かを書く。</span>
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">act</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">action</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">additive</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">assoc_val</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">binop</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">bisect</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">count</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">disjoint_set</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">elastic_slice</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">find_nth</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">fold</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">fold_bisect</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">get_mut</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">group_by</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">max</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">min</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">multiplicative</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">potential_function</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">push_pop</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">quantile</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">range_bounds</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">set_value</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">stateful_predicate</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">usize_group_by</span>;
+</pre><pre class="rust"><code><span class="doccomment">//! トレイトたち。
+//!
+//! ここに何かを書く。
+</span><span class="kw">pub mod </span>act;
+<span class="kw">pub mod </span>action;
+<span class="kw">pub mod </span>additive;
+<span class="kw">pub mod </span>assoc_val;
+<span class="kw">pub mod </span>binop;
+<span class="kw">pub mod </span>bisect;
+<span class="kw">pub mod </span>count;
+<span class="kw">pub mod </span>disjoint_set;
+<span class="kw">pub mod </span>elastic_slice;
+<span class="kw">pub mod </span>find_nth;
+<span class="kw">pub mod </span>fold;
+<span class="kw">pub mod </span>fold_bisect;
+<span class="kw">pub mod </span>get_mut;
+<span class="kw">pub mod </span>group_by;
+<span class="kw">pub mod </span>max;
+<span class="kw">pub mod </span>min;
+<span class="kw">pub mod </span>multiplicative;
+<span class="kw">pub mod </span>potential_function;
+<span class="kw">pub mod </span>push_pop;
+<span class="kw">pub mod </span>quantile;
+<span class="kw">pub mod </span>range_bounds;
+<span class="kw">pub mod </span>set_value;
+<span class="kw">pub mod </span>stateful_predicate;
+<span class="kw">pub mod </span>usize_group_by;
 
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">act::Act</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">action::MonoidAction</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">additive</span>::{<span class="ident">AddAssoc</span>, <span class="ident">AddComm</span>, <span class="ident">Zero</span>};
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">assoc_val::AssocVal</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">binop</span>::{
-    <span class="ident">Associative</span>, <span class="ident">Commutative</span>, <span class="ident">CommutativeGroup</span>, <span class="ident">CommutativeMonoid</span>,
-    <span class="ident">CommutativeRing</span>, <span class="ident">Distributive</span>, <span class="ident">Field</span>, <span class="ident">Group</span>, <span class="ident">Identity</span>, <span class="ident">Magma</span>, <span class="ident">Monoid</span>,
-    <span class="ident">PartialRecip</span>, <span class="ident">Recip</span>, <span class="ident">Ring</span>, <span class="ident">Semigroup</span>,
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>act::Act;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>action::MonoidAction;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>additive::{AddAssoc, AddComm, Zero};
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>assoc_val::AssocVal;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>binop::{
+    Associative, Commutative, CommutativeGroup, CommutativeMonoid,
+    CommutativeRing, Distributive, Field, Group, Identity, Magma, Monoid,
+    PartialRecip, Recip, Ring, Semigroup,
 };
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">bisect::Bisect</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">count</span>::{<span class="ident">Count</span>, <span class="ident">Count3way</span>};
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">disjoint_set::DisjointSet</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">elastic_slice</span>::{
-    <span class="ident">ElasticSlice</span>, <span class="ident">ExpandBack</span>, <span class="ident">ExpandFront</span>, <span class="ident">ShrinkBack</span>, <span class="ident">ShrinkFront</span>, <span class="ident">SliceHash</span>,
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>bisect::Bisect;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>count::{Count, Count3way};
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>disjoint_set::DisjointSet;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>elastic_slice::{
+    ElasticSlice, ExpandBack, ExpandFront, ShrinkBack, ShrinkFront, SliceHash,
 };
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">find_nth::FindNth</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">fold::Fold</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">fold_bisect</span>::{<span class="ident">FoldBisect</span>, <span class="ident">FoldBisectRev</span>};
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">get_mut::GetMut</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">group_by::GroupBy</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">max::Max</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">min::Min</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">multiplicative</span>::{<span class="ident">MulAssoc</span>, <span class="ident">MulComm</span>, <span class="ident">MulRecip</span>, <span class="ident">One</span>};
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">potential_function::PotentialFunction</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">push_pop</span>::{<span class="ident">Pop</span>, <span class="ident">PopBack</span>, <span class="ident">PopFront</span>, <span class="ident">Push</span>, <span class="ident">PushBack</span>, <span class="ident">PushFront</span>};
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">quantile::Quantile</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">range_bounds</span>::{
-    <span class="ident">EndBounded</span>, <span class="ident">EndExclusive</span>, <span class="ident">EndInclusive</span>, <span class="ident">EndUnbounded</span>, <span class="ident">StartBounded</span>,
-    <span class="ident">StartInclusive</span>, <span class="ident">StartUnbounded</span>,
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>find_nth::FindNth;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>fold::Fold;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>fold_bisect::{FoldBisect, FoldBisectRev};
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>get_mut::GetMut;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>group_by::GroupBy;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>max::Max;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>min::Min;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>multiplicative::{MulAssoc, MulComm, MulRecip, One};
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>potential_function::PotentialFunction;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>push_pop::{Pop, PopBack, PopFront, Push, PushBack, PushFront};
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>quantile::Quantile;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>range_bounds::{
+    EndBounded, EndExclusive, EndInclusive, EndUnbounded, StartBounded,
+    StartInclusive, StartUnbounded,
 };
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">set_value::SetValue</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">stateful_predicate::StatefulPred</span>;
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">inline</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">usize_group_by::UsizeGroupBy</span>;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>set_value::SetValue;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>stateful_predicate::StatefulPred;
+<span class="attribute">#[doc(inline)]
+</span><span class="kw">pub use </span>usize_group_by::UsizeGroupBy;
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

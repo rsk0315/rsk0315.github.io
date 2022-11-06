@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/ds/vec_segtree.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>vec_segtree.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/ds/vec_segtree.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>vec_segtree.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -461,379 +461,379 @@
 <span id="372">372</span>
 <span id="373">373</span>
 <span id="374">374</span>
-</pre><pre class="rust"><code><span class="doccomment">//! `Vec` ベースのセグ木。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! `Vec` ベースのセグ木。
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::binop</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::fold</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::fold_bisect</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::get_mut</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::traits::set_value</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::utils::buf_range</span>;
+</span><span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::traits::binop;
+<span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::traits::fold;
+<span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::traits::fold_bisect;
+<span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::traits::get_mut;
+<span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::traits::set_value;
+<span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::utils::buf_range;
 
-<span class="kw">use</span> <span class="ident">std::convert::From</span>;
-<span class="kw">use</span> <span class="ident">std::fmt</span>::{<span class="self">self</span>, <span class="ident">Debug</span>};
-<span class="kw">use</span> <span class="ident">std::iter</span>::{<span class="ident">IntoIterator</span>, <span class="ident">Iterator</span>};
-<span class="kw">use</span> <span class="ident">std::ops</span>::{<span class="ident">Deref</span>, <span class="ident">DerefMut</span>, <span class="ident">Index</span>, <span class="ident">Range</span>, <span class="ident">RangeBounds</span>};
+<span class="kw">use </span>std::convert::From;
+<span class="kw">use </span>std::fmt::{<span class="self">self</span>, Debug};
+<span class="kw">use </span>std::iter::{IntoIterator, Iterator};
+<span class="kw">use </span>std::ops::{Deref, DerefMut, Index, Range, RangeBounds};
 
-<span class="kw">use</span> <span class="ident">binop::Monoid</span>;
-<span class="kw">use</span> <span class="ident">buf_range</span>::{<span class="ident">bounds_within</span>, <span class="ident">check_bounds</span>, <span class="ident">check_bounds_range</span>};
-<span class="kw">use</span> <span class="ident">fold::Fold</span>;
-<span class="kw">use</span> <span class="ident">fold_bisect</span>::{<span class="ident">FoldBisect</span>, <span class="ident">FoldBisectRev</span>};
-<span class="kw">use</span> <span class="ident">get_mut::GetMut</span>;
-<span class="kw">use</span> <span class="ident">set_value::SetValue</span>;
+<span class="kw">use </span>binop::Monoid;
+<span class="kw">use </span>buf_range::{bounds_within, check_bounds, check_bounds_range};
+<span class="kw">use </span>fold::Fold;
+<span class="kw">use </span>fold_bisect::{FoldBisect, FoldBisectRev};
+<span class="kw">use </span>get_mut::GetMut;
+<span class="kw">use </span>set_value::SetValue;
 
-<span class="doccomment">/// `Vec` ベースのセグ木。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 非再帰実装かつ配列サイズを $2n$ とするセグ木。</span>
-<span class="doccomment">/// モノイドを対象として要素の取得・更新および任意区間のモノイド積を処理する。</span>
-<span class="doccomment">/// 加えて、モノイド積を引数とする述語に対して、それが真となる区間の境界を求められる。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// |演算|時間計算量|</span>
-<span class="doccomment">/// |---|---|</span>
-<span class="doccomment">/// |`new`, `from`|$\\Theta(n)$|</span>
-<span class="doccomment">/// |`index`|$\\Theta(1)$|</span>
-<span class="doccomment">/// |`set_value`|$\\Theta(\\log(n))$|</span>
-<span class="doccomment">/// |区間 $[l, r)$ の `fold`|$\\Theta(\\log(r-l))$|</span>
-<span class="doccomment">/// |`fold_bisect`, `fold_bisect_rev`|$O(\\log(n))$|</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::ds::VecSegtree;</span>
-<span class="doccomment">/// use nekolib::traits::{Fold, FoldBisect, FoldBisectRev, GetMut};</span>
-<span class="doccomment">/// use nekolib::utils::OpAdd;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let mut vs: VecSegtree&lt;OpAdd&lt;i32&gt;&gt; = vec![2, 4, 7, 3, 5].into();</span>
-<span class="doccomment">/// assert_eq!(vs.fold(1..3), 11);</span>
-<span class="doccomment">/// assert_eq!(vs.fold(..), 21);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// *vs.get_mut(2).unwrap() = 1; // [2, 4, 1, 3, 5]</span>
-<span class="doccomment">/// assert_eq!(vs.fold(1..3), 5);</span>
-<span class="doccomment">/// assert_eq!(vs.fold(1..=3), 8);</span>
-<span class="doccomment">/// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt; 4), (1_usize, 0));</span>
-<span class="doccomment">/// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt;= 4), (2_usize, 4));</span>
-<span class="doccomment">/// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt; 13), (4_usize, 8));</span>
-<span class="doccomment">/// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt;= 13), (5_usize, 13));</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(vs.fold(..), 15);</span>
-<span class="doccomment">/// assert_eq!(vs.fold_bisect_rev(5, |&amp;x| x &lt;= 0), (5_usize, 0));</span>
-<span class="doccomment">/// assert_eq!(vs.fold_bisect_rev(5, |&amp;x| x &lt; 15), (1_usize, 13));</span>
-<span class="doccomment">/// assert_eq!(vs.fold_bisect_rev(5, |&amp;x| x &lt;= 15), (0_usize, 15));</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let l = 1;</span>
-<span class="doccomment">/// let pred = |&amp;x: &amp;i32| x &lt;= 12;</span>
-<span class="doccomment">/// let (r, x) = vs.fold_bisect(l, pred);</span>
-<span class="doccomment">/// assert_eq!(vs.fold(l..r), x);</span>
-<span class="doccomment">/// assert!(pred(&amp;x));</span>
-<span class="doccomment">/// assert!(r == vs.len() || !pred(&amp;vs.fold(l..r + 1)));</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let r = 5;</span>
-<span class="doccomment">/// let pred = |&amp;x: &amp;i32| x &lt;= 12;</span>
-<span class="doccomment">/// let (l, x) = vs.fold_bisect_rev(r, pred);</span>
-<span class="doccomment">/// assert_eq!(vs.fold(l..r), x);</span>
-<span class="doccomment">/// assert!(pred(&amp;x));</span>
-<span class="doccomment">/// assert!(l == 0 || !pred(&amp;vs.fold(l - 1..r)));</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">VecSegtree</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M</span>: <span class="ident">Monoid</span>,
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
+<span class="doccomment">/// `Vec` ベースのセグ木。
+///
+/// 非再帰実装かつ配列サイズを $2n$ とするセグ木。
+/// モノイドを対象として要素の取得・更新および任意区間のモノイド積を処理する。
+/// 加えて、モノイド積を引数とする述語に対して、それが真となる区間の境界を求められる。
+///
+/// # Complexity
+/// |演算|時間計算量|
+/// |---|---|
+/// |`new`, `from`|$\\Theta(n)$|
+/// |`index`|$\\Theta(1)$|
+/// |`set_value`|$\\Theta(\\log(n))$|
+/// |区間 $[l, r)$ の `fold`|$\\Theta(\\log(r-l))$|
+/// |`fold_bisect`, `fold_bisect_rev`|$O(\\log(n))$|
+///
+/// # Examples
+/// ```
+/// use nekolib::ds::VecSegtree;
+/// use nekolib::traits::{Fold, FoldBisect, FoldBisectRev, GetMut};
+/// use nekolib::utils::OpAdd;
+///
+/// let mut vs: VecSegtree&lt;OpAdd&lt;i32&gt;&gt; = vec![2, 4, 7, 3, 5].into();
+/// assert_eq!(vs.fold(1..3), 11);
+/// assert_eq!(vs.fold(..), 21);
+///
+/// *vs.get_mut(2).unwrap() = 1; // [2, 4, 1, 3, 5]
+/// assert_eq!(vs.fold(1..3), 5);
+/// assert_eq!(vs.fold(1..=3), 8);
+/// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt; 4), (1_usize, 0));
+/// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt;= 4), (2_usize, 4));
+/// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt; 13), (4_usize, 8));
+/// assert_eq!(vs.fold_bisect(1, |&amp;x| x &lt;= 13), (5_usize, 13));
+///
+/// assert_eq!(vs.fold(..), 15);
+/// assert_eq!(vs.fold_bisect_rev(5, |&amp;x| x &lt;= 0), (5_usize, 0));
+/// assert_eq!(vs.fold_bisect_rev(5, |&amp;x| x &lt; 15), (1_usize, 13));
+/// assert_eq!(vs.fold_bisect_rev(5, |&amp;x| x &lt;= 15), (0_usize, 15));
+///
+/// let l = 1;
+/// let pred = |&amp;x: &amp;i32| x &lt;= 12;
+/// let (r, x) = vs.fold_bisect(l, pred);
+/// assert_eq!(vs.fold(l..r), x);
+/// assert!(pred(&amp;x));
+/// assert!(r == vs.len() || !pred(&amp;vs.fold(l..r + 1)));
+///
+/// let r = 5;
+/// let pred = |&amp;x: &amp;i32| x &lt;= 12;
+/// let (l, x) = vs.fold_bisect_rev(r, pred);
+/// assert_eq!(vs.fold(l..r), x);
+/// assert!(pred(&amp;x));
+/// assert!(l == 0 || !pred(&amp;vs.fold(l - 1..r)));
+/// ```
+</span><span class="attribute">#[derive(Clone)]
+</span><span class="kw">pub struct </span>VecSegtree&lt;M&gt;
+<span class="kw">where
+    </span>M: Monoid,
+    M::Set: Clone,
 {
-    <span class="ident">buf</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">M::Set</span><span class="op">&gt;</span>,
-    <span class="ident">len</span>: <span class="ident">usize</span>,
-    <span class="ident">monoid</span>: <span class="ident">M</span>,
+    buf: Vec&lt;M::Set&gt;,
+    len: usize,
+    monoid: M,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> <span class="ident">VecSegtree</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M</span>: <span class="ident">Monoid</span>,
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;M&gt; VecSegtree&lt;M&gt;
+<span class="kw">where
+    </span>M: Monoid,
+    M::Set: Clone,
 {
-    <span class="attribute">#[<span class="ident">must_use</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">len</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span>
-    <span class="kw">where</span>
-        <span class="ident">M</span>: <span class="ident">Default</span>,
+    <span class="attribute">#[must_use]
+    </span><span class="kw">pub fn </span>new(len: usize) -&gt; <span class="self">Self
+    </span><span class="kw">where
+        </span>M: Default,
     {
-        <span class="kw">let</span> <span class="ident">monoid</span> <span class="op">=</span> <span class="ident">M::default</span>();
-        <span class="self">Self</span> { <span class="ident">len</span>, <span class="ident">buf</span>: <span class="macro">vec!</span>[<span class="ident">monoid</span>.<span class="ident">id</span>(); <span class="ident">len</span> <span class="op">+</span> <span class="ident">len</span>], <span class="ident">monoid</span> }
+        <span class="kw">let </span>monoid = M::default();
+        <span class="self">Self </span>{ len, buf: <span class="macro">vec!</span>[monoid.id(); len + len], monoid }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> { <span class="self">self</span>.<span class="ident">len</span> <span class="op">==</span> <span class="number">0</span> }
+    <span class="kw">pub fn </span>is_empty(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool { <span class="self">self</span>.len == <span class="number">0 </span>}
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">len</span> }
+    <span class="kw">pub fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize { <span class="self">self</span>.len }
 
-    <span class="kw">fn</span> <span class="ident">nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">l</span>: <span class="ident">usize</span>, <span class="ident">r</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">l</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span> <span class="op">+</span> <span class="ident">l</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">r</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span> <span class="op">+</span> <span class="ident">r</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vl</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vr</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-        <span class="kw">while</span> <span class="ident">l</span> <span class="op">&lt;</span> <span class="ident">r</span> {
-            <span class="kw">if</span> <span class="ident">l</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">==</span> <span class="number">1</span> {
-                <span class="ident">vl</span>.<span class="ident">push</span>(<span class="ident">l</span>);
-                <span class="ident">l</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+    <span class="kw">fn </span>nodes(<span class="kw-2">&amp;</span><span class="self">self</span>, l: usize, r: usize) -&gt; Vec&lt;usize&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>l = <span class="self">self</span>.len + l;
+        <span class="kw">let </span><span class="kw-2">mut </span>r = <span class="self">self</span>.len + r;
+        <span class="kw">let </span><span class="kw-2">mut </span>vl = <span class="macro">vec!</span>[];
+        <span class="kw">let </span><span class="kw-2">mut </span>vr = <span class="macro">vec!</span>[];
+        <span class="kw">while </span>l &lt; r {
+            <span class="kw">if </span>l &amp; <span class="number">1 </span>== <span class="number">1 </span>{
+                vl.push(l);
+                l += <span class="number">1</span>;
             }
-            <span class="kw">if</span> <span class="ident">r</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">==</span> <span class="number">1</span> {
-                <span class="ident">r</span> <span class="op">-</span><span class="op">=</span> <span class="number">1</span>;
-                <span class="ident">vr</span>.<span class="ident">push</span>(<span class="ident">r</span>);
+            <span class="kw">if </span>r &amp; <span class="number">1 </span>== <span class="number">1 </span>{
+                r -= <span class="number">1</span>;
+                vr.push(r);
             }
-            <span class="ident">l</span> <span class="op">&gt;</span><span class="op">&gt;</span><span class="op">=</span> <span class="number">1</span>;
-            <span class="ident">r</span> <span class="op">&gt;</span><span class="op">&gt;</span><span class="op">=</span> <span class="number">1</span>;
+            l &gt;&gt;= <span class="number">1</span>;
+            r &gt;&gt;= <span class="number">1</span>;
         }
-        <span class="ident">vr</span>.<span class="ident">reverse</span>();
-        <span class="ident">vl</span>.<span class="ident">append</span>(<span class="kw-2">&amp;mut</span> <span class="ident">vr</span>);
-        <span class="ident">vl</span>
+        vr.reverse();
+        vl.append(<span class="kw-2">&amp;mut </span>vr);
+        vl
     }
 
-    <span class="kw">fn</span> <span class="ident">nodes_rev</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">l</span>: <span class="ident">usize</span>, <span class="ident">r</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">nodes</span>(<span class="ident">l</span>, <span class="ident">r</span>).<span class="ident">into_iter</span>().<span class="ident">rev</span>().<span class="ident">collect</span>()
+    <span class="kw">fn </span>nodes_rev(<span class="kw-2">&amp;</span><span class="self">self</span>, l: usize, r: usize) -&gt; Vec&lt;usize&gt; {
+        <span class="self">self</span>.nodes(l, r).into_iter().rev().collect()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span>, <span class="ident">B</span><span class="op">&gt;</span> <span class="ident">Fold</span><span class="op">&lt;</span><span class="ident">B</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">VecSegtree</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M</span>: <span class="ident">Monoid</span>,
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
-    <span class="ident">B</span>: <span class="ident">RangeBounds</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;M, B&gt; Fold&lt;B&gt; <span class="kw">for </span>VecSegtree&lt;M&gt;
+<span class="kw">where
+    </span>M: Monoid,
+    M::Set: Clone,
+    B: RangeBounds&lt;usize&gt;,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">M</span>;
-    <span class="kw">fn</span> <span class="ident">fold</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">b</span>: <span class="ident">B</span>) -&gt; <span class="ident">M::Set</span> {
-        <span class="kw">let</span> <span class="ident">Range</span> { <span class="ident">start</span>, <span class="ident">end</span> } <span class="op">=</span> <span class="ident">bounds_within</span>(<span class="ident">b</span>, <span class="self">self</span>.<span class="ident">len</span>);
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">il</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span> <span class="op">+</span> <span class="ident">start</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ir</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span> <span class="op">+</span> <span class="ident">end</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res_l</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">id</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res_r</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">id</span>();
-        <span class="kw">while</span> <span class="ident">il</span> <span class="op">&lt;</span> <span class="ident">ir</span> {
-            <span class="kw">if</span> <span class="ident">il</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">==</span> <span class="number">1</span> {
-                <span class="ident">res_l</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">op</span>(<span class="ident">res_l</span>, <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">il</span>].<span class="ident">clone</span>());
-                <span class="ident">il</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+    <span class="kw">type </span>Output = M;
+    <span class="kw">fn </span>fold(<span class="kw-2">&amp;</span><span class="self">self</span>, b: B) -&gt; M::Set {
+        <span class="kw">let </span>Range { start, end } = bounds_within(b, <span class="self">self</span>.len);
+        <span class="kw">let </span><span class="kw-2">mut </span>il = <span class="self">self</span>.len + start;
+        <span class="kw">let </span><span class="kw-2">mut </span>ir = <span class="self">self</span>.len + end;
+        <span class="kw">let </span><span class="kw-2">mut </span>res_l = <span class="self">self</span>.monoid.id();
+        <span class="kw">let </span><span class="kw-2">mut </span>res_r = <span class="self">self</span>.monoid.id();
+        <span class="kw">while </span>il &lt; ir {
+            <span class="kw">if </span>il &amp; <span class="number">1 </span>== <span class="number">1 </span>{
+                res_l = <span class="self">self</span>.monoid.op(res_l, <span class="self">self</span>.buf[il].clone());
+                il += <span class="number">1</span>;
             }
-            <span class="kw">if</span> <span class="ident">ir</span> <span class="op">&amp;</span> <span class="number">1</span> <span class="op">==</span> <span class="number">1</span> {
-                <span class="ident">ir</span> <span class="op">-</span><span class="op">=</span> <span class="number">1</span>;
-                <span class="ident">res_r</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">op</span>(<span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">ir</span>].<span class="ident">clone</span>(), <span class="ident">res_r</span>);
+            <span class="kw">if </span>ir &amp; <span class="number">1 </span>== <span class="number">1 </span>{
+                ir -= <span class="number">1</span>;
+                res_r = <span class="self">self</span>.monoid.op(<span class="self">self</span>.buf[ir].clone(), res_r);
             }
-            <span class="ident">il</span> <span class="op">&gt;</span><span class="op">&gt;</span><span class="op">=</span> <span class="number">1</span>;
-            <span class="ident">ir</span> <span class="op">&gt;</span><span class="op">&gt;</span><span class="op">=</span> <span class="number">1</span>;
+            il &gt;&gt;= <span class="number">1</span>;
+            ir &gt;&gt;= <span class="number">1</span>;
         }
-        <span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">op</span>(<span class="ident">res_l</span>, <span class="ident">res_r</span>)
+        <span class="self">self</span>.monoid.op(res_l, res_r)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> <span class="ident">SetValue</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">VecSegtree</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M</span>: <span class="ident">Monoid</span>,
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;M&gt; SetValue&lt;usize&gt; <span class="kw">for </span>VecSegtree&lt;M&gt;
+<span class="kw">where
+    </span>M: Monoid,
+    M::Set: Clone,
 {
-    <span class="kw">type</span> <span class="ident">Input</span> <span class="op">=</span> <span class="ident">M::Set</span>;
-    <span class="kw">fn</span> <span class="ident">set_value</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>, <span class="ident">x</span>: <span class="ident"><span class="self">Self</span>::Input</span>) {
-        <span class="ident">check_bounds</span>(<span class="ident">i</span>, <span class="self">self</span>.<span class="ident">len</span>);
-        <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">get_mut</span>(<span class="ident">i</span>).<span class="ident">unwrap</span>() <span class="op">=</span> <span class="ident">x</span>;
+    <span class="kw">type </span>Input = M::Set;
+    <span class="kw">fn </span>set_value(<span class="kw-2">&amp;mut </span><span class="self">self</span>, i: usize, x: <span class="self">Self</span>::Input) {
+        check_bounds(i, <span class="self">self</span>.len);
+        <span class="kw-2">*</span><span class="self">self</span>.get_mut(i).unwrap() = x;
     }
 }
 
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetMutIndex</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M</span>: <span class="ident">Monoid</span>,
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
+<span class="attribute">#[doc(hidden)]
+</span><span class="kw">pub struct </span>GetMutIndex&lt;<span class="lifetime">&#39;a</span>, M&gt;
+<span class="kw">where
+    </span>M: Monoid,
+    M::Set: Clone,
 {
-    <span class="ident">tree</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">VecSegtree</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>,
-    <span class="ident">index</span>: <span class="ident">usize</span>,
+    tree: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>VecSegtree&lt;M&gt;,
+    index: usize,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">M</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">GetMut</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">VecSegtree</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M</span>: <span class="ident">Monoid</span>,
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, M: <span class="lifetime">&#39;a</span>&gt; GetMut&lt;<span class="lifetime">&#39;a</span>&gt; <span class="kw">for </span>VecSegtree&lt;M&gt;
+<span class="kw">where
+    </span>M: Monoid,
+    M::Set: Clone,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">GetMutIndex</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">M</span><span class="op">&gt;</span>;
-    <span class="kw">fn</span> <span class="ident">get_mut</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">GetMutIndex</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">M</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="ident">index</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">len</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">GetMutIndex</span> { <span class="ident">tree</span>: <span class="self">self</span>, <span class="ident">index</span> })
-        } <span class="kw">else</span> {
-            <span class="prelude-val">None</span>
-        }
+    <span class="kw">type </span>Output = GetMutIndex&lt;<span class="lifetime">&#39;a</span>, M&gt;;
+    <span class="kw">fn </span>get_mut(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span><span class="self">self</span>, index: usize) -&gt; <span class="prelude-ty">Option</span>&lt;GetMutIndex&lt;<span class="lifetime">&#39;a</span>, M&gt;&gt; {
+        <span class="kw">if </span>index &lt; <span class="self">self</span>.len {
+            <span class="prelude-val">Some</span>(GetMutIndex { tree: <span class="self">self</span>, index })
+        } <span class="kw">else </span>{
+            <span class="prelude-val">None
+        </span>}
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> <span class="ident">Drop</span> <span class="kw">for</span> <span class="ident">GetMutIndex</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M</span>: <span class="ident">Monoid</span>,
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;M&gt; Drop <span class="kw">for </span>GetMutIndex&lt;<span class="lifetime">&#39;_</span>, M&gt;
+<span class="kw">where
+    </span>M: Monoid,
+    M::Set: Clone,
 {
-    <span class="kw">fn</span> <span class="ident">drop</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tree</span>.<span class="ident">len</span> <span class="op">+</span> <span class="self">self</span>.<span class="ident">index</span>;
-        <span class="kw">while</span> <span class="ident">i</span> <span class="op">&gt;</span> <span class="number">1</span> {
-            <span class="ident">i</span> <span class="op">&gt;</span><span class="op">&gt;</span><span class="op">=</span> <span class="number">1</span>;
-            <span class="self">self</span>.<span class="ident">tree</span>.<span class="ident">buf</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="self">self</span>.<span class="ident">tree</span>.<span class="ident">monoid</span>.<span class="ident">op</span>(
-                <span class="self">self</span>.<span class="ident">tree</span>.<span class="ident">buf</span>[<span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span>].<span class="ident">clone</span>(),
-                <span class="self">self</span>.<span class="ident">tree</span>.<span class="ident">buf</span>[<span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span> <span class="op">|</span> <span class="number">1</span>].<span class="ident">clone</span>(),
+    <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="kw">let </span><span class="kw-2">mut </span>i = <span class="self">self</span>.tree.len + <span class="self">self</span>.index;
+        <span class="kw">while </span>i &gt; <span class="number">1 </span>{
+            i &gt;&gt;= <span class="number">1</span>;
+            <span class="self">self</span>.tree.buf[i] = <span class="self">self</span>.tree.monoid.op(
+                <span class="self">self</span>.tree.buf[i &lt;&lt; <span class="number">1</span>].clone(),
+                <span class="self">self</span>.tree.buf[i &lt;&lt; <span class="number">1 </span>| <span class="number">1</span>].clone(),
             );
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> <span class="ident">Deref</span> <span class="kw">for</span> <span class="ident">GetMutIndex</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M</span>: <span class="ident">Monoid</span>,
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;M&gt; Deref <span class="kw">for </span>GetMutIndex&lt;<span class="lifetime">&#39;_</span>, M&gt;
+<span class="kw">where
+    </span>M: Monoid,
+    M::Set: Clone,
 {
-    <span class="kw">type</span> <span class="ident">Target</span> <span class="op">=</span> <span class="ident">M::Set</span>;
-    <span class="kw">fn</span> <span class="ident">deref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::Target</span> {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">tree</span>.<span class="ident">buf</span>[<span class="self">self</span>.<span class="ident">tree</span>.<span class="ident">len</span> <span class="op">+</span> <span class="self">self</span>.<span class="ident">index</span>]
+    <span class="kw">type </span>Target = M::Set;
+    <span class="kw">fn </span>deref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Target {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.tree.buf[<span class="self">self</span>.tree.len + <span class="self">self</span>.index]
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> <span class="ident">DerefMut</span> <span class="kw">for</span> <span class="ident">GetMutIndex</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M</span>: <span class="ident">Monoid</span>,
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;M&gt; DerefMut <span class="kw">for </span>GetMutIndex&lt;<span class="lifetime">&#39;_</span>, M&gt;
+<span class="kw">where
+    </span>M: Monoid,
+    M::Set: Clone,
 {
-    <span class="kw">fn</span> <span class="ident">deref_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="ident"><span class="self">Self</span>::Target</span> {
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">tree</span>.<span class="ident">buf</span>[<span class="self">self</span>.<span class="ident">tree</span>.<span class="ident">len</span> <span class="op">+</span> <span class="self">self</span>.<span class="ident">index</span>]
+    <span class="kw">fn </span>deref_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Target {
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>.tree.buf[<span class="self">self</span>.tree.len + <span class="self">self</span>.index]
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">VecSegtree</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M</span>: <span class="ident">Monoid</span> <span class="op">+</span> <span class="ident">Default</span>,
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;M&gt; Default <span class="kw">for </span>VecSegtree&lt;M&gt;
+<span class="kw">where
+    </span>M: Monoid + Default,
+    M::Set: Clone,
 {
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> { <span class="self">Self</span> { <span class="ident">buf</span>: <span class="macro">vec!</span>[], <span class="ident">len</span>: <span class="number">0</span>, <span class="ident">monoid</span>: <span class="ident">M::default</span>() } }
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{ <span class="self">Self </span>{ buf: <span class="macro">vec!</span>[], len: <span class="number">0</span>, monoid: M::default() } }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">M::Set</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">VecSegtree</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M</span>: <span class="ident">Monoid</span> <span class="op">+</span> <span class="ident">Default</span>,
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;M&gt; From&lt;Vec&lt;M::Set&gt;&gt; <span class="kw">for </span>VecSegtree&lt;M&gt;
+<span class="kw">where
+    </span>M: Monoid + Default,
+    M::Set: Clone,
 {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">v</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">M::Set</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> { <span class="ident"><span class="self">Self</span>::from</span>((<span class="ident">v</span>, <span class="ident">M::default</span>())) }
+    <span class="kw">fn </span>from(v: Vec&lt;M::Set&gt;) -&gt; <span class="self">Self </span>{ <span class="self">Self</span>::from((v, M::default())) }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">M::Set</span><span class="op">&gt;</span>, <span class="ident">M</span>)<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">VecSegtree</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M</span>: <span class="ident">Monoid</span>,
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;M&gt; From&lt;(Vec&lt;M::Set&gt;, M)&gt; <span class="kw">for </span>VecSegtree&lt;M&gt;
+<span class="kw">where
+    </span>M: Monoid,
+    M::Set: Clone,
 {
-    <span class="kw">fn</span> <span class="ident">from</span>((<span class="kw-2">mut</span> <span class="ident">v</span>, <span class="ident">monoid</span>): (<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">M::Set</span><span class="op">&gt;</span>, <span class="ident">M</span>)) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">v</span>.<span class="ident">len</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">monoid</span>.<span class="ident">id</span>(); <span class="ident">len</span>];
-        <span class="ident">buf</span>.<span class="ident">append</span>(<span class="kw-2">&amp;mut</span> <span class="ident">v</span>);
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> (<span class="number">0</span>..<span class="ident">len</span>).<span class="ident">rev</span>() {
-            <span class="ident">buf</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">monoid</span>.<span class="ident">op</span>(<span class="ident">buf</span>[<span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span>].<span class="ident">clone</span>(), <span class="ident">buf</span>[<span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span> <span class="op">|</span> <span class="number">1</span>].<span class="ident">clone</span>());
+    <span class="kw">fn </span>from((<span class="kw-2">mut </span>v, monoid): (Vec&lt;M::Set&gt;, M)) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>len = v.len();
+        <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="macro">vec!</span>[monoid.id(); len];
+        buf.append(<span class="kw-2">&amp;mut </span>v);
+        <span class="kw">for </span>i <span class="kw">in </span>(<span class="number">0</span>..len).rev() {
+            buf[i] = monoid.op(buf[i &lt;&lt; <span class="number">1</span>].clone(), buf[i &lt;&lt; <span class="number">1 </span>| <span class="number">1</span>].clone());
         }
-        <span class="self">Self</span> { <span class="ident">buf</span>, <span class="ident">len</span>, <span class="ident">monoid</span> }
+        <span class="self">Self </span>{ buf, len, monoid }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> <span class="ident">Index</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">VecSegtree</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M</span>: <span class="ident">Monoid</span>,
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;M&gt; Index&lt;usize&gt; <span class="kw">for </span>VecSegtree&lt;M&gt;
+<span class="kw">where
+    </span>M: Monoid,
+    M::Set: Clone,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">M::Set</span>;
-    <span class="kw">fn</span> <span class="ident">index</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::Output</span> {
-        <span class="ident">check_bounds</span>(<span class="ident">i</span>, <span class="self">self</span>.<span class="ident">len</span>);
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">i</span> <span class="op">+</span> <span class="self">self</span>.<span class="ident">len</span>]
+    <span class="kw">type </span>Output = M::Set;
+    <span class="kw">fn </span>index(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Output {
+        check_bounds(i, <span class="self">self</span>.len);
+        <span class="kw-2">&amp;</span><span class="self">self</span>.buf[i + <span class="self">self</span>.len]
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">VecSegtree</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">M::Set</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M</span>: <span class="ident">Monoid</span>,
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;M&gt; From&lt;VecSegtree&lt;M&gt;&gt; <span class="kw">for </span>Vec&lt;M::Set&gt;
+<span class="kw">where
+    </span>M: Monoid,
+    M::Set: Clone,
 {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">v</span>: <span class="ident">VecSegtree</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">v</span>.<span class="ident">buf</span>.<span class="ident">into_iter</span>().<span class="ident">skip</span>(<span class="ident">v</span>.<span class="ident">len</span>).<span class="ident">collect</span>()
+    <span class="kw">fn </span>from(v: VecSegtree&lt;M&gt;) -&gt; <span class="self">Self </span>{
+        v.buf.into_iter().skip(v.len).collect()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">VecSegtree</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M</span>: <span class="ident">Monoid</span>,
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">Debug</span>,
+<span class="kw">impl</span>&lt;M&gt; Debug <span class="kw">for </span>VecSegtree&lt;M&gt;
+<span class="kw">where
+    </span>M: Monoid,
+    M::Set: Clone + Debug,
 {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">fmt::Formatter</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="ident">f</span>.<span class="ident">debug_list</span>().<span class="ident">entries</span>(<span class="self">self</span>.<span class="ident">buf</span>[<span class="self">self</span>.<span class="ident">len</span>..].<span class="ident">iter</span>()).<span class="ident">finish</span>()
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
+        f.debug_list().entries(<span class="self">self</span>.buf[<span class="self">self</span>.len..].iter()).finish()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> <span class="ident">FoldBisect</span> <span class="kw">for</span> <span class="ident">VecSegtree</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M</span>: <span class="ident">Monoid</span>,
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;M&gt; FoldBisect <span class="kw">for </span>VecSegtree&lt;M&gt;
+<span class="kw">where
+    </span>M: Monoid,
+    M::Set: Clone,
 {
-    <span class="kw">fn</span> <span class="ident">fold_bisect</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">l</span>: <span class="ident">usize</span>, <span class="ident">pred</span>: <span class="ident">F</span>) -&gt; (<span class="ident">usize</span>, <span class="ident">M::Set</span>)
-    <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">M::Set</span>) -&gt; <span class="ident">bool</span>,
+    <span class="kw">fn </span>fold_bisect&lt;F&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, l: usize, pred: F) -&gt; (usize, M::Set)
+    <span class="kw">where
+        </span>F: Fn(<span class="kw-2">&amp;</span>M::Set) -&gt; bool,
     {
-        <span class="ident">check_bounds_range</span>(<span class="ident">l</span>, <span class="number">0</span>..<span class="op">=</span><span class="self">self</span>.<span class="ident">len</span>);
+        check_bounds_range(l, <span class="number">0</span>..=<span class="self">self</span>.len);
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">id</span>();
-        <span class="macro">assert!</span>(<span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>), <span class="string">&quot;`pred(id)` must hold&quot;</span>);
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">fold</span>(<span class="ident">l</span>..) {
-            <span class="ident">x</span> <span class="kw">if</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>) =&gt; <span class="kw">return</span> (<span class="self">self</span>.<span class="ident">len</span>, <span class="ident">x</span>),
-            <span class="kw">_</span> =&gt; {}
+        <span class="kw">let </span><span class="kw-2">mut </span>x = <span class="self">self</span>.monoid.id();
+        <span class="macro">assert!</span>(pred(<span class="kw-2">&amp;</span>x), <span class="string">&quot;`pred(id)` must hold&quot;</span>);
+        <span class="kw">match </span><span class="self">self</span>.fold(l..) {
+            x <span class="kw">if </span>pred(<span class="kw-2">&amp;</span>x) =&gt; <span class="kw">return </span>(<span class="self">self</span>.len, x),
+            <span class="kw">_ </span>=&gt; {}
         }
 
-        <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">nodes</span>(<span class="ident">l</span>, <span class="self">self</span>.<span class="ident">len</span>) {
-            <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">op</span>(<span class="ident">x</span>.<span class="ident">clone</span>(), <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">v</span>].<span class="ident">clone</span>());
-            <span class="kw">if</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">tmp</span>) {
-                <span class="ident">x</span> <span class="op">=</span> <span class="ident">tmp</span>;
+        <span class="kw">for </span>v <span class="kw">in </span><span class="self">self</span>.nodes(l, <span class="self">self</span>.len) {
+            <span class="kw">let </span>tmp = <span class="self">self</span>.monoid.op(x.clone(), <span class="self">self</span>.buf[v].clone());
+            <span class="kw">if </span>pred(<span class="kw-2">&amp;</span>tmp) {
+                x = tmp;
                 <span class="kw">continue</span>;
             }
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">v</span>;
-            <span class="kw">while</span> <span class="ident">v</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">len</span> {
-                <span class="ident">v</span> <span class="op">&lt;</span><span class="op">&lt;</span><span class="op">=</span> <span class="number">1</span>;
-                <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">op</span>(<span class="ident">x</span>.<span class="ident">clone</span>(), <span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">v</span>].<span class="ident">clone</span>());
-                <span class="kw">if</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">tmp</span>) {
-                    <span class="ident">x</span> <span class="op">=</span> <span class="ident">tmp</span>;
-                    <span class="ident">v</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+            <span class="kw">let </span><span class="kw-2">mut </span>v = v;
+            <span class="kw">while </span>v &lt; <span class="self">self</span>.len {
+                v &lt;&lt;= <span class="number">1</span>;
+                <span class="kw">let </span>tmp = <span class="self">self</span>.monoid.op(x.clone(), <span class="self">self</span>.buf[v].clone());
+                <span class="kw">if </span>pred(<span class="kw-2">&amp;</span>tmp) {
+                    x = tmp;
+                    v += <span class="number">1</span>;
                 }
             }
-            <span class="kw">return</span> (<span class="ident">v</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">len</span>, <span class="ident">x</span>);
+            <span class="kw">return </span>(v - <span class="self">self</span>.len, x);
         }
         <span class="macro">unreachable!</span>();
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> <span class="ident">FoldBisectRev</span> <span class="kw">for</span> <span class="ident">VecSegtree</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">M</span>: <span class="ident">Monoid</span>,
-    <span class="ident">M::Set</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;M&gt; FoldBisectRev <span class="kw">for </span>VecSegtree&lt;M&gt;
+<span class="kw">where
+    </span>M: Monoid,
+    M::Set: Clone,
 {
-    <span class="kw">fn</span> <span class="ident">fold_bisect_rev</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">r</span>: <span class="ident">usize</span>, <span class="ident">pred</span>: <span class="ident">F</span>) -&gt; (<span class="ident">usize</span>, <span class="ident">M::Set</span>)
-    <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">M::Set</span>) -&gt; <span class="ident">bool</span>,
+    <span class="kw">fn </span>fold_bisect_rev&lt;F&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, r: usize, pred: F) -&gt; (usize, M::Set)
+    <span class="kw">where
+        </span>F: Fn(<span class="kw-2">&amp;</span>M::Set) -&gt; bool,
     {
-        <span class="ident">check_bounds_range</span>(<span class="ident">r</span>, <span class="number">0</span>..<span class="op">=</span><span class="self">self</span>.<span class="ident">len</span>);
+        check_bounds_range(r, <span class="number">0</span>..=<span class="self">self</span>.len);
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">id</span>();
-        <span class="macro">assert!</span>(<span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>), <span class="string">&quot;`pred(id)` must hold&quot;</span>);
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">fold</span>(..<span class="ident">r</span>) {
-            <span class="ident">x</span> <span class="kw">if</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>) =&gt; <span class="kw">return</span> (<span class="number">0</span>, <span class="ident">x</span>),
-            <span class="kw">_</span> =&gt; {}
+        <span class="kw">let </span><span class="kw-2">mut </span>x = <span class="self">self</span>.monoid.id();
+        <span class="macro">assert!</span>(pred(<span class="kw-2">&amp;</span>x), <span class="string">&quot;`pred(id)` must hold&quot;</span>);
+        <span class="kw">match </span><span class="self">self</span>.fold(..r) {
+            x <span class="kw">if </span>pred(<span class="kw-2">&amp;</span>x) =&gt; <span class="kw">return </span>(<span class="number">0</span>, x),
+            <span class="kw">_ </span>=&gt; {}
         }
 
-        <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">nodes_rev</span>(<span class="number">0</span>, <span class="ident">r</span>) {
-            <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">op</span>(<span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">v</span>].<span class="ident">clone</span>(), <span class="ident">x</span>.<span class="ident">clone</span>());
-            <span class="kw">if</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">tmp</span>) {
-                <span class="ident">x</span> <span class="op">=</span> <span class="ident">tmp</span>;
+        <span class="kw">for </span>v <span class="kw">in </span><span class="self">self</span>.nodes_rev(<span class="number">0</span>, r) {
+            <span class="kw">let </span>tmp = <span class="self">self</span>.monoid.op(<span class="self">self</span>.buf[v].clone(), x.clone());
+            <span class="kw">if </span>pred(<span class="kw-2">&amp;</span>tmp) {
+                x = tmp;
                 <span class="kw">continue</span>;
             }
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">v</span>;
-            <span class="kw">while</span> <span class="ident">v</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">len</span> {
-                <span class="ident">v</span> <span class="op">=</span> <span class="ident">v</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span> <span class="op">|</span> <span class="number">1</span>;
-                <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">monoid</span>.<span class="ident">op</span>(<span class="self">self</span>.<span class="ident">buf</span>[<span class="ident">v</span>].<span class="ident">clone</span>(), <span class="ident">x</span>.<span class="ident">clone</span>());
-                <span class="kw">if</span> <span class="ident">pred</span>(<span class="kw-2">&amp;</span><span class="ident">tmp</span>) {
-                    <span class="ident">x</span> <span class="op">=</span> <span class="ident">tmp</span>;
-                    <span class="ident">v</span> <span class="op">-</span><span class="op">=</span> <span class="number">1</span>;
+            <span class="kw">let </span><span class="kw-2">mut </span>v = v;
+            <span class="kw">while </span>v &lt; <span class="self">self</span>.len {
+                v = v &lt;&lt; <span class="number">1 </span>| <span class="number">1</span>;
+                <span class="kw">let </span>tmp = <span class="self">self</span>.monoid.op(<span class="self">self</span>.buf[v].clone(), x.clone());
+                <span class="kw">if </span>pred(<span class="kw-2">&amp;</span>tmp) {
+                    x = tmp;
+                    v -= <span class="number">1</span>;
                 }
             }
-            <span class="kw">return</span> (<span class="ident">v</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">len</span> <span class="op">+</span> <span class="number">1</span>, <span class="ident">x</span>);
+            <span class="kw">return </span>(v - <span class="self">self</span>.len + <span class="number">1</span>, x);
         }
         <span class="macro">unreachable!</span>();
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

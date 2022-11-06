@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/mod_ackermann.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod_ackermann.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/mod_ackermann.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod_ackermann.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -207,125 +207,125 @@
 <span id="118">118</span>
 <span id="119">119</span>
 <span id="120">120</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Ackermann 関数。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Ackermann 関数。
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::mod_pow</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::mod_tetration</span>;
+</span><span class="kw">use </span><span class="kw">super</span>::mod_pow;
+<span class="kw">use </span><span class="kw">super</span>::mod_tetration;
 
-<span class="kw">use</span> <span class="ident">mod_pow::ModPow</span>;
-<span class="kw">use</span> <span class="ident">mod_tetration::ModTetration</span>;
+<span class="kw">use </span>mod_pow::ModPow;
+<span class="kw">use </span>mod_tetration::ModTetration;
 
-<span class="doccomment">/// Ackermann 関数。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 与えられた $(a, b, n)$ に対して $A(a, b)\\bmod n$ を返す。</span>
-<span class="doccomment">/// 自然数 $a$, $b$ に対して Péter--Ackermann 関数 $A(a, b)$ は次のように定義される。</span>
-<span class="doccomment">/// - $A(0, b) = b+1$,</span>
-<span class="doccomment">/// - $A(a+1,0) = A(a, 1)$,</span>
-<span class="doccomment">/// - $A(a+1, b+1) = A(a, A(a+1, b))$.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $\\gdef{\\hyper}{\\operatorname{hyper}}$</span>
-<span class="doccomment">/// 以下の性質が知られている。</span>
-<span class="doccomment">/// $$ a\\gt 0 \\implies \\hyper\_a(2, b+3)-3. $$</span>
-<span class="doccomment">/// ただし、$\\hyper\_a$ は $a$ 番目のハイパー演算子である。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Idea</span>
-<span class="doccomment">/// $a\\le 4$ までは [`mod_pow`] や [`mod_tetration`] を用いて簡単に求められる。</span>
-<span class="doccomment">/// [`mod_tetration`] と同様に、指数部が十分大きくなると値が一定になるので、それを利用する。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $A(5, b) = \\hyper\_5(2, b+3)-3 = \\underbrace{{}^{{}^{{}^2\\cdots} 2} 2}\_{b+3\\text{ many}} - 3$</span>
-<span class="doccomment">/// となるが、$A(5, 0)$ は現実的な値として求められる。</span>
-<span class="doccomment">/// $$ \\begin{aligned}</span>
-<span class="doccomment">/// A(5, 0) &amp;= {}^{{}^2 2} 2 - 3 \\\\</span>
-<span class="doccomment">/// &amp;= {}^4 2 - 3 \\\\</span>
-<span class="doccomment">/// &amp;= 2^{2^{2^2}} - 3 \\\\</span>
-<span class="doccomment">/// &amp;= 2^{2^4} - 3 \\\\</span>
-<span class="doccomment">/// &amp;= 2^{16}-3 = 65533.</span>
-<span class="doccomment">/// \\end{aligned} $$</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// 一方で、$A(5, 1)$ は次のようになる。</span>
-<span class="doccomment">/// $$ \\begin{aligned}</span>
-<span class="doccomment">/// A(5, 1) &amp;= {}^{{}^{{}^2 2} 2} 2 - 3 \\\\</span>
-<span class="doccomment">/// &amp;= {}^{65536} 2 - 3 \\\\</span>
-<span class="doccomment">/// &amp;= \\underbrace{2^{2^{\\cdots^2}}}\_{65536\\text{ many}}-3.</span>
-<span class="doccomment">/// \\end{aligned} $$</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ここで [`mod_tetration`] の議論を思い出すと、${}^b a \\bmod{n}$ は $b\\ge 2\\log(n)$</span>
-<span class="doccomment">/// であれば一定値となる。引数の型が [`u64`] である今、$b$ として意味があるのは高々</span>
-<span class="doccomment">/// $2\\log(2^{64}) = 128$ 程度であり、$A(5, 1)$ はそれを十分に上回る。</span>
-<span class="doccomment">/// すなわち、$A(5, 1)\\bmod n = A(4, 2\\log(n))\\bmod n$ として計算してしまってよい[^bd]。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// さらに、$A(6, 0) = A(5, 1)$ などから、$a\\ge 6$ についても同様にでき、次のようにできる。</span>
-<span class="doccomment">/// - $A(0, b) \\equiv b+1 \\pmod{n}$,</span>
-<span class="doccomment">/// - $A(1, b) \\equiv b + 2 \\pmod{n}$,</span>
-<span class="doccomment">/// - $A(2, b) \\equiv 2b + 3 \\pmod{n}$,</span>
-<span class="doccomment">/// - $A(3, b) \\equiv 2^{b+3} - 3 \\pmod{n}$,</span>
-<span class="doccomment">/// - $A(4, b) \\equiv {}^{b+3} 2 - 3 \\pmod{n}$,</span>
-<span class="doccomment">/// - $A(5, 0) \\equiv 65533 \\pmod{n}$,</span>
-<span class="doccomment">/// - $A(5, b) \\equiv A(4, 2\\log(n)) \\pmod{n}$ for $b\\ge 1$,</span>
-<span class="doccomment">/// - $A(a, b) \\equiv A(4, 2\\log(n)) \\pmod{n}$ for $a\\ge 6$.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [^bd]: 32768-bit 整数を受け取るような状況ではよくなさそう。512-word</span>
-<span class="doccomment">/// の多倍長整数と思うとそこそこ現実的な気もする？ だとしても $A(5, 2)$ はもう現実的じゃなさそう。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [`mod_pow`]: fn.mod_pow.html</span>
-<span class="doccomment">/// [`mod_tetration`]: fn.mod_tetration.html</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// |入力|時間計算量|</span>
-<span class="doccomment">/// |---|---|</span>
-<span class="doccomment">/// |$a\\le 2$ or $(a, b) = (5, 0)$|$O(1)$|</span>
-<span class="doccomment">/// |$a=3$|$O(\\log(b))$|</span>
-<span class="doccomment">/// |otherwise|$O(\\sqrt{n})$|</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::math::ModAckermann;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let n = 10_u64.pow(9);</span>
-<span class="doccomment">/// assert_eq!(2_u64.mod_ackermann(5, n), 13);</span>
-<span class="doccomment">/// assert_eq!(3_u64.mod_ackermann(7, n), 1_021);</span>
-<span class="doccomment">/// assert_eq!(4_u64.mod_ackermann(2, n), 719_156_733);</span>
-<span class="doccomment">/// assert_eq!(4_u64.mod_ackermann(3, n), 437_428_733);</span>
-<span class="doccomment">/// assert_eq!(4_u64.mod_ackermann(8, n), 432_948_733);</span>
-<span class="doccomment">/// assert_eq!(9_u64.mod_ackermann(9, n), 432_948_733);</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">ModAckermann</span> {
-    <span class="kw">fn</span> <span class="ident">mod_ackermann</span>(<span class="self">self</span>, <span class="ident">b</span>: <span class="self">Self</span>, <span class="ident">n</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
+<span class="doccomment">/// Ackermann 関数。
+///
+/// 与えられた $(a, b, n)$ に対して $A(a, b)\\bmod n$ を返す。
+/// 自然数 $a$, $b$ に対して Péter--Ackermann 関数 $A(a, b)$ は次のように定義される。
+/// - $A(0, b) = b+1$,
+/// - $A(a+1,0) = A(a, 1)$,
+/// - $A(a+1, b+1) = A(a, A(a+1, b))$.
+///
+/// $\\gdef{\\hyper}{\\operatorname{hyper}}$
+/// 以下の性質が知られている。
+/// $$ a\\gt 0 \\implies \\hyper\_a(2, b+3)-3. $$
+/// ただし、$\\hyper\_a$ は $a$ 番目のハイパー演算子である。
+///
+/// # Idea
+/// $a\\le 4$ までは [`mod_pow`] や [`mod_tetration`] を用いて簡単に求められる。
+/// [`mod_tetration`] と同様に、指数部が十分大きくなると値が一定になるので、それを利用する。
+///
+/// $A(5, b) = \\hyper\_5(2, b+3)-3 = \\underbrace{{}^{{}^{{}^2\\cdots} 2} 2}\_{b+3\\text{ many}} - 3$
+/// となるが、$A(5, 0)$ は現実的な値として求められる。
+/// $$ \\begin{aligned}
+/// A(5, 0) &amp;= {}^{{}^2 2} 2 - 3 \\\\
+/// &amp;= {}^4 2 - 3 \\\\
+/// &amp;= 2^{2^{2^2}} - 3 \\\\
+/// &amp;= 2^{2^4} - 3 \\\\
+/// &amp;= 2^{16}-3 = 65533.
+/// \\end{aligned} $$
+///
+/// 一方で、$A(5, 1)$ は次のようになる。
+/// $$ \\begin{aligned}
+/// A(5, 1) &amp;= {}^{{}^{{}^2 2} 2} 2 - 3 \\\\
+/// &amp;= {}^{65536} 2 - 3 \\\\
+/// &amp;= \\underbrace{2^{2^{\\cdots^2}}}\_{65536\\text{ many}}-3.
+/// \\end{aligned} $$
+///
+/// ここで [`mod_tetration`] の議論を思い出すと、${}^b a \\bmod{n}$ は $b\\ge 2\\log(n)$
+/// であれば一定値となる。引数の型が [`u64`] である今、$b$ として意味があるのは高々
+/// $2\\log(2^{64}) = 128$ 程度であり、$A(5, 1)$ はそれを十分に上回る。
+/// すなわち、$A(5, 1)\\bmod n = A(4, 2\\log(n))\\bmod n$ として計算してしまってよい[^bd]。
+///
+/// さらに、$A(6, 0) = A(5, 1)$ などから、$a\\ge 6$ についても同様にでき、次のようにできる。
+/// - $A(0, b) \\equiv b+1 \\pmod{n}$,
+/// - $A(1, b) \\equiv b + 2 \\pmod{n}$,
+/// - $A(2, b) \\equiv 2b + 3 \\pmod{n}$,
+/// - $A(3, b) \\equiv 2^{b+3} - 3 \\pmod{n}$,
+/// - $A(4, b) \\equiv {}^{b+3} 2 - 3 \\pmod{n}$,
+/// - $A(5, 0) \\equiv 65533 \\pmod{n}$,
+/// - $A(5, b) \\equiv A(4, 2\\log(n)) \\pmod{n}$ for $b\\ge 1$,
+/// - $A(a, b) \\equiv A(4, 2\\log(n)) \\pmod{n}$ for $a\\ge 6$.
+///
+/// [^bd]: 32768-bit 整数を受け取るような状況ではよくなさそう。512-word
+/// の多倍長整数と思うとそこそこ現実的な気もする？ だとしても $A(5, 2)$ はもう現実的じゃなさそう。
+///
+/// [`mod_pow`]: fn.mod_pow.html
+/// [`mod_tetration`]: fn.mod_tetration.html
+///
+/// # Complexity
+/// |入力|時間計算量|
+/// |---|---|
+/// |$a\\le 2$ or $(a, b) = (5, 0)$|$O(1)$|
+/// |$a=3$|$O(\\log(b))$|
+/// |otherwise|$O(\\sqrt{n})$|
+///
+/// # Examples
+/// ```
+/// use nekolib::math::ModAckermann;
+///
+/// let n = 10_u64.pow(9);
+/// assert_eq!(2_u64.mod_ackermann(5, n), 13);
+/// assert_eq!(3_u64.mod_ackermann(7, n), 1_021);
+/// assert_eq!(4_u64.mod_ackermann(2, n), 719_156_733);
+/// assert_eq!(4_u64.mod_ackermann(3, n), 437_428_733);
+/// assert_eq!(4_u64.mod_ackermann(8, n), 432_948_733);
+/// assert_eq!(9_u64.mod_ackermann(9, n), 432_948_733);
+/// ```
+</span><span class="kw">pub trait </span>ModAckermann {
+    <span class="kw">fn </span>mod_ackermann(<span class="self">self</span>, b: <span class="self">Self</span>, n: <span class="self">Self</span>) -&gt; <span class="self">Self</span>;
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_uint</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span> <span class="ident">ModAckermann</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">mod_ackermann</span>(<span class="self">self</span>, <span class="ident">b</span>: <span class="self">Self</span>, <span class="ident">n</span>: <span class="self">Self</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> <span class="ident">sub_3</span> <span class="op">=</span> <span class="op">|</span><span class="ident">z</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">n</span> {
-                    <span class="number">1</span> =&gt; <span class="number">0</span>,
-                    <span class="number">2</span> =&gt; <span class="number">1</span> <span class="op">-</span> <span class="ident">z</span>,
-                    <span class="number">3</span> =&gt; <span class="ident">z</span>,
-                    <span class="kw">_</span> <span class="kw">if</span> <span class="ident">z</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">3</span> =&gt; <span class="ident">z</span> <span class="op">-</span> <span class="number">3</span>,
-                    <span class="kw">_</span> =&gt; <span class="ident">z</span> <span class="op">+</span> <span class="ident">n</span> <span class="op">-</span> <span class="number">3</span>,
+<span class="macro">macro_rules! </span>impl_uint {
+    (<span class="macro-nonterminal">$t</span>:ty) =&gt; {
+        <span class="kw">impl </span>ModAckermann <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
+            <span class="kw">fn </span>mod_ackermann(<span class="self">self</span>, b: <span class="self">Self</span>, n: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span>sub_3 = |z| <span class="kw">match </span>n {
+                    <span class="number">1 </span>=&gt; <span class="number">0</span>,
+                    <span class="number">2 </span>=&gt; <span class="number">1 </span>- z,
+                    <span class="number">3 </span>=&gt; z,
+                    <span class="kw">_ if </span>z &gt;= <span class="number">3 </span>=&gt; z - <span class="number">3</span>,
+                    <span class="kw">_ </span>=&gt; z + n - <span class="number">3</span>,
                 };
-                <span class="kw">match</span> (<span class="self">self</span>, <span class="ident">b</span>) {
-                    (<span class="number">0</span>, <span class="kw">_</span>) =&gt; (<span class="ident">b</span> <span class="op">+</span> <span class="number">1</span>) <span class="op">%</span> <span class="ident">n</span>,
-                    (<span class="number">1</span>, <span class="kw">_</span>) =&gt; (<span class="ident">b</span> <span class="op">+</span> <span class="number">2</span>) <span class="op">%</span> <span class="ident">n</span>,
-                    (<span class="number">2</span>, <span class="kw">_</span>) =&gt; (<span class="number">2</span> <span class="op">*</span> <span class="ident">b</span> <span class="op">+</span> <span class="number">3</span>) <span class="op">%</span> <span class="ident">n</span>,
-                    (<span class="number">3</span>, <span class="kw">_</span>) =&gt; <span class="ident">sub_3</span>((<span class="number">2</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>).<span class="ident">mod_pow</span>(<span class="ident">b</span> <span class="op">+</span> <span class="number">3</span>, <span class="ident">n</span>)),
-                    (<span class="number">4</span>, <span class="kw">_</span>) =&gt; <span class="ident">sub_3</span>((<span class="number">2</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>).<span class="ident">mod_tetration</span>(<span class="ident">b</span> <span class="op">+</span> <span class="number">3</span>, <span class="ident">n</span>)),
-                    (<span class="number">5</span>, <span class="number">0</span>) =&gt; (<span class="number">65533_u128</span> <span class="op">%</span> <span class="ident">n</span> <span class="kw">as</span> <span class="ident">u128</span>) <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>, <span class="comment">// for u8</span>
-                    <span class="kw">_</span> =&gt; <span class="ident">sub_3</span>((<span class="number">2</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>).<span class="ident">mod_tetration</span>(<span class="ident">n</span>, <span class="ident">n</span>)),
+                <span class="kw">match </span>(<span class="self">self</span>, b) {
+                    (<span class="number">0</span>, <span class="kw">_</span>) =&gt; (b + <span class="number">1</span>) % n,
+                    (<span class="number">1</span>, <span class="kw">_</span>) =&gt; (b + <span class="number">2</span>) % n,
+                    (<span class="number">2</span>, <span class="kw">_</span>) =&gt; (<span class="number">2 </span>* b + <span class="number">3</span>) % n,
+                    (<span class="number">3</span>, <span class="kw">_</span>) =&gt; sub_3((<span class="number">2 </span><span class="kw">as </span><span class="macro-nonterminal">$t</span>).mod_pow(b + <span class="number">3</span>, n)),
+                    (<span class="number">4</span>, <span class="kw">_</span>) =&gt; sub_3((<span class="number">2 </span><span class="kw">as </span><span class="macro-nonterminal">$t</span>).mod_tetration(b + <span class="number">3</span>, n)),
+                    (<span class="number">5</span>, <span class="number">0</span>) =&gt; (<span class="number">65533_u128 </span>% n <span class="kw">as </span>u128) <span class="kw">as </span><span class="macro-nonterminal">$t</span>, <span class="comment">// for u8
+                    </span><span class="kw">_ </span>=&gt; sub_3((<span class="number">2 </span><span class="kw">as </span><span class="macro-nonterminal">$t</span>).mod_tetration(n, n)),
                 }
             }
         }
     };
-    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
+    ( $(<span class="macro-nonterminal">$t</span>:ty)* ) =&gt; { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$t</span>);)* };
 }
 
-<span class="macro">impl_uint!</span>(<span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span>);
+<span class="macro">impl_uint!</span>(u8 u16 u32 u64 u128 usize);
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test</span>() {
-    <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="number">14_u64</span>.<span class="ident">pow</span>(<span class="number">8</span>);
-    <span class="kw">let</span> <span class="ident">res</span>: <span class="ident">u64</span> <span class="op">=</span> (<span class="number">0</span>..<span class="op">=</span><span class="number">7</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> <span class="ident">a</span>.<span class="ident">mod_ackermann</span>(<span class="ident">a</span>, <span class="ident">n</span>)).<span class="ident">sum</span>();
-    <span class="macro">assert_eq!</span>(<span class="ident">res</span> <span class="op">%</span> <span class="ident">n</span>, <span class="number">452_774_460</span>);
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test() {
+    <span class="kw">let </span>n = <span class="number">14_u64</span>.pow(<span class="number">8</span>);
+    <span class="kw">let </span>res: u64 = (<span class="number">0</span>..=<span class="number">7</span>).map(|a| a.mod_ackermann(a, n)).sum();
+    <span class="macro">assert_eq!</span>(res % n, <span class="number">452_774_460</span>);
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

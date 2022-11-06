@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/carmichael_lambda.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>carmichael_lambda.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/carmichael_lambda.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>carmichael_lambda.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -176,94 +176,94 @@
 <span id="87">87</span>
 <span id="88">88</span>
 <span id="89">89</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Carmichael の $\\lambda$ 関数。</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Carmichael の $\\lambda$ 関数。
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::factors</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::lcm</span>;
+</span><span class="kw">use </span><span class="kw">super</span>::factors;
+<span class="kw">use </span><span class="kw">super</span>::lcm;
 
-<span class="kw">use</span> <span class="ident">factors::Factors</span>;
-<span class="kw">use</span> <span class="ident">lcm::Lcm</span>;
+<span class="kw">use </span>factors::Factors;
+<span class="kw">use </span>lcm::Lcm;
 
-<span class="doccomment">/// Carmichael の $\\lambda$ 関数。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $\\lambda(n)$ は、$\\gcd(a, n)$ である任意の $a$ に対して</span>
-<span class="doccomment">/// $a^m\\equiv 1 \\pmod{n}$ となる最小の $m$ として定義される。</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// $\\gdef{\\lcm}{\\operatorname\*{lcm}}$</span>
-<span class="doccomment">/// 以下の式によって計算される。</span>
-<span class="doccomment">/// - $\\lambda(1) = 1$</span>
-<span class="doccomment">/// - $\\lambda(2) = 1$</span>
-<span class="doccomment">/// - $\\lambda(4) = 2$</span>
-<span class="doccomment">/// - $\\lambda(2^e) = 2^{e-2}$ for $e\\ge 3$</span>
-<span class="doccomment">/// - $\\lambda(p^e) = \\varphi(p^e) = p^{e-1}(p-1)$ for odd prime $p$</span>
-<span class="doccomment">/// - $\\lambda(\\prod\_{p:\\text{ prime}} p\_i^{e\_i}) = \\lcm\_i \\lambda(p\_i^{e\_i})$</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Complexity</span>
-<span class="doccomment">/// $O(\\sqrt{n})$ time.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use nekolib::math::CarmichaelLambda;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert_eq!(1_u64.carmichael_lambda(), 1);</span>
-<span class="doccomment">/// assert_eq!(15_u64.carmichael_lambda(), 4);</span>
-<span class="doccomment">/// assert_eq!(21_u64.carmichael_lambda(), 6);</span>
-<span class="doccomment">/// assert_eq!(33_u64.carmichael_lambda(), 10);</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">CarmichaelLambda</span> {
-    <span class="kw">fn</span> <span class="ident">carmichael_lambda</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
+<span class="doccomment">/// Carmichael の $\\lambda$ 関数。
+///
+/// $\\lambda(n)$ は、$\\gcd(a, n)$ である任意の $a$ に対して
+/// $a^m\\equiv 1 \\pmod{n}$ となる最小の $m$ として定義される。
+///
+/// $\\gdef{\\lcm}{\\operatorname\*{lcm}}$
+/// 以下の式によって計算される。
+/// - $\\lambda(1) = 1$
+/// - $\\lambda(2) = 1$
+/// - $\\lambda(4) = 2$
+/// - $\\lambda(2^e) = 2^{e-2}$ for $e\\ge 3$
+/// - $\\lambda(p^e) = \\varphi(p^e) = p^{e-1}(p-1)$ for odd prime $p$
+/// - $\\lambda(\\prod\_{p:\\text{ prime}} p\_i^{e\_i}) = \\lcm\_i \\lambda(p\_i^{e\_i})$
+///
+/// # Complexity
+/// $O(\\sqrt{n})$ time.
+///
+/// # Examples
+/// ```
+/// use nekolib::math::CarmichaelLambda;
+///
+/// assert_eq!(1_u64.carmichael_lambda(), 1);
+/// assert_eq!(15_u64.carmichael_lambda(), 4);
+/// assert_eq!(21_u64.carmichael_lambda(), 6);
+/// assert_eq!(33_u64.carmichael_lambda(), 10);
+/// ```
+</span><span class="kw">pub trait </span>CarmichaelLambda {
+    <span class="kw">fn </span>carmichael_lambda(<span class="self">self</span>) -&gt; <span class="self">Self</span>;
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_uint</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span> <span class="ident">CarmichaelLambda</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">carmichael_lambda</span>(<span class="self">self</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="self">self</span>;
-                <span class="kw">let</span> <span class="ident">e2</span> <span class="op">=</span> <span class="ident">n</span>.<span class="ident">trailing_zeros</span>() <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>;
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">e2</span> {
-                    <span class="number">0</span> <span class="op">|</span> <span class="number">1</span> =&gt; <span class="number">1</span>,
-                    <span class="number">2</span> =&gt; <span class="number">2</span>,
-                    <span class="kw">_</span> =&gt; <span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> (<span class="ident">e2</span> <span class="op">-</span> <span class="number">2</span>),
+<span class="macro">macro_rules! </span>impl_uint {
+    (<span class="macro-nonterminal">$t</span>:ty) =&gt; {
+        <span class="kw">impl </span>CarmichaelLambda <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
+            <span class="kw">fn </span>carmichael_lambda(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span>n = <span class="self">self</span>;
+                <span class="kw">let </span>e2 = n.trailing_zeros() <span class="kw">as </span><span class="macro-nonterminal">$t</span>;
+                <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="kw">match </span>e2 {
+                    <span class="number">0 </span>| <span class="number">1 </span>=&gt; <span class="number">1</span>,
+                    <span class="number">2 </span>=&gt; <span class="number">2</span>,
+                    <span class="kw">_ </span>=&gt; <span class="number">1 </span>&lt;&lt; (e2 - <span class="number">2</span>),
                 };
-                <span class="kw">for</span> (<span class="ident">p</span>, <span class="ident">e</span>) <span class="kw">in</span> (<span class="ident">n</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">e2</span>).<span class="ident">factors</span>() {
-                    <span class="ident">res</span> <span class="op">=</span> <span class="ident">res</span>.<span class="ident">lcm</span>(<span class="ident">p</span>.<span class="ident">pow</span>(<span class="ident">e</span> <span class="op">-</span> <span class="number">1</span>) <span class="op">*</span> (<span class="ident">p</span> <span class="op">-</span> <span class="number">1</span>));
+                <span class="kw">for </span>(p, e) <span class="kw">in </span>(n &gt;&gt; e2).factors() {
+                    res = res.lcm(p.pow(e - <span class="number">1</span>) * (p - <span class="number">1</span>));
                 }
-                <span class="ident">res</span>
+                res
             }
         }
     };
-    ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>)<span class="op">*</span> ) =&gt; { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>);)<span class="op">*</span> };
+    ( $(<span class="macro-nonterminal">$t</span>:ty)* ) =&gt; { $(<span class="macro">impl_uint!</span>(<span class="macro-nonterminal">$t</span>);)* };
 }
 
-<span class="macro">impl_uint!</span>(<span class="ident">u8</span> <span class="ident">u16</span> <span class="ident">u32</span> <span class="ident">u64</span> <span class="ident">u128</span> <span class="ident">usize</span>);
+<span class="macro">impl_uint!</span>(u8 u16 u32 u64 u128 usize);
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test</span>() {
-    <span class="kw">use</span> <span class="ident">gcd::Gcd</span>;
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>test() {
+    <span class="kw">use </span>gcd::Gcd;
 
-    <span class="kw">let</span> <span class="ident">n_max</span> <span class="op">=</span> <span class="number">1000_usize</span>;
-    <span class="macro">assert_eq!</span>(<span class="number">1_usize</span>.<span class="ident">carmichael_lambda</span>(), <span class="number">1</span>);
-    <span class="kw">for</span> <span class="ident">n</span> <span class="kw">in</span> <span class="number">2</span>..<span class="op">=</span><span class="ident">n_max</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pow</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">1</span>; <span class="ident">n</span>];
-        <span class="kw">let</span> <span class="ident">relp</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">n</span>).<span class="ident">filter</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">a</span><span class="op">|</span> <span class="ident">a</span>.<span class="ident">gcd</span>(<span class="ident">n</span>) <span class="op">==</span> <span class="number">1</span>).<span class="ident">collect</span>();
-        <span class="kw">for</span> <span class="ident">e</span> <span class="kw">in</span> <span class="number">1</span>..<span class="ident">n</span> {
-            <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">a</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">relp</span> {
-                <span class="ident">pow</span>[<span class="ident">a</span>] <span class="op">=</span> <span class="ident">pow</span>[<span class="ident">a</span>] <span class="op">*</span> <span class="ident">a</span> <span class="op">%</span> <span class="ident">n</span>;
+    <span class="kw">let </span>n_max = <span class="number">1000_usize</span>;
+    <span class="macro">assert_eq!</span>(<span class="number">1_usize</span>.carmichael_lambda(), <span class="number">1</span>);
+    <span class="kw">for </span>n <span class="kw">in </span><span class="number">2</span>..=n_max {
+        <span class="kw">let </span><span class="kw-2">mut </span>pow = <span class="macro">vec!</span>[<span class="number">1</span>; n];
+        <span class="kw">let </span>relp: Vec&lt;<span class="kw">_</span>&gt; = (<span class="number">0</span>..n).filter(|<span class="kw-2">&amp;</span>a| a.gcd(n) == <span class="number">1</span>).collect();
+        <span class="kw">for </span>e <span class="kw">in </span><span class="number">1</span>..n {
+            <span class="kw">for </span><span class="kw-2">&amp;</span>a <span class="kw">in </span><span class="kw-2">&amp;</span>relp {
+                pow[a] = pow[a] * a % n;
             }
-            <span class="kw">if</span> <span class="ident">pow</span>.<span class="ident">iter</span>().<span class="ident">all</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span> <span class="op">==</span> <span class="number">1</span>) {
+            <span class="kw">if </span>pow.iter().all(|<span class="kw-2">&amp;</span>x| x == <span class="number">1</span>) {
                 <span class="macro">assert_eq!</span>(
-                    <span class="ident">n</span>.<span class="ident">carmichael_lambda</span>(),
-                    <span class="ident">e</span>,
+                    n.carmichael_lambda(),
+                    e,
                     <span class="string">&quot;lambda({}) = {}? {}&quot;</span>,
-                    <span class="ident">n</span>,
-                    <span class="ident">e</span>,
-                    <span class="ident">n</span>.<span class="ident">carmichael_lambda</span>()
+                    n,
+                    e,
+                    n.carmichael_lambda()
                 );
                 <span class="kw">break</span>;
             }
         }
-        <span class="macro">assert!</span>(<span class="ident">pow</span>.<span class="ident">iter</span>().<span class="ident">all</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span> <span class="op">==</span> <span class="number">1</span>));
+        <span class="macro">assert!</span>(pow.iter().all(|<span class="kw-2">&amp;</span>x| x == <span class="number">1</span>));
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>
