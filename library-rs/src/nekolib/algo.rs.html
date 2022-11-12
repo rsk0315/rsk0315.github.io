@@ -139,6 +139,8 @@
 <span id="50">50</span>
 <span id="51">51</span>
 <span id="52">52</span>
+<span id="53">53</span>
+<span id="54">54</span>
 </pre><pre class="rust"><code><span class="doccomment">//! アルゴリズムたち。
 //!
 //! ここに何かを書く。
@@ -186,7 +188,9 @@
 <span class="attribute">#[doc(inline)]
 </span><span class="kw">pub use </span>parallel_bisect::parallel_bisect;
 <span class="attribute">#[doc(inline)]
-</span><span class="kw">pub use </span>permutation::next_permutation;
+</span><span class="kw">pub use </span>permutation::{
+    next_permutation, prev_permutation, Backward, Forward, Permutations,
+};
 <span class="attribute">#[doc(inline)]
 </span><span class="kw">pub use </span>tortoise_hare::{cycle_mu_lambda, cycle_nth};
 <span class="attribute">#[doc(inline)]
