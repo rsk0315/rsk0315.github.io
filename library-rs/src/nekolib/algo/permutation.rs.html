@@ -406,14 +406,6 @@
 <span id="317">317</span>
 <span id="318">318</span>
 <span id="319">319</span>
-<span id="320">320</span>
-<span id="321">321</span>
-<span id="322">322</span>
-<span id="323">323</span>
-<span id="324">324</span>
-<span id="325">325</span>
-<span id="326">326</span>
-<span id="327">327</span>
 </pre><pre class="rust"><code><span class="doccomment">//! 順列。
 
 /// 辞書順で次の順列の生成。
@@ -488,21 +480,17 @@
     // postcondition: a[k..] is sorted
 
     </span><span class="kw">let </span>n = a.len();
-    <span class="kw">if </span>n == k {
-        <span class="kw">return </span>next_permutation(a);
-    }
-
     <span class="kw">for </span>i <span class="kw">in </span>(<span class="number">0</span>..k).rev() {
-        <span class="kw">let </span>j = <span class="kw">if </span>a[i] &lt; a[n - <span class="number">1</span>] {
+        <span class="kw">let </span>j = <span class="kw">if </span>k &lt; n &amp;&amp; a[i] &lt; a[n - <span class="number">1</span>] {
             (k..).find(|<span class="kw-2">&amp;</span>j| a[i] &lt; a[j]).unwrap()
-        } <span class="kw">else if </span>a[i] &lt; a[i + <span class="number">1</span>] {
+        } <span class="kw">else if </span>i + <span class="number">1 </span>&lt; n &amp;&amp; a[i] &lt; a[i + <span class="number">1</span>] {
             (i..k).rev().find(|<span class="kw-2">&amp;</span>j| a[i] &lt; a[j]).unwrap()
         } <span class="kw">else </span>{
             <span class="kw">continue</span>;
         };
         a.swap(i, j);
         a[i + <span class="number">1</span>..k].reverse();
-        a[i + <span class="number">1</span>..].rotate_left(k - (i + <span class="number">1</span>));
+        a[i + <span class="number">1</span>..].rotate_right(n - k);
         <span class="kw">return </span><span class="bool-val">true</span>;
     }
     <span class="bool-val">false
@@ -513,21 +501,17 @@
     // postcondition: a[k..] is reversely sorted
 
     </span><span class="kw">let </span>n = a.len();
-    <span class="kw">if </span>n == k {
-        <span class="kw">return </span>prev_permutation(a);
-    }
-
     <span class="kw">for </span>i <span class="kw">in </span>(<span class="number">0</span>..k).rev() {
-        <span class="kw">let </span>j = <span class="kw">if </span>a[i] &gt; a[n - <span class="number">1</span>] {
+        <span class="kw">let </span>j = <span class="kw">if </span>k &lt; n &amp;&amp; a[i] &gt; a[n - <span class="number">1</span>] {
             (k..).find(|<span class="kw-2">&amp;</span>j| a[i] &gt; a[j]).unwrap()
-        } <span class="kw">else if </span>a[i] &gt; a[i + <span class="number">1</span>] {
+        } <span class="kw">else if </span>i + <span class="number">1 </span>&lt; n &amp;&amp; a[i] &gt; a[i + <span class="number">1</span>] {
             (i..k).rev().find(|<span class="kw-2">&amp;</span>j| a[i] &gt; a[j]).unwrap()
         } <span class="kw">else </span>{
             <span class="kw">continue</span>;
         };
         a.swap(i, j);
         a[i + <span class="number">1</span>..k].reverse();
-        a[i + <span class="number">1</span>..].rotate_left(k - (i + <span class="number">1</span>));
+        a[i + <span class="number">1</span>..].rotate_right(n - k);
         <span class="kw">return </span><span class="bool-val">true</span>;
     }
     <span class="bool-val">false
