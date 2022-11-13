@@ -204,6 +204,9 @@
 <span id="115">115</span>
 <span id="116">116</span>
 <span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
 </pre><pre class="rust"><code><span class="doccomment">//! 数学関連のアルゴリズムたち。
 //!
 //! 基本的な数学関数。
@@ -304,7 +307,10 @@
 <span class="attribute">#[doc(inline)]
 </span><span class="kw">pub use </span>mod_tetration::ModTetration;
 <span class="attribute">#[doc(inline)]
-</span><span class="kw">pub use </span>modint::ModInt;
+</span><span class="kw">pub use </span>modint::{
+    Mod1000000007, Mod998244353, ModInt1000000007, ModInt998244353, ModIntBase,
+    Modulus, StaticModInt,
+};
 <span class="attribute">#[doc(inline)]
 </span><span class="kw">pub use </span>prime_pi_::prime_pi;
 <span class="attribute">#[doc(inline)]

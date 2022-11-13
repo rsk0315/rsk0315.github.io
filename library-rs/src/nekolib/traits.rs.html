@@ -169,16 +169,12 @@
 <span id="80">80</span>
 <span id="81">81</span>
 <span id="82">82</span>
-<span id="83">83</span>
-<span id="84">84</span>
-<span id="85">85</span>
 </pre><pre class="rust"><code><span class="doccomment">//! トレイトたち。
 //!
 //! ここに何かを書く。
 </span><span class="kw">pub mod </span>act;
 <span class="kw">pub mod </span>action;
 <span class="kw">pub mod </span>additive;
-<span class="kw">pub mod </span>assoc_val;
 <span class="kw">pub mod </span>binop;
 <span class="kw">pub mod </span>bisect;
 <span class="kw">pub mod </span>count;
@@ -206,8 +202,6 @@
 </span><span class="kw">pub use </span>action::MonoidAction;
 <span class="attribute">#[doc(inline)]
 </span><span class="kw">pub use </span>additive::{AddAssoc, AddComm, Zero};
-<span class="attribute">#[doc(inline)]
-</span><span class="kw">pub use </span>assoc_val::AssocVal;
 <span class="attribute">#[doc(inline)]
 </span><span class="kw">pub use </span>binop::{
     Associative, Commutative, CommutativeGroup, CommutativeMonoid,
