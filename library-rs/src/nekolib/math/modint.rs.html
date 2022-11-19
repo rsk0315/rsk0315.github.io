@@ -575,79 +575,19 @@
 <span id="486">486</span>
 <span id="487">487</span>
 <span id="488">488</span>
-<span id="489">489</span>
-<span id="490">490</span>
-<span id="491">491</span>
-<span id="492">492</span>
-<span id="493">493</span>
-<span id="494">494</span>
-<span id="495">495</span>
-<span id="496">496</span>
-<span id="497">497</span>
-<span id="498">498</span>
-<span id="499">499</span>
-<span id="500">500</span>
-<span id="501">501</span>
-<span id="502">502</span>
-<span id="503">503</span>
-<span id="504">504</span>
-<span id="505">505</span>
-<span id="506">506</span>
-<span id="507">507</span>
-<span id="508">508</span>
-<span id="509">509</span>
-<span id="510">510</span>
-<span id="511">511</span>
-<span id="512">512</span>
-<span id="513">513</span>
-<span id="514">514</span>
-<span id="515">515</span>
-<span id="516">516</span>
-<span id="517">517</span>
-<span id="518">518</span>
-<span id="519">519</span>
-<span id="520">520</span>
-<span id="521">521</span>
-<span id="522">522</span>
-<span id="523">523</span>
-<span id="524">524</span>
-<span id="525">525</span>
-<span id="526">526</span>
-<span id="527">527</span>
-<span id="528">528</span>
-<span id="529">529</span>
-<span id="530">530</span>
-<span id="531">531</span>
-<span id="532">532</span>
-<span id="533">533</span>
-<span id="534">534</span>
-<span id="535">535</span>
-<span id="536">536</span>
-<span id="537">537</span>
-<span id="538">538</span>
-<span id="539">539</span>
-<span id="540">540</span>
-<span id="541">541</span>
-<span id="542">542</span>
-<span id="543">543</span>
-<span id="544">544</span>
-<span id="545">545</span>
-<span id="546">546</span>
 </pre><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::gcd_recip;
-<span class="kw">use </span><span class="kw">super</span>::mod_pow;
 <span class="kw">use </span>std::fmt::{<span class="self">self</span>, Debug, Display};
-<span class="kw">use </span>std::hash::Hash;
+<span class="kw">use </span>std::hash::{Hash, Hasher};
 <span class="kw">use </span>std::iter::{Product, Sum};
 <span class="kw">use </span>std::marker::PhantomData;
 <span class="kw">use </span>std::ops::{
-    Add, AddAssign, Div, DivAssign, Mul, MulAssign, Sub, SubAssign,
+    Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign,
 };
 <span class="kw">use </span>std::sync::atomic::{<span class="self">self</span>, AtomicU32, AtomicU64};
 
 <span class="kw">use </span>gcd_recip::GcdRecip;
-<span class="kw">use </span>mod_pow::ModPow;
 
-<span class="attribute">#[derive(Copy, Clone, Eq, Hash, PartialEq)]
+<span class="attribute">#[derive(Copy, Clone, Eq, PartialEq)]
 </span><span class="kw">pub struct </span>StaticModInt&lt;M&gt; {
     val: u32,
     _phd: PhantomData&lt;<span class="kw">fn</span>() -&gt; M&gt;,
@@ -661,16 +601,19 @@
 
 <span class="kw">pub trait </span>Modulus: <span class="lifetime">&#39;static </span>+ Copy + Eq {
     <span class="kw">const </span>VALUE: u32;
-    <span class="kw">const </span>IS_PRIME: bool = is_prime_32(<span class="self">Self</span>::VALUE);
+    <span class="attribute">#[cfg(ignore)]
+    </span><span class="kw">const </span>IS_PRIME: bool = is_prime_32(<span class="self">Self</span>::VALUE);
 }
 
 <span class="kw">pub trait </span>ModIntBase:
     Copy
     + Eq
+    + Hash
     + Add&lt;Output = <span class="self">Self</span>&gt;
     + Sub&lt;Output = <span class="self">Self</span>&gt;
     + Mul&lt;Output = <span class="self">Self</span>&gt;
     + Div&lt;Output = <span class="self">Self</span>&gt;
+    + Neg
     + AddAssign
     + SubAssign
     + MulAssign
@@ -683,24 +626,70 @@
     <span class="kw">fn </span>recip(<span class="self">self</span>) -&gt; <span class="self">Self </span>{ <span class="self">self</span>.checked_recip().unwrap() }
     <span class="kw">fn </span>checked_recip(<span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
         <span class="kw">let </span>(g, r) = (<span class="self">self</span>.get() <span class="kw">as </span>u64).gcd_recip(<span class="self">Self</span>::modulus() <span class="kw">as </span>u64);
-        <span class="kw">if </span>g == <span class="number">1 </span>{
-            <span class="prelude-val">Some</span>(<span class="kw">unsafe </span>{ <span class="self">Self</span>::new_unchecked(r <span class="kw">as </span>u32) })
-        } <span class="kw">else </span>{
-            <span class="prelude-val">None
-        </span>}
+        <span class="kw">let </span>r = r <span class="kw">as </span>u32;
+        <span class="kw">if </span>g == <span class="number">1 </span>{ <span class="prelude-val">Some</span>(<span class="kw">unsafe </span>{ <span class="self">Self</span>::new_unchecked(r) }) } <span class="kw">else </span>{ <span class="prelude-val">None </span>}
     }
-    <span class="kw">fn </span>pow(<span class="self">self</span>, iexp: u64) -&gt; <span class="self">Self </span>{
-        <span class="kw">unsafe </span>{
-            <span class="self">Self</span>::new_unchecked(
-                (<span class="self">self</span>.get() <span class="kw">as </span>u64).mod_pow(iexp, <span class="self">Self</span>::modulus() <span class="kw">as </span>u64)
-                    <span class="kw">as </span>u32,
-            )
+    <span class="kw">fn </span>pow(<span class="self">self</span>, <span class="kw-2">mut </span>iexp: u64) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="self">Self</span>::new(<span class="number">1</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>a = <span class="self">self</span>;
+        <span class="kw">while </span>iexp &gt; <span class="number">0 </span>{
+            <span class="kw">if </span>iexp &amp; <span class="number">1 </span>!= <span class="number">0 </span>{
+                res <span class="kw-2">*</span>= a;
+            }
+            a <span class="kw-2">*</span>= a;
+            iexp &gt;&gt;= <span class="number">1</span>;
         }
+        res
+    }
+}
+
+<span class="kw">trait </span>InternalImpls: ModIntBase {
+    <span class="kw">fn </span>hash_impl(<span class="kw-2">&amp;</span><span class="self">self</span>, state: <span class="kw-2">&amp;mut </span><span class="kw">impl </span>Hasher) { <span class="self">self</span>.get().hash(state) }
+    <span class="kw">fn </span>display_impl(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        fmt::Display::fmt(<span class="kw-2">&amp;</span><span class="self">self</span>.get(), f)
+    }
+    <span class="kw">fn </span>debug_impl(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        <span class="macro">write!</span>(f, <span class="string">&quot;{} (mod {})&quot;</span>, <span class="self">self</span>.get(), <span class="self">Self</span>::modulus())
+    }
+    <span class="kw">fn </span>neg_impl(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>v = <span class="kw">if </span><span class="self">self</span>.get() == <span class="number">0 </span>{ <span class="number">0 </span>} <span class="kw">else </span>{ <span class="self">Self</span>::modulus() - <span class="self">self</span>.get() };
+        <span class="kw">unsafe </span>{ <span class="self">Self</span>::new_unchecked(v) }
     }
 }
 
 <span class="kw">impl</span>&lt;M: Modulus&gt; StaticModInt&lt;M&gt; {
     <span class="kw">fn </span>modulus() -&gt; u32 { M::VALUE }
+    <span class="kw">fn </span>zero() -&gt; <span class="self">Self </span>{ <span class="kw">unsafe </span>{ <span class="self">Self</span>::new_unchecked(<span class="number">0</span>) } }
+    <span class="kw">fn </span>add_impl(<span class="self">self</span>, rhs: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>tmp = <span class="self">self</span>;
+        tmp += rhs;
+        tmp
+    }
+    <span class="kw">fn </span>sub_impl(<span class="self">self</span>, rhs: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>tmp = <span class="self">self</span>;
+        tmp -= rhs;
+        tmp
+    }
+    <span class="kw">fn </span>mul_impl(<span class="self">self</span>, rhs: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>v = ((<span class="self">self</span>.val <span class="kw">as </span>u64 * rhs.val <span class="kw">as </span>u64) % <span class="self">Self</span>::modulus() <span class="kw">as </span>u64)
+            <span class="kw">as </span>u32;
+        <span class="kw">unsafe </span>{ <span class="self">Self</span>::new_unchecked(v) }
+    }
+    <span class="kw">fn </span>div_impl(<span class="self">self</span>, rhs: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{ <span class="self">self</span>.mul_impl(rhs.recip()) }
+    <span class="kw">fn </span>add_assign_impl(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: <span class="self">Self</span>) {
+        <span class="self">self</span>.val += rhs.val;
+        <span class="kw">if </span><span class="self">self</span>.val &gt;= <span class="self">Self</span>::modulus() {
+            <span class="self">self</span>.val -= <span class="self">Self</span>::modulus()
+        }
+    }
+    <span class="kw">fn </span>sub_assign_impl(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: <span class="self">Self</span>) {
+        <span class="kw">if </span><span class="self">self</span>.val &lt; rhs.val {
+            <span class="self">self</span>.val += <span class="self">Self</span>::modulus()
+        }
+        <span class="self">self</span>.val -= rhs.val
+    }
+    <span class="kw">fn </span>mul_assign_impl(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: <span class="self">Self</span>) { <span class="kw-2">*</span><span class="self">self </span>= <span class="self">self</span>.mul_impl(rhs) }
+    <span class="kw">fn </span>div_assign_impl(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: <span class="self">Self</span>) { <span class="kw-2">*</span><span class="self">self </span>= <span class="self">self</span>.div_impl(rhs) }
 }
 
 <span class="kw">impl</span>&lt;M: Modulus&gt; ModIntBase <span class="kw">for </span>StaticModInt&lt;M&gt; {
@@ -714,151 +703,10 @@
     }
 }
 
-<span class="macro">macro_rules! </span>impl_static_binop {
-    ( $( (<span class="macro-nonterminal">$</span><span class="kw">trait</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$op_assign</span>:ident, <span class="macro-nonterminal">$op</span>:ident), )* ) =&gt; { $(
-        <span class="kw">impl</span>&lt;M: Modulus&gt; <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="macro-nonterminal">StaticModInt</span>&lt;M&gt;&gt; <span class="kw">for </span>StaticModInt&lt;M&gt; {
-            <span class="kw">type </span>Output = StaticModInt&lt;M&gt;;
-            <span class="kw">fn </span><span class="macro-nonterminal">$op</span>(<span class="self">self</span>, rhs: StaticModInt&lt;M&gt;) -&gt; StaticModInt&lt;M&gt; {
-                <span class="kw">let </span><span class="kw-2">mut </span>tmp = <span class="self">self</span>;
-                tmp.<span class="macro-nonterminal">$op_assign</span>(rhs);
-                tmp
-            }
-        }
-        <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, M: Modulus&gt; <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="macro-nonterminal">StaticModInt</span>&lt;M&gt;&gt; <span class="kw">for </span>StaticModInt&lt;M&gt; {
-            <span class="kw">type </span>Output = StaticModInt&lt;M&gt;;
-            <span class="kw">fn </span><span class="macro-nonterminal">$op</span>(<span class="self">self</span>, rhs: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>StaticModInt&lt;M&gt;) -&gt; StaticModInt&lt;M&gt; {
-                <span class="kw">let </span><span class="kw-2">mut </span>tmp = <span class="self">self</span>;
-                tmp.<span class="macro-nonterminal">$op_assign</span>(<span class="kw-2">*</span>rhs);
-                tmp
-            }
-        }
-        <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, M: Modulus&gt; <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="macro-nonterminal">StaticModInt</span>&lt;M&gt;&gt; <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>StaticModInt&lt;M&gt; {
-            <span class="kw">type </span>Output = StaticModInt&lt;M&gt;;
-            <span class="kw">fn </span><span class="macro-nonterminal">$op</span>(<span class="self">self</span>, rhs: StaticModInt&lt;M&gt;) -&gt; StaticModInt&lt;M&gt; {
-                <span class="kw">let </span><span class="kw-2">mut </span>tmp = <span class="self">self</span>.to_owned();
-                tmp.<span class="macro-nonterminal">$op_assign</span>(rhs);
-                tmp
-            }
-        }
-        <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, M: Modulus&gt; <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="macro-nonterminal">StaticModInt</span>&lt;M&gt;&gt; <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>StaticModInt&lt;M&gt; {
-            <span class="kw">type </span>Output = StaticModInt&lt;M&gt;;
-            <span class="kw">fn </span><span class="macro-nonterminal">$op</span>(<span class="self">self</span>, rhs: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>StaticModInt&lt;M&gt;) -&gt; StaticModInt&lt;M&gt; {
-                <span class="kw">let </span><span class="kw-2">mut </span>tmp = <span class="self">self</span>.to_owned();
-                tmp.<span class="macro-nonterminal">$op_assign</span>(<span class="kw-2">*</span>rhs);
-                tmp
-            }
-        }
-    )* }
-}
+<span class="kw">impl</span>&lt;M: Modulus&gt; InternalImpls <span class="kw">for </span>StaticModInt&lt;M&gt; {}
 
-<span class="macro">impl_static_binop! </span>{
-    (Add, add_assign, add),
-    (Sub, sub_assign, sub),
-    (Mul, mul_assign, mul),
-    (Div, div_assign, div),
-}
-
-<span class="kw">impl</span>&lt;M: Modulus&gt; AddAssign <span class="kw">for </span>StaticModInt&lt;M&gt; {
-    <span class="kw">fn </span>add_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: StaticModInt&lt;M&gt;) {
-        <span class="self">self</span>.val += rhs.val;
-        <span class="kw">if </span><span class="self">self</span>.val &gt;= <span class="self">Self</span>::modulus() {
-            <span class="self">self</span>.val -= <span class="self">Self</span>::modulus();
-        }
-    }
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, M: Modulus&gt; AddAssign&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>StaticModInt&lt;M&gt;&gt; <span class="kw">for </span>StaticModInt&lt;M&gt; {
-    <span class="kw">fn </span>add_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>StaticModInt&lt;M&gt;) {
-        <span class="self">self</span>.val += rhs.val;
-        <span class="kw">if </span><span class="self">self</span>.val &gt;= StaticModInt::&lt;M&gt;::modulus() {
-            <span class="self">self</span>.val -= StaticModInt::&lt;M&gt;::modulus();
-        }
-    }
-}
-
-<span class="kw">impl</span>&lt;M: Modulus&gt; SubAssign <span class="kw">for </span>StaticModInt&lt;M&gt; {
-    <span class="kw">fn </span>sub_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: StaticModInt&lt;M&gt;) {
-        <span class="kw">if </span><span class="self">self</span>.val &lt; rhs.val {
-            <span class="self">self</span>.val += StaticModInt::&lt;M&gt;::modulus();
-        }
-        <span class="self">self</span>.val -= rhs.val;
-    }
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, M: Modulus&gt; SubAssign&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>StaticModInt&lt;M&gt;&gt; <span class="kw">for </span>StaticModInt&lt;M&gt; {
-    <span class="kw">fn </span>sub_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>StaticModInt&lt;M&gt;) {
-        <span class="kw">if </span><span class="self">self</span>.val &lt; rhs.val {
-            <span class="self">self</span>.val += StaticModInt::&lt;M&gt;::modulus();
-        }
-        <span class="self">self</span>.val -= rhs.val;
-    }
-}
-
-<span class="kw">impl</span>&lt;M: Modulus&gt; MulAssign <span class="kw">for </span>StaticModInt&lt;M&gt; {
-    <span class="kw">fn </span>mul_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: StaticModInt&lt;M&gt;) {
-        <span class="kw">let </span>tmp = (<span class="self">self</span>.val <span class="kw">as </span>u64 * rhs.val <span class="kw">as </span>u64)
-            % StaticModInt::&lt;M&gt;::modulus() <span class="kw">as </span>u64;
-        <span class="self">self</span>.val = tmp <span class="kw">as </span>u32;
-    }
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, M: Modulus&gt; MulAssign&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>StaticModInt&lt;M&gt;&gt; <span class="kw">for </span>StaticModInt&lt;M&gt; {
-    <span class="kw">fn </span>mul_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>StaticModInt&lt;M&gt;) {
-        <span class="kw">let </span>tmp = (<span class="self">self</span>.val <span class="kw">as </span>u64 * rhs.val <span class="kw">as </span>u64)
-            % StaticModInt::&lt;M&gt;::modulus() <span class="kw">as </span>u64;
-        <span class="self">self</span>.val = tmp <span class="kw">as </span>u32;
-    }
-}
-
-<span class="kw">impl</span>&lt;M: Modulus&gt; DivAssign <span class="kw">for </span>StaticModInt&lt;M&gt; {
-    <span class="kw">fn </span>div_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: StaticModInt&lt;M&gt;) {
-        <span class="self">self</span>.mul_assign(rhs.recip())
-    }
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, M: Modulus&gt; DivAssign&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>StaticModInt&lt;M&gt;&gt; <span class="kw">for </span>StaticModInt&lt;M&gt; {
-    <span class="kw">fn </span>div_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>StaticModInt&lt;M&gt;) {
-        <span class="self">self</span>.mul_assign(rhs.recip())
-    }
-}
-
-<span class="kw">impl</span>&lt;M: Modulus&gt; Display <span class="kw">for </span>StaticModInt&lt;M&gt; {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
-        <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, <span class="self">self</span>.val)
-    }
-}
-
-<span class="kw">impl</span>&lt;M: Modulus&gt; Debug <span class="kw">for </span>StaticModInt&lt;M&gt; {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
-        <span class="macro">write!</span>(f, <span class="string">&quot;{} (mod {})&quot;</span>, <span class="self">self</span>.val, <span class="self">Self</span>::modulus())
-    }
-}
-
-<span class="kw">impl</span>&lt;M: Modulus&gt; Sum&lt;<span class="self">Self</span>&gt; <span class="kw">for </span>StaticModInt&lt;M&gt; {
-    <span class="kw">fn </span>sum&lt;I: Iterator&lt;Item = <span class="self">Self</span>&gt;&gt;(iter: I) -&gt; <span class="self">Self </span>{
-        iter.fold(<span class="self">Self</span>::new(<span class="number">0</span>), |x, y| x + y)
-    }
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, M: Modulus&gt; Sum&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">Self</span>&gt; <span class="kw">for </span>StaticModInt&lt;M&gt; {
-    <span class="kw">fn </span>sum&lt;I: Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">Self</span>&gt;&gt;(iter: I) -&gt; <span class="self">Self </span>{
-        iter.fold(<span class="self">Self</span>::new(<span class="number">0</span>), |x, y| x + y)
-    }
-}
-
-<span class="kw">impl</span>&lt;M: Modulus&gt; Product&lt;<span class="self">Self</span>&gt; <span class="kw">for </span>StaticModInt&lt;M&gt; {
-    <span class="kw">fn </span>product&lt;I: Iterator&lt;Item = <span class="self">Self</span>&gt;&gt;(iter: I) -&gt; <span class="self">Self </span>{
-        iter.fold(<span class="self">Self</span>::new(<span class="number">1</span>), |x, y| x * y)
-    }
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, M: Modulus&gt; Product&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">Self</span>&gt; <span class="kw">for </span>StaticModInt&lt;M&gt; {
-    <span class="kw">fn </span>product&lt;I: Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">Self</span>&gt;&gt;(iter: I) -&gt; <span class="self">Self </span>{
-        iter.fold(<span class="self">Self</span>::new(<span class="number">1</span>), |x, y| x * y)
-    }
-}
-
-<span class="kw">const fn </span>is_sprp_32(n: u32, a: u32) -&gt; bool {
+<span class="attribute">#[cfg(ignore)]
+</span><span class="kw">const fn </span>is_sprp_32(n: u32, a: u32) -&gt; bool {
     <span class="kw">let </span>n = n <span class="kw">as </span>u64;
     <span class="kw">let </span>s = (n - <span class="number">1</span>).trailing_zeros();
     <span class="kw">let </span>d = n &gt;&gt; s;
@@ -889,7 +737,8 @@
     <span class="bool-val">false
 </span>}
 
-<span class="kw">const fn </span>is_prime_32(n: u32) -&gt; bool {
+<span class="attribute">#[cfg(ignore)]
+</span><span class="kw">const fn </span>is_prime_32(n: u32) -&gt; bool {
     <span class="kw">if </span>n == <span class="number">2 </span>|| n == <span class="number">3 </span>|| n == <span class="number">5 </span>|| n == <span class="number">7 </span>{
         <span class="bool-val">true
     </span>} <span class="kw">else if </span>n % <span class="number">2 </span>== <span class="number">0 </span>|| n % <span class="number">3 </span>== <span class="number">0 </span>|| n % <span class="number">5 </span>== <span class="number">0 </span>|| n % <span class="number">7 </span>== <span class="number">0 </span>{
@@ -958,6 +807,36 @@
 
 <span class="kw">impl</span>&lt;I: DynamicModIntId&gt; DynamicModInt&lt;I&gt; {
     <span class="kw">pub fn </span>modulus() -&gt; u32 { I::barrett().modulus() }
+    <span class="kw">fn </span>zero() -&gt; <span class="self">Self </span>{ <span class="kw">unsafe </span>{ <span class="self">Self</span>::new_unchecked(<span class="number">0</span>) } }
+    <span class="kw">fn </span>add_impl(<span class="self">self</span>, rhs: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>tmp = <span class="self">self</span>;
+        tmp += rhs;
+        tmp
+    }
+    <span class="kw">fn </span>sub_impl(<span class="self">self</span>, rhs: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>tmp = <span class="self">self</span>;
+        tmp -= rhs;
+        tmp
+    }
+    <span class="kw">fn </span>mul_impl(<span class="self">self</span>, rhs: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>v = I::barrett().mul(<span class="self">self</span>.val, rhs.val);
+        <span class="kw">unsafe </span>{ <span class="self">Self</span>::new_unchecked(v) }
+    }
+    <span class="kw">fn </span>div_impl(<span class="self">self</span>, rhs: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{ <span class="self">self</span>.mul_impl(rhs.recip()) }
+    <span class="kw">fn </span>add_assign_impl(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: <span class="self">Self</span>) {
+        <span class="self">self</span>.val += rhs.val;
+        <span class="kw">if </span><span class="self">self</span>.val &gt;= <span class="self">Self</span>::modulus() {
+            <span class="self">self</span>.val -= <span class="self">Self</span>::modulus()
+        }
+    }
+    <span class="kw">fn </span>sub_assign_impl(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: <span class="self">Self</span>) {
+        <span class="kw">if </span><span class="self">self</span>.val &lt; rhs.val {
+            <span class="self">self</span>.val += <span class="self">Self</span>::modulus()
+        }
+        <span class="self">self</span>.val -= rhs.val
+    }
+    <span class="kw">fn </span>mul_assign_impl(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: <span class="self">Self</span>) { <span class="kw-2">*</span><span class="self">self </span>= <span class="self">self</span>.mul_impl(rhs) }
+    <span class="kw">fn </span>div_assign_impl(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: <span class="self">Self</span>) { <span class="kw-2">*</span><span class="self">self </span>= <span class="self">self</span>.div_impl(rhs) }
 
     <span class="kw">pub fn </span>set_modulus(m: u32) {
         <span class="comment">// (m - 1) + (m - 1) &lt; 2 ** 32
@@ -980,153 +859,7 @@
     }
 }
 
-<span class="macro">macro_rules! </span>impl_dynamic_binop {
-    ( $( (<span class="macro-nonterminal">$</span><span class="kw">trait</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$op_assign</span>:ident, <span class="macro-nonterminal">$op</span>:ident), )* ) =&gt; { $(
-        <span class="kw">impl</span>&lt;I: DynamicModIntId&gt; <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="macro-nonterminal">DynamicModInt</span>&lt;I&gt;&gt; <span class="kw">for </span>DynamicModInt&lt;I&gt; {
-            <span class="kw">type </span>Output = DynamicModInt&lt;I&gt;;
-            <span class="kw">fn </span><span class="macro-nonterminal">$op</span>(<span class="self">self</span>, rhs: DynamicModInt&lt;I&gt;) -&gt; DynamicModInt&lt;I&gt; {
-                <span class="kw">let </span><span class="kw-2">mut </span>tmp = <span class="self">self</span>;
-                tmp.<span class="macro-nonterminal">$op_assign</span>(rhs);
-                tmp
-            }
-        }
-        <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, I: DynamicModIntId&gt; <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="macro-nonterminal">DynamicModInt</span>&lt;I&gt;&gt; <span class="kw">for </span>DynamicModInt&lt;I&gt; {
-            <span class="kw">type </span>Output = DynamicModInt&lt;I&gt;;
-            <span class="kw">fn </span><span class="macro-nonterminal">$op</span>(<span class="self">self</span>, rhs: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>DynamicModInt&lt;I&gt;) -&gt; DynamicModInt&lt;I&gt; {
-                <span class="kw">let </span><span class="kw-2">mut </span>tmp = <span class="self">self</span>;
-                tmp.<span class="macro-nonterminal">$op_assign</span>(<span class="kw-2">*</span>rhs);
-                tmp
-            }
-        }
-        <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, I: DynamicModIntId&gt; <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="macro-nonterminal">DynamicModInt</span>&lt;I&gt;&gt; <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>DynamicModInt&lt;I&gt; {
-            <span class="kw">type </span>Output = DynamicModInt&lt;I&gt;;
-            <span class="kw">fn </span><span class="macro-nonterminal">$op</span>(<span class="self">self</span>, rhs: DynamicModInt&lt;I&gt;) -&gt; DynamicModInt&lt;I&gt; {
-                <span class="kw">let </span><span class="kw-2">mut </span>tmp = <span class="self">self</span>.to_owned();
-                tmp.<span class="macro-nonterminal">$op_assign</span>(rhs);
-                tmp
-            }
-        }
-        <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, I: DynamicModIntId&gt; <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="macro-nonterminal">DynamicModInt</span>&lt;I&gt;&gt; <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>DynamicModInt&lt;I&gt; {
-            <span class="kw">type </span>Output = DynamicModInt&lt;I&gt;;
-            <span class="kw">fn </span><span class="macro-nonterminal">$op</span>(<span class="self">self</span>, rhs: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>DynamicModInt&lt;I&gt;) -&gt; DynamicModInt&lt;I&gt; {
-                <span class="kw">let </span><span class="kw-2">mut </span>tmp = <span class="self">self</span>.to_owned();
-                tmp.<span class="macro-nonterminal">$op_assign</span>(<span class="kw-2">*</span>rhs);
-                tmp
-            }
-        }
-    )* }
-}
-
-<span class="macro">impl_dynamic_binop! </span>{
-    (Add, add_assign, add),
-    (Sub, sub_assign, sub),
-    (Mul, mul_assign, mul),
-    (Div, div_assign, div),
-}
-
-<span class="kw">impl</span>&lt;I: DynamicModIntId&gt; AddAssign <span class="kw">for </span>DynamicModInt&lt;I&gt; {
-    <span class="kw">fn </span>add_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: DynamicModInt&lt;I&gt;) {
-        <span class="self">self</span>.val += rhs.val;
-        <span class="kw">if </span><span class="self">self</span>.val &gt;= DynamicModInt::&lt;I&gt;::modulus() {
-            <span class="self">self</span>.val -= DynamicModInt::&lt;I&gt;::modulus();
-        }
-    }
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, I: DynamicModIntId&gt; AddAssign&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>DynamicModInt&lt;I&gt;&gt;
-    <span class="kw">for </span>DynamicModInt&lt;I&gt;
-{
-    <span class="kw">fn </span>add_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>DynamicModInt&lt;I&gt;) {
-        <span class="self">self</span>.val += rhs.val;
-        <span class="kw">if </span><span class="self">self</span>.val &gt;= DynamicModInt::&lt;I&gt;::modulus() {
-            <span class="self">self</span>.val -= DynamicModInt::&lt;I&gt;::modulus();
-        }
-    }
-}
-
-<span class="kw">impl</span>&lt;I: DynamicModIntId&gt; SubAssign <span class="kw">for </span>DynamicModInt&lt;I&gt; {
-    <span class="kw">fn </span>sub_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: DynamicModInt&lt;I&gt;) {
-        <span class="kw">if </span><span class="self">self</span>.val &lt; rhs.val {
-            <span class="self">self</span>.val += DynamicModInt::&lt;I&gt;::modulus();
-        }
-        <span class="self">self</span>.val -= rhs.val;
-    }
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, I: DynamicModIntId&gt; SubAssign&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>DynamicModInt&lt;I&gt;&gt;
-    <span class="kw">for </span>DynamicModInt&lt;I&gt;
-{
-    <span class="kw">fn </span>sub_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>DynamicModInt&lt;I&gt;) {
-        <span class="kw">if </span><span class="self">self</span>.val &lt; rhs.val {
-            <span class="self">self</span>.val += DynamicModInt::&lt;I&gt;::modulus();
-        }
-        <span class="self">self</span>.val -= rhs.val;
-    }
-}
-
-<span class="kw">impl</span>&lt;I: DynamicModIntId&gt; MulAssign <span class="kw">for </span>DynamicModInt&lt;I&gt; {
-    <span class="kw">fn </span>mul_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: DynamicModInt&lt;I&gt;) {
-        <span class="self">self</span>.val = I::barrett().mul(<span class="self">self</span>.val, rhs.val);
-    }
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, I: DynamicModIntId&gt; MulAssign&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>DynamicModInt&lt;I&gt;&gt;
-    <span class="kw">for </span>DynamicModInt&lt;I&gt;
-{
-    <span class="kw">fn </span>mul_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw-2">&amp;</span>rhs: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>DynamicModInt&lt;I&gt;) {
-        <span class="self">self</span>.val = I::barrett().mul(<span class="self">self</span>.val, rhs.val);
-    }
-}
-
-<span class="kw">impl</span>&lt;I: DynamicModIntId&gt; DivAssign <span class="kw">for </span>DynamicModInt&lt;I&gt; {
-    <span class="kw">fn </span>div_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: DynamicModInt&lt;I&gt;) {
-        <span class="self">self</span>.mul_assign(rhs.recip())
-    }
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, I: DynamicModIntId&gt; DivAssign&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>DynamicModInt&lt;I&gt;&gt;
-    <span class="kw">for </span>DynamicModInt&lt;I&gt;
-{
-    <span class="kw">fn </span>div_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>DynamicModInt&lt;I&gt;) {
-        <span class="self">self</span>.mul_assign(rhs.recip())
-    }
-}
-
-<span class="kw">impl</span>&lt;I: DynamicModIntId&gt; Display <span class="kw">for </span>DynamicModInt&lt;I&gt; {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
-        <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, <span class="self">self</span>.val)
-    }
-}
-
-<span class="kw">impl</span>&lt;I: DynamicModIntId&gt; Debug <span class="kw">for </span>DynamicModInt&lt;I&gt; {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
-        <span class="macro">write!</span>(f, <span class="string">&quot;{} (mod {})&quot;</span>, <span class="self">self</span>.val, <span class="self">Self</span>::modulus())
-    }
-}
-
-<span class="kw">impl</span>&lt;I: DynamicModIntId&gt; Sum&lt;<span class="self">Self</span>&gt; <span class="kw">for </span>DynamicModInt&lt;I&gt; {
-    <span class="kw">fn </span>sum&lt;J: Iterator&lt;Item = <span class="self">Self</span>&gt;&gt;(iter: J) -&gt; <span class="self">Self </span>{
-        iter.fold(<span class="self">Self</span>::new(<span class="number">0</span>), |x, y| x + y)
-    }
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, I: DynamicModIntId&gt; Sum&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">Self</span>&gt; <span class="kw">for </span>DynamicModInt&lt;I&gt; {
-    <span class="kw">fn </span>sum&lt;J: Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">Self</span>&gt;&gt;(iter: J) -&gt; <span class="self">Self </span>{
-        iter.fold(<span class="self">Self</span>::new(<span class="number">0</span>), |x, y| x + y)
-    }
-}
-
-<span class="kw">impl</span>&lt;I: DynamicModIntId&gt; Product&lt;<span class="self">Self</span>&gt; <span class="kw">for </span>DynamicModInt&lt;I&gt; {
-    <span class="kw">fn </span>product&lt;J: Iterator&lt;Item = <span class="self">Self</span>&gt;&gt;(iter: J) -&gt; <span class="self">Self </span>{
-        iter.fold(<span class="self">Self</span>::new(<span class="number">1</span>), |x, y| x * y)
-    }
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, I: DynamicModIntId&gt; Product&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">Self</span>&gt; <span class="kw">for </span>DynamicModInt&lt;I&gt; {
-    <span class="kw">fn </span>product&lt;J: Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">Self</span>&gt;&gt;(iter: J) -&gt; <span class="self">Self </span>{
-        iter.fold(<span class="self">Self</span>::new(<span class="number">1</span>), |x, y| x * y)
-    }
-}
+<span class="kw">impl</span>&lt;I: DynamicModIntId&gt; InternalImpls <span class="kw">for </span>DynamicModInt&lt;I&gt; {}
 
 <span class="macro">macro_rules! </span>impl_modint {
     ( $( (<span class="macro-nonterminal">$</span><span class="kw">mod</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$val</span>:literal, <span class="macro-nonterminal">$modint</span>:ident), )* ) =&gt; { $(
@@ -1144,12 +877,157 @@
     (Mod1000000007, <span class="number">1000000007</span>, ModInt1000000007),
 }
 
+<span class="macro">macro_rules! </span>impl_bin_ops {
+    () =&gt; {};
+    (
+        <span class="kw">for</span>&lt;$(<span class="macro-nonterminal">$generic_param</span>:ident : <span class="macro-nonterminal">$bound</span>:tt),<span class="kw-2">*</span>&gt;
+            &lt;<span class="macro-nonterminal">$lhs_ty</span>:ty&gt; @ &lt;<span class="macro-nonterminal">$rhs_ty</span>:ty&gt; -&gt; <span class="macro-nonterminal">$output</span>:ty
+        { <span class="self">self </span>@ $(<span class="macro-nonterminal">$rhs_deref</span>:tt)<span class="question-mark">? </span>} $(<span class="macro-nonterminal">$rest</span>:tt)*
+    ) =&gt; {
+        <span class="kw">impl </span>&lt;$(<span class="macro-nonterminal">$generic_param</span>: <span class="macro-nonterminal">$bound</span>),<span class="kw-2">*</span>&gt; Add&lt;<span class="macro-nonterminal">$rhs_ty</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$lhs_ty </span>{
+            <span class="kw">type </span>Output = <span class="macro-nonterminal">$output</span>;
+            <span class="kw">fn </span>add(<span class="self">self</span>, rhs: <span class="macro-nonterminal">$rhs_ty</span>) -&gt; <span class="macro-nonterminal">$output </span>{ <span class="self">self</span>.add_impl($(<span class="macro-nonterminal">$rhs_deref</span>)<span class="question-mark">? </span>rhs) }
+        }
+        <span class="kw">impl </span>&lt;$(<span class="macro-nonterminal">$generic_param</span>: <span class="macro-nonterminal">$bound</span>),<span class="kw-2">*</span>&gt; Sub&lt;<span class="macro-nonterminal">$rhs_ty</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$lhs_ty </span>{
+            <span class="kw">type </span>Output = <span class="macro-nonterminal">$output</span>;
+            <span class="kw">fn </span>sub(<span class="self">self</span>, rhs: <span class="macro-nonterminal">$rhs_ty</span>) -&gt; <span class="macro-nonterminal">$output </span>{ <span class="self">self</span>.sub_impl($(<span class="macro-nonterminal">$rhs_deref</span>)<span class="question-mark">? </span>rhs) }
+        }
+        <span class="kw">impl </span>&lt;$(<span class="macro-nonterminal">$generic_param</span>: <span class="macro-nonterminal">$bound</span>),<span class="kw-2">*</span>&gt; Mul&lt;<span class="macro-nonterminal">$rhs_ty</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$lhs_ty </span>{
+            <span class="kw">type </span>Output = <span class="macro-nonterminal">$output</span>;
+            <span class="kw">fn </span>mul(<span class="self">self</span>, rhs: <span class="macro-nonterminal">$rhs_ty</span>) -&gt; <span class="macro-nonterminal">$output </span>{ <span class="self">self</span>.mul_impl($(<span class="macro-nonterminal">$rhs_deref</span>)<span class="question-mark">? </span>rhs) }
+        }
+        <span class="kw">impl </span>&lt;$(<span class="macro-nonterminal">$generic_param</span>: <span class="macro-nonterminal">$bound</span>),<span class="kw-2">*</span>&gt; Div&lt;<span class="macro-nonterminal">$rhs_ty</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$lhs_ty </span>{
+            <span class="kw">type </span>Output = <span class="macro-nonterminal">$output</span>;
+            <span class="kw">fn </span>div(<span class="self">self</span>, rhs: <span class="macro-nonterminal">$rhs_ty</span>) -&gt; <span class="macro-nonterminal">$output </span>{ <span class="self">self</span>.div_impl($(<span class="macro-nonterminal">$rhs_deref</span>)<span class="question-mark">? </span>rhs) }
+        }
+        <span class="macro">impl_bin_ops!</span>($(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
+    };
+}
+
+<span class="macro">macro_rules! </span>impl_assign_ops {
+    () =&gt; {};
+    (
+        <span class="kw">for</span>&lt;$(<span class="macro-nonterminal">$generic_param</span>:ident : <span class="macro-nonterminal">$bound</span>:tt),<span class="kw-2">*</span>&gt;
+            &lt;<span class="macro-nonterminal">$lhs_ty</span>:ty&gt; @= &lt;<span class="macro-nonterminal">$rhs_ty</span>:ty&gt;
+        { <span class="self">self </span>@= $(<span class="macro-nonterminal">$rhs_deref</span>:tt)<span class="question-mark">? </span>} $(<span class="macro-nonterminal">$rest</span>:tt)*
+    ) =&gt; {
+        <span class="kw">impl </span>&lt;$(<span class="macro-nonterminal">$generic_param</span>: <span class="macro-nonterminal">$bound</span>),<span class="kw-2">*</span>&gt; AddAssign&lt;<span class="macro-nonterminal">$rhs_ty</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$lhs_ty </span>{
+            <span class="kw">fn </span>add_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: <span class="macro-nonterminal">$rhs_ty</span>) {
+                <span class="self">self</span>.add_assign_impl($(<span class="macro-nonterminal">$rhs_deref</span>)<span class="question-mark">? </span>rhs);
+            }
+        }
+        <span class="kw">impl </span>&lt;$(<span class="macro-nonterminal">$generic_param</span>: <span class="macro-nonterminal">$bound</span>),<span class="kw-2">*</span>&gt; SubAssign&lt;<span class="macro-nonterminal">$rhs_ty</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$lhs_ty </span>{
+            <span class="kw">fn </span>sub_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: <span class="macro-nonterminal">$rhs_ty</span>) {
+                <span class="self">self</span>.sub_assign_impl($(<span class="macro-nonterminal">$rhs_deref</span>)<span class="question-mark">? </span>rhs);
+            }
+        }
+        <span class="kw">impl </span>&lt;$(<span class="macro-nonterminal">$generic_param</span>: <span class="macro-nonterminal">$bound</span>),<span class="kw-2">*</span>&gt; MulAssign&lt;<span class="macro-nonterminal">$rhs_ty</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$lhs_ty </span>{
+            <span class="kw">fn </span>mul_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: <span class="macro-nonterminal">$rhs_ty</span>) {
+                <span class="self">self</span>.mul_assign_impl($(<span class="macro-nonterminal">$rhs_deref</span>)<span class="question-mark">? </span>rhs);
+            }
+        }
+        <span class="kw">impl </span>&lt;$(<span class="macro-nonterminal">$generic_param</span>: <span class="macro-nonterminal">$bound</span>),<span class="kw-2">*</span>&gt; DivAssign&lt;<span class="macro-nonterminal">$rhs_ty</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$lhs_ty </span>{
+            <span class="kw">fn </span>div_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: <span class="macro-nonterminal">$rhs_ty</span>) {
+                <span class="self">self</span>.div_assign_impl($(<span class="macro-nonterminal">$rhs_deref</span>)<span class="question-mark">? </span>rhs);
+            }
+        }
+        <span class="macro">impl_assign_ops!</span>($(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
+    };
+}
+
+<span class="macro">macro_rules! </span>impl_folding {
+    () =&gt; {};
+    (
+        <span class="kw">impl </span>&lt;<span class="macro-nonterminal">$generic_param</span>:ident : <span class="macro-nonterminal">$bound</span>:tt&gt; <span class="macro-nonterminal">$</span><span class="kw">trait</span>:<span class="macro-nonterminal">ident</span>&lt;<span class="kw">_</span>&gt;
+            <span class="kw">for </span><span class="macro-nonterminal">$self</span>:ty
+        {
+            <span class="kw">fn </span><span class="macro-nonterminal">$method</span>:ident(<span class="kw">_</span>) -&gt; <span class="kw">_ </span>{ <span class="kw">_</span>(<span class="macro-nonterminal">$unit</span>:expr, <span class="macro-nonterminal">$op</span>:expr) }
+        }
+        $(<span class="macro-nonterminal">$rest</span>:tt)*
+    ) =&gt; {
+        <span class="kw">impl</span>&lt;<span class="macro-nonterminal">$generic_param</span>: <span class="macro-nonterminal">$bound</span>&gt; <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="macro-nonterminal">Self</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$self </span>{
+            <span class="kw">fn </span><span class="macro-nonterminal">$method</span>&lt;S&gt;(iter: S) -&gt; <span class="self">Self
+            </span><span class="kw">where
+                </span>S: Iterator&lt;Item = <span class="self">Self</span>&gt;,
+            {
+                iter.fold(<span class="macro-nonterminal">$unit</span>, <span class="macro-nonterminal">$op</span>)
+            }
+        }
+        <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, <span class="macro-nonterminal">$generic_param</span>: <span class="macro-nonterminal">$bound</span>&gt; <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="macro-nonterminal">Self</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$self </span>{
+            <span class="kw">fn </span><span class="macro-nonterminal">$method</span>&lt;S&gt;(iter: S) -&gt; <span class="self">Self
+            </span><span class="kw">where
+                </span>S: Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">Self</span>&gt;,
+            {
+                iter.fold(<span class="macro-nonterminal">$unit</span>, <span class="macro-nonterminal">$op</span>)
+            }
+        }
+        <span class="macro">impl_folding!</span>($(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
+    };
+}
+
+<span class="macro">macro_rules! </span>impl_basic_traits {
+    () =&gt; {};
+    (<span class="kw">impl</span>&lt;<span class="macro-nonterminal">$generic_param</span>:ident : <span class="macro-nonterminal">$bound</span>:tt&gt; <span class="kw">_ for </span><span class="macro-nonterminal">$self</span>:ty; $(<span class="macro-nonterminal">$rest</span>:tt)<span class="kw-2">*</span>) =&gt; {
+        <span class="kw">impl</span>&lt;<span class="macro-nonterminal">$generic_param</span>: <span class="macro-nonterminal">$bound</span>&gt; Default <span class="kw">for </span><span class="macro-nonterminal">$self </span>{
+            <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{ <span class="self">Self</span>::zero() }
+        }
+        <span class="kw">impl</span>&lt;<span class="macro-nonterminal">$generic_param</span>: <span class="macro-nonterminal">$bound</span>&gt; Hash <span class="kw">for </span><span class="macro-nonterminal">$self </span>{
+            <span class="kw">fn </span>hash&lt;H: Hasher&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, state: <span class="kw-2">&amp;mut </span>H) { <span class="self">self</span>.hash_impl(state) }
+        }
+        <span class="kw">impl</span>&lt;<span class="macro-nonterminal">$generic_param</span>: <span class="macro-nonterminal">$bound</span>&gt; Display <span class="kw">for </span><span class="macro-nonterminal">$self </span>{
+            <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+                <span class="self">self</span>.display_impl(f)
+            }
+        }
+        <span class="kw">impl</span>&lt;<span class="macro-nonterminal">$generic_param</span>: <span class="macro-nonterminal">$bound</span>&gt; Debug <span class="kw">for </span><span class="macro-nonterminal">$self </span>{
+            <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+                <span class="self">self</span>.debug_impl(f)
+            }
+        }
+        <span class="kw">impl</span>&lt;<span class="macro-nonterminal">$generic_param</span>: <span class="macro-nonterminal">$bound</span>&gt; Neg <span class="kw">for </span><span class="macro-nonterminal">$self </span>{
+            <span class="kw">type </span>Output = <span class="macro-nonterminal">$self</span>;
+            <span class="kw">fn </span>neg(<span class="self">self</span>) -&gt; <span class="self">Self </span>{ <span class="self">self</span>.neg_impl() }
+        }
+        <span class="macro">impl_basic_traits!</span>($(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>);
+    };
+}
+
+<span class="macro">impl_bin_ops! </span>{
+    <span class="kw">for</span>&lt;M: Modulus&gt; &lt;StaticModInt&lt;M&gt;&gt; @ &lt;StaticModInt&lt;M&gt;&gt; -&gt; StaticModInt&lt;M&gt; { <span class="self">self </span>@ }
+    <span class="kw">for</span>&lt;M: Modulus&gt; &lt;StaticModInt&lt;M&gt;&gt; @ &lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;_ </span>StaticModInt&lt;M&gt;&gt; -&gt; StaticModInt&lt;M&gt; { <span class="self">self </span>@ * }
+    <span class="kw">for</span>&lt;M: Modulus&gt; &lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;_ </span>StaticModInt&lt;M&gt;&gt; @ &lt;StaticModInt&lt;M&gt;&gt; -&gt; StaticModInt&lt;M&gt; { <span class="self">self </span>@ }
+    <span class="kw">for</span>&lt;M: Modulus&gt; &lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;_ </span>StaticModInt&lt;M&gt;&gt; @ &lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;_ </span>StaticModInt&lt;M&gt;&gt; -&gt; StaticModInt&lt;M&gt; { <span class="self">self </span>@ * }
+    <span class="kw">for</span>&lt;I: DynamicModIntId&gt; &lt;DynamicModInt&lt;I&gt;&gt; @ &lt;DynamicModInt&lt;I&gt;&gt; -&gt; DynamicModInt&lt;I&gt; { <span class="self">self </span>@ }
+    <span class="kw">for</span>&lt;I: DynamicModIntId&gt; &lt;DynamicModInt&lt;I&gt;&gt; @ &lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;_ </span>DynamicModInt&lt;I&gt;&gt; -&gt; DynamicModInt&lt;I&gt; { <span class="self">self </span>@ * }
+    <span class="kw">for</span>&lt;I: DynamicModIntId&gt; &lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;_ </span>DynamicModInt&lt;I&gt;&gt; @ &lt;DynamicModInt&lt;I&gt;&gt; -&gt; DynamicModInt&lt;I&gt; { <span class="self">self </span>@ }
+    <span class="kw">for</span>&lt;I: DynamicModIntId&gt; &lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;_ </span>DynamicModInt&lt;I&gt;&gt; @ &lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;_ </span>DynamicModInt&lt;I&gt;&gt; -&gt; DynamicModInt&lt;I&gt; { <span class="self">self </span>@ * }
+}
+
+<span class="macro">impl_assign_ops! </span>{
+    <span class="kw">for</span>&lt;M: Modulus&gt; &lt;StaticModInt&lt;M&gt;&gt; @= &lt;StaticModInt&lt;M&gt;&gt; { <span class="self">self </span>@= }
+    <span class="kw">for</span>&lt;M: Modulus&gt; &lt;StaticModInt&lt;M&gt;&gt; @= &lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;_ </span>StaticModInt&lt;M&gt;&gt; { <span class="self">self </span>@= * }
+    <span class="kw">for</span>&lt;I: DynamicModIntId&gt; &lt;DynamicModInt&lt;I&gt;&gt; @= &lt;DynamicModInt&lt;I&gt;&gt; { <span class="self">self </span>@= }
+    <span class="kw">for</span>&lt;I: DynamicModIntId&gt; &lt;DynamicModInt&lt;I&gt;&gt; @= &lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;_ </span>DynamicModInt&lt;I&gt;&gt; { <span class="self">self </span>@= * }
+}
+
+<span class="macro">impl_folding! </span>{
+    <span class="kw">impl</span>&lt;M: Modulus&gt; Sum&lt;<span class="kw">_</span>&gt; <span class="kw">for </span>StaticModInt&lt;M&gt; { <span class="kw">fn </span>sum(<span class="kw">_</span>) -&gt; <span class="kw">_ </span>{ <span class="kw">_</span>(<span class="self">Self</span>::new(<span class="number">0</span>), Add::add)} }
+    <span class="kw">impl</span>&lt;M: Modulus&gt; Product&lt;<span class="kw">_</span>&gt; <span class="kw">for </span>StaticModInt&lt;M&gt; { <span class="kw">fn </span>product(<span class="kw">_</span>) -&gt; <span class="kw">_ </span>{ <span class="kw">_</span>(<span class="self">Self</span>::new(<span class="number">1</span>), Mul::mul)} }
+    <span class="kw">impl</span>&lt;I: DynamicModIntId&gt; Sum&lt;<span class="kw">_</span>&gt; <span class="kw">for </span>DynamicModInt&lt;I&gt; { <span class="kw">fn </span>sum(<span class="kw">_</span>) -&gt; <span class="kw">_ </span>{ <span class="kw">_</span>(<span class="self">Self</span>::new(<span class="number">0</span>), Add::add)} }
+    <span class="kw">impl</span>&lt;I: DynamicModIntId&gt; Product&lt;<span class="kw">_</span>&gt; <span class="kw">for </span>DynamicModInt&lt;I&gt; { <span class="kw">fn </span>product(<span class="kw">_</span>) -&gt; <span class="kw">_ </span>{ <span class="kw">_</span>(<span class="self">Self</span>::new(<span class="number">1</span>), Mul::mul)} }
+}
+
+<span class="macro">impl_basic_traits! </span>{
+    <span class="kw">impl</span>&lt;M: Modulus&gt; <span class="kw">_ for </span>StaticModInt&lt;M&gt;;
+    <span class="kw">impl</span>&lt;I: DynamicModIntId&gt; <span class="kw">_ for </span>DynamicModInt&lt;I&gt;;
+}
+
 <span class="attribute">#[test]
 </span><span class="kw">fn </span>sanity_check() {
-    <span class="macro">assert!</span>(Mod998244353::IS_PRIME);
-    <span class="macro">assert!</span>(Mod1000000007::IS_PRIME);
+    <span class="comment">// assert!(Mod998244353::IS_PRIME);
+    // assert!(Mod1000000007::IS_PRIME);
 
-    <span class="kw">type </span>Mi = ModInt998244353;
+    </span><span class="kw">type </span>Mi = ModInt998244353;
     <span class="macro">assert_eq!</span>(Mi::new(<span class="number">1</span>) + Mi::new(<span class="number">998244352</span>), Mi::new(<span class="number">0</span>));
     <span class="macro">assert_eq!</span>((Mi::new(<span class="number">1</span>) / Mi::new(<span class="number">2</span>)).get(), (Mi::modulus() + <span class="number">1</span>) / <span class="number">2</span>);
 
@@ -1171,13 +1049,19 @@
     <span class="macro">assert_eq!</span>(sum10.val, <span class="number">55 </span>% <span class="number">4</span>);
 }
 
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>fmt() {
+    <span class="kw">type </span>Mi = ModInt998244353;
+
+    <span class="kw">let </span>x = Mi::new(<span class="number">123</span>);
+    <span class="macro">assert_eq!</span>(<span class="macro">format!</span>(<span class="string">&quot;{}&quot;</span>, x), <span class="string">&quot;123&quot;</span>);
+    <span class="macro">assert_eq!</span>(<span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, x), <span class="string">&quot;123 (mod 998244353)&quot;</span>);
+}
+
 <span class="comment">// todo:
 // - static/dynamic
 //     - butterfly
-//     - impl DRY (use macro?)
 // - static
 //     - use IS_PRIME?
-// - dynamic
-//     - mod pow with Barrett reduction
 </span></code></pre></div>
 </section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>
