@@ -87,7 +87,7 @@
   }
 </script>
 
-</head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../nekolib/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../nekolib/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../nekolib/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+</head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../nekolib/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -575,6 +575,20 @@
 <span id="486">486</span>
 <span id="487">487</span>
 <span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
 </pre><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::gcd_recip;
 <span class="kw">use </span>std::fmt::{<span class="self">self</span>, Debug, Display};
 <span class="kw">use </span>std::hash::{Hash, Hasher};
@@ -621,7 +635,10 @@
 {
     <span class="kw">fn </span>modulus() -&gt; u32;
     <span class="kw">fn </span>get(<span class="self">self</span>) -&gt; u32;
-    <span class="kw">fn </span>new(n: u32) -&gt; <span class="self">Self</span>;
+    <span class="kw">fn </span>new(n: <span class="kw">impl </span>RemEuclidU32) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>n = n.rem_euclid_u32(<span class="self">Self</span>::modulus());
+        <span class="kw">unsafe </span>{ <span class="self">Self</span>::new_unchecked(n) }
+    }
     <span class="kw">unsafe fn </span>new_unchecked(n: u32) -&gt; <span class="self">Self</span>;
     <span class="kw">fn </span>recip(<span class="self">self</span>) -&gt; <span class="self">Self </span>{ <span class="self">self</span>.checked_recip().unwrap() }
     <span class="kw">fn </span>checked_recip(<span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
@@ -695,9 +712,6 @@
 <span class="kw">impl</span>&lt;M: Modulus&gt; ModIntBase <span class="kw">for </span>StaticModInt&lt;M&gt; {
     <span class="kw">fn </span>modulus() -&gt; u32 { <span class="self">Self</span>::modulus() }
     <span class="kw">fn </span>get(<span class="self">self</span>) -&gt; u32 { <span class="self">self</span>.val }
-    <span class="kw">fn </span>new(n: u32) -&gt; <span class="self">Self </span>{
-        <span class="self">Self </span>{ val: (n % <span class="self">Self</span>::modulus()), _phd: PhantomData }
-    }
     <span class="kw">unsafe fn </span>new_unchecked(val: u32) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{ val, _phd: PhantomData }
     }
@@ -851,9 +865,6 @@
 <span class="kw">impl</span>&lt;I: DynamicModIntId&gt; ModIntBase <span class="kw">for </span>DynamicModInt&lt;I&gt; {
     <span class="kw">fn </span>modulus() -&gt; u32 { <span class="self">Self</span>::modulus() }
     <span class="kw">fn </span>get(<span class="self">self</span>) -&gt; u32 { <span class="self">self</span>.val }
-    <span class="kw">fn </span>new(n: u32) -&gt; <span class="self">Self </span>{
-        <span class="self">Self </span>{ val: (n % <span class="self">Self</span>::modulus()), _phd: PhantomData }
-    }
     <span class="kw">unsafe fn </span>new_unchecked(val: u32) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{ val, _phd: PhantomData }
     }
@@ -1022,6 +1033,24 @@
     <span class="kw">impl</span>&lt;I: DynamicModIntId&gt; <span class="kw">_ for </span>DynamicModInt&lt;I&gt;;
 }
 
+<span class="kw">pub trait </span>RemEuclidU32 {
+    <span class="kw">fn </span>rem_euclid_u32(<span class="self">self</span>, n: u32) -&gt; u32;
+}
+
+<span class="macro">macro_rules! </span>impl_rem_euclid_u32 {
+    ( $(<span class="macro-nonterminal">$ty</span>:ty)* ) =&gt; { $(
+        <span class="kw">impl </span>RemEuclidU32 <span class="kw">for </span><span class="macro-nonterminal">$ty </span>{
+            <span class="kw">fn </span>rem_euclid_u32(<span class="self">self</span>, n: u32) -&gt; u32 {
+                <span class="self">self</span>.rem_euclid(n <span class="kw">as </span><span class="macro-nonterminal">$ty</span>) <span class="kw">as </span>u32
+            }
+        }
+    )* }
+}
+
+<span class="macro">impl_rem_euclid_u32! </span>{
+    i8 i16 i32 i64 i128 isize u8 u16 u32 u64 u128 usize
+}
+
 <span class="attribute">#[test]
 </span><span class="kw">fn </span>sanity_check() {
     <span class="comment">// assert!(Mod998244353::IS_PRIME);
@@ -1050,6 +1079,11 @@
 }
 
 <span class="attribute">#[test]
+</span><span class="kw">fn </span>negative() {
+    <span class="macro">assert_eq!</span>(ModInt998244353::new(-<span class="number">1</span>).get(), <span class="number">998244352</span>);
+}
+
+<span class="attribute">#[test]
 </span><span class="kw">fn </span>fmt() {
     <span class="kw">type </span>Mi = ModInt998244353;
 
@@ -1057,11 +1091,5 @@
     <span class="macro">assert_eq!</span>(<span class="macro">format!</span>(<span class="string">&quot;{}&quot;</span>, x), <span class="string">&quot;123&quot;</span>);
     <span class="macro">assert_eq!</span>(<span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, x), <span class="string">&quot;123 (mod 998244353)&quot;</span>);
 }
-
-<span class="comment">// todo:
-// - static/dynamic
-//     - butterfly
-// - static
-//     - use IS_PRIME?
-</span></code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>
+</code></pre></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

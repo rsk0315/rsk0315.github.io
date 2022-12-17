@@ -1,0 +1,90 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Documentation for Rustdoc"><meta name="keywords" content="rust, rustlang, rust-lang"><title>Rustdoc help</title><link rel="preload" as="font" type="font/woff2" crossorigin href="./SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="./FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="./FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="./SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="./SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="./SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="./normalize.css"><link rel="stylesheet" href="./rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="./ayu.css" disabled><link rel="stylesheet" href="./dark.css" disabled><link rel="stylesheet" href="./light.css" id="themeStyle"><script id="default-settings" ></script><script src="./storage.js"></script><script defer src="./main.js"></script><noscript><link rel="stylesheet" href="./noscript.css"></noscript><link rel="alternate icon" type="image/png" href="./favicon-16x16.png"><link rel="alternate icon" type="image/png" href="./favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="./favicon.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\[", right: "\\]", display: true},
+                {left: "$", right: "$", display: false},
+                {left: "\\(", right: "\\)", display: false},
+            ],
+            macros: {
+                "\\halfco": "[#1, #2)",
+                "\\floor": "\\lfloor#1\\rfloor",
+                "\\ceil": "\\lceil#1\\rceil",
+                "\\Floor": "\\left\\lfloor#1\\right\\rfloor",
+                "\\Ceil": "\\left\\lceil#1\\right\\rceil",
+                "\\arsinh": "\\operatorname{arsinh}",
+                "\\arcosh": "\\operatorname{arcosh}",
+                "\\artanh": "\\operatorname{artanh}",
+                "\\sgn": "\\operatorname{sgn}",
+                "\\erf": "\\operatorname{erf}",
+                "\\round": "\\lfloor#1\\rceil",
+                "\\Round": "\\left\\lfloor#1\\right\\rceil",
+                "\\DP": "\\mathrm{dp}",
+                "\\xgets": "\\xleftarrow{#1}",
+                "\\For": "\\text{\\textbf{for} }#1\\text{ \\textbf{do}}",
+            },
+        });
+    });
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet">
+
+<style>
+  .ferris-container {
+      position: absolute;
+      z-index: 9999;
+      width: 4.5em;
+      right: 5px;
+      top: 10px;
+  }
+</style>
+
+<script>
+  let ferrisTypes = [
+      {
+          attr: 'compile_fail',
+          title: 'This code does not compile!',
+          src: 'https://raw.githubusercontent.com/rust-lang/book/b54090a99ec7c4b46a5203a9c927fdbc311bb1f5/2018-edition/src/img/ferris/does_not_compile.svg',
+      },
+      {
+          attr: 'should_panic',
+          title: 'This code panics!',
+          src: 'https://raw.githubusercontent.com/rust-lang/book/b54090a99ec7c4b46a5203a9c927fdbc311bb1f5/2018-edition/src/img/ferris/panics.svg',
+      },
+  ];  
+
+  document.addEventListener('DOMContentLoaded', () => {
+      for (let ferrisType of ferrisTypes) {
+          attachFerrises(ferrisType);
+      }
+  });
+
+  function attachFerrises(type) {
+      let elements = document.getElementsByClassName(type.attr);
+      for (let codeBlock of elements) {
+          if (codeBlock.tagName === 'PRE') {
+              attachFerris(codeBlock, type);
+          }
+      }
+  }
+
+  function attachFerris(element, type) {
+      let div = document.createElement('div');
+      div.className = 'ferris-container';
+
+      let img = document.createElement('img');
+      img.setAttribute('src', type.src);
+      img.setAttribute('title', type.title);
+      img.className = 'ferris';
+
+      div.appendChild(img);
+
+      element.parentElement.insertBefore(div, element);
+  }
+</script>
+
+</head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="./nekolib_verify/index.html"><div class="logo-container"><img class="rust-logo" src="./rust-logo.svg" alt="logo"></div></a><h2></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="./nekolib_verify/index.html"><div class="logo-container"><img class="rust-logo" src="./rust-logo.svg" alt="logo"></div></a><h2 class="location">Help</h2><div class="sidebar-elems"></div></nav><main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="./help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="./settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="./wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1 class="fqn">Rustdoc help</h1><span class="out-of-band"><a id="back" href="javascript:void(0)" onclick="history.back();">Back</a></span></div><noscript><section><p>You need to enable Javascript to use keyboard commands or search.</p><p>For more information, browse the <a href="https://doc.rust-lang.org/rustdoc/">rustdoc handbook</a>.</p></section></noscript></section></div></main><div id="rustdoc-vars" data-root-path="./" data-current-crate="nekolib_verify" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

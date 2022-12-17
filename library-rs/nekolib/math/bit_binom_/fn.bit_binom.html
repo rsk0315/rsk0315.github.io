@@ -87,29 +87,33 @@
   }
 </script>
 
-</head><body class="rustdoc fn"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../nekolib/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../nekolib/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><div class="sidebar-elems"><h2 class="location"><a href="index.html">In nekolib::math::bit_binom_</a></h2></div></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../nekolib/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="main-heading"><h1 class="fqn"><span class="in-band">Function <a href="../../index.html">nekolib</a>::<wbr><a href="../index.html">math</a>::<wbr><a href="index.html">bit_binom_</a>::<wbr><a class="fn" href="#">bit_binom</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../../../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span></h1><span class="out-of-band"><a class="srclink" href="../../../src/nekolib/math/bit_binom_.rs.html#58-69">source</a> · <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span></div><div class="docblock item-decl"><pre class="rust fn"><code>pub fn bit_binom(n: <a class="primitive" href="https://doc.rust-lang.org/1.65.0/std/primitive.usize.html">usize</a>, k: <a class="primitive" href="https://doc.rust-lang.org/1.65.0/std/primitive.usize.html">usize</a>) -&gt; impl <a class="trait" href="https://doc.rust-lang.org/1.65.0/core/iter/traits/iterator/trait.Iterator.html" title="trait core::iter::traits::iterator::Iterator">Iterator</a>&lt;Item = <a class="primitive" href="https://doc.rust-lang.org/1.65.0/std/primitive.usize.html">usize</a>&gt;</code></pre></div><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>組合せのビット表現。</p>
+</head><body class="rustdoc fn"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../nekolib/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../nekolib/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><div class="sidebar-elems"><h2><a href="index.html">In nekolib::math::bit_binom_</a></h2></div></nav><main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1 class="fqn">Function <a href="../../index.html">nekolib</a>::<wbr><a href="../index.html">math</a>::<wbr><a href="index.html">bit_binom_</a>::<wbr><a class="fn" href="#">bit_binom</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../../../clipboard.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="srclink" href="../../../src/nekolib/math/bit_binom_.rs.html#58-69">source</a> · <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span></div><div class="item-decl"><pre class="rust fn"><code>pub fn bit_binom(n: <a class="primitive" href="https://doc.rust-lang.org/1.66.0/std/primitive.usize.html">usize</a>, k: <a class="primitive" href="https://doc.rust-lang.org/1.66.0/std/primitive.usize.html">usize</a>) -&gt; impl <a class="trait" href="https://doc.rust-lang.org/1.66.0/core/iter/traits/iterator/trait.Iterator.html" title="trait core::iter::traits::iterator::Iterator">Iterator</a>&lt;Item = <a class="primitive" href="https://doc.rust-lang.org/1.66.0/std/primitive.usize.html">usize</a>&gt;</code></pre></div><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>組合せのビット表現。</p>
 <p>$n$ bit で表せる整数のうち、$k$ 個の bit が <code>1</code> であるものを昇順に生成する。</p>
 <h2 id="idea"><a href="#idea">Idea</a></h2>
 <p>$k$ 個の bit が <code>1</code> である整数 <code>i</code> が与えられたとき、$k$ 個の bit が <code>1</code>
 である整数のうち <code>i</code> より大きく最小の整数 <code>j</code> を考える。</p>
 <p>例として <code>i = 011001110</code> とする。</p>
 <div class="example-wrap"><pre class="language-text"><code>011001110  // i
-    ^~~~</code></pre></div>
+    ^~~~
+</code></pre></div>
 <p><code>i</code> のうちで <code>1</code> が連続して現れる部分のうち、最も右のものを考える。
 これの左にある <code>0</code> の位は、<code>j</code> においては <code>1</code> である必要がある。</p>
 <div class="example-wrap"><pre class="language-text"><code>011001110  // i
-01101....  // j (upper)</code></pre></div>
+01101....  // j (upper)
+</code></pre></div>
 <p>また、残った下位の領域においては、<code>i</code> における <code>1</code> の連続個数よりひとつ少ない
 <code>1</code> を右詰めで入れればよい。</p>
 <div class="example-wrap"><pre class="language-text"><code>011001110  // i
-.....0011  // j (lower)</code></pre></div>
+.....0011  // j (lower)
+</code></pre></div>
 <p>あとは、これらを計算する方法について述べる。</p>
 <div class="example-wrap"><pre class="language-text"><code>011001110  // i
 000000010  // x = i &amp; i.wrapping_neg()
 011010000  // y = i + x
 000001110  // i &amp; !y
 000000011  // z = (i &amp; !y) &gt;&gt; (x.trailing_zeros() + 1)
-011010011  // j = y | z</code></pre></div>
+011010011  // j = y | z
+</code></pre></div>
 <p>上記では <code>_ &gt;&gt; (x.trailing_zeros() + 1)</code> としているが、<code>x</code> が 2
 べきなので <code>(_ / x) &gt;&gt; 1</code> と等しい。</p>
 <h2 id="examples"><a href="#examples">Examples</a></h2>
@@ -127,4 +131,4 @@
 <ul>
 <li>蟻本 p.144</li>
 </ul>
-</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>
+</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>
