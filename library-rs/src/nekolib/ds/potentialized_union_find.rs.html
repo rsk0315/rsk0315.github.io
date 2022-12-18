@@ -206,6 +206,37 @@
 <span id="117">117</span>
 <span id="118">118</span>
 <span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
 </pre><pre class="rust"><code><span class="doccomment">//! ポテンシャルつき union-find。
 
 </span><span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::traits::binop;
@@ -257,19 +288,24 @@
 
     <span class="kw">fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize { <span class="self">self</span>.n }
 
-    <span class="kw">fn </span>relate(<span class="kw-2">&amp;mut </span><span class="self">self</span>, u: usize, v: usize, w: G::Set) -&gt; <span class="prelude-ty">Option</span>&lt;bool&gt; {
+    <span class="kw">fn </span>relate(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        u: usize,
+        v: usize,
+        w: G::Set,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;bool, G::Set&gt; {
         <span class="kw">let </span>ru = <span class="self">self</span>.repr(u);
         <span class="kw">let </span>rv = <span class="self">self</span>.repr(v);
         <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="self">self</span>.buf.borrow_mut();
         <span class="kw">let </span><span class="kw-2">mut </span>pot = <span class="self">self</span>.pot.borrow_mut();
         <span class="comment">// w += p[v] - p[u];
-        </span><span class="kw">let </span>w = <span class="self">self</span>.cgroup.op(
-            w,
-            <span class="self">self</span>.cgroup.op(pot[v].clone(), <span class="self">self</span>.cgroup.recip(pot[u].clone())),
-        );
+        </span><span class="kw">let </span>diff =
+            <span class="self">self</span>.cgroup.op(pot[v].clone(), <span class="self">self</span>.cgroup.recip(pot[u].clone()));
         <span class="kw">if </span>ru == rv {
-            <span class="kw">return if </span>w == <span class="self">self</span>.cgroup.id() { <span class="prelude-val">Some</span>(<span class="bool-val">false</span>) } <span class="kw">else </span>{ <span class="prelude-val">None </span>};
+            <span class="kw">let </span>w_old = <span class="self">self</span>.cgroup.recip(diff);
+            <span class="kw">return if </span>w == w_old { <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>) } <span class="kw">else </span>{ <span class="prelude-val">Err</span>(w_old) };
         }
+        <span class="kw">let </span>w = <span class="self">self</span>.cgroup.op(w, diff);
 
         <span class="kw">let </span>(su, sv) = <span class="kw">match </span>(buf[ru], buf[rv]) {
             (Item::Size(su), Item::Size(sv)) =&gt; (su, sv),
@@ -281,7 +317,7 @@
         buf[par] = Item::Size(su + sv);
         buf[child] = Item::Parent(par);
         pot[child] = d;
-        <span class="prelude-val">Some</span>(<span class="bool-val">true</span>)
+        <span class="prelude-val">Ok</span>(<span class="bool-val">true</span>)
     }
 
     <span class="kw">fn </span>diff(<span class="kw-2">&amp;</span><span class="self">self</span>, u: usize, v: usize) -&gt; <span class="prelude-ty">Option</span>&lt;G::Set&gt; {
@@ -290,6 +326,11 @@
         }
         <span class="kw">let </span>pot = <span class="self">self</span>.pot.borrow();
         <span class="prelude-val">Some</span>(<span class="self">self</span>.cgroup.op(pot[u].clone(), <span class="self">self</span>.cgroup.recip(pot[v].clone())))
+    }
+
+    <span class="kw">fn </span>repr_diff(<span class="kw-2">&amp;</span><span class="self">self</span>, u: usize) -&gt; (usize, G::Set) {
+        <span class="kw">let </span>ru = <span class="self">self</span>.repr(u);
+        (ru, <span class="self">self</span>.pot.borrow()[u].clone())
     }
 }
 
@@ -324,6 +365,27 @@
         }
         res
     }
+}
+
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>sanity_check() {
+    <span class="kw">use </span>binop::{
+        new_monoid, Associative, Commutative, Identity, Magma, PartialRecip,
+        Recip,
+    };
+
+    <span class="macro">new_monoid! </span>{ OpXor = (u32, |x, y| x ^ y, <span class="number">0</span>, |x| x, +commutative) };
+
+    <span class="kw">let </span><span class="kw-2">mut </span>uf = PotentializedUnionFind::&lt;OpXor&gt;::with_len(<span class="number">4</span>);
+    <span class="macro">assert_eq!</span>(uf.relate(<span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>), <span class="prelude-val">Ok</span>(<span class="bool-val">true</span>));
+    <span class="macro">assert_eq!</span>(uf.relate(<span class="number">0</span>, <span class="number">2</span>, <span class="number">1</span>), <span class="prelude-val">Ok</span>(<span class="bool-val">true</span>));
+    <span class="macro">assert_eq!</span>(uf.relate(<span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>), <span class="prelude-val">Err</span>(<span class="number">0</span>));
+    <span class="macro">assert_eq!</span>(uf.relate(<span class="number">1</span>, <span class="number">2</span>, <span class="number">0</span>), <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>));
+
+    <span class="macro">assert_ne!</span>(uf.repr_diff(<span class="number">0</span>).<span class="number">1</span>, uf.repr_diff(<span class="number">1</span>).<span class="number">1</span>);
+    <span class="macro">assert_ne!</span>(uf.repr_diff(<span class="number">0</span>).<span class="number">1</span>, uf.repr_diff(<span class="number">2</span>).<span class="number">1</span>);
+    <span class="macro">assert_eq!</span>(uf.repr_diff(<span class="number">1</span>).<span class="number">1</span>, uf.repr_diff(<span class="number">2</span>).<span class="number">1</span>);
+    <span class="macro">assert_eq!</span>(uf.repr_diff(<span class="number">3</span>), (<span class="number">3</span>, <span class="number">0</span>));
 }
 </code></pre></div>
 </section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

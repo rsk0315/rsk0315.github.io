@@ -125,6 +125,10 @@
 <span id="36">36</span>
 <span id="37">37</span>
 <span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
 </pre><pre class="rust"><code><span class="doccomment">//! ポテンシャル関数。
 
 </span><span class="kw">use </span><span class="kw">super</span>::binop;
@@ -148,20 +152,24 @@
     /// $\\phi(x\_u)-\\phi(x\_v) = w$ とする。
     ///
     /// 呼び出し前の定義と矛盾しない場合、呼び出し前に $\\phi(x\_u)-\\phi(x\_v)$ が未定義なら
-    /// `Some(true)` を、そうでなければ `Some(false)` を返す。
-    /// 矛盾する場合、定義は変化せずに `None` を返す。
+    /// `Ok(true)` を、そうでなければ `Ok(false)` を返す。
+    /// 矛盾する場合、定義は変化せずに `Err(e)` を返す。ただし、`e`
+    /// は呼び出し前の $\\phi(x\_u) - \\phi(x\_v)$ を表す。
     </span><span class="kw">fn </span>relate(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
         u: usize,
         v: usize,
         w: &lt;<span class="self">Self</span>::Item <span class="kw">as </span>Magma&gt;::Set,
-    ) -&gt; <span class="prelude-ty">Option</span>&lt;bool&gt;;
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;bool, &lt;<span class="self">Self</span>::Item <span class="kw">as </span>Magma&gt;::Set&gt;;
 
     <span class="doccomment">/// ポテンシャルの差を求める。
     ///
     /// $\\phi(x\_u)-\\phi(x\_v) = w$ であれば `Some(w)` を返す。
     /// 未定義ならば `None` を返す。
     </span><span class="kw">fn </span>diff(<span class="kw-2">&amp;</span><span class="self">self</span>, u: usize, v: usize) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;<span class="self">Self</span>::Item <span class="kw">as </span>Magma&gt;::Set&gt;;
+
+    <span class="doccomment">/// 代表元とのポテンシャルの差を求める。
+    </span><span class="kw">fn </span>repr_diff(<span class="kw-2">&amp;</span><span class="self">self</span>, u: usize) -&gt; (usize, &lt;<span class="self">Self</span>::Item <span class="kw">as </span>Magma&gt;::Set);
 }
 </code></pre></div>
 </section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>
