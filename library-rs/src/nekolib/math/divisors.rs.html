@@ -195,6 +195,11 @@
 <span id="106">106</span>
 <span id="107">107</span>
 <span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
 </pre><pre class="rust"><code><span class="doccomment">//! 約数列挙。
 
 /// 約数列挙。
@@ -285,7 +290,7 @@
 
 <span class="attribute">#[test]
 </span><span class="kw">fn </span>overflow() {
-    <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..=<span class="number">100 </span>{
+    <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..=<span class="number">1000 </span>{
         <span class="kw">let </span>hack = <span class="number">2_u32</span>.pow(<span class="number">16</span>) * (<span class="number">2_u32</span>.pow(<span class="number">16</span>) - i);
         <span class="kw">let </span>actual: Vec&lt;<span class="kw">_</span>&gt; = hack.divisors().collect();
         <span class="kw">let </span>expected: Vec&lt;<span class="kw">_</span>&gt; =
@@ -296,6 +301,11 @@
 
 <span class="attribute">#[test]
 </span><span class="kw">fn </span>overflow_exhaustive() {
+    <span class="kw">for </span>i <span class="kw">in </span>u8::MIN..=u8::MAX {
+        <span class="kw">let </span>actual: Vec&lt;<span class="kw">_</span>&gt; = i.divisors().collect();
+        <span class="kw">let </span>expected: Vec&lt;<span class="kw">_</span>&gt; = (i <span class="kw">as </span>u32).divisors().map(|d| d <span class="kw">as </span>u8).collect();
+        <span class="macro">assert_eq!</span>(actual, expected);
+    }
     <span class="kw">for </span>i <span class="kw">in </span>u16::MIN..=u16::MAX {
         <span class="kw">let </span>actual: Vec&lt;<span class="kw">_</span>&gt; = i.divisors().collect();
         <span class="kw">let </span>expected: Vec&lt;<span class="kw">_</span>&gt; =
