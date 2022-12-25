@@ -272,7 +272,7 @@
     n: I,
 }
 
-<span class="macro">macro_rules! </span>impl_factors_dup_unit {
+<span class="macro">macro_rules! </span>impl_factors_dup_uint {
     ( $(<span class="macro-nonterminal">$ty</span>:ty)* ) =&gt; { $(
         <span class="kw">impl </span>FactorsDup <span class="kw">for </span><span class="macro-nonterminal">$ty </span>{
             <span class="kw">type </span>Output = FactorsDupStruct&lt;<span class="macro-nonterminal">$ty</span>&gt;;
@@ -305,7 +305,7 @@
     )* };
 }
 
-<span class="macro">impl_factors_dup_unit! </span>{ u8 u16 u32 u64 u128 usize }
+<span class="macro">impl_factors_dup_uint! </span>{ u8 u16 u32 u64 u128 usize }
 
 <span class="attribute">#[test]
 </span><span class="kw">fn </span>test_small() {

@@ -312,7 +312,7 @@
     n: I,
 }
 
-<span class="macro">macro_rules! </span>impl_common_quot_unit {
+<span class="macro">macro_rules! </span>impl_common_quot_uint {
     ( $(<span class="macro-nonterminal">$ty</span>:ty)* ) =&gt; { $(
         <span class="kw">impl </span>CommonQuot <span class="kw">for </span><span class="macro-nonterminal">$ty </span>{
             <span class="kw">type </span>Output = CommonQuotStruct&lt;<span class="macro-nonterminal">$ty</span>&gt;;
@@ -340,7 +340,7 @@
     )* };
 }
 
-<span class="macro">impl_common_quot_unit! </span>{ u8 u16 u32 u64 u128 usize }
+<span class="macro">impl_common_quot_uint! </span>{ u8 u16 u32 u64 u128 usize }
 
 <span class="attribute">#[test]
 </span><span class="kw">fn </span>test_small() {
