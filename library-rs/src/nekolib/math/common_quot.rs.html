@@ -236,6 +236,44 @@
 <span id="147">147</span>
 <span id="148">148</span>
 <span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
 </pre><pre class="rust"><code><span class="doccomment">//! 商が共通の区間の列挙。
 
 /// 商が共通の区間の列挙。
@@ -279,17 +317,21 @@
         <span class="kw">impl </span>CommonQuot <span class="kw">for </span><span class="macro-nonterminal">$ty </span>{
             <span class="kw">type </span>Output = CommonQuotStruct&lt;<span class="macro-nonterminal">$ty</span>&gt;;
             <span class="kw">fn </span>common_quot(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Output {
-                <span class="self">Self</span>::Output { i: <span class="number">1</span>, n: <span class="self">self </span>}
+                <span class="self">Self</span>::Output { i: <span class="number">0</span>, n: <span class="self">self </span>}
             }
         }
         <span class="kw">impl </span>Iterator <span class="kw">for </span>CommonQuotStruct&lt;<span class="macro-nonterminal">$ty</span>&gt; {
             <span class="kw">type </span>Item = (<span class="macro-nonterminal">$ty</span>, <span class="macro-nonterminal">$ty</span>);
             <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;(<span class="macro-nonterminal">$ty</span>, <span class="macro-nonterminal">$ty</span>)&gt; {
+                <span class="kw">if </span><span class="self">self</span>.i &gt;= <span class="self">self</span>.n {
+                    <span class="kw">return </span><span class="prelude-val">None</span>;
+                }
+                <span class="self">self</span>.i += <span class="number">1</span>;
                 <span class="kw">if </span><span class="self">self</span>.i &lt;= <span class="self">self</span>.n {
                     <span class="kw">let </span>l = <span class="self">self</span>.i;
                     <span class="kw">let </span>q = <span class="self">self</span>.n / l;
                     <span class="kw">let </span>r = <span class="self">self</span>.n / q;
-                    <span class="self">self</span>.i = r + <span class="number">1</span>;
+                    <span class="self">self</span>.i = r;
                     <span class="kw">return </span><span class="prelude-val">Some</span>((l, r));
                 }
                 <span class="prelude-val">None
@@ -382,6 +424,40 @@
         <span class="kw">if </span>n == <span class="number">60 </span>{
             <span class="macro">eprintln!</span>(<span class="string">&quot;{:?}&quot;</span>, actual);
         }
+        <span class="macro">assert_eq!</span>(actual, expected);
+    }
+}
+
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>overflow() {
+    <span class="kw">for </span>i <span class="kw">in </span>(<span class="number">1_u32</span>..=<span class="number">1000</span>)
+        .flat_map(|i| [i.wrapping_neg(), <span class="number">2_u32</span>.pow(<span class="number">16</span>) * (<span class="number">2_u32</span>.pow(<span class="number">16</span>) - i)])
+    {
+        <span class="kw">let </span>actual: Vec&lt;<span class="kw">_</span>&gt; = i.common_quot().collect();
+        <span class="kw">let </span>expected: Vec&lt;<span class="kw">_</span>&gt; = (i <span class="kw">as </span>u64)
+            .common_quot()
+            .map(|(l, r)| (l <span class="kw">as </span>u32, r <span class="kw">as </span>u32))
+            .collect();
+        <span class="macro">assert_eq!</span>(actual, expected);
+    }
+}
+
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>overflow_exhaustive() {
+    <span class="kw">for </span>i <span class="kw">in </span>u8::MIN..=u8::MAX {
+        <span class="macro">eprintln!</span>(<span class="string">&quot;{}_u8&quot;</span>, i);
+        <span class="kw">let </span>actual: Vec&lt;<span class="kw">_</span>&gt; = i.common_quot().collect();
+        <span class="kw">let </span>expected: Vec&lt;<span class="kw">_</span>&gt; =
+            (i <span class="kw">as </span>u32).common_quot().map(|(l, r)| (l <span class="kw">as </span>u8, r <span class="kw">as </span>u8)).collect();
+        <span class="macro">assert_eq!</span>(actual, expected);
+    }
+    <span class="kw">for </span>i <span class="kw">in </span>u16::MIN..=u16::MAX {
+        <span class="macro">eprintln!</span>(<span class="string">&quot;{}_u16&quot;</span>, i);
+        <span class="kw">let </span>actual: Vec&lt;<span class="kw">_</span>&gt; = i.common_quot().collect();
+        <span class="kw">let </span>expected: Vec&lt;<span class="kw">_</span>&gt; = (i <span class="kw">as </span>u32)
+            .common_quot()
+            .map(|(l, r)| (l <span class="kw">as </span>u16, r <span class="kw">as </span>u16))
+            .collect();
         <span class="macro">assert_eq!</span>(actual, expected);
     }
 }

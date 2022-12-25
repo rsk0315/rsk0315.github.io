@@ -236,6 +236,7 @@
 <span id="147">147</span>
 <span id="148">148</span>
 <span id="149">149</span>
+<span id="150">150</span>
 </pre><pre class="rust"><code><span class="doccomment">//! 素因数分解。
 
 /// 素因数分解。
@@ -361,11 +362,12 @@
 
 <span class="attribute">#[test]
 </span><span class="kw">fn </span>overflow() {
-    <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..=<span class="number">1000 </span>{
-        <span class="kw">let </span>hack = <span class="number">2_u32</span>.pow(<span class="number">16</span>) * (<span class="number">2_u32</span>.pow(<span class="number">16</span>) - i);
-        <span class="kw">let </span>actual: Vec&lt;<span class="kw">_</span>&gt; = hack.factors_dup().collect();
+    <span class="kw">for </span>i <span class="kw">in </span>(<span class="number">1_u32</span>..=<span class="number">1000</span>)
+        .flat_map(|i| [i.wrapping_neg(), <span class="number">2_u32</span>.pow(<span class="number">16</span>) * (<span class="number">2_u32</span>.pow(<span class="number">16</span>) - i)])
+    {
+        <span class="kw">let </span>actual: Vec&lt;<span class="kw">_</span>&gt; = i.factors_dup().collect();
         <span class="kw">let </span>expected: Vec&lt;<span class="kw">_</span>&gt; =
-            (hack <span class="kw">as </span>u64).factors_dup().map(|d| d <span class="kw">as </span>u32).collect();
+            (i <span class="kw">as </span>u64).factors_dup().map(|d| d <span class="kw">as </span>u32).collect();
         <span class="macro">assert_eq!</span>(actual, expected);
     }
 }
