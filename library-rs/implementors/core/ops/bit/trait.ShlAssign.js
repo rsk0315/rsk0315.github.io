@@ -1,3 +1,3 @@
 (function() {var implementors = {
-"nekolib":[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.66.0/core/ops/bit/trait.ShlAssign.html\" title=\"trait core::ops::bit::ShlAssign\">ShlAssign</a>&lt;<a class=\"primitive\" href=\"https://doc.rust-lang.org/1.66.0/std/primitive.usize.html\">usize</a>&gt; for <a class=\"struct\" href=\"nekolib/ds/struct.BitSet.html\" title=\"struct nekolib::ds::BitSet\">BitSet</a>"]]
+"nekolib":[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.67.1/core/ops/bit/trait.ShlAssign.html\" title=\"trait core::ops::bit::ShlAssign\">ShlAssign</a>&lt;<a class=\"primitive\" href=\"https://doc.rust-lang.org/1.67.1/std/primitive.usize.html\">usize</a>&gt; for <a class=\"struct\" href=\"nekolib/ds/struct.BitSet.html\" title=\"struct nekolib::ds::BitSet\">BitSet</a>"]]
 };if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
