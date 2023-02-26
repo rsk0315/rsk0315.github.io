@@ -141,6 +141,9 @@
 <a href="#52" id="52">52</a>
 <a href="#53" id="53">53</a>
 <a href="#54" id="54">54</a>
+<a href="#55" id="55">55</a>
+<a href="#56" id="56">56</a>
+<a href="#57" id="57">57</a>
 </pre><pre class="rust"><code><span class="doccomment">//! アルゴリズムたち。
 //!
 //! ここに何かを書く。
@@ -158,6 +161,7 @@
 <span class="kw">pub mod </span>ordered_hash_;
 <span class="kw">pub mod </span>parallel_bisect;
 <span class="kw">pub mod </span>permutation;
+<span class="kw">pub mod </span>rle;
 <span class="kw">pub mod </span>tortoise_hare;
 <span class="kw">pub mod </span>window_bisect;
 
@@ -191,6 +195,8 @@
 </span><span class="kw">pub use </span>permutation::{
     next_permutation, prev_permutation, Backward, Forward, Permutations,
 };
+<span class="attr">#[doc(inline)]
+</span><span class="kw">pub use </span>rle::{Rle, RleBy, RleByKey};
 <span class="attr">#[doc(inline)]
 </span><span class="kw">pub use </span>tortoise_hare::{cycle_mu_lambda, cycle_nth};
 <span class="attr">#[doc(inline)]
