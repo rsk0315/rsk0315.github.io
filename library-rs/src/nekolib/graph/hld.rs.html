@@ -306,9 +306,21 @@
 <a href="#217" id="217">217</a>
 <a href="#218" id="218">218</a>
 <a href="#219" id="219">219</a>
-</pre><pre class="rust"><code><span class="kw">use </span>std::fmt::Debug;
+<a href="#220" id="220">220</a>
+<a href="#221" id="221">221</a>
+<a href="#222" id="222">222</a>
+<a href="#223" id="223">223</a>
+<a href="#224" id="224">224</a>
+<a href="#225" id="225">225</a>
+</pre><pre class="rust"><code><span class="doccomment">//! HL 分解。
 
-<span class="doccomment">/// &lt;https://codeforces.com/blog/entry/53170&gt;, Easiest HLD with subtree queries.
+</span><span class="kw">use </span>std::fmt::Debug;
+
+<span class="doccomment">/// HL 分解。
+///
+/// &lt;https://codeforces.com/blog/entry/53170&gt;, Easiest HLD with subtree queries.
+///
+/// &lt;https://atcoder.jp/contests/abc294/submissions/39923465&gt;
 </span><span class="attr">#[derive(Clone, Debug)]
 </span><span class="kw">pub struct </span>Hld {
     perm: Vec&lt;usize&gt;,
