@@ -106,12 +106,16 @@
 <a href="#17" id="17">17</a>
 <a href="#18" id="18">18</a>
 <a href="#19" id="19">19</a>
+<a href="#20" id="20">20</a>
+<a href="#21" id="21">21</a>
+<a href="#22" id="22">22</a>
 </pre><pre class="rust"><code><span class="doccomment">//! グラフに関するものたち。
 //!
 //! ここに何かを書く。
 </span><span class="kw">pub mod </span>dijkstra_;
 <span class="kw">pub mod </span>dinic_;
 <span class="kw">pub mod </span>functional_graph;
+<span class="kw">pub mod </span>hld;
 <span class="kw">pub mod </span>scc_;
 <span class="kw">pub mod </span>tree_cata;
 
@@ -121,6 +125,8 @@
 </span><span class="kw">pub use </span>dinic_::dinic;
 <span class="attr">#[doc(inline)]
 </span><span class="kw">pub use </span>functional_graph::FunctionalGraph;
+<span class="attr">#[doc(inline)]
+</span><span class="kw">pub use </span>hld::Hld;
 <span class="attr">#[doc(inline)]
 </span><span class="kw">pub use </span>scc_::scc;
 <span class="attr">#[doc(inline)]

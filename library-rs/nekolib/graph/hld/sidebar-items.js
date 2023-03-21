@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":[["Hld","https://codeforces.com/blog/entry/53170, Easiest HLD with subtree queries."]]};
