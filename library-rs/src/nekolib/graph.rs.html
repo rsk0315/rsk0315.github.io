@@ -109,10 +109,14 @@
 <a href="#20" id="20">20</a>
 <a href="#21" id="21">21</a>
 <a href="#22" id="22">22</a>
+<a href="#23" id="23">23</a>
+<a href="#24" id="24">24</a>
+<a href="#25" id="25">25</a>
 </pre><pre class="rust"><code><span class="doccomment">//! グラフに関するものたち。
 //!
 //! ここに何かを書く。
-</span><span class="kw">pub mod </span>dijkstra_;
+</span><span class="kw">pub mod </span>adjlist;
+<span class="kw">pub mod </span>dijkstra_;
 <span class="kw">pub mod </span>dinic_;
 <span class="kw">pub mod </span>functional_graph;
 <span class="kw">pub mod </span>hld;
@@ -120,13 +124,15 @@
 <span class="kw">pub mod </span>tree_cata;
 
 <span class="attr">#[doc(inline)]
+</span><span class="kw">pub use </span>adjlist::from_root;
+<span class="attr">#[doc(inline)]
 </span><span class="kw">pub use </span>dijkstra_::dijkstra;
 <span class="attr">#[doc(inline)]
 </span><span class="kw">pub use </span>dinic_::dinic;
 <span class="attr">#[doc(inline)]
 </span><span class="kw">pub use </span>functional_graph::FunctionalGraph;
 <span class="attr">#[doc(inline)]
-</span><span class="kw">pub use </span>hld::Hld;
+</span><span class="kw">pub use </span>hld::{Direction, HlEdge, Hld};
 <span class="attr">#[doc(inline)]
 </span><span class="kw">pub use </span>scc_::scc;
 <span class="attr">#[doc(inline)]
