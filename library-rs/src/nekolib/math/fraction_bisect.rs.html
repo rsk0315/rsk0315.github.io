@@ -190,6 +190,10 @@
 <a href="#101" id="101">101</a>
 <a href="#102" id="102">102</a>
 <a href="#103" id="103">103</a>
+<a href="#104" id="104">104</a>
+<a href="#105" id="105">105</a>
+<a href="#106" id="106">106</a>
+<a href="#107" id="107">107</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::ops::{Add, AddAssign, Mul};
 
 <span class="comment">// https://atcoder.jp/contests/abc294/editorial/6017
@@ -205,6 +209,10 @@
         <span class="kw">let </span><span class="kw-2">mut </span>upper = Fraction::infty();
         <span class="kw">loop </span>{
             <span class="kw">let </span>cur = lower + upper;
+            <span class="kw">if </span>cur.is_deeper(bound) {
+                <span class="kw">return </span>upper.into_inner();
+            }
+
             <span class="kw">let </span>tf = pred(cur);
             <span class="kw">let </span>(from, to) = <span class="kw">if </span>tf { (lower, upper) } <span class="kw">else </span>{ (upper, lower) };
 
@@ -290,8 +298,8 @@
 <span class="attr">#[test]
 </span><span class="kw">fn </span>sanity_check() {
     <span class="kw">let </span>sqrt3 = <span class="number">5000_u64</span>.fraction_bisect(|x, y| x * x &lt;= <span class="number">3 </span>* y * y);
-    <span class="comment">// 解説コード中のコメントまたは解説コードに誤りがある？
-    </span><span class="macro">assert_eq!</span>(sqrt3, (<span class="number">5042</span>, <span class="number">2911</span>));
+    <span class="comment">// assert_eq!(sqrt3, (5042, 2911));
+    </span><span class="macro">assert_eq!</span>(sqrt3, (<span class="number">1351</span>, <span class="number">780</span>));
 }
 </code></pre></div>
 </section></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="nekolib" data-themes="" data-resource-suffix="" data-rustdoc-version="1.68.1 (8460ca823 2023-03-20)" data-search-js="search-98d53477a794af0b.js" data-settings-js="settings-c3c521c753752a1a.js" data-settings-css="settings-08ddfdda51b8ee2e.css" ></div></body></html>
