@@ -306,7 +306,7 @@
             <span class="kw">if </span>!ztf &amp;&amp; !<span class="self">Self</span>::SIGNED {
                 <span class="kw">return </span>(fr_zero, fr_zero);
             }
-            <span class="kw">if </span><span class="self">Self</span>::SIGNED &amp;&amp; !pred(fr_neg_infty.<span class="number">0</span>, fr_neg_infty.<span class="number">1</span>) {
+            <span class="kw">if </span><span class="self">Self</span>::SIGNED &amp;&amp; !ztf &amp;&amp; !pred(fr_neg_infty.<span class="number">0</span>, fr_neg_infty.<span class="number">1</span>) {
                 <span class="kw">return </span>(fr_neg_infty, fr_neg_infty);
             }
             <span class="kw">move </span>|fr: Fraction&lt;<span class="self">Self</span>&gt;| {
