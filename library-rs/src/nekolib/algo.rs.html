@@ -144,6 +144,9 @@
 <a href="#55" id="55">55</a>
 <a href="#56" id="56">56</a>
 <a href="#57" id="57">57</a>
+<a href="#58" id="58">58</a>
+<a href="#59" id="59">59</a>
+<a href="#60" id="60">60</a>
 </pre><pre class="rust"><code><span class="doccomment">//! アルゴリズムたち。
 //!
 //! ここに何かを書く。
@@ -153,6 +156,7 @@
 <span class="kw">pub mod </span>extremum_float;
 <span class="kw">pub mod </span>hilbert_mo_;
 <span class="kw">pub mod </span>index_order;
+<span class="kw">pub mod </span>inversion;
 <span class="kw">pub mod </span>karatsuba;
 <span class="kw">pub mod </span>larsch;
 <span class="kw">pub mod </span>majority_;
@@ -177,6 +181,8 @@
 </span><span class="kw">pub use </span>hilbert_mo_::hilbert_mo;
 <span class="attr">#[doc(inline)]
 </span><span class="kw">pub use </span>index_order::{index_order_by, index_order_by_key};
+<span class="attr">#[doc(inline)]
+</span><span class="kw">pub use </span>inversion::Inversion;
 <span class="attr">#[doc(inline)]
 </span><span class="kw">pub use </span>karatsuba::convolve;
 <span class="attr">#[doc(inline)]
