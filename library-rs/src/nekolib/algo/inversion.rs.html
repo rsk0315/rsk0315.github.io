@@ -131,16 +131,11 @@
 <a href="#42" id="42">42</a>
 <a href="#43" id="43">43</a>
 <a href="#44" id="44">44</a>
-</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::ds::vec_segtree;
-<span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::traits::fold;
-<span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::traits::get_mut;
-<span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::utils::op_add;
-<span class="kw">use </span>fold::Fold;
-<span class="kw">use </span>get_mut::GetMut;
-<span class="kw">use </span>op_add::OpAdd;
-<span class="kw">use </span>vec_segtree::VecSegtree;
-
-<span class="kw">pub trait </span>Inversion {
+<a href="#45" id="45">45</a>
+<a href="#46" id="46">46</a>
+<a href="#47" id="47">47</a>
+<a href="#48" id="48">48</a>
+</pre><pre class="rust"><code><span class="kw">pub trait </span>Inversion {
     <span class="kw">fn </span>inversion(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u64;
 }
 
@@ -155,12 +150,25 @@
             ord
         };
 
-        <span class="kw">let </span><span class="kw-2">mut </span>st: VecSegtree&lt;OpAdd&lt;<span class="kw">_</span>&gt;&gt; = <span class="macro">vec!</span>[<span class="number">0</span>; n].into();
         <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="number">0</span>;
-        <span class="kw">for </span><span class="kw-2">&amp;</span>i <span class="kw">in </span><span class="kw-2">&amp;</span>ord {
-            res += st.fold(i..);
-            <span class="kw-2">*</span>st.get_mut(i).unwrap() += <span class="number">1</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>sum = <span class="macro">vec!</span>[<span class="number">0</span>; n + <span class="number">1</span>];
+        <span class="kw">for </span>i <span class="kw">in </span>ord.iter().map(|<span class="kw-2">&amp;</span>i| i + <span class="number">1</span>) {
+            {
+                <span class="kw">let </span><span class="kw-2">mut </span>i = i;
+                <span class="kw">while </span>i &lt;= n {
+                    res += sum[i];
+                    i += i &amp; i.wrapping_neg();
+                }
+            }
+            {
+                <span class="kw">let </span><span class="kw-2">mut </span>i = i;
+                <span class="kw">while </span>i &gt; <span class="number">0 </span>{
+                    sum[i] += <span class="number">1</span>;
+                    i -= i &amp; i.wrapping_neg();
+                }
+            }
         }
+
         res
     }
 }
