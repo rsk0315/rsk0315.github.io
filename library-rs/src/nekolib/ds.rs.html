@@ -161,12 +161,16 @@
 <a href="#72" id="72">72</a>
 <a href="#73" id="73">73</a>
 <a href="#74" id="74">74</a>
+<a href="#75" id="75">75</a>
+<a href="#76" id="76">76</a>
+<a href="#77" id="77">77</a>
 </pre><pre class="rust"><code><span class="doccomment">//! データ構造たち。
 //!
 //! 主に抽象化したデータ構造たち。union find や bit set
 //! は抽象化されていないという気もするが...
 </span><span class="kw">pub mod </span>bicremental_median;
 <span class="kw">pub mod </span>bicremental_median_dev;
+<span class="kw">pub mod </span>binary_trie;
 <span class="kw">pub mod </span>bit_set;
 <span class="kw">pub mod </span>btree_bimap;
 <span class="kw">pub mod </span>btree_multiset;
@@ -193,6 +197,8 @@
 </span><span class="kw">pub use </span>bicremental_median::BicrementalMedian;
 <span class="attr">#[doc(inline)]
 </span><span class="kw">pub use </span>bicremental_median_dev::BicrementalMedianDev;
+<span class="attr">#[doc(inline)]
+</span><span class="kw">pub use </span>binary_trie::BinaryTrie;
 <span class="attr">#[doc(inline)]
 </span><span class="kw">pub use </span>bit_set::BitSet;
 <span class="attr">#[doc(inline)]
