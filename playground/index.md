@@ -6,4 +6,5 @@
     - [詳細](range_lis_description.html)
 - [passWORDLE](passwordle.html)
 - [コマンドをコピペする UI のやつ](rich-terminal.html)
-
+- [mod 998244353 の計算機](mod_calculator/)
+    - [mod 1000000007 の計算機](mod_calculator/?mod=1000000007)
