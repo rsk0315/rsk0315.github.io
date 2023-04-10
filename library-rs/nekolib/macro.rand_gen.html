@@ -1,23 +1,32 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="乱数生成マクロ。"><meta name="keywords" content="rust, rustlang, rust-lang, rand_gen"><title>rand_gen in nekolib - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../dark.css" disabled><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../storage.js"></script><script defer src="sidebar-items.js"></script><script defer src="../main.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../favicon.svg"><!-- For newer version of KaTeX, see https://katex.org/docs/browser.html -->
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
-
-<!-- The loading of KaTeX is deferred to speed up page rendering -->
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
-
-<!-- To automatically render math in text elements, include the auto-render extension: -->
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"
-        onload="renderMathInElement(document.body);"></script>
-
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="乱数生成マクロ。"><meta name="keywords" content="rust, rustlang, rust-lang, rand_gen"><title>rand_gen in nekolib - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Regular-1f7d512b176f0f72.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Bold-124a1ca42af929b6.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../static.files/rustdoc-93196c7a1c3542a8.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../static.files/light-4743e13df3dfe8c4.css"><link rel="stylesheet" disabled href="../static.files/dark-0e1b889528bd466b.css"><link rel="stylesheet" disabled href="../static.files/ayu-65289d5d067c7c66.css"><script id="default-settings" ></script><script src="../static.files/storage-d43fa987303ecbbb.js"></script><script defer src="sidebar-items.js"></script><script defer src="../static.files/main-3367e395607fafc1.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-2c020d218678b618.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         renderMathInElement(document.body, {
             delimiters: [
                 {left: "$$", right: "$$", display: true},
-                {left: "\\(", right: "\\)", display: false},
+                {left: "\\[", right: "\\]", display: true},
                 {left: "$", right: "$", display: false},
-                {left: "\\[", right: "\\]", display: true}
-            ]
+                {left: "\\(", right: "\\)", display: false},
+            ],
+            macros: {
+                "\\halfco": "[#1, #2)",
+                "\\floor": "\\lfloor#1\\rfloor",
+                "\\ceil": "\\lceil#1\\rceil",
+                "\\Floor": "\\left\\lfloor#1\\right\\rfloor",
+                "\\Ceil": "\\left\\lceil#1\\right\\rceil",
+                "\\arsinh": "\\operatorname{arsinh}",
+                "\\arcosh": "\\operatorname{arcosh}",
+                "\\artanh": "\\operatorname{artanh}",
+                "\\sgn": "\\operatorname{sgn}",
+                "\\erf": "\\operatorname{erf}",
+                "\\round": "\\lfloor#1\\rceil",
+                "\\Round": "\\left\\lfloor#1\\right\\rceil",
+                "\\DP": "\\mathrm{dp}",
+                "\\xgets": "\\xleftarrow{#1}",
+                "\\For": "\\text{\\textbf{for} }#1\\text{ \\textbf{do}}",
+            },
         });
     });
 </script>
@@ -78,50 +87,45 @@
   }
 </script>
 
-</head><body class="rustdoc macro"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../nekolib/index.html"><div class="logo-container"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../nekolib/index.html"><div class="logo-container"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></div>
-        </a><div class="sidebar-elems"><h2 class="location"><a href="index.html">In nekolib</a></h2></div></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../nekolib/index.html"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="main-heading">
-    <h1 class="fqn"><span class="in-band">Macro <a href="index.html">nekolib</a>::<wbr><a class="macro" href="#">rand_gen</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span></h1><span class="out-of-band"><a class="srclink" href="../src/nekolib/utils/rand_gen_macro.rs.html#134-166">source</a> · <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span></div><div class="docblock item-decl"><div class="example-wrap"><pre class="rust macro"><code><span class="macro">macro_rules!</span> <span class="ident">rand_gen</span> {
-    ( @<span class="ident">seed</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span>:<span class="ident">ident</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span>:<span class="ident">ident</span> <span class="kw">in</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">r</span>:<span class="ident">tt</span>)<span class="op">*</span> } @<span class="ident">rest</span> ) =&gt; { ... };
-    ( @<span class="ident">seed</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span>:<span class="ident">ident</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span>:<span class="ident">ident</span> <span class="kw">in</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">r</span>:<span class="ident">tt</span>)<span class="op">*</span> } @<span class="ident">rest</span> ; $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>:<span class="ident">tt</span>)<span class="op">*</span> ) =&gt; { ... };
-    ( @<span class="ident">seed</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span>:<span class="ident">ident</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">cur</span>:<span class="ident">tt</span>)<span class="op">*</span> } @<span class="ident">rest</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tt</span>:<span class="ident">tt</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>:<span class="ident">tt</span>)<span class="op">*</span> ) =&gt; { ... };
-    ( @<span class="ident">seed</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span>:<span class="ident">ident</span> {} @<span class="ident">rest</span> ) =&gt; { ... };
-    ( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span>:<span class="ident">ident</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>:<span class="ident">ty</span>; $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>:<span class="ident">tt</span>)<span class="op">*</span> ) =&gt; { ... };
-    ( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">seed</span>:<span class="ident">ident</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">s</span>:<span class="ident">expr</span>; $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>:<span class="ident">tt</span>)<span class="op">*</span> ) =&gt; { ... };
+</head><body class="rustdoc macro"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="logo-container" href="../nekolib/index.html"><img class="rust-logo" src="../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><h2></h2></nav><nav class="sidebar"><a class="logo-container" href="../nekolib/index.html"><img class="rust-logo" src="../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><div class="sidebar-elems"><h2><a href="index.html">In nekolib</a></h2></div></nav><main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../static.files/wheel-5ec35bf9ca753509.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Macro <a href="index.html">nekolib</a>::<wbr><a class="macro" href="#">rand_gen</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="srclink" href="../src/nekolib/utils/rand_gen_macro.rs.html#139-178">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><div class="item-decl"><div class="example-wrap"><pre class="rust macro"><code><span class="macro">macro_rules! </span>rand_gen {
+    ( @seed <span class="macro-nonterminal">$seed</span>:ident { <span class="kw-2">mut </span><span class="macro-nonterminal">$a</span>:ident <span class="kw">in </span>$(<span class="macro-nonterminal">$r</span>:tt)* } @rest ) =&gt; { ... };
+    ( @seed <span class="macro-nonterminal">$seed</span>:ident { <span class="macro-nonterminal">$a</span>:ident <span class="kw">in </span>$(<span class="macro-nonterminal">$r</span>:tt)* } @rest ) =&gt; { ... };
+    ( @seed <span class="macro-nonterminal">$seed</span>:ident { <span class="macro-nonterminal">$a</span>:ident <span class="kw">in </span>$(<span class="macro-nonterminal">$r</span>:tt)* } @rest ; $(<span class="macro-nonterminal">$rest</span>:tt)* ) =&gt; { ... };
+    ( @seed <span class="macro-nonterminal">$seed</span>:ident { <span class="kw-2">mut </span><span class="macro-nonterminal">$a</span>:ident <span class="kw">in </span>$(<span class="macro-nonterminal">$r</span>:tt)* } @rest ; $(<span class="macro-nonterminal">$rest</span>:tt)* ) =&gt; { ... };
+    ( @seed <span class="macro-nonterminal">$seed</span>:ident { $(<span class="macro-nonterminal">$cur</span>:tt)* } @rest <span class="macro-nonterminal">$tt</span>:tt $(<span class="macro-nonterminal">$rest</span>:tt)* ) =&gt; { ... };
+    ( @seed <span class="macro-nonterminal">$seed</span>:ident {} @rest ) =&gt; { ... };
+    ( <span class="macro-nonterminal">$seed</span>:ident: <span class="macro-nonterminal">$ty</span>:ty; $(<span class="macro-nonterminal">$rest</span>:tt)* ) =&gt; { ... };
+    ( <span class="macro-nonterminal">$seed</span>:ident = <span class="macro-nonterminal">$s</span>:expr; $(<span class="macro-nonterminal">$rest</span>:tt)* ) =&gt; { ... };
 }</code></pre></div>
-</div><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>乱数生成マクロ。</p>
+</div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>乱数生成マクロ。</p>
 <h2 id="notes"><a href="#notes">Notes</a></h2>
 <p>作りかけなのでいろいろ足りない。</p>
 <h2 id="examples"><a href="#examples">Examples</a></h2>
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">rand::SeedableRng</span>;
-<span class="kw">use</span> <span class="ident">rand_chacha::ChaCha20Rng</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>rand::SeedableRng;
+<span class="kw">use </span>rand_chacha::ChaCha20Rng;
 
-<span class="kw">use</span> <span class="ident">nekolib::rand_gen</span>;
-<span class="kw">use</span> <span class="ident">nekolib::utils::ascii</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">nekolib::utils::rand_gen_macro</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>nekolib::rand_gen;
+<span class="kw">use </span>nekolib::utils::ascii::<span class="kw-2">*</span>;
+<span class="kw">use </span>nekolib::utils::rand_gen_macro::<span class="kw-2">*</span>;
 
-<span class="macro">rand_gen!</span> {
-    <span class="ident">rng</span>: <span class="ident">ChaCha20Rng</span>;
+<span class="macro">rand_gen! </span>{
+    rng: ChaCha20Rng;
 
-    <span class="ident">n</span> <span class="kw">in</span> <span class="number">1_usize</span>..<span class="op">=</span><span class="number">10</span>;
-    <span class="ident">a</span> <span class="kw">in</span> [<span class="number">1_i64</span>..<span class="op">=</span><span class="number">100</span>; <span class="ident">n</span>];
-    <span class="ident">s</span> <span class="kw">in</span> <span class="ident">AsciiString</span>(<span class="number">16</span>) <span class="kw">where</span> {
-        <span class="ident">distribution</span> <span class="op">=</span> <span class="kw-2">&amp;</span>[
-            (<span class="ident">ASCII_LOWERCASE</span>, <span class="number">10</span>),
-            (<span class="ident">ASCII_UPPERCASE</span>, <span class="number">10</span>),
-            (<span class="ident">ASCII_DIGIT</span>, <span class="number">6</span>),
-            (<span class="ident">charset</span>(<span class="string">b&quot;~!@#$%+?|()^*_-=[]{};:,./&quot;</span>), <span class="number">5</span>),
+    n <span class="kw">in </span><span class="number">1_usize</span>..=<span class="number">10</span>;
+    a <span class="kw">in </span>[<span class="number">1_i64</span>..=<span class="number">100</span>; n];
+    s <span class="kw">in </span>AsciiString(<span class="number">16</span>) <span class="kw">where </span>{
+        distribution = <span class="kw-2">&amp;</span>[
+            (ASCII_LOWERCASE, <span class="number">10</span>),
+            (ASCII_UPPERCASE, <span class="number">10</span>),
+            (ASCII_DIGIT, <span class="number">6</span>),
+            (charset(<span class="string">b&quot;~!@#$%+?|()^*_-=[]{};:,./&quot;</span>), <span class="number">5</span>),
         ],
     };
 }
 
-<span class="macro">assert_eq!</span>(<span class="ident">a</span>.<span class="ident">len</span>(), <span class="ident">n</span>);
-<span class="macro">assert!</span>(<span class="ident">a</span>.<span class="ident">iter</span>().<span class="ident">all</span>(<span class="op">|</span><span class="ident">ai</span><span class="op">|</span> (<span class="number">1</span>..<span class="op">=</span><span class="number">100</span>).<span class="ident">contains</span>(<span class="ident">ai</span>)));
-<span class="macro">assert_eq!</span>(<span class="ident">s</span>.<span class="ident">len</span>(), <span class="number">16</span>);
+<span class="macro">assert_eq!</span>(a.len(), n);
+<span class="macro">assert!</span>(a.iter().all(|ai| (<span class="number">1</span>..=<span class="number">100</span>).contains(ai)));
+<span class="macro">assert_eq!</span>(s.len(), <span class="number">16</span>);
 <span class="comment">// Possible value of `s`: `&quot;3e)xIjos2^M/XI1T&quot;`, `&quot;X52dhjDk%i6)p1F9&quot;`</span></code></pre></div>
 <p>以下のような出力が得られるため、これを用いて再現することができる。</p>
 <div class="example-wrap"><pre class="language-text"><code>To reproduce:
@@ -131,34 +135,40 @@ rand_gen! {
     rng = ChaCha20Rng::from_seed([250, 120, 31, 164, 15, 176, 41, 144, 61, 59, 224, 119, 135, 238, 14, 193, 149, 124, 228, 39, 107, 208, 243, 180, 7, 177, 21, 88, 19, 5, 225, 3]);
     // ...
 }
-```</code></pre></div>
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">rand::SeedableRng</span>;
-<span class="kw">use</span> <span class="ident">rand_chacha::ChaCha20Rng</span>;
+```
+</code></pre></div>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>rand::SeedableRng;
+<span class="kw">use </span>rand_chacha::ChaCha20Rng;
 
-<span class="kw">use</span> <span class="ident">nekolib::rand_gen</span>;
-<span class="kw">use</span> <span class="ident">nekolib::utils::ascii</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">nekolib::utils::rand_gen_macro</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>nekolib::rand_gen;
+<span class="kw">use </span>nekolib::utils::ascii::<span class="kw-2">*</span>;
+<span class="kw">use </span>nekolib::utils::rand_gen_macro::<span class="kw-2">*</span>;
 
-<span class="macro">rand_gen!</span> {
-    <span class="ident">rng</span> <span class="op">=</span> <span class="ident">ChaCha20Rng::from_seed</span>([<span class="number">250</span>, <span class="number">120</span>, <span class="number">31</span>, <span class="number">164</span>, <span class="number">15</span>, <span class="number">176</span>, <span class="number">41</span>, <span class="number">144</span>, <span class="number">61</span>, <span class="number">59</span>, <span class="number">224</span>, <span class="number">119</span>, <span class="number">135</span>, <span class="number">238</span>, <span class="number">14</span>, <span class="number">193</span>, <span class="number">149</span>, <span class="number">124</span>, <span class="number">228</span>, <span class="number">39</span>, <span class="number">107</span>, <span class="number">208</span>, <span class="number">243</span>, <span class="number">180</span>, <span class="number">7</span>, <span class="number">177</span>, <span class="number">21</span>, <span class="number">88</span>, <span class="number">19</span>, <span class="number">5</span>, <span class="number">225</span>, <span class="number">3</span>]);
+<span class="macro">rand_gen! </span>{
+    rng = ChaCha20Rng::from_seed([<span class="number">250</span>, <span class="number">120</span>, <span class="number">31</span>, <span class="number">164</span>, <span class="number">15</span>, <span class="number">176</span>, <span class="number">41</span>, <span class="number">144</span>, <span class="number">61</span>, <span class="number">59</span>, <span class="number">224</span>, <span class="number">119</span>, <span class="number">135</span>, <span class="number">238</span>, <span class="number">14</span>, <span class="number">193</span>, <span class="number">149</span>, <span class="number">124</span>, <span class="number">228</span>, <span class="number">39</span>, <span class="number">107</span>, <span class="number">208</span>, <span class="number">243</span>, <span class="number">180</span>, <span class="number">7</span>, <span class="number">177</span>, <span class="number">21</span>, <span class="number">88</span>, <span class="number">19</span>, <span class="number">5</span>, <span class="number">225</span>, <span class="number">3</span>]);
 
-    <span class="ident">n</span> <span class="kw">in</span> <span class="number">1_usize</span>..<span class="op">=</span><span class="number">10</span>;
-    <span class="ident">a</span> <span class="kw">in</span> [<span class="number">1_i64</span>..<span class="op">=</span><span class="number">100</span>; <span class="ident">n</span>];
-    <span class="ident">s</span> <span class="kw">in</span> <span class="ident">AsciiString</span>(<span class="number">16</span>) <span class="kw">where</span> {
-        <span class="ident">distribution</span> <span class="op">=</span> <span class="kw-2">&amp;</span>[
-            (<span class="ident">ASCII_LOWERCASE</span>, <span class="number">10</span>),
-            (<span class="ident">ASCII_UPPERCASE</span>, <span class="number">10</span>),
-            (<span class="ident">ASCII_DIGIT</span>, <span class="number">6</span>),
-            (<span class="ident">charset</span>(<span class="string">b&quot;~!@#$%+?|()^*_-=[]{};:,./&quot;</span>), <span class="number">5</span>),
+    n <span class="kw">in </span><span class="number">1_usize</span>..=<span class="number">10</span>;
+    a <span class="kw">in </span>[<span class="number">1_i64</span>..=<span class="number">100</span>; n];
+    s <span class="kw">in </span>AsciiString(<span class="number">16</span>) <span class="kw">where </span>{
+        distribution = <span class="kw-2">&amp;</span>[
+            (ASCII_LOWERCASE, <span class="number">10</span>),
+            (ASCII_UPPERCASE, <span class="number">10</span>),
+            (ASCII_DIGIT, <span class="number">6</span>),
+            (charset(<span class="string">b&quot;~!@#$%+?|()^*_-=[]{};:,./&quot;</span>), <span class="number">5</span>),
         ],
     };
-    <span class="ident">b</span> <span class="kw">in</span> [[[<span class="number">1_u8</span>..<span class="number">100</span>; <span class="number">3</span>]; <span class="number">2</span>]; <span class="number">2</span>];
+    b <span class="kw">in </span>[[[<span class="number">1_u8</span>..<span class="number">100</span>; <span class="number">3</span>]; <span class="number">2</span>]; <span class="number">2</span>];
+    p <span class="kw">in </span>Permutation(<span class="number">5</span>);
+    <span class="kw-2">mut </span>x <span class="kw">in </span><span class="number">1_i64</span>..<span class="number">10</span>;
 }
+x += <span class="number">1</span>;
 
-<span class="macro">assert_eq!</span>(<span class="ident">a</span>, [<span class="number">32</span>, <span class="number">86</span>, <span class="number">41</span>, <span class="number">68</span>, <span class="number">66</span>, <span class="number">46</span>, <span class="number">56</span>, <span class="number">82</span>, <span class="number">40</span>, <span class="number">1</span>]);
-<span class="macro">assert_eq!</span>(<span class="ident">s</span>, <span class="string">&quot;X52dhjDk%i6)p1F9&quot;</span>);
-<span class="macro">assert_eq!</span>(<span class="ident">b</span>, [[[<span class="number">75</span>, <span class="number">20</span>, <span class="number">23</span>], [<span class="number">63</span>, <span class="number">21</span>, <span class="number">58</span>]], [[<span class="number">12</span>, <span class="number">6</span>, <span class="number">57</span>], [<span class="number">51</span>, <span class="number">95</span>, <span class="number">70</span>]]]);</code></pre></div>
+<span class="macro">assert_eq!</span>(a, [<span class="number">32</span>, <span class="number">86</span>, <span class="number">41</span>, <span class="number">68</span>, <span class="number">66</span>, <span class="number">46</span>, <span class="number">56</span>, <span class="number">82</span>, <span class="number">40</span>, <span class="number">1</span>]);
+<span class="macro">assert_eq!</span>(s, <span class="string">&quot;X52dhjDk%i6)p1F9&quot;</span>);
+<span class="macro">assert_eq!</span>(b, [[[<span class="number">75</span>, <span class="number">20</span>, <span class="number">23</span>], [<span class="number">63</span>, <span class="number">21</span>, <span class="number">58</span>]], [[<span class="number">12</span>, <span class="number">6</span>, <span class="number">57</span>], [<span class="number">51</span>, <span class="number">95</span>, <span class="number">70</span>]]]);
+<span class="macro">assert_eq!</span>(p, [<span class="number">3</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">2</span>]);
+<span class="macro">assert_eq!</span>(x, <span class="number">5</span>);</code></pre></div>
 <p><code>oj</code> を用いて、hack をするのに使うとよい。
 以下の例は、想定解が Rust で標的が Python のプログラムのもの。</p>
-<div class="example-wrap"><pre class="language-sh"><code>% oj g/i --hack-expected target/release/x --hack-actual &#39;python3 x-to-be-hacked.py&#39; target/release/x-gen</code></pre></div></div></details></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0 (4b91a6ea7 2022-08-08)" ></div>
-</body></html>
+<div class="example-wrap"><pre class="language-sh"><code>% oj g/i --hack-expected target/release/x --hack-actual &#39;python3 x-to-be-hacked.py&#39; target/release/x-gen
+</code></pre></div></div></details></section></div></main><div id="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="nekolib" data-themes="" data-resource-suffix="" data-rustdoc-version="1.68.2 (9eb3afe9e 2023-03-27)" data-search-js="search-98d53477a794af0b.js" data-settings-js="settings-c3c521c753752a1a.js" data-settings-css="settings-08ddfdda51b8ee2e.css" ></div></body></html>

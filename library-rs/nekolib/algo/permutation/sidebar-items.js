@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":[["next_permutation","辞書順で次の順列の生成。"]]};
+window.SIDEBAR_ITEMS = {"fn":[["next_permutation","辞書順で次の順列の生成。"],["prev_permutation",""]],"struct":[["Backward",""],["Forward",""],["Permutations",""]]};

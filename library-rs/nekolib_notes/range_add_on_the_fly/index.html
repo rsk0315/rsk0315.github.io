@@ -1,0 +1,194 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="区間加算 (imos 法 + on-the-fly で遅延解消)。"><meta name="keywords" content="rust, rustlang, rust-lang, range_add_on_the_fly"><title>nekolib_notes::range_add_on_the_fly - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-1f7d512b176f0f72.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-124a1ca42af929b6.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-93196c7a1c3542a8.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-4743e13df3dfe8c4.css"><link rel="stylesheet" disabled href="../../static.files/dark-0e1b889528bd466b.css"><link rel="stylesheet" disabled href="../../static.files/ayu-65289d5d067c7c66.css"><script id="default-settings" ></script><script src="../../static.files/storage-d43fa987303ecbbb.js"></script><script defer src="../../static.files/main-3367e395607fafc1.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\[", right: "\\]", display: true},
+                {left: "$", right: "$", display: false},
+                {left: "\\(", right: "\\)", display: false},
+            ],
+            macros: {
+                "\\halfco": "[#1, #2)",
+                "\\floor": "\\lfloor#1\\rfloor",
+                "\\ceil": "\\lceil#1\\rceil",
+                "\\Floor": "\\left\\lfloor#1\\right\\rfloor",
+                "\\Ceil": "\\left\\lceil#1\\right\\rceil",
+                "\\arsinh": "\\operatorname{arsinh}",
+                "\\arcosh": "\\operatorname{arcosh}",
+                "\\artanh": "\\operatorname{artanh}",
+                "\\sgn": "\\operatorname{sgn}",
+                "\\erf": "\\operatorname{erf}",
+                "\\round": "\\lfloor#1\\rceil",
+                "\\Round": "\\left\\lfloor#1\\right\\rceil",
+                "\\DP": "\\mathrm{dp}",
+                "\\xgets": "\\xleftarrow{#1}",
+                "\\For": "\\text{\\textbf{for} }#1\\text{ \\textbf{do}}",
+            },
+        });
+    });
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet">
+
+<style>
+  .ferris-container {
+      position: absolute;
+      z-index: 9999;
+      width: 4.5em;
+      right: 5px;
+      top: 10px;
+  }
+</style>
+
+<script>
+  let ferrisTypes = [
+      {
+          attr: 'compile_fail',
+          title: 'This code does not compile!',
+          src: 'https://raw.githubusercontent.com/rust-lang/book/b54090a99ec7c4b46a5203a9c927fdbc311bb1f5/2018-edition/src/img/ferris/does_not_compile.svg',
+      },
+      {
+          attr: 'should_panic',
+          title: 'This code panics!',
+          src: 'https://raw.githubusercontent.com/rust-lang/book/b54090a99ec7c4b46a5203a9c927fdbc311bb1f5/2018-edition/src/img/ferris/panics.svg',
+      },
+  ];  
+
+  document.addEventListener('DOMContentLoaded', () => {
+      for (let ferrisType of ferrisTypes) {
+          attachFerrises(ferrisType);
+      }
+  });
+
+  function attachFerrises(type) {
+      let elements = document.getElementsByClassName(type.attr);
+      for (let codeBlock of elements) {
+          if (codeBlock.tagName === 'PRE') {
+              attachFerris(codeBlock, type);
+          }
+      }
+  }
+
+  function attachFerris(element, type) {
+      let div = document.createElement('div');
+      div.className = 'ferris-container';
+
+      let img = document.createElement('img');
+      img.setAttribute('src', type.src);
+      img.setAttribute('title', type.title);
+      img.className = 'ferris';
+
+      div.appendChild(img);
+
+      element.parentElement.insertBefore(div, element);
+  }
+</script>
+
+</head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="logo-container" href="../../nekolib_notes/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><h2></h2></nav><nav class="sidebar"><a class="logo-container" href="../../nekolib_notes/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><h2 class="location"><a href="#">Module range_add_on_the_fly</a></h2><div class="sidebar-elems"></div></nav><main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-5ec35bf9ca753509.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Module <a href="../index.html">nekolib_notes</a>::<wbr><a class="mod" href="#">range_add_on_the_fly</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="srclink" href="../../src/nekolib_notes/range_add_on_the_fly.rs.html#1-253">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>区間加算 (imos 法 + on-the-fly で遅延解消)。</p>
+<p>以下のような問題を考える。</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>proconio::input;
+
+<span class="macro">input! </span>{
+    n: usize,
+    a: [usize; n],
+}
+
+<span class="kw">let </span>m = (<span class="number">0</span>..n).map(|i| i + a[i]).max().unwrap();
+<span class="kw">let </span><span class="kw-2">mut </span>dp = <span class="macro">vec!</span>[<span class="number">0</span>; m + <span class="number">1</span>];
+dp[<span class="number">0</span>] = <span class="number">1</span>;
+
+<span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..n {
+    <span class="kw">for </span>j <span class="kw">in </span><span class="number">1</span>..=a[i] {
+        dp[i + j] += dp[i] * j <span class="kw">as </span>i32;
+    }
+}
+
+<span class="comment">// a = [1, 3, 2, 5]
+
+// 0: [1, 0, 0, 0, 0, 0, 0, 0, 0]
+// 1: [1, 1, 0, 0, 0, 0, 0, 0, 0]
+// 2: [1, 1, 1, 2, 3, 0, 0, 0, 0]
+// 3: [1, 1, 1, 3, 5, 0, 0, 0, 0]
+// 4: [1, 1, 1, 3, 8, 6, 9, 12, 15]
+
+</span><span class="macro">assert_eq!</span>(dp, [<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">8</span>, <span class="number">6</span>, <span class="number">9</span>, <span class="number">12</span>, <span class="number">15</span>]);</code></pre></div>
+<p>これを $O(n)$ 時間で行いたい。</p>
+<p>1 階差分を考えると、定数の区間加算になるので、基本的な imos 法で処理できる。
+$[i+1, i+a_i]$ に足す値は $\DP[i]$ に依るため、on-the-fly の処理が必要になる。</p>
+<p>$$
+\begin{aligned}
+&amp;\qquad \For{i \gets (0, 1, \dots, n-1)} \\
+&amp;\qquad\qquad \For{j \in \{1, 2, \dots, a_i\}} \\
+&amp;\qquad\qquad\qquad \DP[i+j] \xgets{+} \DP[i] \cdot j \\
+\end{aligned}
+$$</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span><span class="kw-2">mut </span>dp0 = <span class="macro">vec!</span>[<span class="number">0</span>; m + <span class="number">1</span>];  <span class="comment">// dp
+</span><span class="kw">let </span><span class="kw-2">mut </span>dp1 = <span class="macro">vec!</span>[<span class="number">0</span>; m + <span class="number">2</span>];  <span class="comment">// dp&#39;
+</span><span class="kw">let </span><span class="kw-2">mut </span>dp2 = <span class="macro">vec!</span>[<span class="number">0</span>; m + <span class="number">3</span>];  <span class="comment">// dp&#39;&#39;
+</span>dp2[<span class="number">0</span>] = <span class="number">1</span>;
+dp2[<span class="number">1</span>] = -<span class="number">2</span>;
+dp2[<span class="number">2</span>] = <span class="number">1</span>;
+
+<span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..n {
+    dp1[i] += dp2[i];
+    <span class="kw">if </span>i &gt; <span class="number">0 </span>{
+        dp1[i] += dp1[i - <span class="number">1</span>];
+    }
+    dp0[i] += dp1[i];
+    <span class="kw">if </span>i &gt; <span class="number">0 </span>{
+        dp0[i] += dp0[i - <span class="number">1</span>];
+    }
+    dp2[i + a[i] + <span class="number">1</span>] -= dp0[i] * a[i] <span class="kw">as </span>i32;
+    dp2[i + a[i] + <span class="number">2</span>] += dp0[i] * a[i] <span class="kw">as </span>i32;
+    dp2[i + <span class="number">1</span>] += dp0[i];
+    dp2[i + a[i] + <span class="number">1</span>] -= dp0[i];
+}
+<span class="kw">for </span>i <span class="kw">in </span>n..=m {
+    dp1[i] = dp1[i - <span class="number">1</span>] + dp2[i];
+    dp0[i] = dp0[i - <span class="number">1</span>] + dp1[i];
+}
+
+<span class="macro">assert_eq!</span>(dp0, [<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">8</span>, <span class="number">6</span>, <span class="number">9</span>, <span class="number">12</span>, <span class="number">15</span>]);</code></pre></div>
+<p>0 次の加算（一つの値の加算）、1 次の加算（区間への定数の加算）に関して、
+直接 <code>dp0[_]</code> や <code>dp1[_]</code> に足すと総和の整合性が取れなくなるので、
+<code>dp2[_]</code> の意味で言い換えるか、別の値として持つ必要がある。
+前者では、無駄に足す個数が増えるので、次数が増えたときにつらそう。</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span><span class="kw-2">mut </span>res = <span class="macro">vec!</span>[<span class="number">0</span>; m + <span class="number">1</span>];
+<span class="attr">#[allow(unused)]
+</span><span class="kw">let </span><span class="kw-2">mut </span>dp0 = <span class="macro">vec!</span>[<span class="number">0</span>; m + <span class="number">1</span>];
+<span class="kw">let </span><span class="kw-2">mut </span>dp1 = <span class="macro">vec!</span>[<span class="number">0</span>; m + <span class="number">2</span>];
+<span class="kw">let </span><span class="kw-2">mut </span>dp2 = <span class="macro">vec!</span>[<span class="number">0</span>; m + <span class="number">2</span>];
+<span class="kw">let </span><span class="kw-2">mut </span>acc0 = <span class="number">1</span>;
+<span class="kw">let </span><span class="kw-2">mut </span>acc1 = <span class="number">0</span>;
+
+dp1[<span class="number">1</span>] = -acc0;
+<span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..n {
+    acc1 += dp2[i];
+    acc0 += dp1[i] + acc1;
+    res[i] = acc0;
+     
+    dp1[i + a[i] + <span class="number">1</span>] -= acc0 * a[i] <span class="kw">as </span>i32;
+    dp2[i + <span class="number">1</span>] += acc0;
+    dp2[i + a[i] + <span class="number">1</span>] -= acc0;
+}
+<span class="kw">for </span>i <span class="kw">in </span>n..=m {
+    acc1 += dp2[i];
+    acc0 += dp1[i] + acc1;
+    res[i] = acc0;
+}
+<span class="macro">assert_eq!</span>(res, [<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">8</span>, <span class="number">6</span>, <span class="number">9</span>, <span class="number">12</span>, <span class="number">15</span>]);</code></pre></div>
+<h3 id="to-do--notes"><a href="#to-do--notes">To-do / Notes</a></h3>
+<ul>
+<li>数式からの導出をちゃんと書く</li>
+<li>$\DP[i+j] \xgets{+}\DP[i]\cdot j^2$ について書いてみる</li>
+<li>よくある累積和とは添字の解釈が異なる？ 明確にしておく</li>
+<li>クエリがオフラインで on-the-fly が不要の場合と比較してみる</li>
+<li>遅延セグ木で区間 $O(1)$ 次加算と何かしらの fold について考える</li>
+</ul>
+</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="nekolib_notes" data-themes="" data-resource-suffix="" data-rustdoc-version="1.68.2 (9eb3afe9e 2023-03-27)" data-search-js="search-98d53477a794af0b.js" data-settings-js="settings-c3c521c753752a1a.js" data-settings-css="settings-08ddfdda51b8ee2e.css" ></div></body></html>

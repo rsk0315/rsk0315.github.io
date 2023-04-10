@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":[["BinaryTrie",""],["Bits",""],["Iter",""]],"trait":[["BinaryInt",""]]};

@@ -1,23 +1,32 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Mo’s algorithm。"><meta name="keywords" content="rust, rustlang, rust-lang, mo"><title>mo in nekolib::algo - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="sidebar-items.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"><!-- For newer version of KaTeX, see https://katex.org/docs/browser.html -->
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
-
-<!-- The loading of KaTeX is deferred to speed up page rendering -->
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
-
-<!-- To automatically render math in text elements, include the auto-render extension: -->
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"
-        onload="renderMathInElement(document.body);"></script>
-
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Mo’s algorithm。"><meta name="keywords" content="rust, rustlang, rust-lang, mo"><title>mo in nekolib::algo - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-1f7d512b176f0f72.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-124a1ca42af929b6.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-93196c7a1c3542a8.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-4743e13df3dfe8c4.css"><link rel="stylesheet" disabled href="../../static.files/dark-0e1b889528bd466b.css"><link rel="stylesheet" disabled href="../../static.files/ayu-65289d5d067c7c66.css"><script id="default-settings" ></script><script src="../../static.files/storage-d43fa987303ecbbb.js"></script><script defer src="sidebar-items.js"></script><script defer src="../../static.files/main-3367e395607fafc1.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         renderMathInElement(document.body, {
             delimiters: [
                 {left: "$$", right: "$$", display: true},
-                {left: "\\(", right: "\\)", display: false},
+                {left: "\\[", right: "\\]", display: true},
                 {left: "$", right: "$", display: false},
-                {left: "\\[", right: "\\]", display: true}
-            ]
+                {left: "\\(", right: "\\)", display: false},
+            ],
+            macros: {
+                "\\halfco": "[#1, #2)",
+                "\\floor": "\\lfloor#1\\rfloor",
+                "\\ceil": "\\lceil#1\\rceil",
+                "\\Floor": "\\left\\lfloor#1\\right\\rfloor",
+                "\\Ceil": "\\left\\lceil#1\\right\\rceil",
+                "\\arsinh": "\\operatorname{arsinh}",
+                "\\arcosh": "\\operatorname{arcosh}",
+                "\\artanh": "\\operatorname{artanh}",
+                "\\sgn": "\\operatorname{sgn}",
+                "\\erf": "\\operatorname{erf}",
+                "\\round": "\\lfloor#1\\rceil",
+                "\\Round": "\\left\\lfloor#1\\right\\rceil",
+                "\\DP": "\\mathrm{dp}",
+                "\\xgets": "\\xleftarrow{#1}",
+                "\\For": "\\text{\\textbf{for} }#1\\text{ \\textbf{do}}",
+            },
         });
     });
 </script>
@@ -78,14 +87,7 @@
   }
 </script>
 
-</head><body class="rustdoc fn"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../nekolib/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../nekolib/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a><div class="sidebar-elems"><h2 class="location"><a href="index.html">In nekolib::algo</a></h2></div></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../nekolib/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="main-heading">
-    <h1 class="fqn"><span class="in-band">Function <a href="../index.html">nekolib</a>::<wbr><a href="index.html">algo</a>::<wbr><a class="fn" href="#">mo</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span></h1><span class="out-of-band"><a class="srclink" href="../../src/nekolib/algo/mo.rs.html#123-167">source</a> · <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span></div><div class="docblock item-decl"><pre class="rust fn"><code>pub fn mo&lt;S&gt;(<br>&nbsp;&nbsp;&nbsp;&nbsp;slice: S, <br>&nbsp;&nbsp;&nbsp;&nbsp;q: <a class="struct" href="https://doc.rust-lang.org/1.63.0/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;(<a class="struct" href="https://doc.rust-lang.org/1.63.0/core/ops/range/struct.Range.html" title="struct core::ops::range::Range">Range</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.63.0/std/primitive.usize.html">usize</a>&gt;, S::<a class="associatedtype" href="../traits/trait.SliceHash.html#associatedtype.Salt" title="type nekolib::traits::SliceHash::Salt">Salt</a>)&gt;, <br>&nbsp;&nbsp;&nbsp;&nbsp;b: <a class="enum" href="https://doc.rust-lang.org/1.63.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.63.0/std/primitive.usize.html">usize</a>&gt;<br>) -&gt; <a class="struct" href="https://doc.rust-lang.org/1.63.0/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;S::<a class="associatedtype" href="../traits/trait.SliceHash.html#associatedtype.Hashed" title="type nekolib::traits::SliceHash::Hashed">Hashed</a>&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;S: <a class="trait" href="../traits/trait.ElasticSlice.html" title="trait nekolib::traits::ElasticSlice">ElasticSlice</a> + <a class="trait" href="../traits/trait.ExpandFront.html" title="trait nekolib::traits::ExpandFront">ExpandFront</a> + <a class="trait" href="../traits/trait.ExpandBack.html" title="trait nekolib::traits::ExpandBack">ExpandBack</a> + <a class="trait" href="../traits/trait.ShrinkFront.html" title="trait nekolib::traits::ShrinkFront">ShrinkFront</a> + <a class="trait" href="../traits/trait.ShrinkBack.html" title="trait nekolib::traits::ShrinkBack">ShrinkBack</a> + <a class="trait" href="../traits/trait.SliceHash.html" title="trait nekolib::traits::SliceHash">SliceHash</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;S::<a class="associatedtype" href="../traits/trait.SliceHash.html#associatedtype.Hashed" title="type nekolib::traits::SliceHash::Hashed">Hashed</a>: <a class="trait" href="https://doc.rust-lang.org/1.63.0/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a>,&nbsp;</span></code></pre></div><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Mo’s algorithm。</p>
+</head><body class="rustdoc fn"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="logo-container" href="../../nekolib/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><h2></h2></nav><nav class="sidebar"><a class="logo-container" href="../../nekolib/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><div class="sidebar-elems"><h2><a href="index.html">In nekolib::algo</a></h2></div></nav><main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-5ec35bf9ca753509.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Function <a href="../index.html">nekolib</a>::<wbr><a href="index.html">algo</a>::<wbr><a class="fn" href="#">mo</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="srclink" href="../../src/nekolib/algo/mo.rs.html#123-167">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><div class="item-decl"><pre class="rust"><code>pub fn mo&lt;S&gt;(<br>&nbsp;&nbsp;&nbsp;&nbsp;slice: S,<br>&nbsp;&nbsp;&nbsp;&nbsp;q: <a class="struct" href="https://doc.rust-lang.org/1.68.2/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;(<a class="struct" href="https://doc.rust-lang.org/1.68.2/core/ops/range/struct.Range.html" title="struct core::ops::range::Range">Range</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.68.2/std/primitive.usize.html">usize</a>&gt;, S::<a class="associatedtype" href="../traits/trait.SliceHash.html#associatedtype.Salt" title="type nekolib::traits::SliceHash::Salt">Salt</a>)&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;b: <a class="enum" href="https://doc.rust-lang.org/1.68.2/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.68.2/std/primitive.usize.html">usize</a>&gt;<br>) -&gt; <a class="struct" href="https://doc.rust-lang.org/1.68.2/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;S::<a class="associatedtype" href="../traits/trait.SliceHash.html#associatedtype.Hashed" title="type nekolib::traits::SliceHash::Hashed">Hashed</a>&gt;<span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;S: <a class="trait" href="../traits/trait.ElasticSlice.html" title="trait nekolib::traits::ElasticSlice">ElasticSlice</a> + <a class="trait" href="../traits/trait.ExpandFront.html" title="trait nekolib::traits::ExpandFront">ExpandFront</a> + <a class="trait" href="../traits/trait.ExpandBack.html" title="trait nekolib::traits::ExpandBack">ExpandBack</a> + <a class="trait" href="../traits/trait.ShrinkFront.html" title="trait nekolib::traits::ShrinkFront">ShrinkFront</a> + <a class="trait" href="../traits/trait.ShrinkBack.html" title="trait nekolib::traits::ShrinkBack">ShrinkBack</a> + <a class="trait" href="../traits/trait.SliceHash.html" title="trait nekolib::traits::SliceHash">SliceHash</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;S::<a class="associatedtype" href="../traits/trait.SliceHash.html#associatedtype.Hashed" title="type nekolib::traits::SliceHash::Hashed">Hashed</a>: <a class="trait" href="https://doc.rust-lang.org/1.68.2/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a>,</span></code></pre></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Mo’s algorithm。</p>
 <p>オフラインのクエリを $q$ 個処理する。
 $i$ 番目のクエリは「区間 $[l_i, r_i)$ と値 $x_i$ によって計算される値を求めよ」
 ということを意味する。</p>
@@ -102,91 +104,90 @@ $i$ 番目のクエリは「区間 $[l_i, r_i)$ と値 $x_i$ によって計算�
 予め最大ケースにおける $b$ を計算するなどして、その値を渡す方がいいかも。
 個人的には $224$ から $384$ くらいの大きさの $32$ の倍数に祈ることが多い。</p>
 <h2 id="examples"><a href="#examples">Examples</a></h2>
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">std::collections::BTreeMap</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::collections::BTreeMap;
 
-<span class="kw">use</span> <span class="ident">nekolib::traits</span>::{
-    <span class="ident">ElasticSlice</span>, <span class="ident">ExpandBack</span>, <span class="ident">ExpandFront</span>, <span class="ident">ShrinkBack</span>,
-    <span class="ident">ShrinkFront</span>, <span class="ident">SliceHash</span>,
+<span class="kw">use </span>nekolib::traits::{
+    ElasticSlice, ExpandBack, ExpandFront, ShrinkBack,
+    ShrinkFront, SliceHash,
 };
-<span class="kw">use</span> <span class="ident">nekolib::algo::mo</span>;
+<span class="kw">use </span>nekolib::algo::mo;
 
-<span class="kw">struct</span> <span class="ident">RangeDistinct</span> {
-    <span class="ident">buf</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>,
-    <span class="ident">start</span>: <span class="ident">usize</span>,
-    <span class="ident">end</span>: <span class="ident">usize</span>,
-    <span class="ident">count</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">usize</span><span class="op">&gt;</span>,
+<span class="kw">struct </span>RangeDistinct {
+    buf: Vec&lt;i32&gt;,
+    start: usize,
+    end: usize,
+    count: BTreeMap&lt;i32, usize&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">RangeDistinct</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">buf</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> { <span class="ident">buf</span>, <span class="ident">start</span>: <span class="number">0</span>, <span class="ident">end</span>: <span class="number">0</span>, <span class="ident">count</span>: <span class="ident">BTreeMap::new</span>() }
+<span class="kw">impl </span>From&lt;Vec&lt;i32&gt;&gt; <span class="kw">for </span>RangeDistinct {
+    <span class="kw">fn </span>from(buf: Vec&lt;i32&gt;) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{ buf, start: <span class="number">0</span>, end: <span class="number">0</span>, count: BTreeMap::new() }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">ElasticSlice</span> <span class="kw">for</span> <span class="ident">RangeDistinct</span> {
-    <span class="kw">fn</span> <span class="ident">reset</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="self">self</span>.<span class="ident">start</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="self">self</span>.<span class="ident">end</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="self">self</span>.<span class="ident">count</span>.<span class="ident">clear</span>();
+<span class="kw">impl </span>ElasticSlice <span class="kw">for </span>RangeDistinct {
+    <span class="kw">fn </span>reset(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="self">self</span>.start = <span class="number">0</span>;
+        <span class="self">self</span>.end = <span class="number">0</span>;
+        <span class="self">self</span>.count.clear();
     }
-    <span class="kw">fn</span> <span class="ident">full_len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">len</span>() }
-    <span class="kw">fn</span> <span class="ident">start</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">start</span> }
-    <span class="kw">fn</span> <span class="ident">end</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> { <span class="self">self</span>.<span class="ident">end</span> }
+    <span class="kw">fn </span>full_len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize { <span class="self">self</span>.buf.len() }
+    <span class="kw">fn </span>start(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize { <span class="self">self</span>.start }
+    <span class="kw">fn </span>end(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize { <span class="self">self</span>.end }
 }
 
-<span class="doccomment">/// 区間 `start..end` に含まれる整数の集合と、`x` のみからなる</span>
-<span class="doccomment">/// 集合との和集合の要素数を返す。</span>
-<span class="kw">impl</span> <span class="ident">SliceHash</span> <span class="kw">for</span> <span class="ident">RangeDistinct</span> {
-    <span class="kw">type</span> <span class="ident">Salt</span> <span class="op">=</span> <span class="ident">i32</span>;
-    <span class="kw">type</span> <span class="ident">Hashed</span> <span class="op">=</span> <span class="ident">usize</span>;
-    <span class="kw">fn</span> <span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">x</span>: <span class="ident">i32</span>) -&gt; <span class="ident">usize</span> {
-        <span class="self">self</span>.<span class="ident">count</span>.<span class="ident">len</span>()
-            <span class="op">+</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">count</span>.<span class="ident">contains_key</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>) { <span class="number">0</span> } <span class="kw">else</span> { <span class="number">1</span> }
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">ExpandBack</span> <span class="kw">for</span> <span class="ident">RangeDistinct</span> {
-    <span class="kw">fn</span> <span class="ident">expand_back</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="kw">let</span> <span class="ident">k</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="self">self</span>.<span class="ident">end</span>];
-        <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">count</span>.<span class="ident">entry</span>(<span class="ident">k</span>).<span class="ident">or_insert</span>(<span class="number">0</span>) <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-        <span class="self">self</span>.<span class="ident">end</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+<span class="doccomment">/// 区間 `start..end` に含まれる整数の集合と、`x` のみからなる
+/// 集合との和集合の要素数を返す。
+</span><span class="kw">impl </span>SliceHash <span class="kw">for </span>RangeDistinct {
+    <span class="kw">type </span>Salt = i32;
+    <span class="kw">type </span>Hashed = usize;
+    <span class="kw">fn </span>hash(<span class="kw-2">&amp;</span><span class="self">self</span>, x: i32) -&gt; usize {
+        <span class="self">self</span>.count.len()
+            + <span class="kw">if </span><span class="self">self</span>.count.contains_key(<span class="kw-2">&amp;</span>x) { <span class="number">0 </span>} <span class="kw">else </span>{ <span class="number">1 </span>}
     }
 }
 
-<span class="kw">impl</span> <span class="ident">ExpandFront</span> <span class="kw">for</span> <span class="ident">RangeDistinct</span> {
-    <span class="kw">fn</span> <span class="ident">expand_front</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="self">self</span>.<span class="ident">start</span> <span class="op">-</span><span class="op">=</span> <span class="number">1</span>;
-        <span class="kw">let</span> <span class="ident">k</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="self">self</span>.<span class="ident">start</span>];
-        <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">count</span>.<span class="ident">entry</span>(<span class="ident">k</span>).<span class="ident">or_insert</span>(<span class="number">0</span>) <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+<span class="kw">impl </span>ExpandBack <span class="kw">for </span>RangeDistinct {
+    <span class="kw">fn </span>expand_back(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="kw">let </span>k = <span class="self">self</span>.buf[<span class="self">self</span>.end];
+        <span class="kw-2">*</span><span class="self">self</span>.count.entry(k).or_insert(<span class="number">0</span>) += <span class="number">1</span>;
+        <span class="self">self</span>.end += <span class="number">1</span>;
     }
 }
 
-<span class="kw">impl</span> <span class="ident">ShrinkBack</span> <span class="kw">for</span> <span class="ident">RangeDistinct</span> {
-    <span class="kw">fn</span> <span class="ident">shrink_back</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="self">self</span>.<span class="ident">end</span> <span class="op">-</span><span class="op">=</span> <span class="number">1</span>;
-        <span class="kw">let</span> <span class="ident">k</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="self">self</span>.<span class="ident">end</span>];
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">count</span>.<span class="ident">get_mut</span>(<span class="kw-2">&amp;</span><span class="ident">k</span>) {
-            <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="kw">if</span> <span class="ident">x</span> <span class="op">==</span> <span class="kw-2">&amp;</span><span class="number">1</span> =&gt; { <span class="self">self</span>.<span class="ident">count</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">k</span>); }
-            <span class="prelude-val">Some</span>(<span class="ident">x</span>) =&gt; <span class="kw-2">*</span><span class="ident">x</span> <span class="op">-</span><span class="op">=</span> <span class="number">1</span>,
-            <span class="prelude-val">None</span> =&gt; <span class="macro">unreachable!</span>(),
+<span class="kw">impl </span>ExpandFront <span class="kw">for </span>RangeDistinct {
+    <span class="kw">fn </span>expand_front(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="self">self</span>.start -= <span class="number">1</span>;
+        <span class="kw">let </span>k = <span class="self">self</span>.buf[<span class="self">self</span>.start];
+        <span class="kw-2">*</span><span class="self">self</span>.count.entry(k).or_insert(<span class="number">0</span>) += <span class="number">1</span>;
+    }
+}
+
+<span class="kw">impl </span>ShrinkBack <span class="kw">for </span>RangeDistinct {
+    <span class="kw">fn </span>shrink_back(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="self">self</span>.end -= <span class="number">1</span>;
+        <span class="kw">let </span>k = <span class="self">self</span>.buf[<span class="self">self</span>.end];
+        <span class="kw">match </span><span class="self">self</span>.count.get_mut(<span class="kw-2">&amp;</span>k) {
+            <span class="prelude-val">Some</span>(x) <span class="kw">if </span>x == <span class="kw-2">&amp;</span><span class="number">1 </span>=&gt; { <span class="self">self</span>.count.remove(<span class="kw-2">&amp;</span>k); }
+            <span class="prelude-val">Some</span>(x) =&gt; <span class="kw-2">*</span>x -= <span class="number">1</span>,
+            <span class="prelude-val">None </span>=&gt; <span class="macro">unreachable!</span>(),
         }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">ShrinkFront</span> <span class="kw">for</span> <span class="ident">RangeDistinct</span> {
-    <span class="kw">fn</span> <span class="ident">shrink_front</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="kw">let</span> <span class="ident">k</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">buf</span>[<span class="self">self</span>.<span class="ident">start</span>];
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">count</span>.<span class="ident">get_mut</span>(<span class="kw-2">&amp;</span><span class="ident">k</span>) {
-            <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="kw">if</span> <span class="ident">x</span> <span class="op">==</span> <span class="kw-2">&amp;</span><span class="number">1</span> =&gt; { <span class="self">self</span>.<span class="ident">count</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">k</span>); }
-            <span class="prelude-val">Some</span>(<span class="ident">x</span>) =&gt; <span class="kw-2">*</span><span class="ident">x</span> <span class="op">-</span><span class="op">=</span> <span class="number">1</span>,
-            <span class="prelude-val">None</span> =&gt; <span class="macro">unreachable!</span>(),
+<span class="kw">impl </span>ShrinkFront <span class="kw">for </span>RangeDistinct {
+    <span class="kw">fn </span>shrink_front(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="kw">let </span>k = <span class="self">self</span>.buf[<span class="self">self</span>.start];
+        <span class="kw">match </span><span class="self">self</span>.count.get_mut(<span class="kw-2">&amp;</span>k) {
+            <span class="prelude-val">Some</span>(x) <span class="kw">if </span>x == <span class="kw-2">&amp;</span><span class="number">1 </span>=&gt; { <span class="self">self</span>.count.remove(<span class="kw-2">&amp;</span>k); }
+            <span class="prelude-val">Some</span>(x) =&gt; <span class="kw-2">*</span>x -= <span class="number">1</span>,
+            <span class="prelude-val">None </span>=&gt; <span class="macro">unreachable!</span>(),
         }
-        <span class="self">self</span>.<span class="ident">start</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+        <span class="self">self</span>.start += <span class="number">1</span>;
     }
 }
 
-<span class="kw">let</span> <span class="ident">rd</span>: <span class="ident">RangeDistinct</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">6</span>].<span class="ident">into</span>();
-<span class="kw">let</span> <span class="ident">qs</span> <span class="op">=</span> <span class="macro">vec!</span>[(<span class="number">0</span>..<span class="number">4</span>, <span class="number">1</span>), (<span class="number">0</span>..<span class="number">4</span>, <span class="number">2</span>), (<span class="number">2</span>..<span class="number">6</span>, <span class="number">1</span>), (<span class="number">3</span>..<span class="number">9</span>, <span class="number">2</span>)];
-<span class="macro">assert_eq!</span>(<span class="ident">mo</span>(<span class="ident">rd</span>, <span class="ident">qs</span>, <span class="prelude-val">Some</span>(<span class="number">4</span>)), <span class="macro">vec!</span>[<span class="number">2</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">6</span>]);</code></pre></div>
-</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="nekolib" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0 (4b91a6ea7 2022-08-08)" ></div>
-</body></html>
+<span class="kw">let </span>rd: RangeDistinct = <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">6</span>].into();
+<span class="kw">let </span>qs = <span class="macro">vec!</span>[(<span class="number">0</span>..<span class="number">4</span>, <span class="number">1</span>), (<span class="number">0</span>..<span class="number">4</span>, <span class="number">2</span>), (<span class="number">2</span>..<span class="number">6</span>, <span class="number">1</span>), (<span class="number">3</span>..<span class="number">9</span>, <span class="number">2</span>)];
+<span class="macro">assert_eq!</span>(mo(rd, qs, <span class="prelude-val">Some</span>(<span class="number">4</span>)), <span class="macro">vec!</span>[<span class="number">2</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">6</span>]);</code></pre></div>
+</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="nekolib" data-themes="" data-resource-suffix="" data-rustdoc-version="1.68.2 (9eb3afe9e 2023-03-27)" data-search-js="search-98d53477a794af0b.js" data-settings-js="settings-c3c521c753752a1a.js" data-settings-css="settings-08ddfdda51b8ee2e.css" ></div></body></html>

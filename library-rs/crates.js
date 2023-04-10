@@ -1,1 +1,1 @@
-window.ALL_CRATES = ["nekolib","nekolib_verify"];
+window.ALL_CRATES = ["nekolib","nekolib_notes","nekolib_verify"];
