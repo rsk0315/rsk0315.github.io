@@ -289,6 +289,10 @@
 <a href="#200" id="200">200</a>
 <a href="#201" id="201">201</a>
 <a href="#202" id="202">202</a>
+<a href="#203" id="203">203</a>
+<a href="#204" id="204">204</a>
+<a href="#205" id="205">205</a>
+<a href="#206" id="206">206</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::ops::{Add, AddAssign, Mul, Neg};
 
 <span class="comment">// https://atcoder.jp/contests/abc294/editorial/6017
@@ -456,9 +460,7 @@
 }
 
 <span class="kw">impl</span>&lt;I: SbInt&gt; Fraction&lt;I&gt; {
-    <span class="kw">fn </span>is_deeper(<span class="self">self</span>, bound: I) -&gt; bool {
-        <span class="self">self</span>.<span class="number">0</span>.abs() &gt; bound || <span class="self">self</span>.<span class="number">1 </span>&gt; bound
-    }
+    <span class="kw">fn </span>is_deeper(<span class="self">self</span>, bound: I) -&gt; bool { <span class="self">self</span>.<span class="number">1</span>.abs() &gt; bound }
     <span class="kw">fn </span>neg(<span class="self">self</span>) -&gt; <span class="self">Self </span>{ <span class="self">Self</span>(<span class="self">self</span>.<span class="number">0</span>.neg(), <span class="self">self</span>.<span class="number">1</span>) }
     <span class="kw">fn </span>into_inner(<span class="self">self</span>) -&gt; (I, I) { (<span class="self">self</span>.<span class="number">0</span>, <span class="self">self</span>.<span class="number">1</span>) }
 }
@@ -466,13 +468,13 @@
 <span class="attr">#[test]
 </span><span class="kw">fn </span>sanity_check() {
     <span class="kw">let </span>sqrt3 = <span class="number">5000_u64</span>.fraction_bisect(|x, y| x * x &lt;= <span class="number">3 </span>* y * y);
-    <span class="macro">assert_eq!</span>(sqrt3, ((<span class="number">3691</span>, <span class="number">2131</span>), (<span class="number">1351</span>, <span class="number">780</span>)));
+    <span class="macro">assert_eq!</span>(sqrt3, ((<span class="number">3691</span>, <span class="number">2131</span>), (<span class="number">5042</span>, <span class="number">2911</span>)));
 
     <span class="macro">assert_eq!</span>(<span class="number">10_u64</span>.fraction_bisect(|<span class="kw">_</span>, <span class="kw">_</span>| <span class="bool-val">false</span>), ((<span class="number">0</span>, <span class="number">1</span>), (<span class="number">0</span>, <span class="number">1</span>)));
     <span class="macro">assert_eq!</span>(<span class="number">10_i64</span>.fraction_bisect(|<span class="kw">_</span>, <span class="kw">_</span>| <span class="bool-val">false</span>), ((-<span class="number">1</span>, <span class="number">0</span>), (-<span class="number">1</span>, <span class="number">0</span>)));
 
     <span class="kw">let </span>neg_sqrt3 = <span class="number">5000_i64</span>.fraction_bisect(|x, y| x &lt; <span class="number">0 </span>&amp;&amp; x * x &gt; <span class="number">3 </span>* y * y);
-    <span class="macro">assert_eq!</span>(neg_sqrt3, ((-<span class="number">1351</span>, <span class="number">780</span>), (-<span class="number">3691</span>, <span class="number">2131</span>)));
+    <span class="macro">assert_eq!</span>(neg_sqrt3, ((-<span class="number">5042</span>, <span class="number">2911</span>), (-<span class="number">3691</span>, <span class="number">2131</span>)));
 
     <span class="kw">let </span>lt = <span class="number">5000_i64</span>.fraction_bisect(|x, y| <span class="number">5 </span>* x &lt; <span class="number">2 </span>* y);
     <span class="macro">assert_eq!</span>(lt, ((<span class="number">1999</span>, <span class="number">4998</span>), (<span class="number">2</span>, <span class="number">5</span>)));
@@ -486,10 +488,16 @@
     <span class="kw">let </span>sqrt4 = <span class="number">10_u128</span>.pow(<span class="number">18</span>).fraction_bisect(|x, y| x * x &lt;= <span class="number">4 </span>* y * y);
 
     <span class="macro">assert_eq!</span>(sqrt3.<span class="number">0</span>, (<span class="number">734231055024833855</span>, <span class="number">423908497265970753</span>));
-    <span class="macro">assert_eq!</span>(sqrt3.<span class="number">1</span>, (<span class="number">268747218386539202</span>, <span class="number">155161278879431551</span>));
+    <span class="macro">assert_eq!</span>(sqrt3.<span class="number">1</span>, (<span class="number">1002978273411373057</span>, <span class="number">579069776145402304</span>));
 
     <span class="macro">assert_eq!</span>(sqrt4.<span class="number">0</span>, (<span class="number">2</span>, <span class="number">1</span>));
     <span class="macro">assert_eq!</span>(sqrt4.<span class="number">1</span>, (<span class="number">999999999999999999</span>, <span class="number">499999999999999999</span>));
+}
+
+<span class="attr">#[test]
+</span><span class="kw">fn </span>improper_fraction() {
+    <span class="kw">let </span>x = <span class="number">6_u32</span>.fraction_bisect(|x, y| x * <span class="number">5 </span>&lt;= y * <span class="number">13</span>);
+    <span class="macro">assert_eq!</span>(x, ((<span class="number">13</span>, <span class="number">5</span>), (<span class="number">8</span>, <span class="number">3</span>)));
 }
 </code></pre></div>
 </section></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="nekolib" data-themes="" data-resource-suffix="" data-rustdoc-version="1.68.2 (9eb3afe9e 2023-03-27)" data-search-js="search-98d53477a794af0b.js" data-settings-js="settings-c3c521c753752a1a.js" data-settings-css="settings-08ddfdda51b8ee2e.css" ></div></body></html>
