@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["RemovableHeap","削除可能ヒープ。"]]};
+window.SIDEBAR_ITEMS = {"struct":["RemovableHeap"]};

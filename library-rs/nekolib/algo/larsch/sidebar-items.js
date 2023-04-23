@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["Larsch","LARSCH algorithm。"]]};
+window.SIDEBAR_ITEMS = {"struct":["Larsch"]};

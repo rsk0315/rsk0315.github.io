@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":[["rle",""]],"trait":[["Rle",""],["RleBy",""],["RleByKey",""]]};
+window.SIDEBAR_ITEMS = {"mod":["rle"],"trait":["Rle","RleBy","RleByKey"]};

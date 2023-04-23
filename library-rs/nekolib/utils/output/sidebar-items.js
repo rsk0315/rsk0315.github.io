@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["PerLine","形式つき出力（改行区切り）。"],["SpaceSep","形式つき出力（スペース区切り）。"],["StrSep","形式つき出力（任意文字列区切り）。"]]};
+window.SIDEBAR_ITEMS = {"struct":["PerLine","SpaceSep","StrSep"]};

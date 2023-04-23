@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["OpAffineOnOpAddCount",""]]};
+window.SIDEBAR_ITEMS = {"struct":["OpAffineOnOpAddCount"]};

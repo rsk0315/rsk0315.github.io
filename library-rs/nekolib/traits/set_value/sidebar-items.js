@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":[["SetValue","値の代入ができることを示す。"]]};
+window.SIDEBAR_ITEMS = {"trait":["SetValue"]};

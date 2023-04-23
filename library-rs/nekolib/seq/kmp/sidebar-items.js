@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["KmpSearcher","KMP 法 (Knuth–Morris–Pratt algorithm)。"],["Occurrences",""]]};
+window.SIDEBAR_ITEMS = {"struct":["KmpSearcher","Occurrences"]};

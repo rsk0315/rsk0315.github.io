@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["FoldableQueue","fold 可能キュー。"]]};
+window.SIDEBAR_ITEMS = {"struct":["FoldableQueue"]};

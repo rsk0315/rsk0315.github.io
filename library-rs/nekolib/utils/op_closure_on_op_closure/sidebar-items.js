@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["OpClosureOnOpClosure",""]]};
+window.SIDEBAR_ITEMS = {"struct":["OpClosureOnOpClosure"]};

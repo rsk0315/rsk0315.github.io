@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["ModFactorialBinom","法 $p$ での二項係数。"]]};
+window.SIDEBAR_ITEMS = {"struct":["ModFactorialBinom"]};

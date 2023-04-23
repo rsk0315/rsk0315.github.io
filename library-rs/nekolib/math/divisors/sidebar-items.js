@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["DivisorsStruct",""]],"trait":[["Divisors","約数列挙。"]]};
+window.SIDEBAR_ITEMS = {"struct":["DivisorsStruct"],"trait":["Divisors"]};

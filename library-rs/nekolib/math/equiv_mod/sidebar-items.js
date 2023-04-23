@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":[["EquivMod","Chinese remaindering。"],["EquivModIter","Chinese remaindering。"]]};
+window.SIDEBAR_ITEMS = {"trait":["EquivMod","EquivModIter"]};

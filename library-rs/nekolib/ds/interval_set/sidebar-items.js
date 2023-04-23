@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["IntervalSet","区間の集合。"]]};
+window.SIDEBAR_ITEMS = {"struct":["IntervalSet"]};

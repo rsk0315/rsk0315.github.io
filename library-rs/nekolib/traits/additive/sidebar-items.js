@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":[["AddAssoc","加法が結合法則を満たすことを示す。"],["AddComm","加法が交換法則を満たすことを示す。"],["Zero","加法の単位元 $0$ を定義する。"]]};
+window.SIDEBAR_ITEMS = {"trait":["AddAssoc","AddComm","Zero"]};

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["BitSet","Bit set。"],["Indices",""],["Words",""]]};
+window.SIDEBAR_ITEMS = {"struct":["BitSet","Indices","Words"]};

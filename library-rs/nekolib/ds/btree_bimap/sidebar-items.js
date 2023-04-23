@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["BTreeBimap","双方向連想配列。"]]};
+window.SIDEBAR_ITEMS = {"struct":["BTreeBimap"]};

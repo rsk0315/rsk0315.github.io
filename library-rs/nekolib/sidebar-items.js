@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"macro":[["e","デバッグ用マクロ。"],["new_monoid",""],["rand_gen","乱数生成マクロ。"],["rand_gen_builder",""]],"mod":[["algo","アルゴリズムたち。"],["ds","データ構造たち。"],["graph","グラフに関するものたち。"],["math","数学関連のアルゴリズムたち。"],["seq","文字列アルゴリズムたち。"],["traits","トレイトたち。"],["utils","便利ちゃんたち。"]]};
+window.SIDEBAR_ITEMS = {"macro":["e","new_monoid","rand_gen","rand_gen_builder"],"mod":["algo","ds","graph","math","seq","traits","utils"]};

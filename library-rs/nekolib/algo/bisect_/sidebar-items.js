@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":[["bisect","二分探索で境界を探す。"],["bisect_slice","二分探索で境界を探す。"]]};
+window.SIDEBAR_ITEMS = {"fn":["bisect","bisect_slice"]};

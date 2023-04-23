@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":[["ModTetration","tetration。"]]};
+window.SIDEBAR_ITEMS = {"trait":["ModTetration"]};

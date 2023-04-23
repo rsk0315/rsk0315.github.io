@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":[["FindNth","$n$ 番目の出現位置クエリ。"]]};
+window.SIDEBAR_ITEMS = {"trait":["FindNth"]};

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":[["Act","区間作用を行う。"]]};
+window.SIDEBAR_ITEMS = {"trait":["Act"]};

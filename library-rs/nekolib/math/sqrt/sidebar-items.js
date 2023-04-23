@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":[["Sqrt","平方根。"]]};
+window.SIDEBAR_ITEMS = {"trait":["Sqrt"]};

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["Interval",""],["IntervalMap","区間から値への対応づけ。"]]};
+window.SIDEBAR_ITEMS = {"struct":["Interval","IntervalMap"]};

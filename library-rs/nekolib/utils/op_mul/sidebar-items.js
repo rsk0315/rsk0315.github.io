@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":[["OpMul","積を返す演算を持つ。"]]};
+window.SIDEBAR_ITEMS = {"enum":["OpMul"]};

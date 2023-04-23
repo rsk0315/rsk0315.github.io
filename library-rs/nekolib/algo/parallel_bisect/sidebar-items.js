@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":[["parallel_bisect","並列二分探索を行う。"]]};
+window.SIDEBAR_ITEMS = {"fn":["parallel_bisect"]};

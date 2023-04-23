@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":[["OpGcd",""]]};
+window.SIDEBAR_ITEMS = {"enum":["OpGcd"]};

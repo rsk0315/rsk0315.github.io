@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["SieveN2PlusNPlus1","$n^2+n+1$ 型素数の篩。"]]};
+window.SIDEBAR_ITEMS = {"struct":["SieveN2PlusNPlus1"]};

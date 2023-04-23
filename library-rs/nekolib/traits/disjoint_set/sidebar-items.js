@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":[["DisjointSet","共通要素を持たない集合族で、併合が可能なもの。"]]};
+window.SIDEBAR_ITEMS = {"trait":["DisjointSet"]};

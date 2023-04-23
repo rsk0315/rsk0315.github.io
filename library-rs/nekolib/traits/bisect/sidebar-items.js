@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":[["Bisect","二分探索。"]]};
+window.SIDEBAR_ITEMS = {"trait":["Bisect"]};

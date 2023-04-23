@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["SegmentedFactorSieve",""]]};
+window.SIDEBAR_ITEMS = {"struct":["SegmentedFactorSieve"]};

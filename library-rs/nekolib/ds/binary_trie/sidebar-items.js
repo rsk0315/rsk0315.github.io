@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["BinaryTrie",""],["Bits",""],["Iter",""]],"trait":[["BinaryInt",""]]};
+window.SIDEBAR_ITEMS = {"struct":["BinaryTrie","Bits","Iter"],"trait":["BinaryInt"]};

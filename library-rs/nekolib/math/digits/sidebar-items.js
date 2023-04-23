@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["DigitsIter",""]],"trait":[["Digits",""]]};
+window.SIDEBAR_ITEMS = {"struct":["DigitsIter"],"trait":["Digits"]};

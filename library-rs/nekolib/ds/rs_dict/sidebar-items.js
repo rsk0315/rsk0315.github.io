@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["RsDict","rank/select 辞書。"]]};
+window.SIDEBAR_ITEMS = {"struct":["RsDict"]};

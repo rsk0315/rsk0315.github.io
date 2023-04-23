@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":[["majority","Boyer–Moore’s majority vote algorithm。"]]};
+window.SIDEBAR_ITEMS = {"fn":["majority"]};

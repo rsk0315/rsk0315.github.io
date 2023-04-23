@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":[["from_root",""]]};
+window.SIDEBAR_ITEMS = {"fn":["from_root"]};

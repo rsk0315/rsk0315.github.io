@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["WaveletMatrix","wavelet matrix。"]],"trait":[["WmInt",""]]};
+window.SIDEBAR_ITEMS = {"struct":["WaveletMatrix"],"trait":["WmInt"]};

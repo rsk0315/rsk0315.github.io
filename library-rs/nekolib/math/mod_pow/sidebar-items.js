@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":[["ModPow","冪乗。"]]};
+window.SIDEBAR_ITEMS = {"trait":["ModPow"]};

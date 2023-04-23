@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":[["Max","最大元を持つ。"]]};
+window.SIDEBAR_ITEMS = {"trait":["Max"]};

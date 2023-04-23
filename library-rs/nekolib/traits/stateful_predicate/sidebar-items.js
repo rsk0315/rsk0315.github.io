@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":[["StatefulPred",""]]};
+window.SIDEBAR_ITEMS = {"trait":["StatefulPred"]};

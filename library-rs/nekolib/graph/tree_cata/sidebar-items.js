@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["TreeCata","全方位木 DP。"]]};
+window.SIDEBAR_ITEMS = {"struct":["TreeCata"]};

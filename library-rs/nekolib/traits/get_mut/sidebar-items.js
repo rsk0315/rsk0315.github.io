@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":[["GetMut",""]]};
+window.SIDEBAR_ITEMS = {"trait":["GetMut"]};

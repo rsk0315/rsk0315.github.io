@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":[["ModAckermann","Ackermann 関数。"]]};
+window.SIDEBAR_ITEMS = {"trait":["ModAckermann"]};

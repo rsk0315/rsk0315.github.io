@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["CuckooHashMap","Cuckoo hashing による連想配列。"]]};
+window.SIDEBAR_ITEMS = {"struct":["CuckooHashMap"]};

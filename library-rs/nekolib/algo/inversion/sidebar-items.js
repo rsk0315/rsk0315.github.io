@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":[["Inversion",""]]};
+window.SIDEBAR_ITEMS = {"trait":["Inversion"]};

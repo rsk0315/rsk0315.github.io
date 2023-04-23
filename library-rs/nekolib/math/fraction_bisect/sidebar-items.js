@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":[["FractionBisect",""],["SbInt",""]]};
+window.SIDEBAR_ITEMS = {"trait":["FractionBisect","SbInt"]};

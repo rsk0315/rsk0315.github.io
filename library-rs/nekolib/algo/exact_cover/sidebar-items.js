@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["ExactCover","Exact cover。"]]};
+window.SIDEBAR_ITEMS = {"struct":["ExactCover"]};

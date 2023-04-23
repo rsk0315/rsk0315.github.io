@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":[["Lcm","最小公倍数。"]]};
+window.SIDEBAR_ITEMS = {"trait":["Lcm"]};

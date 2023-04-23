@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["VecSegtree","`Vec` ベースのセグ木。"]]};
+window.SIDEBAR_ITEMS = {"struct":["VecSegtree"]};

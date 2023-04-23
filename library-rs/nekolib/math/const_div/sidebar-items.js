@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["ConstDiv","定数除算。"],["ConstDiv2","定数除算。"]]};
+window.SIDEBAR_ITEMS = {"struct":["ConstDiv","ConstDiv2"]};

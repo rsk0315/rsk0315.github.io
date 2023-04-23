@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["BicrementalMedian","中央値の管理。"]]};
+window.SIDEBAR_ITEMS = {"struct":["BicrementalMedian"]};

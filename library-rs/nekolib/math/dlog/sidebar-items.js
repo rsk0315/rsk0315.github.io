@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":[["DLog","離散対数。"]]};
+window.SIDEBAR_ITEMS = {"trait":["DLog"]};

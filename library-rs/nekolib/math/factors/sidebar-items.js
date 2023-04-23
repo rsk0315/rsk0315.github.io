@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["FactorsStruct",""]],"trait":[["Factors","素因数分解。"]]};
+window.SIDEBAR_ITEMS = {"struct":["FactorsStruct"],"trait":["Factors"]};

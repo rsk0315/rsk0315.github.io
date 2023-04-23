@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":[["bounds_within","区間を配列サイズに収まるように丸める。"],["check_bounds","境界チェックを行う。"],["check_bounds_range","境界チェックを行う。"]]};
+window.SIDEBAR_ITEMS = {"fn":["bounds_within","check_bounds","check_bounds_range"]};

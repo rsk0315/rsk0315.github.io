@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":[["mod_recip_table_prime","素数 $m$ を法とした逆元のテーブル。"]]};
+window.SIDEBAR_ITEMS = {"fn":["mod_recip_table_prime"]};

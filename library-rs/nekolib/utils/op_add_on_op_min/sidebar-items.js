@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["OpAddOnOpMin",""]]};
+window.SIDEBAR_ITEMS = {"struct":["OpAddOnOpMin"]};

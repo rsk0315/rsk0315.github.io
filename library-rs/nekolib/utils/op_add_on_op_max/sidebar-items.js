@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["OpAddOnOpMax",""]]};
+window.SIDEBAR_ITEMS = {"struct":["OpAddOnOpMax"]};

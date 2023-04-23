@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":[["OpRollHash","文字列連結をローリングハッシュで行う演算を持つ。"]]};
+window.SIDEBAR_ITEMS = {"enum":["OpRollHash"]};

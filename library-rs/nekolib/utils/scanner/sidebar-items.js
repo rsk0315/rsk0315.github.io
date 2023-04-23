@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["ScanTupleError",""],["Scanner","スキャナ。"]],"trait":[["Scan",""]]};
+window.SIDEBAR_ITEMS = {"struct":["ScanTupleError","Scanner"],"trait":["Scan"]};

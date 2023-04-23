@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":[["GroupBy","イテレータのグルーピング。"]]};
+window.SIDEBAR_ITEMS = {"trait":["GroupBy"]};

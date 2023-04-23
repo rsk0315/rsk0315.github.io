@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":[["FoldBisect","左端を固定したときの境界を求める。"],["FoldBisectRev","右端を固定したときの境界を求める。"]]};
+window.SIDEBAR_ITEMS = {"trait":["FoldBisect","FoldBisectRev"]};

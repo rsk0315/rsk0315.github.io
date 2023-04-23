@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":[["GcdRecip","最大公約数と逆元。"]]};
+window.SIDEBAR_ITEMS = {"trait":["GcdRecip"]};
