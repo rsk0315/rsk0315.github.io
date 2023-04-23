@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["range_add_on_the_fly"]};
+window.SIDEBAR_ITEMS = {"mod":["debug","range_add_on_the_fly"]};

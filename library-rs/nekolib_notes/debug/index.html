@@ -1,0 +1,361 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Custom Judge"><title>nekolib_notes::debug - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c4dbdcde0fbd8430.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-db279b6232be9c13.css"><link rel="stylesheet" disabled href="../../static.files/dark-cf923f49f397b216.css"><link rel="stylesheet" disabled href="../../static.files/ayu-be46fdc453a55015.css"><script src="../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\[", right: "\\]", display: true},
+                {left: "$", right: "$", display: false},
+                {left: "\\(", right: "\\)", display: false},
+            ],
+            macros: {
+                "\\halfco": "[#1, #2)",
+                "\\floor": "\\lfloor#1\\rfloor",
+                "\\ceil": "\\lceil#1\\rceil",
+                "\\Floor": "\\left\\lfloor#1\\right\\rfloor",
+                "\\Ceil": "\\left\\lceil#1\\right\\rceil",
+                "\\arsinh": "\\operatorname{arsinh}",
+                "\\arcosh": "\\operatorname{arcosh}",
+                "\\artanh": "\\operatorname{artanh}",
+                "\\sgn": "\\operatorname{sgn}",
+                "\\erf": "\\operatorname{erf}",
+                "\\round": "\\lfloor#1\\rceil",
+                "\\Round": "\\left\\lfloor#1\\right\\rceil",
+                "\\DP": "\\mathrm{dp}",
+                "\\xgets": "\\xleftarrow{#1}",
+                "\\For": "\\text{\\textbf{for} }#1\\text{ \\textbf{do}}",
+            },
+        });
+    });
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet">
+
+<style>
+  .ferris-container {
+      position: absolute;
+      z-index: 9999;
+      width: 4.5em;
+      right: 5px;
+      top: 10px;
+  }
+</style>
+
+<script>
+  let ferrisTypes = [
+      {
+          attr: 'compile_fail',
+          title: 'This code does not compile!',
+          src: 'https://raw.githubusercontent.com/rust-lang/book/b54090a99ec7c4b46a5203a9c927fdbc311bb1f5/2018-edition/src/img/ferris/does_not_compile.svg',
+      },
+      {
+          attr: 'should_panic',
+          title: 'This code panics!',
+          src: 'https://raw.githubusercontent.com/rust-lang/book/b54090a99ec7c4b46a5203a9c927fdbc311bb1f5/2018-edition/src/img/ferris/panics.svg',
+      },
+  ];  
+
+  document.addEventListener('DOMContentLoaded', () => {
+      for (let ferrisType of ferrisTypes) {
+          attachFerrises(ferrisType);
+      }
+  });
+
+  function attachFerrises(type) {
+      let elements = document.getElementsByClassName(type.attr);
+      for (let codeBlock of elements) {
+          if (codeBlock.tagName === 'PRE') {
+              attachFerris(codeBlock, type);
+          }
+      }
+  }
+
+  function attachFerris(element, type) {
+      let div = document.createElement('div');
+      div.className = 'ferris-container';
+
+      let img = document.createElement('img');
+      img.setAttribute('src', type.src);
+      img.setAttribute('title', type.title);
+      img.className = 'ferris';
+
+      div.appendChild(img);
+
+      element.parentElement.insertBefore(div, element);
+  }
+</script>
+
+</head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="logo-container" href="../../nekolib_notes/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><h2></h2></nav><nav class="sidebar"><a class="logo-container" href="../../nekolib_notes/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><h2 class="location"><a href="#">Module debug</a></h2><div class="sidebar-elems"></div></nav><main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Module <a href="../index.html">nekolib_notes</a>::<wbr><a class="mod" href="#">debug</a><button id="copy-path" title="Copy item path to clipboard"><img src="../../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="srclink" href="../../src/nekolib_notes/debug.rs.html#1">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h3 id="custom-judge"><a href="#custom-judge">Custom Judge</a></h3>
+<p>入出力フォーマットは正しいことを仮定。</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::fs::File;
+<span class="kw">use </span>std::io::Read;
+
+<span class="kw">use </span>proconio::{input, source::auto::AutoSource};
+
+<span class="comment">// specify judge command instead of default diff judge. The given command
+// (e.g. `./judge`) will be called as
+// ```
+// $ ./judge input.txt actual-output.txt expected-output.txt
+// ```
+// and should return the result with the exit code of its `main` function.
+
+</span><span class="kw">fn </span>main() {
+    <span class="kw">let </span>args: Vec&lt;<span class="kw">_</span>&gt; = std::env::args().collect();
+    <span class="kw">let </span>input = read(<span class="kw-2">&amp;</span>args[<span class="number">1</span>]);
+    <span class="kw">let </span>actual = read(<span class="kw-2">&amp;</span>args[<span class="number">2</span>]);
+    <span class="kw">let </span>expected = read(<span class="kw-2">&amp;</span>args[<span class="number">3</span>]);
+
+    <span class="kw">let </span><span class="kw-2">mut </span>input = AutoSource::from(input.as_ref());
+    <span class="kw">let </span><span class="kw-2">mut </span>actual = AutoSource::from(actual.as_ref());
+    <span class="kw">let </span><span class="kw-2">mut </span>expected = AutoSource::from(expected.as_ref());
+
+    <span class="macro">input! </span>{
+        from <span class="kw-2">&amp;mut </span>input,
+    }
+    <span class="macro">input! </span>{
+        from <span class="kw-2">&amp;mut </span>actual,
+    }
+    <span class="macro">input! </span>{
+        from <span class="kw-2">&amp;mut </span>expected,
+    }
+
+    <span class="macro">assert!</span>(<span class="bool-val">true</span>);
+}
+
+<span class="kw">fn </span>read(path: <span class="kw-2">&amp;</span>str) -&gt; String {
+    <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="string">&quot;&quot;</span>.to_owned();
+    File::open(path).unwrap().read_to_string(<span class="kw-2">&amp;mut </span>res).unwrap();
+    res
+}</code></pre></div>
+<h3 id="generator"><a href="#generator">Generator</a></h3><div class="example-wrap"><pre class="language-toml"><code>rand = &quot;0.8.5&quot;
+rand_chacha = &quot;0.3.1&quot;
+</code></pre></div>
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">use </span>rand::SeedableRng;
+<span class="kw">use </span>rand_chacha::ChaCha20Rng;
+
+<span class="kw">use </span>nekolib::rand_gen;
+<span class="kw">use </span>nekolib::utils::SpaceSep;
+<span class="kw">use </span>nekolib::utils::rand_gen_macro::<span class="kw-2">*</span>;
+
+<span class="kw">fn </span>main() {
+    <span class="macro">rand_gen! </span>{
+        rng: ChaCha20Rng;
+    
+        n <span class="kw">in </span><span class="number">1_usize</span>..=<span class="number">10</span>;
+        a <span class="kw">in </span>[<span class="number">1_i64</span>..=<span class="number">100</span>; n];
+    }
+    
+    <span class="macro">println!</span>(<span class="string">&quot;{n}&quot;</span>);
+    <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, SpaceSep(<span class="kw-2">&amp;</span>a));
+}</code></pre></div>
+<h3 id="reactive"><a href="#reactive">Reactive</a></h3>
+<p><a href="https://rsk0315.hatenablog.com/entry/2022/09/19/200454">https://rsk0315.hatenablog.com/entry/2022/09/19/200454</a></p>
+<div class="example-wrap"><pre class="language-sh"><code>% sniff_reactive ./solution -- ./judge testcase.in 
+</code></pre></div><h4 id="reactive-runner"><a href="#reactive-runner">Reactive Runner</a></h4><div class="example-wrap"><pre class="language-python"><code>import asyncio
+import os
+import sys
+
+[CONTESTANT, JUDGE] = range(2)
+COLUMNS = os.get_terminal_size().columns
+
+CONTMARK = &quot;\x1b[38;5;245m↵\x1b[m&quot;
+ELLIMARK = &quot;\x1b[38;5;245m…\x1b[m&quot;
+
+CROSS_TOP = &quot;┌┬┐&quot;
+CROSS_INNER = &quot;├┼┤&quot;
+CROSS_BOTTOM = &quot;└┴┘&quot;
+
+
+def output(left, right, *, preleft=&quot;&quot;, preright=&quot;&quot;, cross=CROSS_INNER):
+    wl = COLUMNS // 2 - 4
+    wr = (COLUMNS - 1) // 2 - 4
+
+    if not left and not right:
+        print(f&#39; {cross[0]}─{&quot;─&quot; * wl}─{cross[1]}─{&quot;─&quot; * wr}─{cross[2]}&#39;)
+        return
+
+    if left and right:
+        preleft = preright = &quot;\x1b[1;37m&quot;
+
+    postleft = &quot;\x1b[m&quot; if preleft else &quot;&quot;
+    postright = &quot;\x1b[m&quot; if preright else &quot;&quot;
+
+    # print(f&quot; |{preleft} {left:{wl}} {postleft}|{preright} {right:{wr}} {postright}|&quot;)
+
+    if wl == 0 or wr == 0 or (len(left) &lt;= wl and len(right) &lt;= wr):
+        print(
+            f&quot; │{preleft} {left:{wl}} {postleft}│{preright} {right:{wr}} {postright}│&quot;
+        )
+        return
+
+    offl = 0
+    offr = 0
+    chunkl = left[offl : offl + wl]
+    chunkr = right[offr : offr + wr]
+    elll = &quot; &quot;
+    ellr = &quot; &quot;
+    while chunkl or chunkr:
+        contl = CONTMARK if left[offl + wl : offl + wl + 1] else &quot; &quot;
+        contr = CONTMARK if right[offr + wr : offr + wr + 1] else &quot; &quot;
+        print(
+            f&quot; │{preleft}{elll}{chunkl:{wl}}{contl}{postleft}│{preright}{ellr}{chunkr:{wr}}{contr}{postright}│&quot;
+        )
+        offl += wl
+        offr += wr
+        chunkl = left[offl : offl + wl]
+        chunkr = right[offr : offr + wr]
+        elll = ELLIMARK if chunkl else &quot; &quot;
+        ellr = ELLIMARK if chunkr else &quot; &quot;
+
+
+async def listen(read, write, who, proc):
+    while proc.returncode is None:
+        content = await asyncio.to_thread(read.readline)
+        if content:
+            contents = [&quot;&quot;, &quot;&quot;]
+            contents[who] = content.rstrip(&quot;\n&quot;)
+            output(*contents)
+            print(content, end=&quot;&quot;, flush=True, file=write)
+        else:
+            # 待ち続けるのを防ぐ
+            write.close()
+            break
+
+
+async def sniff(c_read, j_read, c_write, j_write, c_proc, j_proc):
+    with open(c_read, &quot;w&quot;) as w_c_read:
+        with open(j_read, &quot;w&quot;) as w_j_read:
+            with open(c_write, &quot;r&quot;) as r_c_write:
+                with open(j_write, &quot;r&quot;) as r_j_write:
+                    try:
+                        await asyncio.gather(
+                            listen(r_c_write, w_j_read, CONTESTANT, c_proc),
+                            listen(r_j_write, w_c_read, JUDGE, j_proc),
+                        )
+                    except Exception:
+                        pass
+
+
+async def main():
+    paths = [&quot;cr.pipe&quot;, &quot;jr.pipe&quot;, &quot;cw.pipe&quot;, &quot;jw.pipe&quot;]
+    [c_read, j_read, c_write, j_write] = paths
+    for path in paths:
+        if os.path.exists(path):
+            os.remove(path)
+        os.mkfifo(path)
+
+    sep = sys.argv.index(&quot;--&quot;)
+    contestant_command = &quot; &quot;.join(sys.argv[1:sep]) + f&quot; &lt; {c_read} &gt; {c_write}&quot;
+    judge_command = &quot; &quot;.join(sys.argv[sep + 1 :]) + f&quot; &lt; {j_read} &gt; {j_write}&quot;
+
+    output(&quot;&quot;, &quot;&quot;, cross=CROSS_TOP)
+    output(&quot;contestant&quot;, &quot;judge&quot;)
+    output(&quot;&quot;, &quot;&quot;)
+
+    devnull = asyncio.subprocess.DEVNULL
+    c_proc = await asyncio.create_subprocess_shell(
+        contestant_command, shell=True, stderr=devnull
+    )
+    j_proc = await asyncio.create_subprocess_shell(
+        judge_command, shell=True, stderr=devnull
+    )
+
+    await asyncio.gather(
+        sniff(c_read, j_read, c_write, j_write, c_proc, j_proc),
+        c_proc.communicate(),
+        j_proc.communicate(),
+    )
+
+    status = &quot;AC&quot;
+    if c_proc.returncode != 0:
+        status = &quot;WA&quot; if j_proc.returncode != 0 else &quot;RE&quot;
+    elif j_proc.returncode != 0:
+        status = &quot;WA&quot;
+
+    preright = &quot;\x1b[1;92m&quot; if status == &quot;AC&quot; else &quot;\x1b[1;91m&quot;
+    output(&quot;&quot;, status, preright=preright)
+    output(&quot;&quot;, &quot;&quot;, cross=CROSS_BOTTOM)
+
+    for path in paths:
+        os.remove(path)
+
+
+if __name__ == &quot;__main__&quot;:
+    asyncio.run(main())
+</code></pre></div><h4 id="reactive-judge"><a href="#reactive-judge">Reactive Judge</a></h4>
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::env;
+<span class="kw">use </span>std::fs::File;
+<span class="kw">use </span>std::io::{stdin, stdout, BufReader, Write};
+
+<span class="kw">use </span>proconio::{
+    input,
+    marker::Usize1,
+    source::{auto::AutoSource, line::LineSource},
+};
+
+<span class="macro">macro_rules! </span>println {
+    ( $(<span class="macro-nonterminal">$t</span>:tt)* ) =&gt; {
+        <span class="macro">std::println!</span>($(<span class="macro-nonterminal">$t</span>)<span class="kw-2">*</span>);
+        stdout().flush().unwrap();
+    }
+}
+
+<span class="kw">fn </span>main() {
+    <span class="comment">// --- テストケース用ファイルの読み込み ---
+
+    </span><span class="kw">let </span>infile_source = {
+        <span class="kw">let </span>name = env::args().nth(<span class="number">1</span>).unwrap();
+        <span class="kw">let </span>file = File::open(<span class="kw-2">&amp;</span>name).unwrap();
+        AutoSource::new(BufReader::new(file))
+    };
+
+    <span class="macro">input! </span>{
+        from infile_source,
+    }
+
+    <span class="comment">// --- ジャッジ側の前処理 ---
+
+    </span><span class="kw">let </span>expected = {
+    };
+
+    <span class="comment">// --- 提出プログラムとのやり取り ---
+
+    </span><span class="kw">let </span>stdin = stdin();
+    <span class="kw">let </span><span class="kw-2">mut </span>source = LineSource::new(BufReader::new(stdin.lock()));
+
+    <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, n);
+
+    <span class="kw">let </span>ql = <span class="number">20</span>;
+    <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..=ql {
+        <span class="macro">input! </span>{
+            from <span class="kw-2">&amp;mut </span>source,
+            ty: char,
+        }
+
+        <span class="macro">assert!</span>([<span class="string">&#39;!&#39;</span>, <span class="string">&#39;?&#39;</span>].contains(<span class="kw-2">&amp;</span>ty));
+
+        <span class="kw">if </span>ty == <span class="string">&#39;!&#39; </span>{
+            <span class="macro">input! </span>{
+                from <span class="kw-2">&amp;mut </span>source,
+            }
+            <span class="macro">assert_eq!</span>((), expected);
+            <span class="kw">return</span>;
+        }
+
+        <span class="kw">if </span>ty == <span class="string">&#39;?&#39; </span>{
+            <span class="macro">assert!</span>(i &lt; ql);
+            <span class="macro">input! </span>{
+                from <span class="kw-2">&amp;mut </span>source,
+            }
+
+            <span class="kw">let </span>res = {
+            };
+
+            <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, res);
+        }
+    }
+}</code></pre></div>
+</div></details></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="nekolib_notes" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0 (84c898d65 2023-04-16)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
