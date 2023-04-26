@@ -5,6 +5,8 @@ const MAX_ATTEMPT = 10;
 let done = false;
 let shareText = '';
 
+const commonPasswordListUrl = "https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/Common-Credentials/10-million-password-list-top-1000.txt"
+
 function decodeResult(x) {
     return ['correct', 'present', 'absent', 'empty'][x];
 }
@@ -49,13 +51,21 @@ function randomInt(n) {
     return Math.floor(Math.random() * n);
 }
 
-function randomPassword() {
-    let letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    let digits = '0123456789';
-    let punctuation = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~';
-    let s = letters.repeat(7) + digits.repeat(4) + punctuation.repeat(3);
-    let length = 14;
-    let res = Array.from({length}, (() => s[randomInt(s.length)])).join('');
+let commonPasswordsCache = [];
+async function getCommonPasswordList() {
+    if (commonPasswordsCache.length === 0) {
+        // if not cached, fetch from remote
+        const response = await fetch(commonPasswordListUrl);
+        commonPasswordsCache = (await response.text())
+            .split("\n")
+            .filter((item) => item !== "");
+    }
+    return commonPasswordsCache;
+}
+
+async function randomPassword() {
+    const passwordList = await getCommonPasswordList();
+    let res = passwordList[randomInt(passwordList.length)];
     debugger; // どうぞ
     return res;
 }
