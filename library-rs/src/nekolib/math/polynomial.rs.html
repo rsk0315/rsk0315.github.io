@@ -578,6 +578,8 @@
 <a href="#489" id="489">489</a>
 <a href="#490" id="490">490</a>
 <a href="#491" id="491">491</a>
+<a href="#492" id="492">492</a>
+<a href="#493" id="493">493</a>
 </pre><pre class="rust"><code><span class="doccomment">//! 多項式。
 
 </span><span class="kw">use </span><span class="kw">super</span>::convolution;
@@ -654,12 +656,16 @@
         <span class="kw">while </span>cur_len &lt; len {
             <span class="kw">let </span><span class="kw-2">mut </span>tmp = (<span class="kw-2">&amp;</span>two - <span class="self">self </span>* <span class="kw-2">&amp;</span>res) * <span class="kw-2">&amp;</span>res;
             cur_len <span class="kw-2">*</span>= <span class="number">2</span>;
-            tmp.<span class="number">0</span>.truncate(cur_len);
+            tmp.truncate(cur_len);
             res.<span class="number">0 </span>= tmp.<span class="number">0</span>;
         }
-        res.<span class="number">0</span>.truncate(len);
-        res.normalize();
+        res.truncate(len);
         res
+    }
+
+    <span class="kw">pub fn </span>truncate(<span class="kw-2">&amp;mut </span><span class="self">self</span>, len: usize) {
+        <span class="self">self</span>.<span class="number">0</span>.truncate(len);
+        <span class="self">self</span>.normalize();
     }
 
     <span class="kw">pub fn </span>reversed(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
@@ -719,8 +725,7 @@
         <span class="kw">let </span><span class="kw-2">mut </span>diff = <span class="self">self</span>.clone().differential();
         diff <span class="kw-2">*</span>= <span class="self">self</span>.recip(len);
         diff.integrate();
-        diff.<span class="number">0</span>.truncate(len + <span class="number">1</span>);
-        diff.normalize();
+        diff.truncate(len + <span class="number">1</span>);
         diff
     }
 
@@ -738,11 +743,10 @@
             cur_len <span class="kw-2">*</span>= <span class="number">2</span>;
             <span class="kw">let </span><span class="kw-2">mut </span>tmp = <span class="kw-2">&amp;</span>one - res.log(cur_len) + <span class="self">self</span>;
             tmp <span class="kw-2">*</span>= res;
-            tmp.<span class="number">0</span>.truncate(cur_len);
+            tmp.truncate(cur_len);
             res = tmp;
         }
-        res.<span class="number">0</span>.truncate(len);
-        res.normalize();
+        res.truncate(len);
         res
     }
 
