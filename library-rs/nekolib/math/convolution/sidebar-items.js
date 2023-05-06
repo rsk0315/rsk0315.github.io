@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["convolve","convolve_u64","precompute_butterfly"],"struct":["ButterflyCache"],"trait":["NttFriendly"]};
+window.SIDEBAR_ITEMS = {"fn":["butterfly","butterfly_inv","convolve","convolve_u64","precompute_butterfly"],"struct":["ButterflyCache"],"trait":["NttFriendly"]};

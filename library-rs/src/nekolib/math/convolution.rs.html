@@ -541,7 +541,7 @@
     ButterflyCache { root, iroot, rate2, irate2, rate3, irate3 }
 }
 
-<span class="kw">fn </span>butterfly&lt;M: NttFriendly&gt;(a: <span class="kw-2">&amp;mut </span>[StaticModInt&lt;M&gt;]) {
+<span class="kw">pub fn </span>butterfly&lt;M: NttFriendly&gt;(a: <span class="kw-2">&amp;mut </span>[StaticModInt&lt;M&gt;]) {
     <span class="kw">let </span>n = a.len();
     <span class="kw">let </span>h = ceil_pow2(n <span class="kw">as </span>u32);
 
@@ -614,7 +614,7 @@
     });
 }
 
-<span class="kw">fn </span>butterfly_inv&lt;M: NttFriendly&gt;(a: <span class="kw-2">&amp;mut </span>[StaticModInt&lt;M&gt;]) {
+<span class="kw">pub fn </span>butterfly_inv&lt;M: NttFriendly&gt;(a: <span class="kw-2">&amp;mut </span>[StaticModInt&lt;M&gt;]) {
     <span class="kw">let </span>n = a.len();
     <span class="kw">let </span>h = ceil_pow2(n <span class="kw">as </span>u32);
 
