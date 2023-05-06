@@ -228,6 +228,8 @@
 <a href="#139" id="139">139</a>
 <a href="#140" id="140">140</a>
 <a href="#141" id="141">141</a>
+<a href="#142" id="142">142</a>
+<a href="#143" id="143">143</a>
 </pre><pre class="rust"><code><span class="doccomment">//! 数学関連のアルゴリズムたち。
 //!
 //! 基本的な数学関数。
@@ -235,14 +237,14 @@
 //! 計算機科学自体 mathematics では？とも思うが...
 //!
 //! [`ds`]: ../ds/index.html
-</span><span class="kw">pub mod </span>modint;
-<span class="comment">// pub mod polynomial;
 </span><span class="kw">pub mod </span>bit_binom_;
 <span class="kw">pub mod </span>carmichael_lambda;
 <span class="kw">pub mod </span>common_quot;
 <span class="kw">pub mod </span>compact_sieve;
 <span class="kw">pub mod </span>const_div;
 <span class="kw">pub mod </span>continued_fraction_;
+<span class="kw">pub mod </span>modint;
+<span class="kw">pub mod </span>polynomial;
 <span class="comment">// pub mod count_prime;
 </span><span class="kw">pub mod </span>convolution;
 <span class="kw">pub mod </span>digit_sum;
@@ -304,6 +306,8 @@
 </span><span class="kw">pub use </span>fraction_bisect::FractionBisect;
 <span class="attr">#[doc(inline)]
 </span><span class="kw">pub use </span>is_close_float::IsCloseFloat;
+<span class="attr">#[doc(inline)]
+</span><span class="kw">pub use </span>polynomial::Polynomial;
 <span class="attr">#[doc(inline)]
 </span><span class="kw">pub use </span>segmented_factor_sieve::SegmentedFactorSieve;
 <span class="comment">// #[doc(inline)]
