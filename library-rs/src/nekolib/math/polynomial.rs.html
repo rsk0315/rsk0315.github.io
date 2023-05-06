@@ -572,6 +572,10 @@
 <a href="#483" id="483">483</a>
 <a href="#484" id="484">484</a>
 <a href="#485" id="485">485</a>
+<a href="#486" id="486">486</a>
+<a href="#487" id="487">487</a>
+<a href="#488" id="488">488</a>
+<a href="#489" id="489">489</a>
 </pre><pre class="rust"><code><span class="doccomment">//! 多項式。
 
 </span><span class="kw">use </span><span class="kw">super</span>::convolution;
@@ -742,6 +746,10 @@
 
     <span class="kw">pub fn </span>pow(<span class="kw-2">&amp;</span><span class="self">self</span>, k: StaticModInt&lt;M&gt;, len: usize) -&gt; <span class="self">Self </span>{
         (<span class="self">self</span>.log(len) * k).exp(len)
+    }
+
+    <span class="kw">pub fn </span>get(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize) -&gt; StaticModInt&lt;M&gt; {
+        <span class="self">self</span>.<span class="number">0</span>.get(i).copied().unwrap_or(StaticModInt::new(<span class="number">0</span>))
     }
 }
 
