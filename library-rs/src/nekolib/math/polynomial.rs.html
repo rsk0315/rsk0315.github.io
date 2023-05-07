@@ -584,6 +584,12 @@
 <a href="#495" id="495">495</a>
 <a href="#496" id="496">496</a>
 <a href="#497" id="497">497</a>
+<a href="#498" id="498">498</a>
+<a href="#499" id="499">499</a>
+<a href="#500" id="500">500</a>
+<a href="#501" id="501">501</a>
+<a href="#502" id="502">502</a>
+<a href="#503" id="503">503</a>
 </pre><pre class="rust"><code><span class="doccomment">//! 多項式。
 
 </span><span class="kw">use </span><span class="kw">super</span>::convolution;
@@ -665,6 +671,12 @@
         }
         res.truncate(len);
         res
+    }
+
+    <span class="kw">pub fn </span>truncated(<span class="kw-2">&amp;</span><span class="self">self</span>, len: usize) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>tmp = <span class="self">self</span>.clone();
+        tmp.truncate(len);
+        tmp
     }
 
     <span class="kw">pub fn </span>truncate(<span class="kw-2">&amp;mut </span><span class="self">self</span>, len: usize) {
