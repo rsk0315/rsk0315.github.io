@@ -590,6 +590,110 @@
 <a href="#501" id="501">501</a>
 <a href="#502" id="502">502</a>
 <a href="#503" id="503">503</a>
+<a href="#504" id="504">504</a>
+<a href="#505" id="505">505</a>
+<a href="#506" id="506">506</a>
+<a href="#507" id="507">507</a>
+<a href="#508" id="508">508</a>
+<a href="#509" id="509">509</a>
+<a href="#510" id="510">510</a>
+<a href="#511" id="511">511</a>
+<a href="#512" id="512">512</a>
+<a href="#513" id="513">513</a>
+<a href="#514" id="514">514</a>
+<a href="#515" id="515">515</a>
+<a href="#516" id="516">516</a>
+<a href="#517" id="517">517</a>
+<a href="#518" id="518">518</a>
+<a href="#519" id="519">519</a>
+<a href="#520" id="520">520</a>
+<a href="#521" id="521">521</a>
+<a href="#522" id="522">522</a>
+<a href="#523" id="523">523</a>
+<a href="#524" id="524">524</a>
+<a href="#525" id="525">525</a>
+<a href="#526" id="526">526</a>
+<a href="#527" id="527">527</a>
+<a href="#528" id="528">528</a>
+<a href="#529" id="529">529</a>
+<a href="#530" id="530">530</a>
+<a href="#531" id="531">531</a>
+<a href="#532" id="532">532</a>
+<a href="#533" id="533">533</a>
+<a href="#534" id="534">534</a>
+<a href="#535" id="535">535</a>
+<a href="#536" id="536">536</a>
+<a href="#537" id="537">537</a>
+<a href="#538" id="538">538</a>
+<a href="#539" id="539">539</a>
+<a href="#540" id="540">540</a>
+<a href="#541" id="541">541</a>
+<a href="#542" id="542">542</a>
+<a href="#543" id="543">543</a>
+<a href="#544" id="544">544</a>
+<a href="#545" id="545">545</a>
+<a href="#546" id="546">546</a>
+<a href="#547" id="547">547</a>
+<a href="#548" id="548">548</a>
+<a href="#549" id="549">549</a>
+<a href="#550" id="550">550</a>
+<a href="#551" id="551">551</a>
+<a href="#552" id="552">552</a>
+<a href="#553" id="553">553</a>
+<a href="#554" id="554">554</a>
+<a href="#555" id="555">555</a>
+<a href="#556" id="556">556</a>
+<a href="#557" id="557">557</a>
+<a href="#558" id="558">558</a>
+<a href="#559" id="559">559</a>
+<a href="#560" id="560">560</a>
+<a href="#561" id="561">561</a>
+<a href="#562" id="562">562</a>
+<a href="#563" id="563">563</a>
+<a href="#564" id="564">564</a>
+<a href="#565" id="565">565</a>
+<a href="#566" id="566">566</a>
+<a href="#567" id="567">567</a>
+<a href="#568" id="568">568</a>
+<a href="#569" id="569">569</a>
+<a href="#570" id="570">570</a>
+<a href="#571" id="571">571</a>
+<a href="#572" id="572">572</a>
+<a href="#573" id="573">573</a>
+<a href="#574" id="574">574</a>
+<a href="#575" id="575">575</a>
+<a href="#576" id="576">576</a>
+<a href="#577" id="577">577</a>
+<a href="#578" id="578">578</a>
+<a href="#579" id="579">579</a>
+<a href="#580" id="580">580</a>
+<a href="#581" id="581">581</a>
+<a href="#582" id="582">582</a>
+<a href="#583" id="583">583</a>
+<a href="#584" id="584">584</a>
+<a href="#585" id="585">585</a>
+<a href="#586" id="586">586</a>
+<a href="#587" id="587">587</a>
+<a href="#588" id="588">588</a>
+<a href="#589" id="589">589</a>
+<a href="#590" id="590">590</a>
+<a href="#591" id="591">591</a>
+<a href="#592" id="592">592</a>
+<a href="#593" id="593">593</a>
+<a href="#594" id="594">594</a>
+<a href="#595" id="595">595</a>
+<a href="#596" id="596">596</a>
+<a href="#597" id="597">597</a>
+<a href="#598" id="598">598</a>
+<a href="#599" id="599">599</a>
+<a href="#600" id="600">600</a>
+<a href="#601" id="601">601</a>
+<a href="#602" id="602">602</a>
+<a href="#603" id="603">603</a>
+<a href="#604" id="604">604</a>
+<a href="#605" id="605">605</a>
+<a href="#606" id="606">606</a>
+<a href="#607" id="607">607</a>
 </pre><pre class="rust"><code><span class="doccomment">//! 多項式。
 
 </span><span class="kw">use </span><span class="kw">super</span>::convolution;
@@ -597,11 +701,11 @@
 
 <span class="kw">use </span>std::fmt::{<span class="self">self</span>, Debug, Display};
 <span class="kw">use </span>std::ops::{
-    Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Rem, RemAssign, Sub,
-    SubAssign,
+    Add, AddAssign, BitAnd, BitAndAssign, Div, DivAssign, Mul, MulAssign, Neg,
+    Rem, RemAssign, Sub, SubAssign,
 };
 
-<span class="kw">use </span>convolution::{convolve, NttFriendly};
+<span class="kw">use </span>convolution::{butterfly, butterfly_inv, convolve, NttFriendly};
 <span class="kw">use </span>modint::{ModIntBase, StaticModInt};
 
 <span class="attr">#[derive(Clone, Eq, PartialEq)]
@@ -660,12 +764,23 @@
             <span class="kw">return </span><span class="self">Self</span>(<span class="macro">vec!</span>[]);
         }
 
-        <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="self">Self</span>(<span class="macro">vec!</span>[<span class="self">self</span>.<span class="number">0</span>[<span class="number">0</span>].recip()]);
-        <span class="kw">let </span>two = <span class="self">Self</span>(<span class="macro">vec!</span>[StaticModInt::new(<span class="number">2</span>)]);
+        <span class="comment">// let two: Self = vec![2].into();
+        </span><span class="kw">let </span><span class="kw-2">mut </span>res = <span class="self">Self</span>(<span class="macro">vec!</span>[<span class="self">self</span>.<span class="number">0</span>[<span class="number">0</span>].recip()]);
         <span class="kw">let </span><span class="kw-2">mut </span>cur_len = <span class="number">1</span>;
         <span class="kw">while </span>cur_len &lt; len {
-            <span class="kw">let </span><span class="kw-2">mut </span>tmp = (<span class="kw-2">&amp;</span>two - <span class="self">self </span>* <span class="kw-2">&amp;</span>res) * <span class="kw-2">&amp;</span>res;
             cur_len <span class="kw-2">*</span>= <span class="number">2</span>;
+
+            <span class="kw">let </span><span class="kw-2">mut </span>self_: <span class="self">Self </span>=
+                <span class="self">self</span>.<span class="number">0</span>[..<span class="self">self</span>.<span class="number">0</span>.len().min(cur_len)].to_vec().into();
+
+            <span class="comment">// let mut tmp = (&amp;two - &amp;self_ * &amp;res) * &amp;res;
+
+            </span><span class="kw">let </span>ftwo = <span class="self">Self</span>(<span class="macro">vec!</span>[StaticModInt::new(<span class="number">2</span>); <span class="number">2 </span>* cur_len]);
+            self_.fft_butterfly(<span class="number">2 </span>* cur_len);
+            res.fft_butterfly(<span class="number">2 </span>* cur_len);
+            <span class="kw">let </span><span class="kw-2">mut </span>tmp = (<span class="kw-2">&amp;</span>ftwo - (<span class="kw-2">&amp;</span>self_ &amp; <span class="kw-2">&amp;</span>res)) &amp; <span class="kw-2">&amp;</span>res;
+            tmp.fft_inv_butterfly(<span class="number">2 </span>* cur_len);
+
             tmp.truncate(cur_len);
             res.<span class="number">0 </span>= tmp.<span class="number">0</span>;
         }
@@ -775,6 +890,25 @@
     }
 
     <span class="kw">pub fn </span>into_inner(<span class="self">self</span>) -&gt; Vec&lt;StaticModInt&lt;M&gt;&gt; { <span class="self">self</span>.<span class="number">0 </span>}
+
+    <span class="kw">pub fn </span>fft_butterfly(<span class="kw-2">&amp;mut </span><span class="self">self</span>, len: usize) {
+        <span class="kw">let </span>ceil_len = len.next_power_of_two();
+        <span class="self">self</span>.<span class="number">0</span>.resize(ceil_len, StaticModInt::new(<span class="number">0</span>));
+        butterfly(<span class="kw-2">&amp;mut </span><span class="self">self</span>.<span class="number">0</span>);
+        <span class="self">self</span>.normalize();
+    }
+
+    <span class="kw">pub fn </span>fft_inv_butterfly(<span class="kw-2">&amp;mut </span><span class="self">self</span>, len: usize) {
+        <span class="kw">let </span>ceil_len = len.next_power_of_two();
+        <span class="self">self</span>.<span class="number">0</span>.resize(ceil_len, StaticModInt::new(<span class="number">0</span>));
+        butterfly_inv(<span class="kw-2">&amp;mut </span><span class="self">self</span>.<span class="number">0</span>);
+        <span class="self">self</span>.<span class="number">0</span>.truncate(len);
+        <span class="kw">let </span>iz = StaticModInt::new(ceil_len).recip();
+        <span class="kw">for </span>c <span class="kw">in </span><span class="kw-2">&amp;mut </span><span class="self">self</span>.<span class="number">0 </span>{
+            <span class="kw-2">*</span>c <span class="kw-2">*</span>= iz;
+        }
+        <span class="self">self</span>.normalize();
+    }
 }
 
 <span class="kw">impl</span>&lt;M: NttFriendly&gt; From&lt;Vec&lt;StaticModInt&lt;M&gt;&gt;&gt; <span class="kw">for </span>Polynomial&lt;M&gt; {
@@ -875,6 +1009,22 @@
     <span class="kw">fn </span>rem_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, other: Polynomial&lt;M&gt;) {
         <span class="kw">let </span>div = <span class="kw-2">&amp;*</span><span class="self">self </span>/ <span class="kw-2">&amp;</span>other;
         <span class="kw-2">*</span><span class="self">self </span>-= div * <span class="kw-2">&amp;</span>other;
+    }
+}
+
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, M: NttFriendly&gt; BitAndAssign&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Polynomial&lt;M&gt;&gt; <span class="kw">for </span>Polynomial&lt;M&gt; {
+    <span class="kw">fn </span>bitand_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Polynomial&lt;M&gt;) {
+        <span class="self">self</span>.<span class="number">0</span>.truncate(other.<span class="number">0</span>.len());
+        <span class="kw">for </span>(ai, <span class="kw-2">&amp;</span>bi) <span class="kw">in </span><span class="self">self</span>.<span class="number">0</span>.iter_mut().zip(<span class="kw-2">&amp;</span>other.<span class="number">0</span>) {
+            <span class="kw-2">*</span>ai <span class="kw-2">*</span>= bi;
+        }
+        <span class="self">self</span>.normalize();
+    }
+}
+
+<span class="kw">impl</span>&lt;M: NttFriendly&gt; BitAndAssign <span class="kw">for </span>Polynomial&lt;M&gt; {
+    <span class="kw">fn </span>bitand_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, other: Polynomial&lt;M&gt;) {
+        <span class="self">self</span>.bitand_assign(<span class="kw-2">&amp;</span>other);
     }
 }
 
@@ -981,6 +1131,27 @@
     }
 }
 
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, M: NttFriendly&gt; BitAndAssign&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>StaticModInt&lt;M&gt;&gt; <span class="kw">for </span>Polynomial&lt;M&gt; {
+    <span class="kw">fn </span>bitand_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw-2">&amp;</span>other: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>StaticModInt&lt;M&gt;) {
+        <span class="kw">if </span><span class="self">self</span>.<span class="number">0</span>.is_empty() {
+            <span class="kw">return</span>;
+        }
+        <span class="kw">if </span>other.get() == <span class="number">0 </span>{
+            <span class="self">self</span>.<span class="number">0</span>.clear();
+        } <span class="kw">else </span>{
+            <span class="self">self</span>.<span class="number">0</span>.truncate(<span class="number">1</span>);
+            <span class="self">self</span>.<span class="number">0</span>[<span class="number">0</span>] <span class="kw-2">*</span>= other;
+            <span class="self">self</span>.normalize();
+        }
+    }
+}
+
+<span class="kw">impl</span>&lt;M: NttFriendly&gt; BitAndAssign&lt;StaticModInt&lt;M&gt;&gt; <span class="kw">for </span>Polynomial&lt;M&gt; {
+    <span class="kw">fn </span>bitand_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, other: StaticModInt&lt;M&gt;) {
+        <span class="self">self</span>.bitand_assign(<span class="kw-2">&amp;</span>other);
+    }
+}
+
 <span class="macro">macro_rules! </span>impl_binop {
     ( $( (<span class="macro-nonterminal">$op</span>:ident, <span class="macro-nonterminal">$op_assign</span>:ident, <span class="macro-nonterminal">$op_trait</span>:ident, <span class="macro-nonterminal">$op_assign_trait</span>:ident), )* ) =&gt; {
         $(
@@ -1047,6 +1218,7 @@
     (mul, mul_assign, Mul, MulAssign),
     (div, div_assign, Div, DivAssign),
     (rem, rem_assign, Rem, RemAssign),
+    (bitand, bitand_assign, BitAnd, BitAndAssign),
 }
 
 <span class="kw">impl</span>&lt;M: NttFriendly&gt; Neg <span class="kw">for </span>Polynomial&lt;M&gt; {
@@ -1092,6 +1264,42 @@
     <span class="macro">assert_eq!</span>(x1.pow(<span class="number">5</span>, <span class="number">10</span>), <span class="kw-2">&amp;</span>x1 * <span class="kw-2">&amp;</span>x1 * <span class="kw-2">&amp;</span>x1 * <span class="kw-2">&amp;</span>x1 * <span class="kw-2">&amp;</span>x1);
 
     <span class="macro">assert_eq!</span>(x1.pow(<span class="number">998244352</span>, <span class="number">10</span>) * <span class="kw-2">&amp;</span>x1 % <span class="kw-2">&amp;</span>x_ten, x1.pow(<span class="number">998244353</span>, <span class="number">10</span>));
+}
+
+<span class="attr">#[test]
+</span><span class="kw">fn </span>fft() {
+    <span class="kw">type </span>Poly = Polynomial&lt;modint::Mod998244353&gt;;
+
+    <span class="kw">let </span>n = <span class="number">4 </span>+ <span class="number">4 </span>+ <span class="number">4 </span>+ <span class="number">1</span>;
+    <span class="kw">let </span>one: Poly = <span class="macro">vec!</span>[<span class="number">1</span>].into();
+    <span class="kw">let </span>f: Poly = <span class="macro">vec!</span>[<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>].into();
+    <span class="kw">let </span>g: Poly = <span class="macro">vec!</span>[<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">8</span>].into();
+    <span class="kw">let </span>h: Poly = <span class="macro">vec!</span>[<span class="number">0</span>, <span class="number">6</span>, <span class="number">5</span>, <span class="number">4</span>, <span class="number">3</span>].into();
+
+    <span class="kw">let </span>fft = |f: <span class="kw-2">&amp;</span>Poly| {
+        <span class="kw">let </span><span class="kw-2">mut </span>f = f.clone();
+        f.fft_butterfly(n);
+        f
+    };
+    <span class="kw">let </span>ifft = |f: <span class="kw-2">&amp;</span>Poly| {
+        <span class="kw">let </span><span class="kw-2">mut </span>f = f.clone();
+        f.fft_inv_butterfly(n);
+        f
+    };
+
+    <span class="kw">let </span>fone: Poly = <span class="macro">vec!</span>[<span class="number">1</span>; n.next_power_of_two() <span class="kw">as </span>usize].into();
+    <span class="kw">let </span>ff = fft(<span class="kw-2">&amp;</span>f);
+    <span class="kw">let </span>fg = fft(<span class="kw-2">&amp;</span>g);
+    <span class="kw">let </span>fh = fft(<span class="kw-2">&amp;</span>h);
+
+    <span class="macro">assert_eq!</span>(fft(<span class="kw-2">&amp;</span>(<span class="kw-2">&amp;</span>f + <span class="kw-2">&amp;</span>one)), fft(<span class="kw-2">&amp;</span>f) + <span class="kw-2">&amp;</span>fone);
+
+    <span class="macro">assert_eq!</span>(f, ifft(<span class="kw-2">&amp;</span>ff));
+    <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>f + <span class="kw-2">&amp;</span>h, ifft(<span class="kw-2">&amp;</span>(<span class="kw-2">&amp;</span>ff + <span class="kw-2">&amp;</span>fh)));
+    <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>f * <span class="kw-2">&amp;</span>g, ifft(<span class="kw-2">&amp;</span>(<span class="kw-2">&amp;</span>ff &amp; <span class="kw-2">&amp;</span>fg)));
+
+    <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>f * <span class="kw-2">&amp;</span>g * <span class="kw-2">&amp;</span>h, ifft(<span class="kw-2">&amp;</span>(<span class="kw-2">&amp;</span>ff &amp; <span class="kw-2">&amp;</span>fg &amp; <span class="kw-2">&amp;</span>fh)));
+    <span class="macro">assert_eq!</span>(f * g + h, ifft(<span class="kw-2">&amp;</span>((ff &amp; fg) + fh)));
 }
 </code></pre></div>
 </section></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="nekolib" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0 (84c898d65 2023-04-16)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
