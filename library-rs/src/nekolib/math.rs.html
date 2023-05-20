@@ -233,6 +233,9 @@
 <a href="#144" id="144">144</a>
 <a href="#145" id="145">145</a>
 <a href="#146" id="146">146</a>
+<a href="#147" id="147">147</a>
+<a href="#148" id="148">148</a>
+<a href="#149" id="149">149</a>
 </pre><pre class="rust"><code><span class="doccomment">//! 数学関連のアルゴリズムたち。
 //!
 //! 基本的な数学関数。
@@ -260,6 +263,7 @@
 <span class="kw">pub mod </span>factors_dup;
 <span class="kw">pub mod </span>frac_approx;
 <span class="kw">pub mod </span>fraction_bisect;
+<span class="kw">pub mod </span>garner;
 <span class="kw">pub mod </span>gcd;
 <span class="kw">pub mod </span>gcd_recip;
 <span class="kw">pub mod </span>harmonic_floor_sum;
@@ -308,6 +312,8 @@
 </span><span class="kw">pub use </span>frac_approx::{ApproxFrac, FracApprox, FracApproxIter};
 <span class="attr">#[doc(inline)]
 </span><span class="kw">pub use </span>fraction_bisect::FractionBisect;
+<span class="attr">#[doc(inline)]
+</span><span class="kw">pub use </span>garner::{CrtMod, CrtWrapping};
 <span class="attr">#[doc(inline)]
 </span><span class="kw">pub use </span>is_close_float::IsCloseFloat;
 <span class="attr">#[doc(inline)]
