@@ -236,6 +236,7 @@
 <a href="#147" id="147">147</a>
 <a href="#148" id="148">148</a>
 <a href="#149" id="149">149</a>
+<a href="#150" id="150">150</a>
 </pre><pre class="rust"><code><span class="doccomment">//! 数学関連のアルゴリズムたち。
 //!
 //! 基本的な数学関数。
@@ -303,8 +304,9 @@
 </span><span class="kw">pub use </span>continued_fraction_::continued_fraction;
 <span class="attr">#[doc(inline)]
 </span><span class="kw">pub use </span>convolution::{
-    butterfly, butterfly_inv, convolve, convolve_u64, precompute_butterfly,
-    ButterflyCache, NttFriendly,
+    butterfly, butterfly_inv, convolve, convolve_u128, convolve_u128_mod,
+    convolve_u32_mod, convolve_u64, convolve_u64_mod, convolve_wrapping_u128,
+    convolve_wrapping_u64, precompute_butterfly, ButterflyCache, NttFriendly,
 };
 <span class="attr">#[doc(inline)]
 </span><span class="kw">pub use </span>digits::Digits;
