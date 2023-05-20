@@ -874,6 +874,28 @@
 <a href="#785" id="785">785</a>
 <a href="#786" id="786">786</a>
 <a href="#787" id="787">787</a>
+<a href="#788" id="788">788</a>
+<a href="#789" id="789">789</a>
+<a href="#790" id="790">790</a>
+<a href="#791" id="791">791</a>
+<a href="#792" id="792">792</a>
+<a href="#793" id="793">793</a>
+<a href="#794" id="794">794</a>
+<a href="#795" id="795">795</a>
+<a href="#796" id="796">796</a>
+<a href="#797" id="797">797</a>
+<a href="#798" id="798">798</a>
+<a href="#799" id="799">799</a>
+<a href="#800" id="800">800</a>
+<a href="#801" id="801">801</a>
+<a href="#802" id="802">802</a>
+<a href="#803" id="803">803</a>
+<a href="#804" id="804">804</a>
+<a href="#805" id="805">805</a>
+<a href="#806" id="806">806</a>
+<a href="#807" id="807">807</a>
+<a href="#808" id="808">808</a>
+<a href="#809" id="809">809</a>
 </pre><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::garner;
 <span class="kw">use </span><span class="kw">super</span>::modint;
 <span class="kw">use </span>std::cell::RefCell;
@@ -1335,20 +1357,12 @@
         .collect()
 }
 
-<span class="comment">// awk &#39;{ printf(&quot;(Mod%de%dp1, %d &lt;&lt; %d | 1, ModInt%d, _),\n&quot;, $2, $4, $2, $4, $8) }&#39;
-//
-// 5 &lt;&lt; 25 | 1 == 167772161
-// 33 &lt;&lt; 25 | 1 == 1107296257
-// 51 &lt;&lt; 25 | 1 == 1711276033
-// 63 &lt;&lt; 25 | 1 == 2113929217
-// 7 &lt;&lt; 26 | 1 == 469762049
-// 27 &lt;&lt; 26 | 1 == 1811939329
-// 15 &lt;&lt; 27 | 1 == 2013265921
-
-</span><span class="kw">enum </span>CrtU64 {}
+<span class="kw">enum </span>CrtU64 {}
 <span class="kw">enum </span>CrtWrappingU64 {}
 <span class="kw">enum </span>CrtU128 {}
 <span class="kw">enum </span>CrtWrappingU128 {}
+<span class="attr">#[derive(Copy, Clone)]
+</span><span class="kw">struct </span>CrtU32Mod(u32);
 <span class="attr">#[derive(Copy, Clone)]
 </span><span class="kw">struct </span>CrtU64Mod(u64);
 <span class="attr">#[derive(Copy, Clone)]
@@ -1472,9 +1486,12 @@
 
 <span class="kw">trait </span>CrtMod {
     <span class="kw">type </span>Input;
-    <span class="kw">type </span>Mod;
     <span class="kw">type </span>Output;
     <span class="kw">fn </span>crt_mod(<span class="self">self</span>, i: <span class="self">Self</span>::Input) -&gt; <span class="self">Self</span>::Output;
+}
+
+<span class="kw">impl </span>CrtU32Mod {
+    <span class="kw">fn </span>new(m: u32) -&gt; <span class="self">Self </span>{ <span class="self">Self</span>(m) }
 }
 
 <span class="kw">impl </span>CrtU64Mod {
@@ -1485,9 +1502,22 @@
     <span class="kw">fn </span>new(m: u128) -&gt; <span class="self">Self </span>{ <span class="self">Self</span>(m) }
 }
 
+<span class="kw">impl </span>CrtMod <span class="kw">for </span>CrtU32Mod {
+    <span class="kw">type </span>Input = U32x3;
+    <span class="kw">type </span>Output = u32;
+    <span class="kw">fn </span>crt_mod(<span class="self">self</span>, xs: <span class="self">Self</span>::Input) -&gt; <span class="self">Self</span>::Output {
+        <span class="kw">let </span>[x0, x1, x2] = xs.to_array();
+        [
+            (x0 <span class="kw">as </span>u64, MOD0 <span class="kw">as </span>u64),
+            (x1 <span class="kw">as </span>u64, MOD1 <span class="kw">as </span>u64),
+            (x2 <span class="kw">as </span>u64, MOD2 <span class="kw">as </span>u64),
+        ]
+        .crt_mod(<span class="self">self</span>.<span class="number">0 </span><span class="kw">as </span>u64) <span class="kw">as </span>u32
+    }
+}
+
 <span class="kw">impl </span>CrtMod <span class="kw">for </span>CrtU64Mod {
     <span class="kw">type </span>Input = U32x6;
-    <span class="kw">type </span>Mod = u64;
     <span class="kw">type </span>Output = u64;
     <span class="kw">fn </span>crt_mod(<span class="self">self</span>, xs: <span class="self">Self</span>::Input) -&gt; <span class="self">Self</span>::Output {
         <span class="kw">let </span>[x0, x1, x2, x3, x4, x5] = xs.to_array();
@@ -1505,7 +1535,6 @@
 
 <span class="kw">impl </span>CrtMod <span class="kw">for </span>CrtU128Mod {
     <span class="kw">type </span>Input = U32x10;
-    <span class="kw">type </span>Mod = u128;
     <span class="kw">type </span>Output = u128;
     <span class="kw">fn </span>crt_mod(<span class="self">self</span>, xs: <span class="self">Self</span>::Input) -&gt; <span class="self">Self</span>::Output {
         <span class="kw">let </span>[x0, x1, x2, x3, x4, x5, x6, x7, x8, x9] = xs.to_array();
@@ -1572,6 +1601,7 @@
 }
 
 <span class="macro">impl_convolve_mod! </span>{
+    (convolve_u32_mod, u32, CrtU32Mod, [Mod0, Mod1, Mod2]),
     (convolve_u64_mod, u64, CrtU64Mod, [Mod0, Mod1, Mod2, Mod3, Mod4, Mod5]),
     (convolve_u128_mod, u128, CrtU128Mod, [Mod0, Mod1, Mod2, Mod3, Mod4, Mod5, Mod6, Mod7, Mod8, Mod9]),
 }
@@ -1633,6 +1663,20 @@
     <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..n {
         <span class="macro">assert_eq!</span>(a[i], a[n + n - <span class="number">2 </span>- i]);
         <span class="macro">assert_eq!</span>(a[i], (max64 * max64).wrapping_mul(i <span class="kw">as </span>u128 + <span class="number">1</span>));
+    }
+}
+
+<span class="attr">#[test]
+</span><span class="kw">fn </span>long_u32_mod() {
+    <span class="kw">let </span>max32 = u32::MAX;
+    <span class="kw">let </span>n = <span class="number">1 </span>&lt;&lt; <span class="number">24</span>;
+    <span class="kw">let </span>p = <span class="number">998244353</span>;
+    <span class="kw">let </span>long32 = <span class="macro">vec!</span>[max32; n];
+    <span class="kw">let </span>a = convolve_u32_mod(<span class="kw-2">&amp;</span>long32, <span class="kw-2">&amp;</span>long32, p <span class="kw">as </span>u32);
+    <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..n {
+        <span class="macro">assert_eq!</span>(a[i], a[n + n - <span class="number">2 </span>- i]);
+        <span class="kw">let </span>expected = (max32 <span class="kw">as </span>u64 % p).pow(<span class="number">2</span>) % p * (i <span class="kw">as </span>u64 + <span class="number">1</span>) % p;
+        <span class="macro">assert_eq!</span>(a[i], expected <span class="kw">as </span>u32);
     }
 }
 
