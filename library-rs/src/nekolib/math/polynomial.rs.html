@@ -694,6 +694,35 @@
 <a href="#605" id="605">605</a>
 <a href="#606" id="606">606</a>
 <a href="#607" id="607">607</a>
+<a href="#608" id="608">608</a>
+<a href="#609" id="609">609</a>
+<a href="#610" id="610">610</a>
+<a href="#611" id="611">611</a>
+<a href="#612" id="612">612</a>
+<a href="#613" id="613">613</a>
+<a href="#614" id="614">614</a>
+<a href="#615" id="615">615</a>
+<a href="#616" id="616">616</a>
+<a href="#617" id="617">617</a>
+<a href="#618" id="618">618</a>
+<a href="#619" id="619">619</a>
+<a href="#620" id="620">620</a>
+<a href="#621" id="621">621</a>
+<a href="#622" id="622">622</a>
+<a href="#623" id="623">623</a>
+<a href="#624" id="624">624</a>
+<a href="#625" id="625">625</a>
+<a href="#626" id="626">626</a>
+<a href="#627" id="627">627</a>
+<a href="#628" id="628">628</a>
+<a href="#629" id="629">629</a>
+<a href="#630" id="630">630</a>
+<a href="#631" id="631">631</a>
+<a href="#632" id="632">632</a>
+<a href="#633" id="633">633</a>
+<a href="#634" id="634">634</a>
+<a href="#635" id="635">635</a>
+<a href="#636" id="636">636</a>
 </pre><pre class="rust"><code><span class="doccomment">//! 多項式。
 
 </span><span class="kw">use </span><span class="kw">super</span>::convolution;
@@ -788,22 +817,20 @@
         res
     }
 
-    <span class="kw">pub fn </span>truncated(<span class="kw-2">&amp;</span><span class="self">self</span>, len: usize) -&gt; <span class="self">Self </span>{
-        <span class="kw">let </span><span class="kw-2">mut </span>tmp = <span class="self">self</span>.clone();
-        tmp.truncate(len);
-        tmp
-    }
+    <span class="kw">pub fn </span>truncated(<span class="kw-2">mut </span><span class="self">self</span>, len: usize) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.truncate(len);
+        <span class="self">self
+    </span>}
 
     <span class="kw">pub fn </span>truncate(<span class="kw-2">&amp;mut </span><span class="self">self</span>, len: usize) {
         <span class="self">self</span>.<span class="number">0</span>.truncate(len);
         <span class="self">self</span>.normalize();
     }
 
-    <span class="kw">pub fn </span>reversed(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
-        <span class="kw">let </span><span class="kw-2">mut </span>tmp = <span class="self">self</span>.clone();
-        tmp.reverse();
-        tmp
-    }
+    <span class="kw">pub fn </span>reversed(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.reverse();
+        <span class="self">self
+    </span>}
 
     <span class="kw">pub fn </span>reverse(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
         <span class="self">self</span>.<span class="number">0</span>.reverse();
@@ -883,6 +910,25 @@
 
     <span class="kw">pub fn </span>pow&lt;I: Into&lt;StaticModInt&lt;M&gt;&gt;&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, k: I, len: usize) -&gt; <span class="self">Self </span>{
         (<span class="self">self</span>.log(len) * k.into()).exp(len)
+    }
+
+    <span class="comment">// f(y) = f(y0) + (y-y0) f&#39;(y0) = 0
+    // y = y0 - f(y0)/f&#39;(y0)
+    </span><span class="kw">pub fn </span>newton(
+        <span class="kw-2">mut </span><span class="self">self</span>,
+        n: usize,
+        f_fdr: <span class="kw">impl </span>Fn(<span class="kw-2">&amp;</span><span class="self">Self</span>, usize) -&gt; <span class="self">Self</span>, <span class="comment">// f(y0)/f&#39;(y0)
+    </span>) -&gt; <span class="self">Self </span>{
+        <span class="kw">if </span><span class="self">self</span>.<span class="number">0</span>.is_empty() {
+            <span class="self">self</span>.<span class="number">0</span>.push(StaticModInt::new(<span class="number">0</span>));
+        }
+        <span class="kw">let </span><span class="kw-2">mut </span>d = <span class="self">self</span>.<span class="number">0</span>.len();
+        <span class="kw">let </span><span class="kw-2">mut </span>y = <span class="self">self</span>;
+        <span class="kw">while </span>d &lt; n {
+            d <span class="kw-2">*</span>= <span class="number">2</span>;
+            y -= f_fdr(<span class="kw-2">&amp;</span>y, d).truncated(d);
+        }
+        y.truncated(n)
     }
 
     <span class="kw">pub fn </span>get(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize) -&gt; StaticModInt&lt;M&gt; {
@@ -1300,6 +1346,18 @@
 
     <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>f * <span class="kw-2">&amp;</span>g * <span class="kw-2">&amp;</span>h, ifft(<span class="kw-2">&amp;</span>(<span class="kw-2">&amp;</span>ff &amp; <span class="kw-2">&amp;</span>fg &amp; <span class="kw-2">&amp;</span>fh)));
     <span class="macro">assert_eq!</span>(f * g + h, ifft(<span class="kw-2">&amp;</span>((ff &amp; fg) + fh)));
+}
+
+<span class="attr">#[test]
+</span><span class="kw">fn </span>newton() {
+    <span class="kw">use </span>modint::Mod998244353;
+    <span class="kw">type </span>Poly = Polynomial&lt;Mod998244353&gt;;
+
+    <span class="kw">let </span>f: Poly = <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>].into();
+    <span class="kw">let </span>n = <span class="number">10</span>;
+    <span class="kw">let </span>g = Poly::from(<span class="macro">vec!</span>[<span class="number">1</span>])
+        .newton(n, |y, n| (<span class="kw-2">&amp;</span>f - y.recip(n)) * (y * y).truncated(n));
+    <span class="macro">assert_eq!</span>(g, f.recip(n));
 }
 </code></pre></div>
 </section></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="nekolib" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0 (84c898d65 2023-04-16)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
