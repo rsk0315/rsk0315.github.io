@@ -1070,6 +1070,8 @@
 <a href="#981" id="981">981</a>
 <a href="#982" id="982">982</a>
 <a href="#983" id="983">983</a>
+<a href="#984" id="984">984</a>
+<a href="#985" id="985">985</a>
 </pre><pre class="rust"><code><span class="doccomment">//! 多項式。
 
 </span><span class="kw">use </span><span class="kw">super</span>::convolution;
@@ -2035,7 +2037,9 @@
     <span class="kw">let </span>y = Poly::from(<span class="macro">vec!</span>[<span class="number">2</span>]).fode(n + <span class="number">1</span>, f_df);
 
     <span class="comment">// y = x + 2/sqrt(1-8x) = 2 + 9x + 48x^2 + 320x^3 + ...
-    </span><span class="macro">assert_eq!</span>(f_df(<span class="kw-2">&amp;</span>y, n).<span class="number">0</span>, y.differential());
+    // (2/(y-x))^2 = 1-8x
+    </span><span class="macro">assert_eq!</span>(((<span class="kw-2">&amp;</span>y - <span class="kw-2">&amp;</span>x) / two).recip(n).pow(<span class="number">2</span>, n), Poly::from(<span class="macro">vec!</span>[<span class="number">1</span>, -<span class="number">8</span>]));
+    <span class="macro">assert_eq!</span>(f_df(<span class="kw-2">&amp;</span>y, n).<span class="number">0</span>, y.differential());
 }
 
 <span class="attr">#[test]
