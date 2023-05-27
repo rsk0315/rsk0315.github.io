@@ -896,6 +896,50 @@
 <a href="#807" id="807">807</a>
 <a href="#808" id="808">808</a>
 <a href="#809" id="809">809</a>
+<a href="#810" id="810">810</a>
+<a href="#811" id="811">811</a>
+<a href="#812" id="812">812</a>
+<a href="#813" id="813">813</a>
+<a href="#814" id="814">814</a>
+<a href="#815" id="815">815</a>
+<a href="#816" id="816">816</a>
+<a href="#817" id="817">817</a>
+<a href="#818" id="818">818</a>
+<a href="#819" id="819">819</a>
+<a href="#820" id="820">820</a>
+<a href="#821" id="821">821</a>
+<a href="#822" id="822">822</a>
+<a href="#823" id="823">823</a>
+<a href="#824" id="824">824</a>
+<a href="#825" id="825">825</a>
+<a href="#826" id="826">826</a>
+<a href="#827" id="827">827</a>
+<a href="#828" id="828">828</a>
+<a href="#829" id="829">829</a>
+<a href="#830" id="830">830</a>
+<a href="#831" id="831">831</a>
+<a href="#832" id="832">832</a>
+<a href="#833" id="833">833</a>
+<a href="#834" id="834">834</a>
+<a href="#835" id="835">835</a>
+<a href="#836" id="836">836</a>
+<a href="#837" id="837">837</a>
+<a href="#838" id="838">838</a>
+<a href="#839" id="839">839</a>
+<a href="#840" id="840">840</a>
+<a href="#841" id="841">841</a>
+<a href="#842" id="842">842</a>
+<a href="#843" id="843">843</a>
+<a href="#844" id="844">844</a>
+<a href="#845" id="845">845</a>
+<a href="#846" id="846">846</a>
+<a href="#847" id="847">847</a>
+<a href="#848" id="848">848</a>
+<a href="#849" id="849">849</a>
+<a href="#850" id="850">850</a>
+<a href="#851" id="851">851</a>
+<a href="#852" id="852">852</a>
+<a href="#853" id="853">853</a>
 </pre><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::garner;
 <span class="kw">use </span><span class="kw">super</span>::modint;
 <span class="kw">use </span>std::cell::RefCell;
@@ -1197,7 +1241,13 @@
     }
     <span class="kw">let </span>(n, m) = (a.len(), b.len());
 
-    <span class="kw">if </span>n.min(m) &lt;= <span class="number">60 </span>{ convolve_naive(<span class="kw-2">&amp;</span>a, <span class="kw-2">&amp;</span>b) } <span class="kw">else </span>{ convolve_fft(a, b) }
+    <span class="kw">if </span>n.min(m) &lt;= <span class="number">60 </span>{
+        convolve_naive(<span class="kw-2">&amp;</span>a, <span class="kw-2">&amp;</span>b)
+    } <span class="kw">else if </span>(n + m - <span class="number">2</span>).is_power_of_two() {
+        convolve_pow2p1(a, b)
+    } <span class="kw">else </span>{
+        convolve_fft(a, b)
+    }
 }
 
 <span class="kw">fn </span>convolve_naive&lt;M: NttFriendly&gt;(
@@ -1211,6 +1261,33 @@
         <span class="kw">for </span>j <span class="kw">in </span><span class="number">0</span>..m {
             res[i + j] += a[i] * b[j];
         }
+    }
+    res
+}
+
+<span class="kw">fn </span>convolve_pow2p1&lt;M: NttFriendly&gt;(
+    a: Vec&lt;StaticModInt&lt;M&gt;&gt;,
+    b: Vec&lt;StaticModInt&lt;M&gt;&gt;,
+) -&gt; Vec&lt;StaticModInt&lt;M&gt;&gt; {
+    <span class="kw">let </span>n = a.len();
+    <span class="kw">let </span>m = b.len();
+    <span class="kw">let </span>len = n + m - <span class="number">1</span>;
+    <span class="macro">assert!</span>((len - <span class="number">1</span>).is_power_of_two());
+
+    <span class="comment">// n + m - 1 == 2^k + 1
+    //
+    // (a[0] + x a[1..]) (b[0] + x b[1..])
+    // a[0] b[0] + x (a[0] b[1..] + b[0] a[1..]) + x^2 a[1..] b[1..]
+
+    </span><span class="kw">let </span><span class="kw-2">mut </span>res = convolve_fft(a[<span class="number">1</span>..].to_vec(), b[<span class="number">1</span>..].to_vec());
+    res.splice(<span class="number">0</span>..<span class="number">0</span>, (<span class="number">0</span>..<span class="number">2</span>).map(|<span class="kw">_</span>| StaticModInt::new(<span class="number">0</span>)));
+
+    res[<span class="number">0</span>] += a[<span class="number">0</span>] * b[<span class="number">0</span>];
+    <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..n {
+        res[i] += a[i] * b[<span class="number">0</span>];
+    }
+    <span class="kw">for </span>j <span class="kw">in </span><span class="number">1</span>..m {
+        res[j] += a[<span class="number">0</span>] * b[j];
     }
     res
 }
@@ -1704,6 +1781,17 @@
         <span class="macro">assert_eq!</span>(a[i], a[n + n - <span class="number">2 </span>- i]);
         <span class="macro">assert_eq!</span>(a[i], (max64 * max64 % p) * (i <span class="kw">as </span>u128 + <span class="number">1</span>) % p);
     }
+}
+
+<span class="attr">#[test]
+</span><span class="kw">fn </span>pow2p1() {
+    <span class="kw">type </span>Mi = modint::ModInt998244353;
+
+    <span class="kw">let </span>n = <span class="number">1 </span>&lt;&lt; <span class="number">6 </span>| <span class="number">1</span>;
+    <span class="kw">let </span>a: Vec&lt;<span class="kw">_</span>&gt; = (<span class="number">0</span>..n).map(|x| Mi::new(x + <span class="number">1</span>)).collect();
+    <span class="kw">let </span>b = a.clone();
+    <span class="kw">let </span>expected = convolve_naive(<span class="kw-2">&amp;</span>a, <span class="kw-2">&amp;</span>b);
+    <span class="macro">assert_eq!</span>(convolve(a, b), expected);
 }
 </code></pre></div>
 </section></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="nekolib" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0 (84c898d65 2023-04-16)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
