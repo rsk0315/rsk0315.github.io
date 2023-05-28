@@ -2234,10 +2234,10 @@
             x &amp;= <span class="kw-2">&amp;</span>z2;
             x.fft_inv_butterfly(<span class="number">2 </span>* m);
             x.integrate();
+            x.<span class="number">0</span>.resize(<span class="number">2 </span>* m, <span class="number">0</span>.into());
             <span class="kw">for </span>i <span class="kw">in </span>m..<span class="self">self</span>.<span class="number">0</span>.len().min(<span class="number">2 </span>* m) {
                 x.<span class="number">0</span>[i] += <span class="self">self</span>.<span class="number">0</span>[i];
             }
-            x.<span class="number">0</span>.resize(<span class="number">2 </span>* m, <span class="number">0</span>.into());
             x.<span class="number">0</span>[..m].fill(<span class="number">0</span>.into());
             x.fft_butterfly(<span class="number">2 </span>* m);
             x &amp;= <span class="kw-2">&amp;</span>y;
@@ -2654,10 +2654,10 @@
         <span class="kw">let </span><span class="kw-2">mut </span>y = <span class="self">self</span>;
         <span class="kw">while </span>d &lt; n {
             d <span class="kw-2">*</span>= <span class="number">2</span>;
-            <span class="kw">let </span>(f, df) = f_df(<span class="kw-2">&amp;</span>y, n);
+            <span class="kw">let </span>(f, df) = f_df(<span class="kw-2">&amp;</span>y, d);
             <span class="kw">let </span>h = f - y.clone().differential();
-            <span class="kw">let </span>u = (-df).integral().exp(n);
-            y += (u.recip(n) * (u * h).integral()).truncated(d);
+            <span class="kw">let </span>u = (-df).integral().exp(d);
+            y += (u.recip(d) * (u * h).truncated(d).integral()).truncated(d);
         }
         y.truncated(n)
     }
