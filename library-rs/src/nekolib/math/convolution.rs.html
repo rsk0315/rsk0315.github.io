@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/convolution.rs`."><title>convolution.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c4dbdcde0fbd8430.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../../static.files/light-db279b6232be9c13.css"><link rel="stylesheet" disabled href="../../../static.files/dark-cf923f49f397b216.css"><link rel="stylesheet" disabled href="../../../static.files/ayu-be46fdc453a55015.css"><script src="../../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../../static.files/source-script-1b95b7cca98b26e5.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `nekolib/src/math/convolution.rs`."><title>convolution.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="nekolib" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0 (90c541806 2023-05-31)" data-search-js="search-e077946657036a58.js" data-settings-js="settings-298e1ea74db45b39.js" data-settings-css="settings-7bfb4c59cc6bc502.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../../static.files/source-script-905937fbbdc8e9ea.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-f61008743c98d196.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -87,7 +87,7 @@
   }
 </script>
 
-</head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../nekolib/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+</head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../nekolib/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -927,23 +927,9 @@
 <a href="#838" id="838">838</a>
 <a href="#839" id="839">839</a>
 <a href="#840" id="840">840</a>
-<a href="#841" id="841">841</a>
-<a href="#842" id="842">842</a>
-<a href="#843" id="843">843</a>
-<a href="#844" id="844">844</a>
-<a href="#845" id="845">845</a>
-<a href="#846" id="846">846</a>
-<a href="#847" id="847">847</a>
-<a href="#848" id="848">848</a>
-<a href="#849" id="849">849</a>
-<a href="#850" id="850">850</a>
-<a href="#851" id="851">851</a>
-<a href="#852" id="852">852</a>
-<a href="#853" id="853">853</a>
-</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::garner;
+</pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::garner;
 <span class="kw">use </span><span class="kw">super</span>::modint;
-<span class="kw">use </span>std::cell::RefCell;
-<span class="kw">use </span>std::thread::LocalKey;
+<span class="kw">use </span>std::sync::OnceLock;
 
 <span class="kw">use </span>garner::{CrtMod <span class="kw">as </span>CrtModInternal, CrtWrapping};
 <span class="kw">use </span>modint::{Mod998244353, ModIntBase, Modulus, RemEuclidU32, StaticModInt};
@@ -1024,21 +1010,22 @@
     </span><span class="kw">const </span>EXP: u32 = (<span class="self">Self</span>::VALUE - <span class="number">1</span>).trailing_zeros();
     <span class="kw">const </span>ODD: u32 = <span class="self">Self</span>::VALUE &gt;&gt; <span class="self">Self</span>::EXP;
 
-    <span class="kw">fn </span>butterfly_cache()
-    -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>LocalKey&lt;RefCell&lt;<span class="prelude-ty">Option</span>&lt;ButterflyCache&lt;<span class="self">Self</span>&gt;&gt;&gt;&gt;;
-}
-
-<span class="kw">impl </span>NttFriendly <span class="kw">for </span>Mod998244353 {
-    <span class="kw">fn </span>butterfly_cache()
-    -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>LocalKey&lt;RefCell&lt;<span class="prelude-ty">Option</span>&lt;ButterflyCache&lt;<span class="self">Self</span>&gt;&gt;&gt;&gt; {
-        <span class="macro">thread_local! </span>{
-            <span class="kw">static </span>BUTTERFLY_CACHE: RefCell&lt;<span class="prelude-ty">Option</span>&lt;ButterflyCache&lt;Mod998244353&gt;&gt;&gt; = Default::default();
-        }
-        <span class="kw-2">&amp;</span>BUTTERFLY_CACHE
+    <span class="kw">fn </span>cache() -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>OnceLock&lt;ButterflyCache&lt;<span class="self">Self</span>&gt;&gt;;
+    <span class="kw">fn </span>butterfly_cache() -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>ButterflyCache&lt;<span class="self">Self</span>&gt; {
+        <span class="self">Self</span>::cache().get_or_init(precompute_butterfly)
     }
 }
 
-<span class="kw">pub fn </span>precompute_butterfly&lt;M: NttFriendly&gt;() -&gt; ButterflyCache&lt;M&gt; {
+<span class="kw">static </span>MOD998244353_CACHE: OnceLock&lt;ButterflyCache&lt;Mod998244353&gt;&gt; =
+    OnceLock::new();
+
+<span class="kw">impl </span>NttFriendly <span class="kw">for </span>Mod998244353 {
+    <span class="kw">fn </span>cache() -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>OnceLock&lt;ButterflyCache&lt;<span class="self">Self</span>&gt;&gt; {
+        <span class="kw-2">&amp;</span>MOD998244353_CACHE
+    }
+}
+
+<span class="kw">fn </span>precompute_butterfly&lt;M: NttFriendly&gt;() -&gt; ButterflyCache&lt;M&gt; {
     <span class="kw">let </span>g = StaticModInt::&lt;M&gt;::new(M::PRIMITIVE_ROOT);
     <span class="kw">let </span>rank2 = M::EXP <span class="kw">as </span>usize;
 
@@ -1084,152 +1071,144 @@
     <span class="kw">let </span>n = a.len();
     <span class="kw">let </span>h = ceil_pow2(n <span class="kw">as </span>u32);
 
-    M::butterfly_cache().with(|cache| {
-        <span class="kw">let </span><span class="kw-2">mut </span>cache = cache.borrow_mut();
-        <span class="kw">let </span>ButterflyCache { root, rate2, rate3, .. } =
-            cache.get_or_insert_with(precompute_butterfly);
+    <span class="kw">let </span>ButterflyCache { root, rate2, rate3, .. } = M::butterfly_cache();
 
-        <span class="comment">// a[i, i + (n &gt;&gt; len), i + 2 * (n &gt;&gt; len), ...] is transformed
-        </span><span class="kw">let </span><span class="kw-2">mut </span>len = <span class="number">0</span>;
-        <span class="kw">while </span>len &lt; h {
-            <span class="kw">if </span>h - len == <span class="number">1 </span>{
-                <span class="kw">let </span>p = <span class="number">1 </span>&lt;&lt; (h - len - <span class="number">1</span>);
-                <span class="kw">let </span><span class="kw-2">mut </span>rot = StaticModInt::new(<span class="number">1</span>);
-                <span class="kw">for </span>s <span class="kw">in </span><span class="number">0</span>..<span class="number">1 </span>&lt;&lt; len {
-                    <span class="kw">let </span>offset = s &lt;&lt; (h - len);
-                    <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..p {
-                        <span class="kw">let </span>l = a[i + offset];
-                        <span class="kw">let </span>r = a[i + offset + p] * rot;
-                        a[i + offset] = l + r;
-                        a[i + offset + p] = l - r;
-                    }
-                    <span class="kw">if </span>s + <span class="number">1 </span>!= <span class="number">1 </span>&lt;&lt; len {
-                        rot <span class="kw-2">*</span>= rate2[(!s).trailing_zeros() <span class="kw">as </span>usize];
-                    }
+    <span class="comment">// a[i, i + (n &gt;&gt; len), i + 2 * (n &gt;&gt; len), ...] is transformed
+    </span><span class="kw">let </span><span class="kw-2">mut </span>len = <span class="number">0</span>;
+    <span class="kw">while </span>len &lt; h {
+        <span class="kw">if </span>h - len == <span class="number">1 </span>{
+            <span class="kw">let </span>p = <span class="number">1 </span>&lt;&lt; (h - len - <span class="number">1</span>);
+            <span class="kw">let </span><span class="kw-2">mut </span>rot = StaticModInt::new(<span class="number">1</span>);
+            <span class="kw">for </span>s <span class="kw">in </span><span class="number">0</span>..<span class="number">1 </span>&lt;&lt; len {
+                <span class="kw">let </span>offset = s &lt;&lt; (h - len);
+                <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..p {
+                    <span class="kw">let </span>l = a[i + offset];
+                    <span class="kw">let </span>r = a[i + offset + p] * rot;
+                    a[i + offset] = l + r;
+                    a[i + offset + p] = l - r;
                 }
-                len += <span class="number">1</span>;
-            } <span class="kw">else </span>{
-                <span class="comment">// 4-base
-                </span><span class="kw">let </span>p = <span class="number">1 </span>&lt;&lt; (h - len - <span class="number">2</span>);
-                <span class="kw">let </span>imag_u64 = root[<span class="number">2</span>].get() <span class="kw">as </span>u64;
-                <span class="kw">let </span><span class="kw-2">mut </span>rot = StaticModInt::new(<span class="number">1</span>);
-
-                <span class="kw">for </span>s <span class="kw">in </span><span class="number">0</span>..<span class="number">1 </span>&lt;&lt; len {
-                    <span class="kw">let </span>rot2 = rot * rot;
-                    <span class="kw">let </span>rot3 = rot2 * rot;
-
-                    <span class="kw">let </span>rot_u64 = rot.get() <span class="kw">as </span>u64;
-                    <span class="kw">let </span>rot2_u64 = rot2.get() <span class="kw">as </span>u64;
-                    <span class="kw">let </span>rot3_u64 = rot3.get() <span class="kw">as </span>u64;
-
-                    <span class="kw">let </span>offset = s &lt;&lt; (h - len);
-                    <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..p {
-                        <span class="kw">let </span>mod2 = (M::VALUE <span class="kw">as </span>u64).pow(<span class="number">2</span>);
-                        <span class="kw">let </span>a0 = a[i + offset].get() <span class="kw">as </span>u64;
-                        <span class="kw">let </span>a1 = a[i + offset + p].get() <span class="kw">as </span>u64 * rot_u64;
-                        <span class="kw">let </span>a2 = a[i + offset + <span class="number">2 </span>* p].get() <span class="kw">as </span>u64 * rot2_u64;
-                        <span class="kw">let </span>a3 = a[i + offset + <span class="number">3 </span>* p].get() <span class="kw">as </span>u64 * rot3_u64;
-
-                        <span class="kw">let </span>a1na3 = StaticModInt::&lt;M&gt;::new(a1 + mod2 - a3);
-                        <span class="kw">let </span>a1na3imag = a1na3.get() <span class="kw">as </span>u64 * imag_u64;
-                        <span class="kw">let </span>na2 = mod2 - a2;
-
-                        a[i + offset] = StaticModInt::new(a0 + a2 + a1 + a3);
-                        a[i + offset + p] =
-                            StaticModInt::new(a0 + a2 + (<span class="number">2 </span>* mod2 - (a1 + a3)));
-                        a[i + offset + <span class="number">2 </span>* p] =
-                            StaticModInt::new(a0 + na2 + a1na3imag);
-                        a[i + offset + <span class="number">3 </span>* p] =
-                            StaticModInt::new(a0 + na2 + (mod2 - a1na3imag));
-                    }
-
-                    <span class="kw">if </span>s + <span class="number">1 </span>!= <span class="number">1 </span>&lt;&lt; len {
-                        rot <span class="kw-2">*</span>= rate3[(!s).trailing_zeros() <span class="kw">as </span>usize];
-                    }
+                <span class="kw">if </span>s + <span class="number">1 </span>!= <span class="number">1 </span>&lt;&lt; len {
+                    rot <span class="kw-2">*</span>= rate2[(!s).trailing_zeros() <span class="kw">as </span>usize];
                 }
-                len += <span class="number">2</span>;
             }
+            len += <span class="number">1</span>;
+        } <span class="kw">else </span>{
+            <span class="comment">// 4-base
+            </span><span class="kw">let </span>p = <span class="number">1 </span>&lt;&lt; (h - len - <span class="number">2</span>);
+            <span class="kw">let </span>imag_u64 = root[<span class="number">2</span>].get() <span class="kw">as </span>u64;
+            <span class="kw">let </span><span class="kw-2">mut </span>rot = StaticModInt::new(<span class="number">1</span>);
+
+            <span class="kw">for </span>s <span class="kw">in </span><span class="number">0</span>..<span class="number">1 </span>&lt;&lt; len {
+                <span class="kw">let </span>rot2 = rot * rot;
+                <span class="kw">let </span>rot3 = rot2 * rot;
+
+                <span class="kw">let </span>rot_u64 = rot.get() <span class="kw">as </span>u64;
+                <span class="kw">let </span>rot2_u64 = rot2.get() <span class="kw">as </span>u64;
+                <span class="kw">let </span>rot3_u64 = rot3.get() <span class="kw">as </span>u64;
+
+                <span class="kw">let </span>offset = s &lt;&lt; (h - len);
+                <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..p {
+                    <span class="kw">let </span>mod2 = (M::VALUE <span class="kw">as </span>u64).pow(<span class="number">2</span>);
+                    <span class="kw">let </span>a0 = a[i + offset].get() <span class="kw">as </span>u64;
+                    <span class="kw">let </span>a1 = a[i + offset + p].get() <span class="kw">as </span>u64 * rot_u64;
+                    <span class="kw">let </span>a2 = a[i + offset + <span class="number">2 </span>* p].get() <span class="kw">as </span>u64 * rot2_u64;
+                    <span class="kw">let </span>a3 = a[i + offset + <span class="number">3 </span>* p].get() <span class="kw">as </span>u64 * rot3_u64;
+
+                    <span class="kw">let </span>a1na3 = StaticModInt::&lt;M&gt;::new(a1 + mod2 - a3);
+                    <span class="kw">let </span>a1na3imag = a1na3.get() <span class="kw">as </span>u64 * imag_u64;
+                    <span class="kw">let </span>na2 = mod2 - a2;
+
+                    a[i + offset] = StaticModInt::new(a0 + a2 + a1 + a3);
+                    a[i + offset + p] =
+                        StaticModInt::new(a0 + a2 + (<span class="number">2 </span>* mod2 - (a1 + a3)));
+                    a[i + offset + <span class="number">2 </span>* p] =
+                        StaticModInt::new(a0 + na2 + a1na3imag);
+                    a[i + offset + <span class="number">3 </span>* p] =
+                        StaticModInt::new(a0 + na2 + (mod2 - a1na3imag));
+                }
+
+                <span class="kw">if </span>s + <span class="number">1 </span>!= <span class="number">1 </span>&lt;&lt; len {
+                    rot <span class="kw-2">*</span>= rate3[(!s).trailing_zeros() <span class="kw">as </span>usize];
+                }
+            }
+            len += <span class="number">2</span>;
         }
-    });
+    }
 }
 
 <span class="kw">pub fn </span>butterfly_inv&lt;M: NttFriendly&gt;(a: <span class="kw-2">&amp;mut </span>[StaticModInt&lt;M&gt;]) {
     <span class="kw">let </span>n = a.len();
     <span class="kw">let </span>h = ceil_pow2(n <span class="kw">as </span>u32);
 
-    M::butterfly_cache().with(|cache| {
-        <span class="kw">let </span><span class="kw-2">mut </span>cache = cache.borrow_mut();
-        <span class="kw">let </span>ButterflyCache { iroot, irate2, irate3, .. } =
-            cache.get_or_insert_with(precompute_butterfly);
+    <span class="kw">let </span>ButterflyCache { iroot, irate2, irate3, .. } = M::butterfly_cache();
 
-        <span class="comment">// a[i, i + (n &gt;&gt; len), i + 2 * (n &gt;&gt; len), ...] is transformed
-        </span><span class="kw">let </span><span class="kw-2">mut </span>len = h;
-        <span class="kw">while </span>len &gt; <span class="number">0 </span>{
-            <span class="kw">if </span>len == <span class="number">1 </span>{
-                <span class="kw">let </span>p = <span class="number">1 </span>&lt;&lt; (h - len);
-                <span class="kw">let </span><span class="kw-2">mut </span>irot = StaticModInt::new(<span class="number">1</span>);
-                <span class="kw">for </span>s <span class="kw">in </span><span class="number">0</span>..<span class="number">1 </span>&lt;&lt; (len - <span class="number">1</span>) {
-                    <span class="kw">let </span>offset = s &lt;&lt; (h - len + <span class="number">1</span>);
-                    <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..p {
-                        <span class="kw">let </span>l = a[i + offset];
-                        <span class="kw">let </span>r = a[i + offset + p];
-                        a[i + offset] = l + r;
-                        a[i + offset + p] = (l - r) * irot
-                    }
-
-                    <span class="kw">if </span>s + <span class="number">1 </span>!= <span class="number">1 </span>&lt;&lt; (len - <span class="number">1</span>) {
-                        irot <span class="kw-2">*</span>= irate2[(!s).trailing_zeros() <span class="kw">as </span>usize];
-                    }
+    <span class="comment">// a[i, i + (n &gt;&gt; len), i + 2 * (n &gt;&gt; len), ...] is transformed
+    </span><span class="kw">let </span><span class="kw-2">mut </span>len = h;
+    <span class="kw">while </span>len &gt; <span class="number">0 </span>{
+        <span class="kw">if </span>len == <span class="number">1 </span>{
+            <span class="kw">let </span>p = <span class="number">1 </span>&lt;&lt; (h - len);
+            <span class="kw">let </span><span class="kw-2">mut </span>irot = StaticModInt::new(<span class="number">1</span>);
+            <span class="kw">for </span>s <span class="kw">in </span><span class="number">0</span>..<span class="number">1 </span>&lt;&lt; (len - <span class="number">1</span>) {
+                <span class="kw">let </span>offset = s &lt;&lt; (h - len + <span class="number">1</span>);
+                <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..p {
+                    <span class="kw">let </span>l = a[i + offset];
+                    <span class="kw">let </span>r = a[i + offset + p];
+                    a[i + offset] = l + r;
+                    a[i + offset + p] = (l - r) * irot
                 }
-                len -= <span class="number">1</span>;
-            } <span class="kw">else </span>{
-                <span class="comment">// 4-base
-                </span><span class="kw">let </span>p = <span class="number">1 </span>&lt;&lt; (h - len);
-                <span class="kw">let </span>mod1 = M::VALUE <span class="kw">as </span>u64;
-                <span class="kw">let </span>iimag_u64 = iroot[<span class="number">2</span>].get() <span class="kw">as </span>u64;
 
-                <span class="kw">let </span><span class="kw-2">mut </span>irot = StaticModInt::new(<span class="number">1</span>);
-                <span class="kw">for </span>s <span class="kw">in </span><span class="number">0</span>..<span class="number">1 </span>&lt;&lt; (len - <span class="number">2</span>) {
-                    <span class="kw">let </span>irot2 = irot * irot;
-                    <span class="kw">let </span>irot3 = irot2 * irot;
-
-                    <span class="kw">let </span>irot_u64 = irot.get() <span class="kw">as </span>u64;
-                    <span class="kw">let </span>irot2_u64 = irot2.get() <span class="kw">as </span>u64;
-                    <span class="kw">let </span>irot3_u64 = irot3.get() <span class="kw">as </span>u64;
-
-                    <span class="kw">let </span>offset = s &lt;&lt; (h - len + <span class="number">2</span>);
-                    <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..p {
-                        <span class="kw">let </span>a0 = a[i + offset].get() <span class="kw">as </span>u64;
-                        <span class="kw">let </span>a1 = a[i + offset + p].get() <span class="kw">as </span>u64;
-                        <span class="kw">let </span>a2 = a[i + offset + <span class="number">2 </span>* p].get() <span class="kw">as </span>u64;
-                        <span class="kw">let </span>a3 = a[i + offset + <span class="number">3 </span>* p].get() <span class="kw">as </span>u64;
-
-                        <span class="kw">let </span>a2na3_u64 =
-                            StaticModInt::&lt;M&gt;::new(mod1 + a2 - a3).get() <span class="kw">as </span>u64;
-                        <span class="kw">let </span>a2na3iimag =
-                            StaticModInt::&lt;M&gt;::new(a2na3_u64 * iimag_u64);
-                        <span class="kw">let </span>a2na3iimag_u64 = a2na3iimag.get() <span class="kw">as </span>u64;
-
-                        a[i + offset] = StaticModInt::new(a0 + a1 + a2 + a3);
-                        a[i + offset + p] = StaticModInt::new(
-                            (a0 + (mod1 - a1) + a2na3iimag_u64) * irot_u64,
-                        );
-                        a[i + offset + <span class="number">2 </span>* p] = StaticModInt::new(
-                            (a0 + a1 + (mod1 - a2) + (mod1 - a3)) * irot2_u64,
-                        );
-                        a[i + offset + <span class="number">3 </span>* p] = StaticModInt::new(
-                            (a0 + (mod1 - a1) + (mod1 - a2na3iimag_u64))
-                                * irot3_u64,
-                        );
-                    }
-                    <span class="kw">if </span>s + <span class="number">1 </span>!= <span class="number">1 </span>&lt;&lt; (len - <span class="number">2</span>) {
-                        irot <span class="kw-2">*</span>= irate3[(!s).trailing_zeros() <span class="kw">as </span>usize];
-                    }
+                <span class="kw">if </span>s + <span class="number">1 </span>!= <span class="number">1 </span>&lt;&lt; (len - <span class="number">1</span>) {
+                    irot <span class="kw-2">*</span>= irate2[(!s).trailing_zeros() <span class="kw">as </span>usize];
                 }
-                len -= <span class="number">2</span>;
             }
+            len -= <span class="number">1</span>;
+        } <span class="kw">else </span>{
+            <span class="comment">// 4-base
+            </span><span class="kw">let </span>p = <span class="number">1 </span>&lt;&lt; (h - len);
+            <span class="kw">let </span>mod1 = M::VALUE <span class="kw">as </span>u64;
+            <span class="kw">let </span>iimag_u64 = iroot[<span class="number">2</span>].get() <span class="kw">as </span>u64;
+
+            <span class="kw">let </span><span class="kw-2">mut </span>irot = StaticModInt::new(<span class="number">1</span>);
+            <span class="kw">for </span>s <span class="kw">in </span><span class="number">0</span>..<span class="number">1 </span>&lt;&lt; (len - <span class="number">2</span>) {
+                <span class="kw">let </span>irot2 = irot * irot;
+                <span class="kw">let </span>irot3 = irot2 * irot;
+
+                <span class="kw">let </span>irot_u64 = irot.get() <span class="kw">as </span>u64;
+                <span class="kw">let </span>irot2_u64 = irot2.get() <span class="kw">as </span>u64;
+                <span class="kw">let </span>irot3_u64 = irot3.get() <span class="kw">as </span>u64;
+
+                <span class="kw">let </span>offset = s &lt;&lt; (h - len + <span class="number">2</span>);
+                <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..p {
+                    <span class="kw">let </span>a0 = a[i + offset].get() <span class="kw">as </span>u64;
+                    <span class="kw">let </span>a1 = a[i + offset + p].get() <span class="kw">as </span>u64;
+                    <span class="kw">let </span>a2 = a[i + offset + <span class="number">2 </span>* p].get() <span class="kw">as </span>u64;
+                    <span class="kw">let </span>a3 = a[i + offset + <span class="number">3 </span>* p].get() <span class="kw">as </span>u64;
+
+                    <span class="kw">let </span>a2na3_u64 =
+                        StaticModInt::&lt;M&gt;::new(mod1 + a2 - a3).get() <span class="kw">as </span>u64;
+                    <span class="kw">let </span>a2na3iimag =
+                        StaticModInt::&lt;M&gt;::new(a2na3_u64 * iimag_u64);
+                    <span class="kw">let </span>a2na3iimag_u64 = a2na3iimag.get() <span class="kw">as </span>u64;
+
+                    a[i + offset] = StaticModInt::new(a0 + a1 + a2 + a3);
+                    a[i + offset + p] = StaticModInt::new(
+                        (a0 + (mod1 - a1) + a2na3iimag_u64) * irot_u64,
+                    );
+                    a[i + offset + <span class="number">2 </span>* p] = StaticModInt::new(
+                        (a0 + a1 + (mod1 - a2) + (mod1 - a3)) * irot2_u64,
+                    );
+                    a[i + offset + <span class="number">3 </span>* p] = StaticModInt::new(
+                        (a0 + (mod1 - a1) + (mod1 - a2na3iimag_u64))
+                            * irot3_u64,
+                    );
+                }
+                <span class="kw">if </span>s + <span class="number">1 </span>!= <span class="number">1 </span>&lt;&lt; (len - <span class="number">2</span>) {
+                    irot <span class="kw-2">*</span>= irate3[(!s).trailing_zeros() <span class="kw">as </span>usize];
+                }
+            }
+            len -= <span class="number">2</span>;
         }
-    });
+    }
 }
 
 <span class="kw">pub fn </span>convolve&lt;M: NttFriendly&gt;(
@@ -1319,35 +1298,30 @@
 }
 
 <span class="macro">macro_rules! </span>impl_modint_ntt {
-    ( $( (<span class="macro-nonterminal">$</span><span class="kw">mod</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$val</span>:expr), )* ) =&gt; { $(
+    ( $( (<span class="macro-nonterminal">$</span><span class="kw">mod</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$val</span>:expr, <span class="macro-nonterminal">$cache</span>:ident), )* ) =&gt; { $(
         <span class="attr">#[derive(Clone, Copy, Eq, PartialEq)]
         </span><span class="kw">struct </span><span class="macro-nonterminal">$</span><span class="kw">mod</span>;
-        <span class="kw">impl </span><span class="macro-nonterminal">Modulus </span><span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">mod </span>{
+        <span class="kw">static </span><span class="macro-nonterminal">$cache</span>: OnceLock&lt;ButterflyCache&lt;<span class="macro-nonterminal">$</span><span class="kw">mod</span>&gt;&gt; = <span class="macro-nonterminal">OnceLock::new</span>();
+        <span class="kw">impl </span>Modulus <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">mod </span>{
             <span class="kw">const </span><span class="macro-nonterminal">VALUE</span>: u32 = <span class="macro-nonterminal">$val</span>;
         }
         <span class="kw">impl </span>NttFriendly <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">mod </span>{
-            <span class="kw">fn </span><span class="macro-nonterminal">butterfly_cache</span>()
-            -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>LocalKey&lt;RefCell&lt;<span class="prelude-ty">Option</span>&lt;ButterflyCache&lt;<span class="macro-nonterminal">$</span><span class="kw">mod</span>&gt;&gt;&gt;&gt; {
-                <span class="macro">thread_local! </span>{
-                    <span class="kw">static </span><span class="macro-nonterminal">BUTTERFLY_CACHE</span>: RefCell&lt;<span class="prelude-ty">Option</span>&lt;ButterflyCache&lt;<span class="macro-nonterminal">$</span><span class="kw">mod</span>&gt;&gt;&gt; = <span class="macro-nonterminal">Default::default</span>();
-                }
-                <span class="kw-2">&amp;</span>BUTTERFLY_CACHE
-            }
+            <span class="kw">fn </span><span class="macro-nonterminal">cache</span>() -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>OnceLock&lt;ButterflyCache&lt;<span class="macro-nonterminal">$</span><span class="kw">mod</span>&gt;&gt; { <span class="kw-2">&amp;</span><span class="macro-nonterminal">$cache </span>}
         }
     )* }
 }
 
 <span class="macro">impl_modint_ntt! </span>{
-    (Mod45e24p1, <span class="number">45 </span>&lt;&lt; <span class="number">24 </span>| <span class="number">1</span>),
-    (Mod73e24p1, <span class="number">73 </span>&lt;&lt; <span class="number">24 </span>| <span class="number">1</span>),
-    (Mod127e24p1, <span class="number">127 </span>&lt;&lt; <span class="number">24 </span>| <span class="number">1</span>),
-    (Mod5e25p1, <span class="number">5 </span>&lt;&lt; <span class="number">25 </span>| <span class="number">1</span>),
-    (Mod33e25p1, <span class="number">33 </span>&lt;&lt; <span class="number">25 </span>| <span class="number">1</span>),
-    (Mod51e25p1, <span class="number">51 </span>&lt;&lt; <span class="number">25 </span>| <span class="number">1</span>),
-    (Mod63e25p1, <span class="number">63 </span>&lt;&lt; <span class="number">25 </span>| <span class="number">1</span>),
-    (Mod7e26p1, <span class="number">7 </span>&lt;&lt; <span class="number">26 </span>| <span class="number">1</span>),
-    (Mod27e26p1, <span class="number">27 </span>&lt;&lt; <span class="number">26 </span>| <span class="number">1</span>),
-    (Mod15e27p1, <span class="number">15 </span>&lt;&lt; <span class="number">27 </span>| <span class="number">1</span>),
+    (Mod45e24p1, <span class="number">45 </span>&lt;&lt; <span class="number">24 </span>| <span class="number">1</span>, MOD45E24P1_CACHE),
+    (Mod73e24p1, <span class="number">73 </span>&lt;&lt; <span class="number">24 </span>| <span class="number">1</span>, MOD73E24P1_CACHE),
+    (Mod127e24p1, <span class="number">127 </span>&lt;&lt; <span class="number">24 </span>| <span class="number">1</span>, MOD127E24P1_CACHE),
+    (Mod5e25p1, <span class="number">5 </span>&lt;&lt; <span class="number">25 </span>| <span class="number">1</span>, MOD5E25P1_CACHE),
+    (Mod33e25p1, <span class="number">33 </span>&lt;&lt; <span class="number">25 </span>| <span class="number">1</span>, MOD33E25P1_CACHE),
+    (Mod51e25p1, <span class="number">51 </span>&lt;&lt; <span class="number">25 </span>| <span class="number">1</span>, MOD51E25P1_CACHE),
+    (Mod63e25p1, <span class="number">63 </span>&lt;&lt; <span class="number">25 </span>| <span class="number">1</span>, MOD63E25P1_CACHE),
+    (Mod7e26p1, <span class="number">7 </span>&lt;&lt; <span class="number">26 </span>| <span class="number">1</span>, MOD7E26P1_CACHE),
+    (Mod27e26p1, <span class="number">27 </span>&lt;&lt; <span class="number">26 </span>| <span class="number">1</span>, MOD27E26P1_CACHE),
+    (Mod15e27p1, <span class="number">15 </span>&lt;&lt; <span class="number">27 </span>| <span class="number">1</span>, MOD15E27P1_CACHE),
 }
 
 <span class="kw">type </span>Mod0 = Mod15e27p1;
@@ -1793,5 +1767,4 @@
     <span class="kw">let </span>expected = convolve_naive(<span class="kw-2">&amp;</span>a, <span class="kw-2">&amp;</span>b);
     <span class="macro">assert_eq!</span>(convolve(a, b), expected);
 }
-</code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="nekolib" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0 (84c898d65 2023-04-16)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
+</code></pre></div></section></main></body></html>
