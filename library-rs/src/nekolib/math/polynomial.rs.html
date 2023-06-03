@@ -1759,7 +1759,6 @@
 <a href="#1670" id="1670">1670</a>
 <a href="#1671" id="1671">1671</a>
 <a href="#1672" id="1672">1672</a>
-<a href="#1673" id="1673">1673</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! 多項式。
 
 </span><span class="kw">use </span><span class="kw">super</span>::convolution;
@@ -2151,6 +2150,28 @@
         diff
     }
 
+    <span class="attr">#[allow(dead_code)]
+    </span><span class="kw">fn </span>exp_naive(<span class="kw-2">&amp;</span><span class="self">self</span>, len: usize) -&gt; <span class="self">Self </span>{
+        <span class="macro">assert_eq!</span>(<span class="self">self</span>.<span class="number">0</span>.get(<span class="number">0</span>).map(|x| x.get()).unwrap_or(<span class="number">0</span>), <span class="number">0</span>);
+
+        <span class="kw">if </span>len == <span class="number">0 </span>{
+            <span class="kw">return </span><span class="self">Self</span>(<span class="macro">vec!</span>[]);
+        }
+
+        <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="self">Self</span>(<span class="macro">vec!</span>[StaticModInt::new(<span class="number">1</span>)]);
+        <span class="kw">let </span>one = <span class="self">Self</span>(<span class="macro">vec!</span>[StaticModInt::new(<span class="number">1</span>)]);
+        <span class="kw">let </span><span class="kw-2">mut </span>cur_len = <span class="number">1</span>;
+        <span class="kw">while </span>cur_len &lt; len {
+            cur_len <span class="kw-2">*</span>= <span class="number">2</span>;
+            <span class="kw">let </span><span class="kw-2">mut </span>tmp = <span class="kw-2">&amp;</span>one - res.log(cur_len) + <span class="self">self</span>;
+            tmp <span class="kw-2">*</span>= res;
+            tmp.truncate(cur_len);
+            res = tmp;
+        }
+        res.truncate(len);
+        res
+    }
+
     <span class="doccomment">/// $\[x\^0] f(x) = 0$ なる $f$ に対し、$\\exp(f(x)) \\bmod x^n$ を返す。
     ///
     /// $\\exp(f(x)) = \\sum\_{n=0}^{\\infty} \\frac{f(x)^n}{n!}$ によって定義される。
@@ -2172,29 +2193,6 @@
     /// assert_eq!(f.exp(5), g);
     /// ```
     </span><span class="kw">pub fn </span>exp(<span class="kw-2">&amp;</span><span class="self">self</span>, len: usize) -&gt; <span class="self">Self </span>{
-        <span class="macro">assert_eq!</span>(<span class="self">self</span>.<span class="number">0</span>.get(<span class="number">0</span>).map(|x| x.get()).unwrap_or(<span class="number">0</span>), <span class="number">0</span>);
-
-        <span class="kw">return </span><span class="self">self</span>.exp_fast(len);
-
-        <span class="kw">if </span>len == <span class="number">0 </span>{
-            <span class="kw">return </span><span class="self">Self</span>(<span class="macro">vec!</span>[]);
-        }
-
-        <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="self">Self</span>(<span class="macro">vec!</span>[StaticModInt::new(<span class="number">1</span>)]);
-        <span class="kw">let </span>one = <span class="self">Self</span>(<span class="macro">vec!</span>[StaticModInt::new(<span class="number">1</span>)]);
-        <span class="kw">let </span><span class="kw-2">mut </span>cur_len = <span class="number">1</span>;
-        <span class="kw">while </span>cur_len &lt; len {
-            cur_len <span class="kw-2">*</span>= <span class="number">2</span>;
-            <span class="kw">let </span><span class="kw-2">mut </span>tmp = <span class="kw-2">&amp;</span>one - res.log(cur_len) + <span class="self">self</span>;
-            tmp <span class="kw-2">*</span>= res;
-            tmp.truncate(cur_len);
-            res = tmp;
-        }
-        res.truncate(len);
-        res
-    }
-
-    <span class="kw">fn </span>exp_fast(<span class="kw-2">&amp;</span><span class="self">self</span>, len: usize) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span><span class="kw-2">mut </span>b = <span class="self">Self</span>::from([<span class="number">1</span>, <span class="self">self</span>.get(<span class="number">1</span>).get()]);
         <span class="kw">let </span><span class="kw-2">mut </span>c = <span class="self">Self</span>::from([<span class="number">1</span>]);
         <span class="kw">let </span><span class="kw-2">mut </span>z2 = <span class="self">Self</span>::from([<span class="number">1</span>, <span class="number">1</span>]);

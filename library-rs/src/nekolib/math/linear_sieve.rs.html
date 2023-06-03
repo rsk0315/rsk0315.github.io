@@ -470,6 +470,63 @@
 <a href="#381" id="381">381</a>
 <a href="#382" id="382">382</a>
 <a href="#383" id="383">383</a>
+<a href="#384" id="384">384</a>
+<a href="#385" id="385">385</a>
+<a href="#386" id="386">386</a>
+<a href="#387" id="387">387</a>
+<a href="#388" id="388">388</a>
+<a href="#389" id="389">389</a>
+<a href="#390" id="390">390</a>
+<a href="#391" id="391">391</a>
+<a href="#392" id="392">392</a>
+<a href="#393" id="393">393</a>
+<a href="#394" id="394">394</a>
+<a href="#395" id="395">395</a>
+<a href="#396" id="396">396</a>
+<a href="#397" id="397">397</a>
+<a href="#398" id="398">398</a>
+<a href="#399" id="399">399</a>
+<a href="#400" id="400">400</a>
+<a href="#401" id="401">401</a>
+<a href="#402" id="402">402</a>
+<a href="#403" id="403">403</a>
+<a href="#404" id="404">404</a>
+<a href="#405" id="405">405</a>
+<a href="#406" id="406">406</a>
+<a href="#407" id="407">407</a>
+<a href="#408" id="408">408</a>
+<a href="#409" id="409">409</a>
+<a href="#410" id="410">410</a>
+<a href="#411" id="411">411</a>
+<a href="#412" id="412">412</a>
+<a href="#413" id="413">413</a>
+<a href="#414" id="414">414</a>
+<a href="#415" id="415">415</a>
+<a href="#416" id="416">416</a>
+<a href="#417" id="417">417</a>
+<a href="#418" id="418">418</a>
+<a href="#419" id="419">419</a>
+<a href="#420" id="420">420</a>
+<a href="#421" id="421">421</a>
+<a href="#422" id="422">422</a>
+<a href="#423" id="423">423</a>
+<a href="#424" id="424">424</a>
+<a href="#425" id="425">425</a>
+<a href="#426" id="426">426</a>
+<a href="#427" id="427">427</a>
+<a href="#428" id="428">428</a>
+<a href="#429" id="429">429</a>
+<a href="#430" id="430">430</a>
+<a href="#431" id="431">431</a>
+<a href="#432" id="432">432</a>
+<a href="#433" id="433">433</a>
+<a href="#434" id="434">434</a>
+<a href="#435" id="435">435</a>
+<a href="#436" id="436">436</a>
+<a href="#437" id="437">437</a>
+<a href="#438" id="438">438</a>
+<a href="#439" id="439">439</a>
+<a href="#440" id="440">440</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! 線形篩。
 
 </span><span class="kw">use </span><span class="kw">super</span>::gcd_recip;
@@ -607,11 +664,7 @@
     /// assert_eq!(sieve.least_factor(24), Some(2));
     /// ```
     </span><span class="kw">pub fn </span>least_factor(<span class="kw-2">&amp;</span><span class="self">self</span>, n: usize) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt; {
-        <span class="kw">if </span>n &lt; <span class="number">2 </span>{
-            <span class="prelude-val">None
-        </span>} <span class="kw">else </span>{
-            <span class="prelude-val">Some</span>(<span class="self">self</span>.lpf[n])
-        }
+        <span class="kw">if </span>n &lt; <span class="number">2 </span>{ <span class="prelude-val">None </span>} <span class="kw">else </span>{ <span class="prelude-val">Some</span>(<span class="self">self</span>.lpf[n]) }
     }
 
     <span class="doccomment">/// $n$ の素因数を列挙する。重複あり。
@@ -832,6 +885,67 @@
             }
         }
         dp
+    }
+
+    <span class="doccomment">/// 最小素因数を用いて DP を行う。
+    ///
+    /// # Examples
+    /// ```
+    /// use nekolib::math::LinearSieve;
+    ///
+    /// let sieve = LinearSieve::new(10);
+    ///
+    /// // Moebius mu function
+    /// let mu = sieve.dp(0, 1, |&amp;x, _| 0, |&amp;x, _| -x);
+    /// assert_eq!(mu, [0, 1, -1, -1, 0, -1, 1, -1, 0, 0, 1]);
+    ///
+    /// // Euler phi function
+    /// let phi = sieve.dp(0, 1, |&amp;x, p| x * p, |&amp;x, p| x * (p - 1));
+    /// assert_eq!(phi, [0, 1, 1, 2, 2, 4, 2, 6, 4, 6, 4]);
+    ///
+    /// // the number of distinct prime factors
+    /// let omega = sieve.dp(0, 0, |&amp;x, _| x, |&amp;x, _| x + 1);
+    /// assert_eq!(omega, [0, 0, 1, 1, 1, 1, 2, 1, 1, 1, 2]);
+    ///
+    /// // the number of prime factors
+    /// let cap_omega = sieve.dp(0, 0, |&amp;x, _| x + 1, |&amp;x, _| x + 1);
+    /// assert_eq!(cap_omega, [0, 0, 1, 1, 2, 1, 2, 1, 3, 2, 2]);
+    ///
+    /// // sum of divisors
+    /// let eq = |&amp;(prod, sum, pow): &amp;_, p| (prod, sum + pow * p, pow * p);
+    /// let gt = |&amp;(prod, sum, _): &amp;_, p| (prod * sum, 1 + p, p);
+    /// let sigma: Vec&lt;_&gt; = sieve.dp((1, 1, 1), (1, 1, 1), eq, gt)
+    ///     .into_iter().map(|(prod, sum, _)| prod * sum)
+    ///     .collect();
+    /// assert_eq!(sigma, [1, 1, 3, 4, 7, 6, 12, 8, 15, 13, 18]);
+    /// ```
+    </span><span class="kw">pub fn </span>dp&lt;T&gt;(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        zero: T,
+        one: T,
+        eq: <span class="kw">impl </span>Fn(<span class="kw-2">&amp;</span>T, usize) -&gt; T,
+        gt: <span class="kw">impl </span>Fn(<span class="kw-2">&amp;</span>T, usize) -&gt; T,
+    ) -&gt; Vec&lt;T&gt; {
+        <span class="kw">let </span>n = <span class="self">self</span>.lpf.len() - <span class="number">1</span>;
+
+        <span class="kw">if </span>n == <span class="number">0 </span>{
+            <span class="kw">return </span><span class="macro">vec!</span>[zero];
+        } <span class="kw">else if </span>n == <span class="number">1 </span>{
+            <span class="kw">return </span><span class="macro">vec!</span>[zero, one];
+        }
+
+        <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="macro">vec!</span>[zero, one];
+        res.reserve(n + <span class="number">1</span>);
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">2</span>..=n {
+            <span class="kw">let </span>lpf = <span class="self">self</span>.lpf[i];
+            <span class="kw">let </span>tmp = <span class="kw">if </span>lpf == <span class="self">self</span>.lpf[i / lpf] {
+                eq(<span class="kw-2">&amp;</span>res[i / lpf], lpf)
+            } <span class="kw">else </span>{
+                gt(<span class="kw-2">&amp;</span>res[i / lpf], lpf)
+            };
+            res.push(tmp);
+        }
+        res
     }
 }
 
