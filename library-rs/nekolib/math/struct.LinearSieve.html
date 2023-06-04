@@ -94,7 +94,7 @@
 $i$ の最小素因数を $\mathrm{lpf}(i)$ と書く。$j \le \lpf{i}$
 なる各素数 $j$ に対して、$\lpf{i\times j} = j$ とわかる。
 素因数分解の一意性から、各整数の最小素因数の更新は一回ずつしか行われず、線形時間で構築できる。</p>
-<p>また、$\lpf{i}$ が $\lpf{i / \lpf{i}}$
+<p>また、$\lpf{i}$ が $\lpf{i / {\lpf{i}}}$
 と等しいかで場合分けしながら DP することで、各 $i$ が $\lpf{i}$
 で何回割り切れるかも求められる。
 なお、これは DP せず各 $i$ に対して愚直に計算しても $O(n)$ になることが示せるらしい。</p>
@@ -143,7 +143,7 @@ $$ \pi(n) = \frac{n}{\ln(n)} + O{\left(\frac{n}{\ln(n)^2}\right)}. $$</p>
 <li><a href="https://twitter.com/hidesugar2/status/1431243186362458114">https://twitter.com/hidesugar2/status/1431243186362458114</a></li>
 <li><a href="https://maspypy.com/%E7%B4%A0%E6%95%B0%E3%81%AB%E9%96%A2%E3%81%99%E3%82%8B%E4%B8%8A%E3%81%8B%E3%82%89%E3%81%AE%E8%A9%95%E4%BE%A1%EF%BC%88%E5%88%9D%E7%AD%89%E7%9A%84%E3%81%AA%E8%A8%BC%E6%98%8E%EF%BC%89">https://maspypy.com/%E7%B4%A0%E6%95%B0%E3%81%AB%E9%96%A2%E3%81%99%E3%82%8B%E4%B8%8A%E3%81%8B%E3%82%89%E3%81%AE%E8%A9%95%E4%BE%A1%EF%BC%88%E5%88%9D%E7%AD%89%E7%9A%84%E3%81%AA%E8%A8%BC%E6%98%8E%EF%BC%89</a></li>
 </ul>
-</div></details><h2 id="implementations" class="small-section-header">Implementations<a href="#implementations" class="anchor">§</a></h2><div id="implementations-list"><details class="toggle implementors-toggle" open><summary><section id="impl-LinearSieve" class="impl"><a class="srclink rightside" href="../../src/nekolib/math/linear_sieve.rs.html#77-421">source</a><a href="#impl-LinearSieve" class="anchor">§</a><h3 class="code-header">impl <a class="struct" href="struct.LinearSieve.html" title="struct nekolib::math::LinearSieve">LinearSieve</a></h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.new" class="method"><a class="srclink rightside" href="../../src/nekolib/math/linear_sieve.rs.html#86-110">source</a><h4 class="code-header">pub fn <a href="#method.new" class="fn">new</a>(n: <a class="primitive" href="https://doc.rust-lang.org/1.70.0/std/primitive.usize.html">usize</a>) -&gt; Self</h4></section></summary><div class="docblock"><p>$n$ 以下の自然数に対する篩を用意する。</p>
+</div></details><h2 id="implementations" class="small-section-header">Implementations<a href="#implementations" class="anchor">§</a></h2><div id="implementations-list"><details class="toggle implementors-toggle" open><summary><section id="impl-LinearSieve" class="impl"><a class="srclink rightside" href="../../src/nekolib/math/linear_sieve.rs.html#77-432">source</a><a href="#impl-LinearSieve" class="anchor">§</a><h3 class="code-header">impl <a class="struct" href="struct.LinearSieve.html" title="struct nekolib::math::LinearSieve">LinearSieve</a></h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.new" class="method"><a class="srclink rightside" href="../../src/nekolib/math/linear_sieve.rs.html#86-110">source</a><h4 class="code-header">pub fn <a href="#method.new" class="fn">new</a>(n: <a class="primitive" href="https://doc.rust-lang.org/1.70.0/std/primitive.usize.html">usize</a>) -&gt; Self</h4></section></summary><div class="docblock"><p>$n$ 以下の自然数に対する篩を用意する。</p>
 <h5 id="examples-1"><a href="#examples-1">Examples</a></h5>
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>nekolib::math::LinearSieve;
 
@@ -261,7 +261,7 @@ $$
 Note: $\recip{i}{m}\ne 0$。</p>
 <h5 id="idea-1"><a href="#idea-1">Idea</a></h5>
 <p>$$
-\recip{i}{m} \equiv \recip{\lpf{i}}{m}\cdot\recip{(i/\lpf{i})}{m}\pmod{m}
+\recip{i}{m} \equiv \recip{\lpf{i}}{m}\cdot\recip{(i/{\lpf{i}})}{m}\pmod{m}
 $$
 に基づく。素数は $O(n/\log(n))$ 個しかないため、互除法で愚直に求めても全体では
 $O(n)$ 時間となる。</p>
@@ -274,13 +274,22 @@ $O(n)$ 時間となる。</p>
 <span class="macro">assert_eq!</span>(sieve.recips(<span class="number">0</span>, <span class="number">1</span>), [<span class="number">0</span>]);
 <span class="macro">assert_eq!</span>(sieve.recips(<span class="number">4</span>, <span class="number">5</span>), [<span class="number">0</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">4</span>]);
 <span class="macro">assert_eq!</span>(sieve.recips(<span class="number">9</span>, <span class="number">10</span>), [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">3</span>, <span class="number">0</span>, <span class="number">9</span>]);</code></pre></div>
-</div></details><details class="toggle method-toggle" open><summary><section id="method.dp" class="method"><a class="srclink rightside" href="../../src/nekolib/math/linear_sieve.rs.html#393-420">source</a><h4 class="code-header">pub fn <a href="#method.dp" class="fn">dp</a>&lt;T&gt;(
+</div></details><details class="toggle method-toggle" open><summary><section id="method.dp" class="method"><a class="srclink rightside" href="../../src/nekolib/math/linear_sieve.rs.html#404-431">source</a><h4 class="code-header">pub fn <a href="#method.dp" class="fn">dp</a>&lt;T&gt;(
     &amp;self,
     zero: T,
     one: T,
     eq: impl <a class="trait" href="https://doc.rust-lang.org/1.70.0/core/ops/function/trait.Fn.html" title="trait core::ops::function::Fn">Fn</a>(<a class="primitive" href="https://doc.rust-lang.org/1.70.0/std/primitive.reference.html">&amp;T</a>, <a class="primitive" href="https://doc.rust-lang.org/1.70.0/std/primitive.usize.html">usize</a>) -&gt; T,
     gt: impl <a class="trait" href="https://doc.rust-lang.org/1.70.0/core/ops/function/trait.Fn.html" title="trait core::ops::function::Fn">Fn</a>(<a class="primitive" href="https://doc.rust-lang.org/1.70.0/std/primitive.reference.html">&amp;T</a>, <a class="primitive" href="https://doc.rust-lang.org/1.70.0/std/primitive.usize.html">usize</a>) -&gt; T
 ) -&gt; <a class="struct" href="https://doc.rust-lang.org/1.70.0/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;T&gt;</h4></section></summary><div class="docblock"><p>最小素因数を用いて DP を行う。</p>
+<p>関数 $f$ であって、任意の $i\gt 1$ に対して
+$$
+f(i) = \begin{cases}
+g_{=}(f(i/j), \lpf{i}), &amp; \text{if }\lpf{i} = \lpf{i/j}; \\
+g_{\gt}(f(i/j), \lpf{i}), &amp; \text{if }\lpf{i} \gt \lpf{i/j} \\
+\end{cases}
+$$
+となるものを計算する。ただし $j = \lpf{i}$ とする。</p>
+<p><code>(zero, one, eq, gt)</code> はそれぞれ $(f(0), f(1), g_{=}, g_{\gt})$ である。</p>
 <h5 id="examples-13"><a href="#examples-13">Examples</a></h5>
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>nekolib::math::LinearSieve;
 
