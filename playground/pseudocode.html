@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://rsk0315.github.io/KaTeX/dist/katex.min.css" integrity="sha384-h4/xDgXNao+EQ+xvZ0a/7QRoxZo9huqoHfvb1LFx/zbFh1aBxP9Al8yIzgcLYEsM" crossorigin="anonymous">
+    <script defer src="https://rsk0315.github.io/KaTeX/dist/katex.min.js" integrity="sha384-uTtSJt9XPLiqIUfRVfOITjgIvmh5bzXv8CWqNvlv0Gd5jXgLOUU0grHCGKhXhMD/" crossorigin="anonymous"></script>
+    <script defer src="https://rsk0315.github.io/KaTeX/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous" onload=""></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+    <script src="js/pseudocode.js"></script>
+    <link rel="stylesheet" href="css/pseudocode.css">
+  </head>
+
+  <body>
+    <h1 id="title">Pseudocode Playground</h1>
+    <div class="frame-wrapper">
+      <label id="input-label" class="text-label" for="input">input</label>
+      <textarea class="textinput" id="input" rows="16" oninput="render();"></textarea>
+    </div>
+    <div class="frame-wrapper">
+      <label id="output-label" class="div-label">output</label>
+      <div id="output" class="textinput" tabindex="0"></div>
+    </div>
+  </body>
+</html>

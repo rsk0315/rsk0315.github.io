@@ -8,3 +8,4 @@
 - [コマンドをコピペする UI のやつ](rich-terminal.html)
 - [mod 998244353 の計算機](mod_calculator/)
     - [mod 1000000007 の計算機](mod_calculator/?mod=1000000007)
+- [pseudocode](pseudocode.html)
