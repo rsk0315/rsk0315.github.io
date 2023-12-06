@@ -71,84 +71,82 @@ function modifyMessage(msg, e) {
 }
 
 function markup(code, elt) {
-  const RE = /(?:\[(?<CK>[^\]\}]+)\])|(?:\{(?<CE>.+)\})|(?<NL>\n)/g;
-
-  let out = "$\\begin{aligned}";
-  let indent = 0;
-  let blank = true;
+  let out = "";
+  let indent = [0];
   let lineno = 0;
-  let opened = false;
   let opening = false;
-  for (const match of code.matchAll(RE)) {
-    if (match.groups.NL) {
-      out += "\\\\\n";
-      blank = true;
-      if (opening) {
-        out += "&\\begin{aligned}";
-        opening = false;
-        opened = true;
-      }
+  let opened = false;
+  let keep = false;
+
+  const RE = /(?:\$(?<TEX>(?:\\.|[^$\\])+)\$)|(?<KW>[\w-]+)/g;
+  const INDENT = /^ */;
+
+  for (const line of code.split("\n")) {
+    let cur = "";
+    let len = line.match(INDENT)[0].length;
+    if (len === line.length) {
       continue;
     }
 
-    if (blank) {
-      if (match.groups.CK === 'function') {
+    if (indent[indent.length - 1] < len) {
+      indent.push(len);
+    } else if (indent[indent.length - 1] > len) {
+      indent.pop();
+    }
+
+    for (const match of line.matchAll(RE)) {
+      if (cur !== "") {
+        cur += "\\;";
+      }
+
+      if (match.groups.TEX) {
+        cur += `${match.groups.TEX}`;
+      } else if (match.groups.KW) {
+        if (["function"].includes(match.groups.KW)) {
+          opening = true;
+        }
+        if (/\b(?:const|let|global)/.test(match.groups.KW)) {
+          keep = true;
+        }
+        cur += `\\text{\\textbf{${match.groups.KW}}}`;
+      }
+    }
+
+    if (cur !== "") {
+      if (lineno > 0) {
+        out += "\\\\\n";
+      }
+
+      if (keep) {
+        out += " \\quad".repeat(indent.length - 1);
+      } else if (!opening) {
+        out += `\\qquad {\\scriptsize ${++lineno}}{\\scriptsize\\colon} &`;
+        out += " \\quad".repeat(indent.length - 1);
+      }
+      if (opening) {
         if (opened) {
-          out += "\\end{aligned}\\\\\n";
+          out += "\n\\end{aligned}\\\\\n";
           lineno = 0;
-          opened = false;
         }
-        opening = true;
+        out += `& ${cur} \\\\\n`;
+        out += "&\\begin{aligned}\n";
+        opened = true;
+      } else if (keep && !opened) {
+        out += `& ${cur} \\\\\n`;
       } else {
-        if (opened) {
-          out += `\\qquad{\\scriptsize ${++lineno}\\colon}`;
-        }
-        out += "&";
-        if (match.groups.CK && match.groups.CK.startsWith('end')) {
-          --indent;
-        }
-        out += "\\quad ".repeat(indent);
-        if (match.groups.CK && !match.groups.CK.startsWith('end')) {
-          if (opened && !["function", "return"].includes(match.groups.CK)) {
-            ++indent;
-          }
-        }
+        out += ` ${cur}`;
       }
-      blank = false;
-    } else {
-      out += "\\;";
     }
 
-    if (match.groups.CK) {
-      if (match.groups.CK === "function") {
-        out += "&";
-      }
-      out += `\\text{\\textbf{${match.groups.CK}}}`;
-    } else if (match.groups.CE) {
-      out += ` ${match.groups.CE} `;
-    }
+    keep = false;
+    opening = false;
   }
+
   if (opened) {
-    out += "\\end{aligned}"
+    out += "\n\\end{aligned}";
   }
-  out += "\\end{aligned}$";
 
-  elt.innerHTML = out;
-
-  let err = "";
-  renderMathInElement(elt, {
-    delimiters: [
-      { left: '$$', right: '$$', display: true },
-      { left: '$', right: '$', display: false },
-    ],
-    macros,
-    errorCallback: ((msg, e) => {
-      console.error(e);
-    }),
-  });
-  if (err) {
-    elt.innerText += 'error, see console.';
-  }
+  elt.innerHTML = katex.renderToString(`\\begin{aligned}${out}\\end{aligned}`, { macros });
 }
 
 function render() {

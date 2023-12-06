@@ -59,6 +59,8 @@ button:focus {
     border-radius: 4px;
     box-sizing: border-box;
     color: #3c4043;
+    font-family: 'TheSansMonoCd',monospace;
+    font-weight: 450;
     font-size: 14px;
     margin: 8px 0;
 }
