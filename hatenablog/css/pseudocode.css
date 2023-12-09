@@ -1,0 +1,101 @@
+body {
+    font-family: Lato;
+}
+button {
+    font-family: Lato;
+    color: #5f6368;
+    background-color: white;
+    border-radius: 4px;
+    border: 1px solid #dadce0;
+}
+button:focus {
+    color: white;
+    background-color: #ffadba;
+    border-radius: 4px;
+    border: 1px solid #ffadba;
+    font-weight: bold;
+    outline: 2px solid rgba(255, 173, 186, 0.7);
+}
+.error {
+    font-family: monospace;
+    color: #a11
+}
+.frame-wrapper {
+    position: relative;
+}
+.frame-wrapper .text-label {
+    background-color: white;
+    box-shadow: 5px 0 0 white,-5px 0 0 white;
+    color: #5f6368;
+    display: inline;
+    font-size: 12px;
+    left: 12px;
+    margin-bottom: 0;
+    max-width: 300px;
+    padding: 0;
+    position: absolute;
+    top: 0px;
+    word-wrap: break-word;
+}
+.frame-wrapper .div-label {
+    background-color: white;
+    box-shadow: 5px 0 0 white,-5px 0 0 white;
+    color: #5f6368;
+    display: inline;
+    font-size: 12px;
+    left: 12px;
+    margin-bottom: 0;
+    max-width: 300px;
+    padding: 0;
+    position: absolute;
+    top: -8px;
+    word-wrap: break-word;
+}
+.frame-wrapper .text-label.focused, .frame-wrapper .div-label.focused {
+    color: #ffadba;
+}
+.frame-wrapper .textinput {
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    box-sizing: border-box;
+    color: #3c4043;
+    font-family: 'TheSansMonoCd',monospace;
+    font-weight: 450;
+    font-size: 14px;
+    margin: 8px 0;
+}
+.frame-wrapper input.textinput {
+    padding: 1px 8px;
+    height: 36px;
+}
+.frame-wrapper textarea.textinput {
+    padding: 8px;
+    min-height: 36px;
+    width: 100%;
+}
+.frame-wrapper div.textinput {
+    padding: 8px;
+    min-height: 30px;
+}
+.frame-wrapper .textinput:focus {
+    border: 1px solid #ffadba;
+    outline: 1px solid rgba(255, 173, 186, 0.7);
+}
+
+.pseudocode {
+    -moz-border-radius: 3px;
+    -moz-box-shadow: 0 2px 0 rgba(34,58,112,0.4),0 0 0 2px #fff inset;
+    -webkit-border-radius :3px;
+    -webkit-box-shadow: 0 2px 0 rgba(34,58,112,0.4),0 0 0 2px #fff inset;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 0 rgba(34,58,112,0.4),0 0 0 2px #fff inset;
+    color: #333;
+    display: block;
+    font-family: Menlo, monospace;
+    line-height: 1.4;
+    margin: .4em .1em;
+    padding: .8em 1.8em;
+    text-shadow: 0 0px 0 #fff;
+}
