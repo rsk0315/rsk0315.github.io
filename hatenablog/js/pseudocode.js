@@ -74,7 +74,8 @@ function markup(code, elt) {
     out += "\n\\end{aligned}";
   }
 
-  elt.outerHTML = katex.renderToString(`<div><span class="pseudocode">\\begin{aligned}${out}\\end{aligned}</span></div>`, { macros });
+  const inner = katex.renderToString(`\\begin{aligned}${out}\\end{aligned}`, { macros });
+  elt.outerHTML = `<div><span class="pseudocode">${inner}</span></div>`;
 }
 
 document.addEventListener('DOMContentLoaded', (() => {
