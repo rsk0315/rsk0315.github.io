@@ -1,0 +1,2 @@
+all:
+	@zsh make.zsh
