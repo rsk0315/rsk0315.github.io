@@ -4,5 +4,4 @@ document.addEventListener('DOMContentLoaded', (() => {
     .forEach((pre) => {
       pre.innerText = 'hello';
     });
-  });
 }));
