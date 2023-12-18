@@ -96,6 +96,6 @@ button:focus {
     font-family: Menlo, monospace;
     line-height: 1.4;
     margin: .4em .1em;
-    padding: .8em 1.8em;
+    padding: .8em 1.8em .2em;
     text-shadow: 0 0px 0 #fff;
 }
