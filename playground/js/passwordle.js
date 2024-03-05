@@ -56,7 +56,6 @@ function randomPassword() {
     let s = letters.repeat(7) + digits.repeat(4) + punctuation.repeat(3);
     let length = 14;
     let res = Array.from({length}, (() => s[randomInt(s.length)])).join('');
-    debugger; // どうぞ
     return res;
 }
 
