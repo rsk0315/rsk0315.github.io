@@ -1,0 +1,9 @@
+(function() {
+    const implementors = Object.fromEntries([["nekolib",[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.95.0/core/hash/trait.Hash.html\" title=\"trait core::hash::Hash\">Hash</a> for <a class=\"enum\" href=\"nekolib/math/enum.DefaultId.html\" title=\"enum nekolib::math::DefaultId\">DefaultId</a>",0],["impl&lt;I: <a class=\"trait\" href=\"nekolib/math/modint/trait.DynamicModIntId.html\" title=\"trait nekolib::math::modint::DynamicModIntId\">DynamicModIntId</a>&gt; <a class=\"trait\" href=\"https://doc.rust-lang.org/1.95.0/core/hash/trait.Hash.html\" title=\"trait core::hash::Hash\">Hash</a> for <a class=\"struct\" href=\"nekolib/math/struct.DynamicModInt.html\" title=\"struct nekolib::math::DynamicModInt\">DynamicModInt</a>&lt;I&gt;",0],["impl&lt;M: <a class=\"trait\" href=\"nekolib/math/trait.Modulus.html\" title=\"trait nekolib::math::Modulus\">Modulus</a>&gt; <a class=\"trait\" href=\"https://doc.rust-lang.org/1.95.0/core/hash/trait.Hash.html\" title=\"trait core::hash::Hash\">Hash</a> for <a class=\"struct\" href=\"nekolib/math/struct.StaticModInt.html\" title=\"struct nekolib::math::StaticModInt\">StaticModInt</a>&lt;M&gt;",0]]]]);
+    if (window.register_implementors) {
+        window.register_implementors(implementors);
+    } else {
+        window.pending_implementors = implementors;
+    }
+})()
+//{"start":59,"fragment_lengths":[1119]}

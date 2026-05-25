@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="デバッグ用ツールたち。"><title>nekolib_notes::debug - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="nekolib_notes" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="デバッグ用ツールたち。"><title>nekolib_notes::debug - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-b7b9f40b.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="nekolib_notes" data-themes="" data-resource-suffix="" data-rustdoc-version="1.95.0 (59807616e 2026-04-14)" data-channel="1.95.0" data-search-js="search-63369b7b.js" data-stringdex-js="stringdex-b897f86f.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -87,8 +87,8 @@
   }
 </script>
 
-</head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="logo-container" href="../../nekolib_notes/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a></nav><nav class="sidebar"><a class="logo-container" href="../../nekolib_notes/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><h2 class="location"><a href="#">Module debug</a></h2><div class="sidebar-elems"></div></nav><main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Module <a href="../index.html">nekolib_notes</a>::<wbr><a class="mod" href="#">debug</a><button id="copy-path" title="Copy item path to clipboard"><img src="../../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="src" href="../../src/nekolib_notes/debug.rs.html#1">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>デバッグ用ツールたち。</p>
-<h3 id="custom-judge"><a href="#custom-judge">Custom Judge</a></h3>
+</head><body class="rustdoc mod"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Module debug</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../nekolib_notes/index.html">nekolib_<wbr>notes</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module debug</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#custom-judge" title="Custom Judge">Custom Judge</a></li><li><a href="#generator" title="Generator">Generator</a></li><li><a href="#reactive" title="Reactive">Reactive</a><ul><li><a href="#reactive-runner" title="Reactive Runner">Reactive Runner</a></li><li><a href="#reactive-judge" title="Reactive Judge">Reactive Judge</a></li></ul></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="../index.html">In crate nekolib_<wbr>notes</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../index.html">nekolib_notes</a></div><h1>Module <span>debug</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../src/nekolib_notes/debug.rs.html#1">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>デバッグ用ツールたち。</p>
+<h3 id="custom-judge"><a class="doc-anchor" href="#custom-judge">§</a>Custom Judge</h3>
 <p>入出力フォーマットは正しいことを仮定。</p>
 
 <div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::fs::File;
@@ -113,13 +113,13 @@
     <span class="kw">let </span><span class="kw-2">mut </span>actual = AutoSource::from(actual.as_ref());
     <span class="kw">let </span><span class="kw-2">mut </span>expected = AutoSource::from(expected.as_ref());
 
-    <span class="macro">input! </span>{
+    <span class="macro">input!</span> {
         from <span class="kw-2">&amp;mut </span>input,
     }
-    <span class="macro">input! </span>{
+    <span class="macro">input!</span> {
         from <span class="kw-2">&amp;mut </span>actual,
     }
-    <span class="macro">input! </span>{
+    <span class="macro">input!</span> {
         from <span class="kw-2">&amp;mut </span>expected,
     }
 
@@ -127,13 +127,11 @@
 }
 
 <span class="kw">fn </span>read(path: <span class="kw-2">&amp;</span>str) -&gt; String {
-    <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="string">&quot;&quot;</span>.to_owned();
+    <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="string">""</span>.to_owned();
     File::open(path).unwrap().read_to_string(<span class="kw-2">&amp;mut </span>res).unwrap();
     res
-}</code></pre></div>
-<h3 id="generator"><a href="#generator">Generator</a></h3><div class="example-wrap"><pre class="language-toml"><code>rand = &quot;0.8.5&quot;
-rand_chacha = &quot;0.3.1&quot;
-</code></pre></div>
+}</code></pre></div><h3 id="generator"><a class="doc-anchor" href="#generator">§</a>Generator</h3><div class="example-wrap"><pre class="language-toml"><code>rand = &quot;0.8.5&quot;
+rand_chacha = &quot;0.3.1&quot;</code></pre></div>
 <div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">use </span>rand::SeedableRng;
 <span class="kw">use </span>rand_chacha::ChaCha20Rng;
 
@@ -142,20 +140,18 @@ rand_chacha = &quot;0.3.1&quot;
 <span class="kw">use </span>nekolib::utils::rand_gen_macro::<span class="kw-2">*</span>;
 
 <span class="kw">fn </span>main() {
-    <span class="macro">rand_gen! </span>{
+    <span class="macro">rand_gen!</span> {
         rng: ChaCha20Rng;
     
         n <span class="kw">in </span><span class="number">1_usize</span>..=<span class="number">10</span>;
         a <span class="kw">in </span>[<span class="number">1_i64</span>..=<span class="number">100</span>; n];
     }
     
-    <span class="macro">println!</span>(<span class="string">&quot;{n}&quot;</span>);
-    <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, SpaceSep(<span class="kw-2">&amp;</span>a));
-}</code></pre></div>
-<h3 id="reactive"><a href="#reactive">Reactive</a></h3>
+    <span class="macro">println!</span>(<span class="string">"{n}"</span>);
+    <span class="macro">println!</span>(<span class="string">"{}"</span>, SpaceSep(<span class="kw-2">&amp;</span>a));
+}</code></pre></div><h3 id="reactive"><a class="doc-anchor" href="#reactive">§</a>Reactive</h3>
 <p><a href="https://rsk0315.hatenablog.com/entry/2022/09/19/200454">https://rsk0315.hatenablog.com/entry/2022/09/19/200454</a></p>
-<div class="example-wrap"><pre class="language-sh"><code>% sniff_reactive ./solution -- ./judge testcase.in 
-</code></pre></div><h4 id="reactive-runner"><a href="#reactive-runner">Reactive Runner</a></h4><div class="example-wrap"><pre class="language-python"><code>import asyncio
+<div class="example-wrap"><pre class="language-sh"><code>% sniff_reactive ./solution -- ./judge testcase.in </code></pre></div><h4 id="reactive-runner"><a class="doc-anchor" href="#reactive-runner">§</a>Reactive Runner</h4><div class="example-wrap"><pre class="language-python"><code>import asyncio
 import os
 import sys
 
@@ -285,8 +281,7 @@ async def main():
 
 
 if __name__ == &quot;__main__&quot;:
-    asyncio.run(main())
-</code></pre></div><h4 id="reactive-judge"><a href="#reactive-judge">Reactive Judge</a></h4>
+    asyncio.run(main())</code></pre></div><h4 id="reactive-judge"><a class="doc-anchor" href="#reactive-judge">§</a>Reactive Judge</h4>
 <div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::env;
 <span class="kw">use </span>std::fs::File;
 <span class="kw">use </span>std::io::{stdin, stdout, BufReader, Write};
@@ -297,7 +292,7 @@ if __name__ == &quot;__main__&quot;:
     source::{auto::AutoSource, line::LineSource},
 };
 
-<span class="macro">macro_rules! </span>println {
+<span class="macro">macro_rules!</span> println {
     ( $(<span class="macro-nonterminal">$t</span>:tt)* ) =&gt; {
         <span class="macro">std::println!</span>($(<span class="macro-nonterminal">$t</span>)<span class="kw-2">*</span>);
         stdout().flush().unwrap();
@@ -313,7 +308,7 @@ if __name__ == &quot;__main__&quot;:
         AutoSource::new(BufReader::new(file))
     };
 
-    <span class="macro">input! </span>{
+    <span class="macro">input!</span> {
         from infile_source,
     }
 
@@ -327,36 +322,35 @@ if __name__ == &quot;__main__&quot;:
     </span><span class="kw">let </span>stdin = stdin();
     <span class="kw">let </span><span class="kw-2">mut </span>source = LineSource::new(BufReader::new(stdin.lock()));
 
-    <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, n);
+    <span class="macro">println!</span>(<span class="string">"{}"</span>, n);
 
     <span class="kw">let </span>ql = <span class="number">20</span>;
     <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..=ql {
-        <span class="macro">input! </span>{
+        <span class="macro">input!</span> {
             from <span class="kw-2">&amp;mut </span>source,
             ty: char,
         }
 
-        <span class="macro">assert!</span>([<span class="string">&#39;!&#39;</span>, <span class="string">&#39;?&#39;</span>].contains(<span class="kw-2">&amp;</span>ty));
+        <span class="macro">assert!</span>([<span class="string">'!'</span>, <span class="string">'?'</span>].contains(<span class="kw-2">&amp;</span>ty));
 
-        <span class="kw">if </span>ty == <span class="string">&#39;!&#39; </span>{
-            <span class="macro">input! </span>{
+        <span class="kw">if </span>ty == <span class="string">'!' </span>{
+            <span class="macro">input!</span> {
                 from <span class="kw-2">&amp;mut </span>source,
             }
             <span class="macro">assert_eq!</span>((), expected);
             <span class="kw">return</span>;
         }
 
-        <span class="kw">if </span>ty == <span class="string">&#39;?&#39; </span>{
+        <span class="kw">if </span>ty == <span class="string">'?' </span>{
             <span class="macro">assert!</span>(i &lt; ql);
-            <span class="macro">input! </span>{
+            <span class="macro">input!</span> {
                 from <span class="kw-2">&amp;mut </span>source,
             }
 
             <span class="kw">let </span>res = {
             };
 
-            <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, res);
+            <span class="macro">println!</span>(<span class="string">"{}"</span>, res);
         }
     }
-}</code></pre></div>
-</div></details></section></div></main></body></html>
+}</code></pre></div></div></details></section></div></main></body></html>

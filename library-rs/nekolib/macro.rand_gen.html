@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="乱数生成マクロ。"><title>rand_gen in nekolib - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../static.files/rustdoc-fa3bb1812debf86c.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="nekolib" data-themes="" data-resource-suffix="" data-rustdoc-version="1.74.1 (a28077b28 2023-12-04)" data-channel="1.74.1" data-search-js="search-8be46b629f5f14a8.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="sidebar-items.js"></script><script defer src="../static.files/main-c5bd66d33317d69f.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-2c020d218678b618.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="乱数生成マクロ。"><title>rand_gen in nekolib - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../static.files/rustdoc-b7b9f40b.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="nekolib" data-themes="" data-resource-suffix="" data-rustdoc-version="1.95.0 (59807616e 2026-04-14)" data-channel="1.95.0" data-search-js="search-63369b7b.js" data-stringdex-js="stringdex-b897f86f.js" data-settings-js="settings-170eb4bf.js" ><script src="../static.files/storage-41dd4d93.js"></script><script defer src="sidebar-items.js"></script><script defer src="../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-044be391.svg">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
 <script>
@@ -87,19 +87,19 @@
   }
 </script>
 
-</head><body class="rustdoc macro"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="logo-container" href="../nekolib/index.html"><img class="rust-logo" src="../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a></nav><nav class="sidebar"><a class="logo-container" href="../nekolib/index.html"><img class="rust-logo" src="../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><div class="sidebar-elems"><h2><a href="index.html">In nekolib</a></h2></div></nav><main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Macro <a href="index.html">nekolib</a>::<wbr><a class="macro" href="#">rand_gen</a><button id="copy-path" title="Copy item path to clipboard"><img src="../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="src" href="../src/nekolib/utils/rand_gen_macro.rs.html#139-178">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><pre class="rust item-decl"><span class="macro">macro_rules! </span>rand_gen {
-    ( @seed <span class="macro-nonterminal">$seed</span>:ident { <span class="kw-2">mut </span><span class="macro-nonterminal">$a</span>:ident <span class="kw">in </span>$(<span class="macro-nonterminal">$r</span>:tt)* } @rest ) =&gt; { ... };
-    ( @seed <span class="macro-nonterminal">$seed</span>:ident { <span class="macro-nonterminal">$a</span>:ident <span class="kw">in </span>$(<span class="macro-nonterminal">$r</span>:tt)* } @rest ) =&gt; { ... };
-    ( @seed <span class="macro-nonterminal">$seed</span>:ident { <span class="macro-nonterminal">$a</span>:ident <span class="kw">in </span>$(<span class="macro-nonterminal">$r</span>:tt)* } @rest ; $(<span class="macro-nonterminal">$rest</span>:tt)* ) =&gt; { ... };
-    ( @seed <span class="macro-nonterminal">$seed</span>:ident { <span class="kw-2">mut </span><span class="macro-nonterminal">$a</span>:ident <span class="kw">in </span>$(<span class="macro-nonterminal">$r</span>:tt)* } @rest ; $(<span class="macro-nonterminal">$rest</span>:tt)* ) =&gt; { ... };
-    ( @seed <span class="macro-nonterminal">$seed</span>:ident { $(<span class="macro-nonterminal">$cur</span>:tt)* } @rest <span class="macro-nonterminal">$tt</span>:tt $(<span class="macro-nonterminal">$rest</span>:tt)* ) =&gt; { ... };
-    ( @seed <span class="macro-nonterminal">$seed</span>:ident {} @rest ) =&gt; { ... };
-    ( <span class="macro-nonterminal">$seed</span>:ident: <span class="macro-nonterminal">$ty</span>:ty; $(<span class="macro-nonterminal">$rest</span>:tt)* ) =&gt; { ... };
-    ( <span class="macro-nonterminal">$seed</span>:ident = <span class="macro-nonterminal">$s</span>:expr; $(<span class="macro-nonterminal">$rest</span>:tt)* ) =&gt; { ... };
-}</pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>乱数生成マクロ。</p>
-<h2 id="notes"><a href="#notes">Notes</a></h2>
+</head><body class="rustdoc macro"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">rand_gen</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../nekolib/index.html">nekolib</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">rand_<wbr>gen</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#notes" title="Notes">Notes</a></li><li><a href="#examples" title="Examples">Examples</a></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="index.html">In crate nekolib</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="index.html">nekolib</a></div><h1>Macro <span class="macro">rand_<wbr>gen</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../src/nekolib/utils/rand_gen_macro.rs.html#139-178">Source</a> </span></div><pre class="rust item-decl"><code>macro_rules! rand_gen {
+    ( @seed $seed:ident { mut $a:ident in $($r:tt)* } @rest ) =&gt; { ... };
+    ( @seed $seed:ident { $a:ident in $($r:tt)* } @rest ) =&gt; { ... };
+    ( @seed $seed:ident { $a:ident in $($r:tt)* } @rest ; $($rest:tt)* ) =&gt; { ... };
+    ( @seed $seed:ident { mut $a:ident in $($r:tt)* } @rest ; $($rest:tt)* ) =&gt; { ... };
+    ( @seed $seed:ident { $($cur:tt)* } @rest $tt:tt $($rest:tt)* ) =&gt; { ... };
+    ( @seed $seed:ident {} @rest ) =&gt; { ... };
+    ( $seed:ident: $ty:ty; $($rest:tt)* ) =&gt; { ... };
+    ( $seed:ident = $s:expr; $($rest:tt)* ) =&gt; { ... };
+}</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>乱数生成マクロ。</p>
+<h2 id="notes"><a class="doc-anchor" href="#notes">§</a>Notes</h2>
 <p>作りかけなのでいろいろ足りない。</p>
-<h2 id="examples"><a href="#examples">Examples</a></h2>
+<h2 id="examples"><a class="doc-anchor" href="#examples">§</a>Examples</h2>
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>rand::SeedableRng;
 <span class="kw">use </span>rand_chacha::ChaCha20Rng;
 
@@ -107,7 +107,7 @@
 <span class="kw">use </span>nekolib::utils::ascii::<span class="kw-2">*</span>;
 <span class="kw">use </span>nekolib::utils::rand_gen_macro::<span class="kw-2">*</span>;
 
-<span class="macro">rand_gen! </span>{
+<span class="macro">rand_gen!</span> {
     rng: ChaCha20Rng;
 
     n <span class="kw">in </span><span class="number">1_usize</span>..=<span class="number">10</span>;
@@ -117,7 +117,7 @@
             (ASCII_LOWERCASE, <span class="number">10</span>),
             (ASCII_UPPERCASE, <span class="number">10</span>),
             (ASCII_DIGIT, <span class="number">6</span>),
-            (charset(<span class="string">b&quot;~!@#$%+?|()^*_-=[]{};:,./&quot;</span>), <span class="number">5</span>),
+            (charset(<span class="string">b"~!@#$%+?|()^*_-=[]{};:,./"</span>), <span class="number">5</span>),
         ],
     };
 }
@@ -125,7 +125,7 @@
 <span class="macro">assert_eq!</span>(a.len(), n);
 <span class="macro">assert!</span>(a.iter().all(|ai| (<span class="number">1</span>..=<span class="number">100</span>).contains(ai)));
 <span class="macro">assert_eq!</span>(s.len(), <span class="number">16</span>);
-<span class="comment">// Possible value of `s`: `&quot;3e)xIjos2^M/XI1T&quot;`, `&quot;X52dhjDk%i6)p1F9&quot;`</span></code></pre></div>
+<span class="comment">// Possible value of `s`: `"3e)xIjos2^M/XI1T"`, `"X52dhjDk%i6)p1F9"`</span></code></pre></div>
 <p>以下のような出力が得られるため、これを用いて再現することができる。</p>
 <div class="example-wrap"><pre class="language-text"><code>To reproduce:
 
@@ -134,8 +134,7 @@ rand_gen! {
     rng = ChaCha20Rng::from_seed([250, 120, 31, 164, 15, 176, 41, 144, 61, 59, 224, 119, 135, 238, 14, 193, 149, 124, 228, 39, 107, 208, 243, 180, 7, 177, 21, 88, 19, 5, 225, 3]);
     // ...
 }
-```
-</code></pre></div>
+```</code></pre></div>
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>rand::SeedableRng;
 <span class="kw">use </span>rand_chacha::ChaCha20Rng;
 
@@ -143,7 +142,7 @@ rand_gen! {
 <span class="kw">use </span>nekolib::utils::ascii::<span class="kw-2">*</span>;
 <span class="kw">use </span>nekolib::utils::rand_gen_macro::<span class="kw-2">*</span>;
 
-<span class="macro">rand_gen! </span>{
+<span class="macro">rand_gen!</span> {
     rng = ChaCha20Rng::from_seed([<span class="number">250</span>, <span class="number">120</span>, <span class="number">31</span>, <span class="number">164</span>, <span class="number">15</span>, <span class="number">176</span>, <span class="number">41</span>, <span class="number">144</span>, <span class="number">61</span>, <span class="number">59</span>, <span class="number">224</span>, <span class="number">119</span>, <span class="number">135</span>, <span class="number">238</span>, <span class="number">14</span>, <span class="number">193</span>, <span class="number">149</span>, <span class="number">124</span>, <span class="number">228</span>, <span class="number">39</span>, <span class="number">107</span>, <span class="number">208</span>, <span class="number">243</span>, <span class="number">180</span>, <span class="number">7</span>, <span class="number">177</span>, <span class="number">21</span>, <span class="number">88</span>, <span class="number">19</span>, <span class="number">5</span>, <span class="number">225</span>, <span class="number">3</span>]);
 
     n <span class="kw">in </span><span class="number">1_usize</span>..=<span class="number">10</span>;
@@ -153,7 +152,7 @@ rand_gen! {
             (ASCII_LOWERCASE, <span class="number">10</span>),
             (ASCII_UPPERCASE, <span class="number">10</span>),
             (ASCII_DIGIT, <span class="number">6</span>),
-            (charset(<span class="string">b&quot;~!@#$%+?|()^*_-=[]{};:,./&quot;</span>), <span class="number">5</span>),
+            (charset(<span class="string">b"~!@#$%+?|()^*_-=[]{};:,./"</span>), <span class="number">5</span>),
         ],
     };
     b <span class="kw">in </span>[[[<span class="number">1_u8</span>..<span class="number">100</span>; <span class="number">3</span>]; <span class="number">2</span>]; <span class="number">2</span>];
@@ -163,11 +162,10 @@ rand_gen! {
 x += <span class="number">1</span>;
 
 <span class="macro">assert_eq!</span>(a, [<span class="number">32</span>, <span class="number">86</span>, <span class="number">41</span>, <span class="number">68</span>, <span class="number">66</span>, <span class="number">46</span>, <span class="number">56</span>, <span class="number">82</span>, <span class="number">40</span>, <span class="number">1</span>]);
-<span class="macro">assert_eq!</span>(s, <span class="string">&quot;X52dhjDk%i6)p1F9&quot;</span>);
+<span class="macro">assert_eq!</span>(s, <span class="string">"X52dhjDk%i6)p1F9"</span>);
 <span class="macro">assert_eq!</span>(b, [[[<span class="number">75</span>, <span class="number">20</span>, <span class="number">23</span>], [<span class="number">63</span>, <span class="number">21</span>, <span class="number">58</span>]], [[<span class="number">12</span>, <span class="number">6</span>, <span class="number">57</span>], [<span class="number">51</span>, <span class="number">95</span>, <span class="number">70</span>]]]);
 <span class="macro">assert_eq!</span>(p, [<span class="number">3</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">2</span>]);
 <span class="macro">assert_eq!</span>(x, <span class="number">5</span>);</code></pre></div>
 <p><code>oj</code> を用いて、hack をするのに使うとよい。
 以下の例は、想定解が Rust で標的が Python のプログラムのもの。</p>
-<div class="example-wrap"><pre class="language-sh"><code>% oj g/i --hack-expected target/release/x --hack-actual &#39;python3 x-to-be-hacked.py&#39; target/release/x-gen
-</code></pre></div></div></details></section></div></main></body></html>
+<div class="example-wrap"><pre class="language-sh"><code>% oj g/i --hack-expected target/release/x --hack-actual &#39;python3 x-to-be-hacked.py&#39; target/release/x-gen</code></pre></div></div></details></section></div></main></body></html>
